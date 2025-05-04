@@ -1,0 +1,150 @@
+{"qualification":"sd"}
+{"qualification":"new"}
+{"qualification":"shd"}
+{"procedure":"sd"}
+{"procedure":"sd"}
+{"procedure":"kj"}
+{"procedure":"h"}
+{"procedure":"h"}
+{"procedure":"s"}
+{"procedure":"s"}
+{"procedure":"s"}
+{"procedure":"s"}
+{"qualification":"qa"}
+{"qualification":"lahi"}
+{"qualification":"lai"}
+{"qualification":"sd"}
+{"qualification":"skn"}
+{"course_name":"smd"}
+{"course_name":"asa"}
+{"course_name":"sd"}
+{"course_name":"ds"}
+{"course_name":"sd"}
+{"course_name":"jdjbf"}
+{"course_name":"bscs"}
+{"course_name":"s"}
+{"course_name":"ds"}
+{"course_name":"ds"}
+{"course_name":"sa"}
+{"course_name":"as"}
+{"course_name":"sa"}
+{"course_name":"ds"}
+{"course_name":"sa"}
+{"course_name":"sa"}
+{"course_name":"sa"}
+{"course_name":"sa"}
+{"course_name":"crim"}
+{"course_name":"educ"}
+{"course_name":"sa"}
+{"course_name":"BSIT"}
+{"qualification":"lsmd"}
+{"qualification":"Must be graduate or graduating senior high school"}
+null
+null
+null
+null
+null
+null
+{"strand":"STEM"}
+{"strand":"STEM"}
+{"strand":"STEM"}
+{"instruction":"sd"}
+{"instruction":"sd"}
+{"instruction":"sds"}
+{"course_name":"bsit"}
+{"course_name":"bscs"}
+{"course_name":"sd"}
+{"course_name":"q"}
+{"course_name":"r"}
+{"course_name":"r"}
+{"course_name":"ds"}
+{"course_name":"ds"}
+{"course_name":"ds"}
+{"strand":"HUMMS * - Humanities & Social Sciences"}
+{"strand":"STEM * - Science, Technology, Engineering & Mathematics"}
+{"strand":"GAS - General Academic Strand"}
+{"strand":"ABM * - Accountancy, Business & Management"}
+{"strand":"TVL - Technical - Vocational - Livelihood, Specialization: choose your own specialization related to the course you want to take in college."}
+{"strand":"&"}
+{"strand":"&"}
+{"strand":"&"}
+{"strand":"&"}
+{"strand":"&"}
+{"strand":"&"}
+{"course_name":"ds"}
+{"course_name":"ds"}
+{"course_name":"sdsd"}
+{"course_name":"Bachelor of Science in Agriculture *"}
+{"course_name":"Bachelor of Science in Psychology"}
+{"course_name":"Bachelor of Science in Social Works"}
+{"course_name":"Bachelor of Arts in English *"}
+{"course_name":"Bachelor of Science in Tourism Management"}
+{"course_name":"Bachelor of Science in Accountancy"}
+{"course_name":"Bachelor of Science in Business Administration"}
+{"course_name":"Bachelor of Science in Office Administration"}
+{"course_name":"Bachelor of Science in Computer Science"}
+{"qualification":"GWA of 82% and up, no below grades 80."}
+{"id":10003}
+{"id":6801038}
+{"instruction":"jsudisa"}
+{"id":10001}
+{"id":10003}
+{"id":10002}
+{"id":10002}
+{"id":10002}
+{"qualification":"Must be indigent & residing within the community adopted by Tzu Chi."}
+{"qualification":"Parents Annual Gross combine income must not be more than Php300,000 or for a family with a single earner \/ guardian of not more than Php150,000"}
+{"qualification":"No vices and has a good moral character."}
+{"instruction":"Priority applicant must study at any public\/government colleges or state university."}
+{"instruction":"Only applicant with complete requirements will be accepted and undergo the process."}
+{"instruction":"Applicant with failing grade or not meet the desired grade requirements will not be accepted."}
+{"instruction":"All applicant are subject to undergo process of application, home visitation, interview and approval."}
+{"id":10001}
+null
+{"name":1}
+{"batch":null}
+{"batch":2}
+{"batch":null}
+{"batch":null}
+{"batch":null}
+{"batch":null}
+{"batch_name":"Batch NaN"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch NaN"}
+{"batch_name":1}
+{"batch_name":null}
+{"batch_name":null}
+{"batch_name":null}
+{"batch_name":1}
+{"batch_name":null}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 3"}
+{"batch_name":"Batch 3"}
+{"batch_name":"Batch 4"}
+{"batch_name":"Batch 5"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"id":10002}
+{"id":10002}
+{"applicantIds":[10002],"batch":"Batch 1"}
+{"applicantIds":[10003,10004,6801038,6919867],"batch":"Batch 1"}
+{"id":10001}
+{"id":10002}
+{"id":10003}
+{"id":10004}
+{"id":6801038}
+{"id":6919867}
+{"batch_name":"Batch 2"}
+{"applicantIds":[10002,10003],"batch":"Batch 2"}
+{"applicantIds":[6801038,6919867],"batch":"Batch 1"}
+{"batch_name":"Batch 3"}
+{"applicantIds":[10004],"batch":"Batch 3"}
+{"id":10002}
+{"applicantIds":[10002],"batch":"Batch 3"}
+{"id":10002}
+{"id":10004}
+{"instruction":"hgug"}
+{"strand":"l"}
+{"applicantIds":[10002,10004],"batch":"Batch 1"}

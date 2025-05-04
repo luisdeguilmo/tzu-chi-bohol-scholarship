@@ -1,0 +1,689 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import ApplicationFormPDF from "../../components/ApplicationFormPDF";
+import { toast } from "react-toastify";
+
+export default function ExaminationBatches() {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    const [isOpen, setIsOpen] = useState(false);
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [studentData, setStudentData] = useState([]);
+    const [batches, setBatches] = useState([]);
+    const [selectedBatch, setSelectedBatch] = useState("all");
+
+    const [applicantsEachBatch, setApplicantsEachBatch] = useState([]);
+
+    const fetchBatches = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `http://localhost:8000/app/views/batches.php`
+            );
+            // Fix 2: Access the correct property in the response
+            setBatches(response.data.data || []);
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching batches data:", err);
+            setError("Failed to load batches data. Please try again.");
+            setLoading(false);
+        }
+    };
+
+    const fetchApplicantsEachBatch = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `http://localhost:8000/app/views/batch-examination.php?batch=${selectedBatch}`
+            );
+            // Access the correct property in the response
+            setApplicantsEachBatch(response.data.data || []);
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching batch applicants data:", err);
+            setError("Failed to load batch applicants data. Please try again.");
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchBatches();
+        // Initially fetch applicants for the default selected batch
+    }, []);
+
+    useEffect(() => {
+        // Fetch applicants whenever selectedBatch changes
+        if (selectedBatch) {
+            fetchApplicantsEachBatch();
+        }
+    }, [selectedBatch]);
+
+    const fetchStudentsData = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `http://localhost:8000/app/views/applicants.php?status=Examination`
+            );
+            setStudentData(response.data.personalInfo || []);
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching student data:", err);
+            setError("Failed to load student data. Please try again.");
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchStudentsData();
+    }, []);
+
+    // Handle batch selection change
+    const handleBatchChange = (e) => {
+        const newBatchId = e.target.value;
+        setSelectedBatch(newBatchId);
+        setCurrentPage(1); // Reset to first page when changing batches
+
+        fetchApplicantsEachBatch();
+
+        console.log(applicantsEachBatch);
+    };
+
+    const updateBatchToUnassigned = async (id) => {
+        try {
+            setLoading(true);
+            const response = await axios.put(
+                "http://localhost:8000/app/views/batch-examination.php",
+                {
+                    id: id,
+                }
+            );
+            console.log(response.data.message); // Success message
+
+            // Refresh the data after approval
+            await fetchApplicantsEachBatch();
+
+            // Optional: Show success notification
+            toast.success("Successfully updated to unassigned.");
+        } catch (err) {
+            console.error("Error updating application batch:", err);
+            setError("Failed to update application.");
+            setLoading(false);
+        }
+    };
+
+    // Filter data based on search term
+    const filteredApplications = applicantsEachBatch.filter((applicant) => {
+        // First check if the applicant and nested objects exist
+        if (
+            !applicant ||
+            !applicant.applicationInfo ||
+            !applicant.personalInfo
+        ) {
+            return false;
+        }
+
+        // Now safely access the properties
+        const { applicationInfo, personalInfo } = applicant;
+
+        return (
+            applicationInfo.application_status
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            personalInfo.last_name
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            personalInfo.middle_name
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            personalInfo.first_name
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            personalInfo.created_at?.includes(searchTerm) ||
+            ""
+        );
+    });
+
+    // Calculate pagination
+    const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredApplications.slice(
+        indexOfFirstItem,
+        indexOfLastItem
+    );
+
+    // Handle page changes
+    const goToPreviousPage = () => {
+        setCurrentPage((prev) => Math.max(prev - 1, 1));
+    };
+
+    const goToNextPage = () => {
+        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    };
+
+    // Handle successful batch creation
+    const handleBatchCreated = () => {
+        fetchBatches(); // Refresh the batches list
+    };
+
+    // Find the batch name from the batch ID
+    const getBatchName = (batchId) => {
+        const batch = batches.find((b) => b.id === batchId);
+        return batch ? batch.batch_name : "Unassigned";
+    };
+
+    return (
+        <div className="py-8">
+            <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-bold text-gray-800">
+                        Examination Batches
+                    </h2>
+
+                    <div className="flex items-center space-x-4">
+                        {/* Batch Dropdown - FIX: Use id as value instead of batch_name */}
+                        <div className="relative">
+                            <select
+                                value={selectedBatch}
+                                onChange={handleBatchChange}
+                                className="appearance-none bg-white border border-gray-300 rounded-lg py-2 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-500"
+                            >
+                                {/* {selectedBatch === "all" ? (
+                                    <option value='all'>Select Batch</option>
+                                ) : (
+                                    <option value='all' disabled>
+                                        Select Batch
+                                    </option>
+                                )} */}
+                                <option value="all">All Batch</option>
+                                {batches.length > 0 ? (
+                                    batches.map((batch) => (
+                                        <option
+                                            key={batch.id}
+                                            value={batch.batch_name}
+                                        >
+                                            {batch.batch_name}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>
+                                        No batches available
+                                    </option>
+                                )}
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg
+                                    className="fill-current h-4 w-4"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* Search */}
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg
+                                    className="w-4 h-4 text-gray-500"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search applications..."
+                                className="pl-10 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 transition-all"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* No batches state */}
+                {!loading && !error && batches.length === 0 && (
+                    <div className="text-center py-10 bg-gray-50 rounded-lg">
+                        <svg
+                            className="mx-auto h-12 w-12 text-gray-400"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                            />
+                        </svg>
+                        <h3 className="mt-2 text-sm font-medium text-gray-900">
+                            No batches available
+                        </h3>
+                        <p className="mt-1 text-sm text-gray-500">
+                            Get started by creating a new batch.
+                        </p>
+                    </div>
+                )}
+
+                {/* Table */}
+                {!loading && batches.length > 0 && (
+                    <div className="overflow-x-auto rounded-[4px] border border-gray-200">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-green-100 text-green-800">
+                                <tr>
+                                    <th
+                                        scope="col"
+                                        className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    >
+                                        Application ID
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    >
+                                        Name
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    >
+                                        Batch
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    >
+                                        Date Applied
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    >
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {currentItems.length > 0 ? (
+                                    currentItems.map((info, index) => {
+                                        const {
+                                            applicationInfo,
+                                            personalInfo,
+                                        } = info;
+
+                                        return (
+                                            <tr
+                                                key={index}
+                                                className="transition-colors text-center"
+                                            >
+                                                <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {
+                                                        applicationInfo.application_id
+                                                    }
+                                                </td>
+                                                <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-500">
+                                                    {personalInfo.last_name +
+                                                        ", " +
+                                                        personalInfo.middle_name +
+                                                        ", " +
+                                                        personalInfo.first_name}
+                                                </td>
+                                                <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {applicationInfo.batch}
+                                                </td>
+                                                <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {personalInfo.created_at}
+                                                </td>
+                                                <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                                    <ApplicationFormPDF
+                                                        studentId={
+                                                            applicationInfo.application_id
+                                                        }
+                                                    />
+                                                    <button
+                                                        onClick={() =>
+                                                            updateBatchToUnassigned(
+                                                                applicationInfo.application_id
+                                                            )
+                                                        }
+                                                        className="inline-flex items-center text-red-600 hover:text-red-900"
+                                                    >
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            className="h-4 w-4 mr-1"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            stroke="currentColor"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth={2}
+                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7"
+                                                            />
+                                                        </svg>
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td
+                                            colSpan="8"
+                                            className="text-center py-10"
+                                        >
+                                            <div className="flex flex-col items-center justify-center">
+                                                <svg
+                                                    className="mx-auto h-12 w-12 text-gray-400"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                    />
+                                                </svg>
+                                                <p className="mt-2 text-gray-500">
+                                                    {selectedBatch === "all"
+                                                        ? "No applications found. Try adjusting your search."
+                                                        : "No applications in this batch. Students may need to be assigned."}
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                {/* Bottom controls area */}
+                <div className="flex justify-between items-center mt-6">
+                    <BatchForm
+                        isOpen={isOpen}
+                        setIsOpen={setIsOpen}
+                        onSuccess={handleBatchCreated}
+                        selectedBatch={selectedBatch}
+                        batches={batches}
+                        setBatches={setBatches}
+                    />
+
+                    {!loading && filteredApplications.length > 0 && (
+                        <>
+                            <div className="text-sm text-gray-600">
+                                Showing {indexOfFirstItem + 1}-
+                                {Math.min(
+                                    indexOfLastItem,
+                                    filteredApplications.length
+                                )}{" "}
+                                of {filteredApplications.length} applications
+                            </div>
+                            <div className="flex space-x-2">
+                                <button
+                                    onClick={goToPreviousPage}
+                                    disabled={currentPage === 1}
+                                    className={`px-4 py-2 rounded-md ${
+                                        currentPage === 1
+                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                            : "bg-green-500 text-white hover:bg-green-600 transition-all"
+                                    }`}
+                                >
+                                    Previous
+                                </button>
+                                <button
+                                    onClick={goToNextPage}
+                                    disabled={
+                                        currentPage === totalPages ||
+                                        totalPages === 0
+                                    }
+                                    className={`px-4 py-2 rounded-md ${
+                                        currentPage === totalPages ||
+                                        totalPages === 0
+                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                            : "bg-green-500 text-white hover:bg-green-600 transition-all"
+                                    }`}
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function BatchForm({ isOpen, setIsOpen, onSuccess, selectedBatch, batches, setBatches }) {
+    // Add state for creating a new batch when modal is open
+    const [batchName, setBatchName] = useState("");
+
+    const handleCreateBatch = async () => {
+        // Create the data structure that matches your backend expectations
+        const data = {};
+        
+        // Generate next batch number based on existing batches
+        if (batches.length === 0) {
+            data.batch_name = "Batch 1"; // Using batch_name as string format
+        } else {
+            // Extract numeric parts from existing batch names to find the highest number
+            const batchNumbers = batches.map(batch => {
+                const match = batch.batch_name.match(/Batch (\d+)/);
+                return match ? parseInt(match[1], 10) : 0;
+            });
+            
+            const highestNumber = Math.max(...batchNumbers, 0);
+            data.batch_name = `Batch ${highestNumber + 1}`;
+        }
+        
+        try {
+            // Send the data as JSON in the request body
+            const response = await fetch(
+                "http://localhost:8000/app/views/batches.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                }
+            );
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                toast.success(result.message || "Batch created successfully.");
+                if (onSuccess) onSuccess(); // Refresh the batches list
+            } else {
+                alert("Error: " + (result.message || "Failed to create batch"));
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+            alert("Failed to submit the form. Please try again.");
+        }
+    };
+
+    const handleDeleteBatch = async () => {
+        // Ensure a batch is selected before attempting to delete
+        if (selectedBatch === "all" || !selectedBatch) {
+            alert("Please select a batch to delete");
+            return;
+        }
+
+        // Find the batch ID that matches the selected batch name
+        const batchToDelete = batches.find(batch => batch.batch_name === selectedBatch);
+        
+        if (!batchToDelete) {
+            alert("Cannot find the selected batch");
+            return;
+        }
+
+        // Confirm before deleting
+        if (!confirm(`Are you sure you want to delete ${selectedBatch}?`)) {
+            return;
+        }
+
+        try {
+            // Make the API call to delete
+            await axios.delete(
+                `http://localhost:8000/app/views/batches.php?id=${batchToDelete.batch_name}`
+            );
+
+            // Update local state after successful deletion
+            const updatedBatches = batches.filter(
+                (batch) => batch.id !== batchToDelete.id
+            );
+            setBatches(updatedBatches);
+            toast.success(`${selectedBatch} deleted successfully`);
+            if (onSuccess) onSuccess();
+        } catch (error) {
+            console.error("Error deleting batch:", error);
+            alert("Failed to delete batch");
+        }
+    };
+
+    const handleAssignStudent = (e) => {
+        // Toggle the modal
+        setIsOpen(true);
+    };
+
+    const handleCancel = () => {
+        setIsOpen(false);
+        setBatchName(""); // Clear the input
+    };
+
+    return (
+        <div>
+            <div className="flex gap-2">
+                <button
+                    onClick={handleCreateBatch}
+                    className="bg-white text-green-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center"
+                >
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-5 w-5 mr-1" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                    >
+                        <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth={2} 
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
+                        />
+                    </svg>
+                    Create Batch
+                </button>
+
+                {/* <button
+                    onClick={handleAssignStudent}
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center"
+                >
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-5 w-5 mr-1" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                    >
+                        <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth={2} 
+                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" 
+                        />
+                    </svg>
+                    Assign Student
+                </button> */}
+                
+                <button
+                    onClick={handleDeleteBatch}
+                    disabled={selectedBatch === "all"}
+                    className={`px-4 py-2 rounded-lg flex items-center ${
+                        selectedBatch === "all" 
+                            ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+                            : "bg-red-500 text-white hover:bg-red-600 transition-colors"
+                    }`}
+                >
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-5 w-5 mr-1" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                    >
+                        <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth={2} 
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m-7-10h6" 
+                        />
+                    </svg>
+                    Delete Batch
+                </button>
+            </div>
+
+            {/* Student Assignment Modal */}
+            {isOpen && (
+                <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="w-[80%] md:w-[50%] lg:w-[30%] bg-white rounded-lg shadow-md overflow-hidden">
+                        <div className="bg-green-500 px-4 py-2 flex justify-between items-center">
+                            <h2 className="text-lg font-semibold text-white">
+                                Assign Students to Batch
+                            </h2>
+                            <button
+                                onClick={handleCancel}
+                                className="text-white text-2xl"
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        
+                        <div className="p-4">
+                            {/* Here you would add your student assignment form content */}
+                            <p className="text-gray-700 mb-4">
+                                Select students to assign to the selected batch.
+                            </p>
+                            
+                            {/* Student selection would go here */}
+                            
+                            <div className="flex justify-end space-x-2 mt-4">
+                                <button
+                                    onClick={handleCancel}
+                                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                                >
+                                    Assign Students
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
