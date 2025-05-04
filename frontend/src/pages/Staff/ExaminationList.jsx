@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
+import { formatDateTime } from "../../utils/formatDate";
 
 export default function ExaminationList() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -39,7 +40,7 @@ export default function ExaminationList() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/applicants.php?status=Examination&batch=Unassigned`
+                `http://localhost:8000/app/views/applicants.php?application_status=Examination&batch=Unassigned`
             );
             setStudentData(response.data.personalInfo);
             setLoading(false);
@@ -267,7 +268,7 @@ export default function ExaminationList() {
                                         {"Unassigned"}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {info.created_at}
+                                        {formatDateTime(info.created_at)}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm font-medium">
                                         <ApplicationFormPDF

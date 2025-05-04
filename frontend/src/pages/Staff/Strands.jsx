@@ -247,7 +247,7 @@ const Strands = () => {
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 strokeWidth={2}
-                                                d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H7v-3.414a2 2 0 01.586-1.414z"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                             />
                                         </svg>
                                         {edit && rowItemId === strand.id
@@ -451,7 +451,9 @@ function Form({ isOpen, setIsOpen, onSuccess }) {
                         <form onSubmit={handleSubmit} className="p-6 space-y-2">
                             {/* Qualification Name Input */}
                             <div>
-                                <label className="text-md font-semibold text-gray-700">Strand</label>
+                                <label className="text-md font-semibold text-gray-700">
+                                    Strand
+                                </label>
                                 <input
                                     type="text"
                                     value={text}

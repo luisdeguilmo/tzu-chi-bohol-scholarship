@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
+import { formatDateTime } from "../../utils/formatDate";
 
 export default function Applications() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -199,7 +200,7 @@ export default function Applications() {
                                         {info.contact_number}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {info.created_at}
+                                        {formatDateTime(info.created_at)}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm font-medium">
                                         {/* <button

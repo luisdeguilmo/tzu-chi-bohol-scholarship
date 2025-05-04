@@ -54,16 +54,17 @@ class UpdateAccountController {
             // Extract required fields
             $studentId = $data['studentId'] ?? null;
             $status = $data['status'] ?? null;
+            $batch = $data['batch'] ?? null;
             
             // Validate required fields
-            if (!$studentId || !$status) {
+            if (!$studentId || !$status || !$batch) {
                 throw new \Exception("Missing required fields");
             }
             
             // Process application status update
             $application = new ApplicationsModel();
             
-            if (!$application->updateApplicationStatus($studentId, $status)) {
+            if (!$application->updateApplicationStatus($studentId, $status, $batch)) {
                 throw new \Exception("Failed to update application status");
             }
             

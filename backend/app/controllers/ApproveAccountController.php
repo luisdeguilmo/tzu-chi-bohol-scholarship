@@ -2,6 +2,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+date_default_timezone_set('Asia/Manila');
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -25,6 +26,8 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 $studentId = $data['studentId'] ?? null;
 $status = $data['status'] ?? null;
+$batch = $data['batch'] ?? null;
+$today = date("Y-m-d H:i:s"); 
 
 if (!$studentId || !$status) {
     http_response_code(400);
@@ -34,7 +37,7 @@ if (!$studentId || !$status) {
 
 try {
     $application = new ApplicationsModel();
-    $application->updateApplicationStatus($studentId, $status);
+    $application->updateApplicationStatus($studentId, $status, $batch, $today);
     
     echo json_encode(["message" => "Status updated successfully"]);
 } catch (Exception $e) {

@@ -256,7 +256,7 @@ const AcceptedCourses = () => {
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 strokeWidth={2}
-                                                d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H7v-3.414a2 2 0 01.586-1.414z"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                             />
                                         </svg>
                                         {edit && rowItemId === course.id
@@ -264,7 +264,12 @@ const AcceptedCourses = () => {
                                             : "Edit"}
                                     </button>
                                     <button
-                                        onClick={() => openDeleteModal(course.id, currentItems.length - 1)}
+                                        onClick={() =>
+                                            openDeleteModal(
+                                                course.id,
+                                                currentItems.length - 1
+                                            )
+                                        }
                                         className="inline-flex items-center text-red-600 hover:text-red-900"
                                     >
                                         <svg
@@ -293,11 +298,9 @@ const AcceptedCourses = () => {
                 <DeleteModal
                     isOpen={isDeleteModalOpen}
                     onClose={closeDeleteModal}
-                    onDelete={() => 
-                        courseToDelete && handleDelete(
-                            courseToDelete.id, 
-                            courseToDelete.length
-                        )
+                    onDelete={() =>
+                        courseToDelete &&
+                        handleDelete(courseToDelete.id, courseToDelete.length)
                     }
                 />
 
@@ -445,9 +448,7 @@ function Form({ isOpen, setIsOpen, onSuccess }) {
             </button>
 
             {isOpen && (
-                <div
-                    className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50"
-                >
+                <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="w-[80%] md:w-[50%] lg:w-[30%] bg-white rounded-lg shadow-md overflow-hidden">
                         <div className="bg-green-500 px-6 py-4 flex justify-between items-center">
                             <h2 className="text-xl font-semibold text-white">

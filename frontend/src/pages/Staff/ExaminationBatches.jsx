@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
+import { formatDateTime } from "../../utils/formatDate";
 
 export default function ExaminationBatches() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,6 +17,9 @@ export default function ExaminationBatches() {
     const [selectedBatch, setSelectedBatch] = useState("all");
 
     const [applicantsEachBatch, setApplicantsEachBatch] = useState([]);
+
+    const [edit, setEdit] = useState(false);
+    const [editingId, setEditingId] = useState(null);
 
     const fetchBatches = async () => {
         try {
@@ -79,6 +83,58 @@ export default function ExaminationBatches() {
     useEffect(() => {
         fetchStudentsData();
     }, []);
+
+    const handleButtonState = (id, value) => {
+        setEdit(true);
+        setEditingId(id);
+        // setNewText(value);
+    };
+
+    const handleEdit = async (id) => {
+        setEdit(false);
+        setEditingId(null);
+
+        // Check if the user cancelled or submitted an empty string
+        if (newText === null || newText.trim() === "") {
+            return; // Exit if cancelled or empty
+        }
+
+        // try {
+        //     // Create the data structure for the update
+        //     const data = {
+        //         id: id,
+        //         procedure: newText,
+        //     };
+
+        //     // Send the PUT request with the data in the body
+        //     const response = await axios.put(
+        //         `http://localhost:8000/app/views/procedures.php`,
+        //         data,
+        //         {
+        //             headers: {
+        //                 "Content-Type": "application/json",
+        //             },
+        //         }
+        //     );
+
+        //     // Check for success and update the UI
+        //     if (response.data.success) {
+        //         // Update the local state to reflect the change
+        //         const updatedProcedures = procedures.map((item) =>
+        //             item.id === id ? { ...item, procedure: newText } : item
+        //         );
+        //         setProcedures(updatedProcedures);
+
+        //         // Show success message
+        //         toast.success("Procedure updated successfully.");
+        //     } else {
+        //         alert("Error: " + response.data.message);
+        //     }
+        // } catch (error) {
+        //     console.error("Error updating procedure:", error);
+        //     alert("Failed to update procedure");
+        // }
+    };
 
     // Handle batch selection change
     const handleBatchChange = (e) => {
@@ -198,7 +254,7 @@ export default function ExaminationBatches() {
                                         Select Batch
                                     </option>
                                 )} */}
-                                <option value="all">All Batch</option>
+                                <option value="all">All Batches</option>
                                 {batches.length > 0 ? (
                                     batches.map((batch) => (
                                         <option
@@ -312,7 +368,13 @@ export default function ExaminationBatches() {
                                         scope="col"
                                         className="py-3 text-center text-xs font-medium uppercase tracking-wider"
                                     >
-                                        Actions
+                                        Score
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    >
+                                        Action
                                     </th>
                                 </tr>
                             </thead>
@@ -345,9 +407,29 @@ export default function ExaminationBatches() {
                                                     {applicationInfo.batch}
                                                 </td>
                                                 <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {personalInfo.created_at}
+                                                    {formatDateTime(personalInfo.created_at)}
                                                 </td>
-                                                <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                                <td className="py-4 text-center whitespace-nowrap text-sm text-gray-500">
+                                                    {edit &&
+                                                    editingId ===
+                                                        applicationInfo.application_id ? (
+                                                        <input
+                                                            className="p-1 w-16 text-center border-[1px] outline-green-500"
+                                                            type="text"
+                                                            onChange={(e) =>
+                                                                handleChange(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                            // value={newText}
+                                                        />
+                                                    ) : (
+                                                        <span>{applicationInfo.score || '--'}
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                {/* <td className="py-4 whitespace-nowrap text-sm font-medium">
                                                     <ApplicationFormPDF
                                                         studentId={
                                                             applicationInfo.application_id
@@ -376,6 +458,48 @@ export default function ExaminationBatches() {
                                                             />
                                                         </svg>
                                                         Remove
+                                                    </button>
+                                                </td> */}
+
+                                                <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                                    <button
+                                                        onClick={() => {
+                                                            if (
+                                                                edit &&
+                                                                editingId ===
+                                                                    applicationInfo.application_id
+                                                            ) {
+                                                                handleEdit(
+                                                                    applicationInfo.application_id
+                                                                );
+                                                            } else {
+                                                                handleButtonState(
+                                                                    applicationInfo.application_id,
+                                                                    applicationInfo.application_id
+                                                                );
+                                                            }
+                                                        }}
+                                                        className="inline-flex items-center text-green-600 hover:text-red-900"
+                                                    >
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            className="h-4 w-4 mr-1"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            stroke="currentColor"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth={2}
+                                                                d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H7v-3.414a2 2 0 01.586-1.414z"
+                                                            />
+                                                        </svg>
+                                                        {edit &&
+                                                        editingId ===
+                                                            applicationInfo.application_id
+                                                            ? "Save"
+                                                            : "Add Score"}
                                                     </button>
                                                 </td>
                                             </tr>
@@ -425,6 +549,7 @@ export default function ExaminationBatches() {
                         selectedBatch={selectedBatch}
                         batches={batches}
                         setBatches={setBatches}
+                        applicantsEachBatch={applicantsEachBatch}
                     />
 
                     {!loading && filteredApplications.length > 0 && (
@@ -473,28 +598,36 @@ export default function ExaminationBatches() {
     );
 }
 
-function BatchForm({ isOpen, setIsOpen, onSuccess, selectedBatch, batches, setBatches }) {
+function BatchForm({
+    isOpen,
+    setIsOpen,
+    onSuccess,
+    selectedBatch,
+    batches,
+    setBatches,
+    applicantsEachBatch,
+}) {
     // Add state for creating a new batch when modal is open
     const [batchName, setBatchName] = useState("");
 
     const handleCreateBatch = async () => {
         // Create the data structure that matches your backend expectations
         const data = {};
-        
+
         // Generate next batch number based on existing batches
         if (batches.length === 0) {
             data.batch_name = "Batch 1"; // Using batch_name as string format
         } else {
             // Extract numeric parts from existing batch names to find the highest number
-            const batchNumbers = batches.map(batch => {
+            const batchNumbers = batches.map((batch) => {
                 const match = batch.batch_name.match(/Batch (\d+)/);
                 return match ? parseInt(match[1], 10) : 0;
             });
-            
+
             const highestNumber = Math.max(...batchNumbers, 0);
             data.batch_name = `Batch ${highestNumber + 1}`;
         }
-        
+
         try {
             // Send the data as JSON in the request body
             const response = await fetch(
@@ -507,9 +640,9 @@ function BatchForm({ isOpen, setIsOpen, onSuccess, selectedBatch, batches, setBa
                     body: JSON.stringify(data),
                 }
             );
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
                 toast.success(result.message || "Batch created successfully.");
                 if (onSuccess) onSuccess(); // Refresh the batches list
@@ -524,14 +657,23 @@ function BatchForm({ isOpen, setIsOpen, onSuccess, selectedBatch, batches, setBa
 
     const handleDeleteBatch = async () => {
         // Ensure a batch is selected before attempting to delete
+        if (applicantsEachBatch.length > 0) {
+            alert(
+                "This batch cannot be deleted. Please ensure it has no applicants."
+            );
+            return;
+        }
+
         if (selectedBatch === "all" || !selectedBatch) {
             alert("Please select a batch to delete");
             return;
         }
 
         // Find the batch ID that matches the selected batch name
-        const batchToDelete = batches.find(batch => batch.batch_name === selectedBatch);
-        
+        const batchToDelete = batches.find(
+            (batch) => batch.batch_name === selectedBatch
+        );
+
         if (!batchToDelete) {
             alert("Cannot find the selected batch");
             return;
@@ -578,18 +720,18 @@ function BatchForm({ isOpen, setIsOpen, onSuccess, selectedBatch, batches, setBa
                     onClick={handleCreateBatch}
                     className="bg-white text-green-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center"
                 >
-                    <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className="h-5 w-5 mr-1" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
                         stroke="currentColor"
                     >
-                        <path 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            strokeWidth={2} 
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                         />
                     </svg>
                     Create Batch
@@ -615,28 +757,28 @@ function BatchForm({ isOpen, setIsOpen, onSuccess, selectedBatch, batches, setBa
                     </svg>
                     Assign Student
                 </button> */}
-                
+
                 <button
                     onClick={handleDeleteBatch}
                     disabled={selectedBatch === "all"}
                     className={`px-4 py-2 rounded-lg flex items-center ${
-                        selectedBatch === "all" 
-                            ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+                        selectedBatch === "all"
+                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                             : "bg-red-500 text-white hover:bg-red-600 transition-colors"
                     }`}
                 >
-                    <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className="h-5 w-5 mr-1" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
                         stroke="currentColor"
                     >
-                        <path 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            strokeWidth={2} 
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m-7-10h6" 
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m-7-10h6"
                         />
                     </svg>
                     Delete Batch
@@ -658,15 +800,15 @@ function BatchForm({ isOpen, setIsOpen, onSuccess, selectedBatch, batches, setBa
                                 &times;
                             </button>
                         </div>
-                        
+
                         <div className="p-4">
                             {/* Here you would add your student assignment form content */}
                             <p className="text-gray-700 mb-4">
                                 Select students to assign to the selected batch.
                             </p>
-                            
+
                             {/* Student selection would go here */}
-                            
+
                             <div className="flex justify-end space-x-2 mt-4">
                                 <button
                                     onClick={handleCancel}
@@ -674,9 +816,7 @@ function BatchForm({ isOpen, setIsOpen, onSuccess, selectedBatch, batches, setBa
                                 >
                                     Cancel
                                 </button>
-                                <button
-                                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-                                >
+                                <button className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
                                     Assign Students
                                 </button>
                             </div>

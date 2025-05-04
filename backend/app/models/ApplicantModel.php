@@ -43,7 +43,7 @@ class ApplicantModel {
         $query = "SELECT pi.* 
                   FROM personal_information pi
                   JOIN application_info ai ON pi.application_id = ai.application_id
-                  WHERE ai.application_status = 'approved'";
+                  WHERE ai.application_status = 'Approved'";
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll();
     }
@@ -52,7 +52,7 @@ class ApplicantModel {
         $query = "SELECT pi.* 
                   FROM personal_information pi
                   JOIN application_info ai ON pi.application_id = ai.application_id
-                  WHERE ai.application_status = 'approved' AND ai.status = 'new'";
+                  WHERE ai.application_status = 'Approved' AND ai.status = 'New'";
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll();
     }
@@ -61,7 +61,7 @@ class ApplicantModel {
         $query = "SELECT pi.* 
                   FROM personal_information pi
                   JOIN application_info ai ON pi.application_id = ai.application_id
-                  WHERE ai.application_status = 'examination'";
+                  WHERE ai.application_status = 'Examination'";
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll();
     }
@@ -70,9 +70,55 @@ class ApplicantModel {
         $query = "SELECT pi.* 
                   FROM personal_information pi
                   JOIN application_info ai ON pi.application_id = ai.application_id
-                  WHERE ai.application_status = 'examination' AND ai.batch = 'Unassigned'";
+                  WHERE ai.application_status = 'Examination' AND ai.batch = 'Unassigned'";
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll();
+    }
+
+    // public function getApprovedAndExaminationApplicants() {
+    //     $query = "
+    //         SELECT * 
+    //         FROM personal_information pi
+    //         JOIN application_info ai ON pi.application_id = ai.application_id
+    //         WHERE (
+    //             ai.application_status = 'Approved' AND 
+    //             ai.status = 'New' AND 
+    //             ai.batch IS NULL
+    //         ) 
+    //         OR (
+    //             ai.application_status = 'Examination' AND 
+    //             ai.status = 'New' AND 
+    //             ai.batch IS NOT NULL
+    //         )
+    //         ORDER BY 
+    //             FIELD(ai.application_status, 'Approved', 'Examination')
+    //     ";
+    //     $stmt = $this->pdo->query($query);
+    //     return $stmt->fetchAll();
+    // }
+
+    public function getApprovedAndExaminationApplicants() {
+        $query = "
+            SELECT 
+                pi.*, 
+                ai.*
+            FROM personal_information pi
+            JOIN application_info ai ON pi.application_id = ai.application_id
+            WHERE (
+                ai.application_status = 'Approved' AND 
+                ai.status = 'New' AND 
+                ai.batch IS NULL
+            ) 
+            OR (
+                ai.application_status = 'Examination' AND 
+                ai.status = 'New' AND 
+                ai.batch IS NOT NULL
+            )
+            ORDER BY 
+                FIELD(ai.application_status, 'Approved', 'Examination')
+        ";
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     // public function getUnassignedApplicants() {
@@ -92,12 +138,12 @@ class ApplicantModel {
         $query = "SELECT pi.* 
                   FROM personal_information pi
                   JOIN application_info ai ON pi.application_id = ai.application_id
-                  WHERE ai.application_status = 'approved' AND ai.status = 'renewal'";
+                  WHERE ai.application_status = 'Approved' AND ai.status = 'Old'";
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll();
     }
     
-    public function getApplicantsByStatus($status, $types = ['new', 'renewal']) {
+    public function getApplicantsByStatus($status, $types = ['New', 'Old']) {
         $placeholders = implode(',', array_fill(0, count($types), '?'));
         
         $query = "SELECT pi.* 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../components/ApplicationFormPDF";
+import { formatDateTime } from "../../utils/formatDate";
 
 function RenewalApplications() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -15,7 +16,7 @@ function RenewalApplications() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/applicants.php?status=Approved&type=Old`
+                `http://localhost:8000/app/views/applicants.php?application_status=Approved&status=Old`
             );
             setStudentData(response.data.personalInfo);
             setLoading(false);
@@ -173,7 +174,7 @@ function RenewalApplications() {
                                         {info.contact_number}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {info.created_at}
+                                        {formatDateTime(info.created_at)}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm font-medium">
                                         {/* <button

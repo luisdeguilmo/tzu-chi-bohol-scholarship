@@ -88,11 +88,13 @@ class ApplicationsModel {
         return $stmt->fetchAll();
     }
 
-    public function updateApplicationStatus($studentId, $status) {
-        $query = "UPDATE application_info SET application_status = :application_status WHERE application_id = :application_id";
+    public function updateApplicationStatus($studentId, $status, $batch, $today) {
+        $query = "UPDATE application_info SET application_status = :application_status, batch = :batch, approved_at = :approved_at WHERE application_id = :application_id";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':application_status', $status);
         $stmt->bindParam(':application_id', $studentId);
+        $stmt->bindParam(':batch', $batch);
+        $stmt->bindParam(':approved_at', $today);
         $stmt->execute();
     }
 

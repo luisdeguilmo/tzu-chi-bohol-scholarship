@@ -43,6 +43,8 @@ function HeroSection() {
         fetchApplicationPeriods();
     }, []);
 
+    const announcementMessage = applicationPeriods.length > 0 ? applicationPeriods[0].announcement_message : '';
+
     console.log(applicationPeriods);
 
     const today = new Date().toISOString().split("T")[0];
@@ -91,8 +93,7 @@ function HeroSection() {
                 </div>
                 <div className="mt-10">
                     <p className="text-center text-lg">
-                        "Get ready! The Tzu Chi Foundation Bohol Scholarship
-                        Application for S.Y. 2024-2025 will open soon."
+                        {announcementMessage}
                     </p>
                 </div>
             </div>

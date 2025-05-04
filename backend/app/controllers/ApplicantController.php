@@ -16,34 +16,34 @@ try {
     $applicant = new ApplicantModel();
     
     // Get filter parameters from the URL
+    $application_status = $_GET['application_status'] ?? null;
     $status = $_GET['status'] ?? null;
-    $type = $_GET['type'] ?? null;
     $batch = $_GET['batch'] ?? null;
     
     // Determine which method to call based on parameters
-    if ($status === null && $type === null) {
+    if ($application_status === null && $status === null) {
         // No filters - get all applicants
         $data = $applicant->getAllApplicants();
-    } else if ($status === 'under_review') {
+    } else if ($application_status === 'under_review') {
         // Get applications under review
         $data = $applicant->getApplicantsUnderReview();
-    } else if ($status === 'approved') {
-        if ($type === 'new') {
+    } else if ($application_status === 'Approved') {
+        if ($status === 'New') {
             // Get approved new applications
             $data = $applicant->getApprovedNewApplicants();
-        } else if ($type === 'renewal') {
+        } else if ($status === 'Old') {
             // Get approved renewal applications
             $data = $applicant->getApprovedRenewalApplicants();
         } else {
             // Get all approved applications (both new and renewal)
             $data = $applicant->getApprovedApplicants();
         }
-    } else if ($status === 'Examination' && $batch === 'Unassigned') {
+    } else if ($application_status === 'Examination' && $batch === 'Unassigned') {
         $data = $applicant->getUnassignedApplicants();
     } else {
         // Use a flexible method for other combinations
-        $types = $type ? [$type] : ['new', 'renewal'];
-        $data = $applicant->getApplicantsByStatus($status, $types);
+        $types = $status ? [$status] : ['New', 'Old'];
+        $data = $applicant->getApplicantsByStatus($application_status, $types);
     }
     
     echo json_encode(["personalInfo" => $data]);

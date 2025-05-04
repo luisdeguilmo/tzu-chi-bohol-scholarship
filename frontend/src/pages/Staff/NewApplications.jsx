@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
+import { formatDateTime } from "../../utils/formatDate";
 
 function NewApplications() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,9 +17,9 @@ function NewApplications() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/applicants.php?status=Approved&type=New`
+                `http://localhost:8000/app/views/application-examination.php?application_status=Approved&application_status=Examination&status=New`
             );
-            setStudentData(response.data.personalInfo);
+            setStudentData(response.data.data);
             setLoading(false);
         } catch (err) {
             console.error("Error fetching student data:", err);
@@ -26,6 +27,8 @@ function NewApplications() {
             setLoading(false);
         }
     };
+
+    console.log("Data" + studentData);
 
     useEffect(() => {
         fetchStudentsData();
@@ -39,6 +42,7 @@ function NewApplications() {
                 {
                     studentId: studentId,
                     status: "Examination",
+                    batch: "Unassigned",
                 }
             );
             toast.success(response.data.message + "."); // Success message
@@ -64,7 +68,7 @@ function NewApplications() {
     //                 id: id
     //             }
     //         );
-    
+
     //         console.log(response.data.message);
     //         alert(response.data.message);
     //     } catch (err) {
@@ -73,7 +77,7 @@ function NewApplications() {
     //     } finally {
     //         setLoading(false);
     //     }
-    // };    
+    // };
 
     // Filter data based on search term
     const filteredApplications = studentData.filter(
@@ -145,7 +149,7 @@ function NewApplications() {
 
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <table className="w-[1200px] divide-y divide-gray-200">
                         <thead className="bg-green-100 text-green-800">
                             <tr>
                                 <th
@@ -164,25 +168,19 @@ function NewApplications() {
                                     scope="col"
                                     className="py-3 text-center text-xs font-medium uppercase tracking-wider"
                                 >
-                                    Gender
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
-                                >
-                                    Age
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
-                                >
-                                    Contact
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
-                                >
                                     Date Applied
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                >
+                                    Date Approved
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                >
+                                    Status
                                 </th>
                                 <th
                                     scope="col"
@@ -209,22 +207,31 @@ function NewApplications() {
                                             info.first_name}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {info.gender}
+                                        {formatDateTime(info.created_at)}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {info.age}
+                                        {info.approved_at ? formatDateTime(info.approved_at) : "--"}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {info.contact_number}
-                                    </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {info.created_at}
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <span
+                                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                                info.application_status === "Examination"
+                                                    ? "bg-green-100 text-green-800"
+                                                    : info.application_status ===
+                                                      "Approved"
+                                                    ? "bg-yellow-100 text-yellow-800"
+                                                    : "bg-red-100 text-red-800"
+                                            }`}
+                                        >
+                                            {info.application_status === "Examination" ? "Approved" : "Pending"}
+                                        </span>
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm font-medium">
                                         <ApplicationFormPDF
                                             studentId={info.application_id}
                                         />
                                         <button
+                                            disabled={info.application_status === "Examination"}
                                             onClick={() => {
                                                 updateStudentApplication(
                                                     info.application_id
@@ -233,7 +240,7 @@ function NewApplications() {
                                                 //     info.application_id
                                                 // );
                                             }}
-                                            className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                            className={`${info.application_status === "Examination" ? 'text-gray-400' : 'text-green-600 hover:text-green-900'} inline-flex items-center mr-3`}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -246,10 +253,11 @@ function NewApplications() {
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     strokeWidth={2}
-                                                    d="M5 13l4 4L19 7"
+                                                    d="M15 10l-4.5 4.5L9 13m12-2a9 9 0 11-18 0 9 9 0 0118 0z"
                                                 />
                                             </svg>
-                                            Send to Exam
+                                            Approve for Exam
+                                            
                                         </button>
                                         {/* <button
                                             // onClick={() => handleDelete(coa.id)}
