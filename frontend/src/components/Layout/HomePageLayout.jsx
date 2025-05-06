@@ -19,34 +19,3 @@ export default function HomePageLayout() {
         </div>
     );
 }
-
-// export default function HomePageLayout() {
-//     return (
-//         <div>
-//             <NavBar />
-//             <main>
-//                 <HeroSection />
-//                 <ScholarshipInfo />
-//             </main>
-//             <Footer />
-//         </div>
-//     );
-// }
-
-// export default function HomePageLayout() {
-//     return (
-//         <Router>
-//             <NavBar />
-//             <div className="min-h-screen flex flex-col justify-center">
-//                 <Routes>
-//                     <Route path="/" element={<Home />} />
-//                     <Route
-//                         path="/application"
-//                         element={<ApplicationSection />}
-//                     />
-//                 </Routes>
-//             </div>
-//             <Footer />
-//         </Router>
-//     );
-// }

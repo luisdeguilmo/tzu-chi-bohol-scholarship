@@ -7,7 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
-import Dashboard from "./pages/Scholar/Dashboard";
 import { ApplicationSection, RenewalApplicationSection } from "./pages/Home/ApplicationSection";
 import ViewRenderedHours from "./pages/Scholar/ViewDutyHours";
 import Events from "./pages/Scholar/Events";
@@ -20,6 +19,9 @@ import NotFound from "./components/NotFound";
 import ApprovedApplications from "./pages/Staff/ApprovedApplicationsPage";
 import ExaminationPage from "./pages/Staff/ExaminationPage";
 import ApplicationPeriod from "./pages/Staff/ApplicationPeriod";
+import Dashboard from "./components/Dashboard";
+import InitialInterviewPage from "./pages/Staff/InitialInterviewPage";
+import ScholarAccountManagement from "./pages/Admin/ScholarAccountManagement";
 
 const overviewData = [
     {
@@ -61,32 +63,40 @@ const staffOverviewData = [
         title: "Applications",
         status: "4",
         color: "bg-green-300 text-gray-900",
-        icon: "person",
+        icon: "description",
         iconColor: "text-green-600",
         iconBackground: "bg-green-100",
     },
     {
-        title: "Lorem Ipsum",
+        title: "New Applicants",
         status: "6",
         color: "bg-yellow-300 text-gray-900",
-        icon: "person_off",
+        icon: "group",
         iconColor: "text-yellow-600",
         iconBackground: "bg-yellow-100",
     },
     {
-        title: "Lorem Ipsum",
+        title: "Renewal Applicants",
         status: "6",
         color: "bg-blue-300 text-gray-900",
-        icon: "person_off",
-        iconColor: "text-yellow-600",
-        iconBackground: "bg-yellow-100",
+        icon: "group",
+        iconColor: "text-blue-600",
+        iconBackground: "bg-blue-100",
+    },
+    {
+        title: "Approved Applications",
+        status: "6",
+        color: "bg-orange-300 text-gray-900",
+        icon: "group",
+        iconColor: "text-orange-600",
+        iconBackground: "bg-orange-100",
     },
 ];
 
 const adminOverviewData = [
     {
         title: "Active Accounts",
-        status: "300 Accounts",
+        status: "300",
         color: "bg-green-400 text-gray-900",
         icon: "person",
         iconColor: "text-green-600",
@@ -131,11 +141,13 @@ export function App() {
                     <Route path="/staff/approved-applications" element={<ApprovedApplications />} />
                     <Route path="/staff/examination-list" element={<ExaminationPage />} />
                     <Route path="/staff/application-period" element={<ApplicationPeriod />} />
+                    <Route path="/staff/initial-interview" element={<InitialInterviewPage />} />
                 </Route>
 
                 {/* AdminLayout */}
                 <Route element={<AdminLayout />}>
                     <Route path="/admin/dashboard" element={<Dashboard overviewData={adminOverviewData} />} />
+                    <Route path="/admin/scholar-account-management" element={<ScholarAccountManagement />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />

@@ -1,20 +1,55 @@
 import { Outlet } from "react-router-dom";
-import Dashboard from "../../pages/Scholar/Dashboard";
 import SideBar from "../../pages/Scholar/SideBar";
 import TopBar from "../../pages/Scholar/TopBar";
+import SideBarWithDropdown from "../SideBarWithDropdown";
 
-const items = [
+// const items = [
+//     {
+//         text: "Dashboard",
+//         iconName: "dashboard",
+//         iconStyle: "text-[1.1rem]",
+//         navigate: "/admin/dashboard"
+//     },
+//     {
+//         text: "User Accounts",
+//         iconName: "manage_accounts",
+//         iconStyle: "text-[1.1rem]",
+//         navigate: "/admin/scholar-account-creator"
+//     },
+//     {
+//         text: "Settings",
+//         iconName: "settings",
+//         iconStyle: "text-[1.1rem]",
+//         navigate: "/"
+//     },
+//     {
+//         text: "Activity",
+//         iconName: "upload_file",
+//         iconStyle: "text-[1.1rem]",
+//         navigate: "/"
+//     },
+//     {
+//         text: "Logout",
+//         style: "mt-auto",
+//         iconName: "logout",
+//         iconStyle: "text-[1.1rem]",
+//         navigate: "/"
+//     },
+// ];
+
+const sidebarItems = [
     {
         text: "Dashboard",
         iconName: "dashboard",
-        iconStyle: "text-[1.1rem]",
-        navigate: "/admin/dashboard"
+        navigate: "/staff/dashboard",
     },
     {
-        text: "User Accounts",
+        text: "Manage Accounts",
         iconName: "manage_accounts",
-        iconStyle: "text-[1.1rem]",
-        navigate: "/"
+        subItems: [
+            { text: "Scholar", navigate: "/staff/scholarship-info" },
+            { text: "Staff", navigate: "/staff/application-period" },
+        ],
     },
     {
         text: "Settings",
@@ -33,7 +68,7 @@ const items = [
         style: "mt-auto",
         iconName: "logout",
         iconStyle: "text-[1.1rem]",
-        navigate: "/"
+        navigate: "/",
     },
 ];
 
@@ -42,8 +77,9 @@ export default function AdminLayout() {
         <div className="">
             <TopBar />
             <div className="flex justify-center">
-                <SideBar items={items} />
-                <div className="w-full h-[90vh] overflow-y-scroll scroll-smooth">
+                {/* <SideBar items={items} /> */}
+                <SideBarWithDropdown items={sidebarItems} />
+                <div className="w-full h-[91.5vh] overflow-y-scroll scroll-smooth">
                     <Outlet />
                 {/* <Dashboard overviewData={overviewData} /> */}
                 </div>

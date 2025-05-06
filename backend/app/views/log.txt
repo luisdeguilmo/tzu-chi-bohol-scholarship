@@ -161,3 +161,4 @@ null
 {"applicantIds":[10001,10003],"batch":"Batch 1"}
 {"applicantIds":[10001],"batch":"Batch 1"}
 {"applicantIds":[10003,6801038],"batch":"Batch 1"}
+{"batch_name":"Batch 3"}

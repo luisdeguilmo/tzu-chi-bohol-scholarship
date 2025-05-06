@@ -7,7 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 function HeroSection() {
     const navigate = useNavigate();
-    const userType = { type: "Scholar" };
+    
+    const scholar = { type: "Scholar" };
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -83,7 +84,7 @@ function HeroSection() {
                             Apply Now
                         </button>
                         <button
-                            onClick={() => navigate("/scholar/dashboard")}
+                            onClick={() => navigate("/login", { state: scholar })}
                             // onClick={() => navigate("/login", { state: userType })}
                             className="w-28 p-2 border border-green-500 rounded-sm"
                         >

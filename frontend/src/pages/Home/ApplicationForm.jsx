@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FileUploadForm = ({ formData, updateFilesData }) => {
     // Initialize state for the formatted file objects
@@ -1068,18 +1069,7 @@ const NavigationButtons = ({
 
                 if (hasErrors) {
                     // Show toast notification for validation errors
-                    toast.error("Please fill in all required fields", {
-                        style: {
-                            borderRadius: "10px",
-                            background: "#333",
-                            color: "#fff",
-                        },
-                        iconTheme: {
-                            primary: "#ff4b4b",
-                            secondary: "#fff",
-                        },
-                        duration: 3000,
-                    });
+                    toast.error("Please fill in all required fields");
 
                     // You could also highlight the fields with errors here if needed
                     return;
@@ -1088,18 +1078,7 @@ const NavigationButtons = ({
 
             if (hasErrors) {
                 // Show toast notification for validation errors
-                toast.error("Please fill in all required fields", {
-                    style: {
-                        borderRadius: "10px",
-                        background: "#333",
-                        color: "#fff",
-                    },
-                    iconTheme: {
-                        primary: "#ff4b4b",
-                        secondary: "#fff",
-                    },
-                    duration: 3000,
-                });
+                toast.error("Please fill in all required fields");
 
                 // You could also highlight the fields with errors here if needed
                 return;
@@ -1619,7 +1598,6 @@ function ApplicationForm({ includeRequirements = true }) {
     return (
         <div className="flex flex-col items-center">
             {/* Add Toaster component for notifications */}
-            <Toaster position="top-center" />
 
             <ProgressIndicator steps={steps} currentStep={currentStep} />
             {renderStep()}

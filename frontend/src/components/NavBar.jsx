@@ -6,6 +6,7 @@ function NavLinks() {
 
     const staff = { type: "Staff" };
     const admin = { type: "Admin" };
+    const scholar = { type: "Scholar" };
 
     return (
         <ul className="flex gap-4 items-center text-sm font-semibold">
@@ -16,14 +17,16 @@ function NavLinks() {
                 <a href="">About</a>
             </li>
             <li 
-                // onClick={() => navigate("/login", { state: staff })}
+                onClick={() => navigate("/login", { state: staff })}
             >
                 {/* Staff */}
                 <Link to="/staff/dashboard">Staff</Link>
             </li>
-            <li onClick={() => navigate("/login", { state: admin })}>
-                Admin
-                {/* <Link to="/admin/dashboard">Admin</Link> */}
+            <li 
+                onClick={() => navigate("/login", { state: admin })}
+                >
+                {/* Admin */}
+                <Link to="/admin/dashboard">Admin</Link>
             </li>
             <button
                 onClick={() => navigate("/application")}

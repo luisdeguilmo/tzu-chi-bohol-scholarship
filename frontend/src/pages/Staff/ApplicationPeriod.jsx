@@ -11,7 +11,8 @@ export default function ApplicationPeriod() {
     const itemsPerPage = 5;
 
     const [applicationPeriods, setApplicationPeriods] = useState([]);
-    const [hasActiveApplicationPeriod, setHasActiveApplicationPeriod] = useState(false);
+    const [hasActiveApplicationPeriod, setHasActiveApplicationPeriod] =
+        useState(false);
     const [editingPeriod, setEditingPeriod] = useState(null);
 
     const fetchApplicationPeriods = async () => {
@@ -23,11 +24,15 @@ export default function ApplicationPeriod() {
             // Set application periods data
             setApplicationPeriods(response.data.data || []);
             // Set active application period flag
-            setHasActiveApplicationPeriod(response.data.hasActiveApplicationPeriod || false);
+            setHasActiveApplicationPeriod(
+                response.data.hasActiveApplicationPeriod || false
+            );
             setLoading(false);
         } catch (err) {
             console.error("Error fetching application period data:", err);
-            setError("Failed to load application period data. Please try again.");
+            setError(
+                "Failed to load application period data. Please try again."
+            );
             setLoading(false);
         }
     };
@@ -76,8 +81,8 @@ export default function ApplicationPeriod() {
             </h2>
             <div className="flex gap-4">
                 {editingPeriod ? (
-                    <EditForm 
-                        applicationPeriod={editingPeriod} 
+                    <EditForm
+                        applicationPeriod={editingPeriod}
                         onSuccess={() => {
                             fetchApplicationPeriods();
                             setEditingPeriod(null);
@@ -85,8 +90,8 @@ export default function ApplicationPeriod() {
                         onCancel={() => setEditingPeriod(null)}
                     />
                 ) : (
-                    <Form 
-                        onSuccess={fetchApplicationPeriods} 
+                    <Form
+                        onSuccess={fetchApplicationPeriods}
                         disabled={hasActiveApplicationPeriod}
                     />
                 )}
@@ -124,36 +129,36 @@ export default function ApplicationPeriod() {
 
                     {/* Table */}
                     <div className="overflow-x-auto rounded-md border border-gray-200">
-                        <table className="min-w-full divide-y divide-gray-200">
+                        <table className="w-[1300px] divide-y divide-gray-200">
                             <thead className="bg-green-100 text-green-800">
-                                <tr>
+                                <tr className="text-center">
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs font-medium uppercase tracking-wider"
                                     >
                                         Start Date
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs font-medium uppercase tracking-wider"
                                     >
                                         End Date
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs font-medium uppercase tracking-wider"
                                     >
                                         Status
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs font-medium uppercase tracking-wider"
                                     >
                                         Message
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs font-medium uppercase tracking-wider"
                                     >
                                         Action
                                     </th>
@@ -165,28 +170,40 @@ export default function ApplicationPeriod() {
                                         key={application.id}
                                         className="hover:bg-gray-50 transition-colors text-center"
                                     >
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {formatDateTime(application.start_date)}
+                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {formatDateTime(
+                                                application.start_date
+                                            )}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {formatDateTime(application.end_date)}
+                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {formatDateTime(
+                                                application.end_date
+                                            )}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                application.status === 'Active' ? 'bg-green-100 text-green-800' : 
-                                                application.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                                'bg-red-100 text-red-800'
-                                            }`}>
+                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <span
+                                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                                    application.status ===
+                                                    "Active"
+                                                        ? "bg-green-100 text-green-800"
+                                                        : application.status ===
+                                                          "Pending"
+                                                        ? "bg-yellow-100 text-yellow-800"
+                                                        : "bg-red-100 text-red-800"
+                                                }`}
+                                            >
                                                 {application.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
                                             {application.announcement_message}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <td className="py-4 whitespace-nowrap text-sm font-medium">
                                             {application.editable ? (
                                                 <button
-                                                    onClick={() => handleEdit(application)}
+                                                    onClick={() =>
+                                                        handleEdit(application)
+                                                    }
                                                     className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                                                 >
                                                     <svg
@@ -207,9 +224,32 @@ export default function ApplicationPeriod() {
                                                 </button>
                                             ) : (
                                                 <span className="text-gray-400 italic text-xs">
-                                                    Edit not available for this application
+                                                    Edit not available for this
+                                                    application
                                                 </span>
                                             )}
+                                            <button
+                                                onClick={() =>
+                                                    handleEdit(application)
+                                                }
+                                                className="inline-flex items-center text-red-600 hover:text-red-900 mr-3"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-4 w-4 mr-1"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7"
+                                                    />
+                                                </svg>
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -234,8 +274,9 @@ export default function ApplicationPeriod() {
                                     />
                                 </svg>
                                 <p className="mt-2 text-gray-500">
-                                    No application periods found. Try adjusting your
-                                    search or create a new application period.
+                                    No application periods found. Try adjusting
+                                    your search or create a new application
+                                    period.
                                 </p>
                             </div>
                         )}
@@ -250,7 +291,8 @@ export default function ApplicationPeriod() {
                                     indexOfLastItem,
                                     filteredApplicationPeriods.length
                                 )}{" "}
-                                of {filteredApplicationPeriods.length} application periods
+                                of {filteredApplicationPeriods.length}{" "}
+                                application periods
                             </div>
                             <div className="flex space-x-2">
                                 <button
@@ -351,15 +393,16 @@ function Form({ onSuccess, disabled }) {
                 <h2 className="pt-8 text-lg font-bold text-gray-800 text-center">
                     Set Application Period
                 </h2>
-                
+
                 {disabled && (
                     <div className="mx-8 mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400">
                         <p className="text-yellow-700 text-sm">
-                            Cannot create new application periods while there is an active period.
+                            Cannot create new application periods while there is
+                            an active period.
                         </p>
                     </div>
                 )}
-                
+
                 <form onSubmit={handleSubmit} className="p-8 space-y-4">
                     {/* Start Date Input */}
                     <div className="block mb-2 relative">
@@ -441,8 +484,8 @@ function Form({ onSuccess, disabled }) {
                         <button
                             type="submit"
                             className={`w-full py-2 px-4 rounded-sm font-medium shadow-sm focus:outline-none ${
-                                disabled 
-                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+                                disabled
+                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                                     : "bg-green-500 text-white hover:bg-green-600"
                             } transition-all`}
                             disabled={disabled}
@@ -460,7 +503,9 @@ function EditForm({ applicationPeriod, onSuccess, onCancel }) {
     const [startDate, setStartDate] = useState(applicationPeriod.start_date);
     const [endDate, setEndDate] = useState(applicationPeriod.end_date);
     const [status, setStatus] = useState(applicationPeriod.status);
-    const [announcementMessage, setAnnouncementMessage] = useState(applicationPeriod.announcement_message);
+    const [announcementMessage, setAnnouncementMessage] = useState(
+        applicationPeriod.announcement_message
+    );
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -543,7 +588,9 @@ function EditForm({ applicationPeriod, onSuccess, onCancel }) {
 
                     {/* Status Radio Buttons */}
                     <div className="block mb-2">
-                        <label className="text-gray-600 text-sm block mb-2">Status</label>
+                        <label className="text-gray-600 text-sm block mb-2">
+                            Status
+                        </label>
                         <div className="flex space-x-4">
                             <div className="flex items-center">
                                 <input
@@ -555,7 +602,10 @@ function EditForm({ applicationPeriod, onSuccess, onCancel }) {
                                     onChange={() => setStatus("Active")}
                                     className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300"
                                 />
-                                <label htmlFor="statusActive" className="ml-2 block text-sm text-gray-700">
+                                <label
+                                    htmlFor="statusActive"
+                                    className="ml-2 block text-sm text-gray-700"
+                                >
                                     Active
                                 </label>
                             </div>
@@ -569,7 +619,10 @@ function EditForm({ applicationPeriod, onSuccess, onCancel }) {
                                     onChange={() => setStatus("Closed")}
                                     className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300"
                                 />
-                                <label htmlFor="statusClosed" className="ml-2 block text-sm text-gray-700">
+                                <label
+                                    htmlFor="statusClosed"
+                                    className="ml-2 block text-sm text-gray-700"
+                                >
                                     Closed
                                 </label>
                             </div>
@@ -581,7 +634,9 @@ function EditForm({ applicationPeriod, onSuccess, onCancel }) {
                         <input
                             type="text"
                             value={announcementMessage}
-                            onChange={(e) => setAnnouncementMessage(e.target.value)}
+                            onChange={(e) =>
+                                setAnnouncementMessage(e.target.value)
+                            }
                             className="w-full outline-none border-b-[2px] border-gray-400 py-2 mt-1 box-border hover:border-black focus:border-green-500"
                             placeholder="Enter announcement message"
                             required

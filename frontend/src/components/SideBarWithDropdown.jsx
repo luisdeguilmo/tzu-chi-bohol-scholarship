@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function SideBar({ items }) {
+function SideBarWithDropdown({ items }) {
     const [isOpen, setIsOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState(null); // Track which dropdown is open
     const navigate = useNavigate();
@@ -143,4 +143,4 @@ function SideBar({ items }) {
     );
 }
 
-export default SideBar;
+export default SideBarWithDropdown;

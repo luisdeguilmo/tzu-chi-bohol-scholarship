@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import Dashboard from "../../pages/Scholar/Dashboard";
 import SideBar from "../../pages/Scholar/SideBar";
 import TopBar from "../../pages/Scholar/TopBar";
 
@@ -96,20 +95,6 @@ const overviewData = [
     },
 ];
 
-// export default function ScholarLayout() {
-//     return (
-//         <div className="">
-//             <TopBar />
-//             <div className="flex justify-center">
-//                 <SideBar items={items} />
-//                 <div className="w-full h-[90vh] overflow-y-scroll scroll-smooth">
-//                 <Dashboard overviewData={overviewData} />
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
-
 export default function ScholarLayout() {
     return (
         <div className="">
@@ -123,12 +108,4 @@ export default function ScholarLayout() {
             </div>
         </div>
     );
-}
-
-{
-    /* <div className=" w-full">
-                <div className="h-[89vh] overflow-y-scroll">
-                    
-                </div>
-            </div> */
 }
