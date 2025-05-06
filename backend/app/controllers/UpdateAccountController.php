@@ -64,7 +64,7 @@ class UpdateAccountController {
             // Process application status update
             $application = new ApplicationsModel();
             
-            if (!$application->updateApplicationStatus($studentId, $status, $batch)) {
+            if (!$application->updateApplicationStatus($studentId, $status, $batch, $today = "")) {
                 throw new \Exception("Failed to update application status");
             }
             

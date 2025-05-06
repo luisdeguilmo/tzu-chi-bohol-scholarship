@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { formatDateTime } from "../../utils/formatDate";
 
 export default function CreatedAccounts() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -17,9 +18,9 @@ export default function CreatedAccounts() {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `http://localhost:8000/app/views/accounts.php`
+                `http://localhost:8000/app/views/scholar-accounts.php`
             );
-            setAccounts(response.data.accounts || []);
+            setAccounts(response.data.data || []);
             setLoading(false);
         } catch (err) {
             console.error("Error fetching accounts data:", err);
@@ -43,12 +44,12 @@ export default function CreatedAccounts() {
             const response = await axios.post(
                 "http://localhost:8000/app/views/send-credentials.php",
                 {
-                    accountIds: selectedAccounts
+                    accountIds: selectedAccounts,
                 },
                 {
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        "Content-Type": "application/json",
+                    },
                 }
             );
 
@@ -57,7 +58,9 @@ export default function CreatedAccounts() {
                 setSelectedAccounts([]);
 
                 // Show success notification
-                toast.success(`Credentials sent to ${selectedAccounts.length} scholar(s)`);
+                toast.success(
+                    `Credentials sent to ${selectedAccounts.length} scholar(s)`
+                );
             } else {
                 toast.error("Error: " + response.data.message);
             }
@@ -65,8 +68,10 @@ export default function CreatedAccounts() {
             setLoading(false);
         } catch (err) {
             console.error("Error sending credentials:", err);
-            toast.error("Failed to send credentials: " + 
-                     (err.response?.data?.message || err.message));
+            toast.error(
+                "Failed to send credentials: " +
+                    (err.response?.data?.message || err.message)
+            );
             setLoading(false);
         }
     };
@@ -77,19 +82,19 @@ export default function CreatedAccounts() {
             const response = await axios.post(
                 "http://localhost:8000/app/views/reset-password.php",
                 {
-                    accountId: accountId
+                    accountId: accountId,
                 },
                 {
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        "Content-Type": "application/json",
+                    },
                 }
             );
 
             if (response.data.success) {
                 // Refresh data to get updated password
                 await fetchAccountsData();
-                
+
                 // Show success notification
                 toast.success(`Password reset for ${accountId}`);
             } else {
@@ -99,8 +104,10 @@ export default function CreatedAccounts() {
             setLoading(false);
         } catch (err) {
             console.error("Error resetting password:", err);
-            toast.error("Failed to reset password: " + 
-                     (err.response?.data?.message || err.message));
+            toast.error(
+                "Failed to reset password: " +
+                    (err.response?.data?.message || err.message)
+            );
             setLoading(false);
         }
     };
@@ -188,21 +195,6 @@ export default function CreatedAccounts() {
                     </div>
                 </div>
 
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold text-gray-700">Scholar Accounts</h2>
-                    <button
-                        onClick={sendCredentials}
-                        disabled={selectedAccounts.length === 0 || loading}
-                        className={`px-4 py-2 rounded-md ${
-                            selectedAccounts.length === 0 || loading
-                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                            : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                        }`}
-                    >
-                        {loading ? "Processing..." : "Send Credentials to Selected"}
-                    </button>
-                </div>
-
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
                     <table className="min-w-full divide-y divide-gray-200">
@@ -277,11 +269,15 @@ export default function CreatedAccounts() {
                                         {account.password}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {account.created_at}
+                                        {account.created_at
+                                            ? formatDateTime(account.created_at)
+                                            : "--"}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm font-medium">
                                         <button
-                                            onClick={() => resetPassword(account.id)}
+                                            onClick={() =>
+                                                resetPassword(account.id)
+                                            }
                                             disabled={loading}
                                             className="text-green-600 hover:text-green-900"
                                         >
@@ -320,6 +316,23 @@ export default function CreatedAccounts() {
                 {/* Pagination */}
                 {filteredAccounts.length > 0 && (
                     <div className="flex justify-between items-center mt-6">
+                        <div className="flex justify-between items-center">
+                            <button
+                                onClick={sendCredentials}
+                                disabled={
+                                    selectedAccounts.length === 0 || loading
+                                }
+                                className={`px-4 py-2 rounded-md ${
+                                    selectedAccounts.length === 0 || loading
+                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                        : "bg-green-500 text-white hover:bg-green-600 transition-all"
+                                }`}
+                            >
+                                {loading
+                                    ? "Processing..."
+                                    : "Send Credentials to Selected"}
+                            </button>
+                        </div>
                         <div className="text-sm text-gray-600">
                             Showing {indexOfFirstItem + 1}-
                             {Math.min(indexOfLastItem, filteredAccounts.length)}{" "}

@@ -654,7 +654,7 @@ const formConfig = {
             type: "text",
             required: true,
         },
-        { name: "caseNo", label: "Case Number", type: "text", required: true },
+        // { name: "caseNo", label: "Case Number", type: "text", required: true },
     ],
     [FORM_SECTIONS.PERSONAL]: [
         { name: "last_name", label: "Last Name", type: "text", required: true },

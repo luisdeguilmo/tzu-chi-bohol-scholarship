@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PendingScholars from "./PendingScholars";
-import CreatedAccounts from "./CreateAccounts";
+import CreatedAccounts from "./CreatedAccounts";
 
 export default function ScholarAccountManagement() {
     const [activeTab, setActiveTab] = useState("pending");

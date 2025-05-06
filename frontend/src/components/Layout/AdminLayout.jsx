@@ -47,8 +47,8 @@ const sidebarItems = [
         text: "Manage Accounts",
         iconName: "manage_accounts",
         subItems: [
-            { text: "Scholar", navigate: "/staff/scholarship-info" },
-            { text: "Staff", navigate: "/staff/application-period" },
+            { text: "Scholar Accounts", navigate: "/admin/scholar-account-management" },
+            { text: "Staff Accounts", navigate: "/" },
         ],
     },
     {

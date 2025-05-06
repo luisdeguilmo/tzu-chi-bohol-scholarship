@@ -41,7 +41,8 @@ export default function Applications() {
                 const response = await axios.post(
                     "http://localhost:8000/app/views/update_application_status.php",
                     {
-                        studentId: studentId,
+                        // studentId: studentId,
+                        studentIds: [studentId],
                         status: "Approved",
                     }
                 );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -43,7 +44,7 @@ const LoginForm = () => {
             const result = response.data;
 
             if (result.success) {
-                alert("Login successful!");
+                toast.success("Login successful!");
                 if (userType.type === "Scholar") {
                     navigate("/scholar/dashboard");
                 } else if (userType.type === "Staff") {

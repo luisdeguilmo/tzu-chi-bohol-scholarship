@@ -17,9 +17,9 @@ export default function PendingScholars() {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `http://localhost:8000/app/views/scholars.php?status=pending`
+                `http://localhost:8000/app/views/scholar-accounts.php?application_status=Pending`
             );
-            setScholars(response.data.scholars || []);
+            setScholars(response.data.data || []);
             setLoading(false);
         } catch (err) {
             console.error("Error fetching scholars data:", err);
@@ -41,14 +41,14 @@ export default function PendingScholars() {
         try {
             setLoading(true);
             const response = await axios.post(
-                "http://localhost:8000/app/views/create-accounts.php",
+                "http://localhost:8000/app/views/scholar-accounts.php",
                 {
-                    scholarIds: selectedScholars
+                    applicationIds: selectedScholars,
                 },
                 {
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        "Content-Type": "application/json",
+                    },
                 }
             );
 
@@ -60,7 +60,9 @@ export default function PendingScholars() {
                 setSelectedScholars([]);
 
                 // Show success notification
-                toast.success(`Successfully created ${selectedScholars.length} account(s)`);
+                toast.success(
+                    `Successfully created ${selectedScholars.length} account(s)`
+                );
             } else {
                 toast.error("Error: " + response.data.message);
             }
@@ -68,8 +70,10 @@ export default function PendingScholars() {
             setLoading(false);
         } catch (err) {
             console.error("Error creating accounts:", err);
-            toast.error("Failed to create accounts: " + 
-                     (err.response?.data?.message || err.message));
+            toast.error(
+                "Failed to create accounts: " +
+                    (err.response?.data?.message || err.message)
+            );
             setLoading(false);
         }
     };
@@ -100,9 +104,15 @@ export default function PendingScholars() {
     // Filter data based on search term
     const filteredScholars = scholars.filter(
         (scholar) =>
-            scholar.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            scholar.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            scholar.id?.toLowerCase().includes(searchTerm.toLowerCase())
+            scholar.first_name
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            scholar.created_at
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            scholar.approved_at
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase())
     );
 
     // Calculate pagination
@@ -157,21 +167,6 @@ export default function PendingScholars() {
                     </div>
                 </div>
 
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold text-gray-700">Pending Scholars</h2>
-                    <button
-                        onClick={createAccounts}
-                        disabled={selectedScholars.length === 0 || loading}
-                        className={`px-4 py-2 rounded-md ${
-                            selectedScholars.length === 0 || loading
-                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                            : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                        }`}
-                    >
-                        {loading ? "Processing..." : "Create Selected Accounts"}
-                    </button>
-                </div>
-
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
                     <table className="min-w-full divide-y divide-gray-200">
@@ -206,9 +201,11 @@ export default function PendingScholars() {
                         <tbody className="bg-white divide-y divide-gray-200">
                             {currentItems.map((scholar) => (
                                 <tr
-                                    key={scholar.id}
+                                    key={scholar.application_id}
                                     className={`transition-colors text-center ${
-                                        selectedScholars.includes(scholar.id)
+                                        selectedScholars.includes(
+                                            scholar.application_id
+                                        )
                                             ? "bg-green-50"
                                             : ""
                                     }`}
@@ -218,21 +215,24 @@ export default function PendingScholars() {
                                             type="checkbox"
                                             className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                                             checked={selectedScholars.includes(
-                                                scholar.id
+                                                scholar.application_id
                                             )}
                                             onChange={() =>
                                                 toggleScholarSelection(
-                                                    scholar.id
+                                                    scholar.application_id
                                                 )
                                             }
-                                            disabled={scholar.status !== 'pending'}
+                                            disabled={
+                                                scholar.application_status !==
+                                                "Pending"
+                                            }
                                         />
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {scholar.id}
+                                        {scholar.application_id}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-500">
-                                        {scholar.name}
+                                        {scholar.first_name}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
                                         {scholar.email}
@@ -274,6 +274,23 @@ export default function PendingScholars() {
                 {/* Pagination */}
                 {filteredScholars.length > 0 && (
                     <div className="flex justify-between items-center mt-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <button
+                                onClick={createAccounts}
+                                disabled={
+                                    selectedScholars.length === 0 || loading
+                                }
+                                className={`px-4 py-2 rounded-md ${
+                                    selectedScholars.length === 0 || loading
+                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                        : "bg-green-500 text-white hover:bg-green-600 transition-all"
+                                }`}
+                            >
+                                {loading
+                                    ? "Processing..."
+                                    : "Create Selected Accounts"}
+                            </button>
+                        </div>
                         <div className="text-sm text-gray-600">
                             Showing {indexOfFirstItem + 1}-
                             {Math.min(indexOfLastItem, filteredScholars.length)}{" "}

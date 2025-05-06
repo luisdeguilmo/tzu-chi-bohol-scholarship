@@ -162,3 +162,15 @@ null
 {"applicantIds":[10001],"batch":"Batch 1"}
 {"applicantIds":[10003,6801038],"batch":"Batch 1"}
 {"batch_name":"Batch 3"}
+{"application":{"startDate":"2025-05-03","endDate":"2025-05-24","status":"Closed","announcementMessage":"sax","id":19}}
+{"application":{"startDate":"2025-05-03","endDate":"2025-05-24","status":"Closed","announcementMessage":"sax","id":19}}
+{"applicationIds":[6044143]}
+{"applicationIds":[6044143]}
+{"applicationIds":[6044143]}
+{"applicationIds":[6044143]}
+{"applicationIds":[6044143]}
+{"applicationIds":[6044143]}
+{"applicationIds":[]}
+{"applicationIds":[]}
+{"applicationIds":[6044143]}
+{"applicationIds":[6044143]}

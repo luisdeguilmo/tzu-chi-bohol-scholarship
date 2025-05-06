@@ -24,7 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$studentId = $data['studentId'] ?? null;
+
+if (!$data) {
+    throw new \Exception("No data provided");
+}
+
+$studentId = $data['studentIds'] ?? null;
 $status = $data['status'] ?? null;
 $batch = $data['batch'] ?? null;
 $today = date("Y-m-d H:i:s"); 
@@ -35,9 +40,31 @@ if (!$studentId || !$status) {
     exit;
 }
 
+$successCount = 0;
+
 try {
+    
     $application = new ApplicationsModel();
     $application->updateApplicationStatus($studentId, $status, $batch, $today);
+
+    foreach ($data['studentIds'] as $studentId) {
+        try {
+            // First update status
+            if ($application->updateApplicationStatus($studentId, $status, $batch, $today)) {
+                // Then create account
+                $successCount++;
+                echo json_encode(["message" => "Status updated successfully"]);
+            } else {
+                $errors[] = "Failed to update status for application ID: $applicationId";
+            }
+        } catch (\Exception $e) {
+            $errors[] = "Error processing application ID $applicationId: " . $e->getMessage();
+        }
+    }
+
+    if (!$successCount === 0) {
+        echo json_encode(["message" => "Status updated successfully"]);
+    }
     
     echo json_encode(["message" => "Status updated successfully"]);
 } catch (Exception $e) {
@@ -46,3 +73,38 @@ try {
     echo json_encode(["error" => "Something went wrong", "message" => $application]);
 }
 ?>
+
+            
+            <!-- // Check if we have applicationIds
+            if (!isset($data['applicationIds']) || empty($data['applicationIds'])) {
+                throw new \Exception("Missing required field: applicationIds");
+            }
+            
+            // Process multiple applicants
+            $scholarAccount = new ScholarAccountModel();
+            $successCount = 0;
+            $errors = [];
+
+            $today = date("Y-m-d H:i:s"); 
+            
+            foreach ($data['applicationIds'] as $applicationId) {
+                try {
+                    // First update status
+                    if ($scholarAccount->updateApplicationStatusToScholar($applicationId)) {
+                        // Then create account
+                        if ($scholarAccount->createAccount($applicationId, $today)) {
+                            $successCount++;
+                        } else {
+                            $errors[] = "Failed to create account for application ID: $applicationId";
+                        }
+                    } else {
+                        $errors[] = "Failed to update status for application ID: $applicationId";
+                    }
+                } catch (\Exception $e) {
+                    $errors[] = "Error processing application ID $applicationId: " . $e->getMessage();
+                }
+            }
+            
+            if ($successCount === 0) {
+                throw new \Exception("Failed to create any scholar accounts");
+            } -->

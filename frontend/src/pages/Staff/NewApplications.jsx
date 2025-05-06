@@ -8,6 +8,7 @@ function NewApplications() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
+    const [selectedApplications, setSelectedApplications] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -40,12 +41,15 @@ function NewApplications() {
             const response = await axios.post(
                 "http://localhost:8000/app/views/update_application_status.php",
                 {
-                    studentId: studentId,
+                    // studentId: studentId,
+                    studentIds: selectedApplications,
                     status: "Examination",
                     batch: "Unassigned",
                 }
             );
-            toast.success(response.data.message + "."); // Success message
+            // toast.success(response.data.message + "."); // Success message
+
+            toast.success("Status successfully updated." + ".");
 
             // Refresh the data after approval
             await fetchStudentsData();
@@ -58,26 +62,6 @@ function NewApplications() {
             setLoading(false);
         }
     };
-
-    // const addBatchColumn = async (id) => {
-    //     try {
-    //         setLoading(true);
-    //         const response = await axios.post(
-    //             "http://localhost:8000/app/views/add-remove-batch.php",
-    //             {
-    //                 id: id
-    //             }
-    //         );
-
-    //         console.log(response.data.message);
-    //         alert(response.data.message);
-    //     } catch (err) {
-    //         console.error("Error adding batch column:", err);
-    //         alert("Failed to add 'batch' column.");
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     // Filter data based on search term
     const filteredApplications = studentData.filter(
@@ -110,6 +94,28 @@ function NewApplications() {
 
     const goToNextPage = () => {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    };
+
+    const toggleApplicationSelection = (scholarId) => {
+        setSelectedApplications((prev) => {
+            if (prev.includes(scholarId)) {
+                return prev.filter((id) => id !== scholarId);
+            } else {
+                return [...prev, scholarId];
+            }
+        });
+    };
+
+    // Select all visible scholars
+    const selectAllVisible = () => {
+        const visibleIds = currentItems.map((item) => item.id);
+        if (selectedApplications.length === visibleIds.length) {
+            // If all are selected, deselect all
+            setSelectedApplications([]);
+        } else {
+            // Otherwise select all visible
+            setSelectedApplications(visibleIds);
+        }
     };
 
     console.log(studentData);
@@ -152,6 +158,18 @@ function NewApplications() {
                     <table className="w-[1200px] divide-y divide-gray-200">
                         <thead className="bg-green-100 text-green-800">
                             <tr>
+                                <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                    <input
+                                        type="checkbox"
+                                        className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                                        checked={
+                                            currentItems.length > 0 &&
+                                            setSelectedApplications.length ===
+                                                currentItems.length
+                                        }
+                                        onChange={selectAllVisible}
+                                    />
+                                </th>
                                 <th
                                     scope="col"
                                     className="py-3 text-center text-xs font-medium uppercase tracking-wider"
@@ -197,6 +215,24 @@ function NewApplications() {
                                     className={` transition-colors text-center`}
                                 >
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <input
+                                            type="checkbox"
+                                            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                                            checked={selectedApplications.includes(
+                                                info.application_id
+                                            )}
+                                            onChange={() =>
+                                                toggleApplicationSelection(
+                                                    info.application_id
+                                                )
+                                            }
+                                            disabled={
+                                                info.application_status !==
+                                                "Approved"
+                                            }
+                                        />
+                                    </td>
+                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
                                         {info.application_id}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-500">
@@ -210,12 +246,15 @@ function NewApplications() {
                                         {formatDateTime(info.created_at)}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {info.approved_at ? formatDateTime(info.approved_at) : "--"}
+                                        {info.approved_at
+                                            ? formatDateTime(info.approved_at)
+                                            : "--"}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <span
                                             className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                info.application_status === "Examination"
+                                                info.application_status ===
+                                                "Examination"
                                                     ? "bg-green-100 text-green-800"
                                                     : info.application_status ===
                                                       "Approved"
@@ -223,15 +262,21 @@ function NewApplications() {
                                                     : "bg-red-100 text-red-800"
                                             }`}
                                         >
-                                            {info.application_status === "Examination" ? "Approved" : "Pending"}
+                                            {info.application_status ===
+                                            "Examination"
+                                                ? "Approved"
+                                                : "Pending"}
                                         </span>
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm font-medium">
                                         <ApplicationFormPDF
                                             studentId={info.application_id}
                                         />
-                                        <button
-                                            disabled={info.application_status === "Examination"}
+                                        {/* <button
+                                            disabled={
+                                                info.application_status ===
+                                                "Examination"
+                                            }
                                             onClick={() => {
                                                 updateStudentApplication(
                                                     info.application_id
@@ -240,7 +285,12 @@ function NewApplications() {
                                                 //     info.application_id
                                                 // );
                                             }}
-                                            className={`${info.application_status === "Examination" ? 'text-gray-400' : 'text-green-600 hover:text-green-900'} inline-flex items-center mr-3`}
+                                            className={`${
+                                                info.application_status ===
+                                                "Examination"
+                                                    ? "text-gray-400"
+                                                    : "text-green-600 hover:text-green-900"
+                                            } inline-flex items-center mr-3`}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -257,8 +307,7 @@ function NewApplications() {
                                                 />
                                             </svg>
                                             Approve for Exam
-                                            
-                                        </button>
+                                        </button> */}
                                         {/* <button
                                             // onClick={() => handleDelete(coa.id)}
                                             className="inline-flex items-center text-red-600 hover:text-red-900"
@@ -313,6 +362,23 @@ function NewApplications() {
                 {/* Pagination */}
                 {filteredApplications.length > 0 && (
                     <div className="flex justify-between items-center mt-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <button
+                                onClick={updateStudentApplication}
+                                disabled={
+                                    selectedApplications.length === 0 || loading
+                                }
+                                className={`px-4 py-2 rounded-md ${
+                                    selectedApplications.length === 0 || loading
+                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                        : "bg-green-500 text-white hover:bg-green-600 transition-all"
+                                }`}
+                            >
+                                {loading
+                                    ? "Processing..."
+                                    : "Create Selected Accounts"}
+                            </button>
+                        </div>
                         <div className="text-sm text-gray-600">
                             Showing {indexOfFirstItem + 1}-
                             {Math.min(

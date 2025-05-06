@@ -6,7 +6,7 @@ use Config\Database;
 class LoginModel {
     private $table_name = "application_info";
 
-    private $scholar_table = "application_info";
+    private $scholar_table = "scholars";
     private $staff_table = "staff";
     private $admin_table = "admin";
     
@@ -42,20 +42,24 @@ class LoginModel {
 
     public function getScholarCredential($email, $password) {
         try {
-            // It's recommended to use password hashing instead of storing plain passwords
+            // Prepare the query to get the user by email
             $query = "SELECT * FROM " . $this->scholar_table . " WHERE email = :email";
             $stmt = $this->pdo->prepare($query);
             
+            // Bind the email parameter
             $stmt->bindParam(":email", $email);
             $stmt->execute();
             
+            // Fetch the user
             $user = $stmt->fetch(\PDO::FETCH_ASSOC);
             
-            if ($user && $password === $user['password']) {
-                // In a real application, use password_verify() instead
+            // Verify password if user exists
+            if ($user && password_verify($password, $user['password'])) {
+                // Password is correct
                 return [$user];
             }
             
+            // Either user doesn't exist or password is wrong
             return [];
         } catch (\PDOException $e) {
             throw new \Exception("Database error: " . $e->getMessage());

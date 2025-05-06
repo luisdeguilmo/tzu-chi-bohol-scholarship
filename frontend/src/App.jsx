@@ -22,6 +22,7 @@ import ApplicationPeriod from "./pages/Staff/ApplicationPeriod";
 import Dashboard from "./components/Dashboard";
 import InitialInterviewPage from "./pages/Staff/InitialInterviewPage";
 import ScholarAccountManagement from "./pages/Admin/ScholarAccountManagement";
+import StaffAccountManagement from "./pages/Admin/StaffAccountManagement";
 
 const overviewData = [
     {
@@ -148,6 +149,7 @@ export function App() {
                 <Route element={<AdminLayout />}>
                     <Route path="/admin/dashboard" element={<Dashboard overviewData={adminOverviewData} />} />
                     <Route path="/admin/scholar-account-management" element={<ScholarAccountManagement />} />
+                    <Route path="/admin/staff-account-management" element={<StaffAccountManagement />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
