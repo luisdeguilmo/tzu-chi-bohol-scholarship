@@ -1,78 +1,115 @@
 import React, { useState } from "react";
 
-function PostCOA() {
+export default function PostCOA() {
     const [isOpen, setIsOpen] = useState(false);
-    const [file, setFile] = useState(null);
-    const [fileName, setFileName] = useState("");
+    const [files, setFiles] = useState([]);
+    const [fileNames, setFileNames] = useState([]);
     const [date, setDate] = useState("");
     const [eventName, setEventName] = useState("");
-    const [coas, setCoas] = useState([
-        {
-            id: 1,
-            date: "2025-02-25",
-            event: "Seminar on Leadership",
-            status: "Approved",
-        },
-        {
-            id: 2,
-            date: "2025-03-01",
-            event: "Workshop on AI Ethics",
-            status: "Pending",
-        },
-        {
-            id: 3,
-            date: "2025-03-10",
-            event: "Web Development Conference",
-            status: "Approved",
-        },
-        {
-            id: 4,
-            date: "2025-03-12",
-            event: "Marketing Strategy Symposium",
-            status: "Pending",
-        },
-        {
-            id: 5,
-            date: "2025-03-15",
-            event: "Data Science Summit 2025",
-            status: "Approved",
-        },
-        {
-            id: 6,
-            date: "2025-03-20",
-            event: "Product Management Workshop",
-            status: "Approved",
-        },
-        {
-            id: 7,
-            date: "2025-03-22",
-            event: "UX/UI Design Masterclass",
-            status: "Pending",
-        },
-    ]);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [coas, setCoas] = useState([]);
 
     const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
-        if (selectedFile) {
-            setFile(selectedFile);
-            setFileName(selectedFile.name);
+        const selectedFiles = Array.from(e.target.files);
+        if (selectedFiles.length > 0) {
+            setFiles(selectedFiles);
+            const names = selectedFiles.map((file) => file.name);
+            setFileNames(names);
         }
     };
 
     const handleUpload = () => {
-        if (file && date && eventName) {
-            const newCOA = {
-                id: coas.length + 1,
-                date: date,
-                event: eventName,
-                status: "Pending",
+        if (files.length > 0 && date && eventName) {
+            setIsUploading(true);
+            setUploadProgress(0);
+
+            // Simulate upload progress
+            const interval = setInterval(() => {
+                setUploadProgress((prev) => {
+                    if (prev >= 100) {
+                        clearInterval(interval);
+                        return 100;
+                    }
+                    return prev + 10;
+                });
+            }, 200);
+
+            // Create FormData for file upload
+            const formData = new FormData();
+
+            // Add files with proper indexing
+            files.forEach((file, index) => {
+                formData.append(`files[${index}]`, file);
+            });
+
+            // Add event details to certificate_of_appearance data
+            const applicationData = {
+                certificate_of_appearance: [
+                    
+                    
+                ],
+                event_name: eventName,
+                event_date: date,
             };
-            setCoas([...coas, newCOA]);
-            setFile(null);
-            setFileName("");
-            setDate("");
-            setEventName("");
+
+            // Add the application data as a string
+            formData.append(
+                "certificate_of_appearance",
+                JSON.stringify(applicationData)
+            );
+
+            // Make API request
+            fetch("http://localhost:8000/backend/api/coa", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Add the new certificate to the list
+                        const newCOA = {
+                            id: data.application_id,
+                            date: date,
+                            event: eventName,
+                            status: "Pending",
+                            fileCount: files.length,
+                        };
+
+                        setCoas([...coas, newCOA]);
+                        resetForm();
+                        setIsUploading(false);
+                        clearInterval(interval);
+                        alert(
+                            "Certificate of Appearance uploaded successfully!"
+                        );
+                    } else {
+                        console.error("Upload failed:", data.message);
+                        setIsUploading(false);
+                        clearInterval(interval);
+                        alert("Upload failed: " + data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Upload error:", error);
+                    setIsUploading(false);
+                    clearInterval(interval);
+                    alert("Upload error: " + error.message);
+                });
+        } else {
+            alert(
+                "Please provide event name, date and select at least one file!"
+            );
         }
+    };
+
+    const resetForm = () => {
+        setFiles([]);
+        setFileNames([]);
+        setDate("");
+        setEventName("");
+        setIsOpen(false);
+        setUploadProgress(0);
     };
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -102,18 +139,38 @@ function PostCOA() {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     };
 
-    // Function to view certificate (in real app, this would open the file)
+    // Function to view certificate
     const handleView = (coa) => {
-        // In a real app, this would open the document
         console.log(`Viewing certificate: ${coa.event} from ${coa.date}`);
+
+        // Example of how to fetch and display a file
+        fetch(`http://localhost:8000/backend/api/coa/files/${coa.id}`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success && data.files.length > 0) {
+                    // Open the file in a new window or download it
+                    window.open(data.files[0].file_path, "_blank");
+                }
+            });
     };
 
     // Handle certificate deletion
     const handleDelete = (id) => {
-        // This function would be implemented in the parent component
-        const updatedCoas = coas.filter((coa) => coa.id !== id);
-        setCoas(updatedCoas);
-        console.log(`Deleting certificate with ID: ${id}`);
+        // Send delete request to API
+        fetch(`http://localhost:8000/backend/api/coa/delete/${id}`, {
+            method: "DELETE",
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    const updatedCoas = coas.filter((coa) => coa.id !== id);
+                    setCoas(updatedCoas);
+                    console.log(`Deleted certificate with ID: ${id}`);
+                }
+            })
+            .catch((error) => {
+                console.error("Delete error:", error);
+            });
     };
 
     return (
@@ -176,6 +233,12 @@ function PostCOA() {
                                 scope="col"
                                 className="py-3 text-center text-xs font-medium uppercase tracking-wider"
                             >
+                                Files
+                            </th>
+                            <th
+                                scope="col"
+                                className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                            >
                                 Actions
                             </th>
                         </tr>
@@ -203,6 +266,13 @@ function PostCOA() {
                                     >
                                         {coa.status}
                                     </span>
+                                </td>
+                                <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {coa.fileCount
+                                        ? `${coa.fileCount} file${
+                                              coa.fileCount > 1 ? "s" : ""
+                                          }`
+                                        : "1 file"}
                                 </td>
                                 <td className="py-4 whitespace-nowrap text-sm font-medium">
                                     <button
@@ -246,7 +316,7 @@ function PostCOA() {
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 strokeWidth={2}
-                                                d="M3 8l1 12a2 2 0 002 2h12a2 2 0 002-2l1-12M3 8h18M3 8l2-3h14l2 3M10 12h4"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                             />
                                         </svg>
                                         Archive
@@ -282,196 +352,216 @@ function PostCOA() {
                 )}
             </div>
 
-            {/* Pagination */}
-            {filteredCoas.length > 0 && (
-                <div className="flex justify-between items-center mt-6">
-                    <Form
-                        isOpen={isOpen}
-                        setIsOpen={setIsOpen}
-                        file={file}
-                        eventName={eventName}
-                        setEventName={setEventName}
-                        setFileName={setFileName}
-                        date={date}
-                        setDate={setDate}
-                        handleFileChange={handleFileChange}
-                        handleUpload={handleUpload}
-                    />
-                    <div className="text-sm text-gray-600">
-                        Showing {indexOfFirstItem + 1}-
-                        {Math.min(indexOfLastItem, filteredCoas.length)} of{" "}
-                        {filteredCoas.length} certificates
-                    </div>
-                    <div className="flex space-x-2">
+            {/* Pagination and Upload Button */}
+            <div className="flex justify-between items-center mt-6">
+                <div>
+                    <button
+                        onClick={() => setIsOpen(true)}
+                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                    >
+                        Upload Certificate
+                    </button>
+                </div>
+                {filteredCoas.length > 0 && (
+                    <div className="flex items-center space-x-2 text-sm text-gray-500">
                         <button
                             onClick={goToPreviousPage}
                             disabled={currentPage === 1}
-                            className={`px-4 py-2 rounded-[4px] ${
+                            className={`px-3 py-1 rounded-md ${
                                 currentPage === 1
-                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                    : "bg-green-600 text-white hover:bg-green-600 transition-all"
+                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                             }`}
                         >
                             Previous
                         </button>
+                        <span>
+                            Page {currentPage} of {totalPages}
+                        </span>
                         <button
                             onClick={goToNextPage}
-                            disabled={
-                                currentPage === totalPages || totalPages === 0
-                            }
-                            className={`px-4 py-2 rounded-[4px] ${
-                                currentPage === totalPages || totalPages === 0
-                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                    : "bg-green-500 text-white hover:bg-green-600 transition-all"
+                            disabled={currentPage === totalPages}
+                            className={`px-3 py-1 rounded-md ${
+                                currentPage === totalPages
+                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                             }`}
                         >
                             Next
                         </button>
                     </div>
-                </div>
-            )}
-        </div>
-    );
-}
+                )}
+            </div>
 
-function Form({
-    isOpen,
-    setIsOpen,
-    file,
-    setFile,
-    fileName,
-    setFileName,
-    date,
-    setDate,
-    eventName,
-    setEventName,
-    handleFileChange,
-    handleUpload,
-}) {
-    return (
-        <div>
-            <button
-                onClick={() => setIsOpen(true)}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
-            >
-                Upload Document
-            </button>
-
+            {/* Upload Modal */}
             {isOpen && (
-                <div
-                    // onClick={() => setIsOpen(false)}
-                    className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50"
-                >
-                    <div className="w-[80%] md:w-[50%] lg:w-[30%] bg-white rounded-lg shadow-md overflow-hidden">
-                        <div className="bg-green-500 px-4 py-3 flex justify-between items-center">
-                            <h2 className="text-lg font-semibold text-white">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-semibold text-gray-800">
                                 Upload Certificate
-                            </h2>
+                            </h3>
                             <button
-                                onClick={() => setIsOpen(false)}
-                                className="text-white text-2xl"
+                                onClick={resetForm}
+                                className="text-gray-500 hover:text-gray-700"
                             >
-                                &times;
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
                             </button>
                         </div>
 
-                        <div className="p-8 space-y-4">
-                            {/* Date Input */}
-                            <div className="block mb-2 relative">
-                                <label className="absolute top-[-10px] text-gray-600 text-sm">
-                                    Date of Event
+                        <div className="space-y-4">
+                            {/* Date input */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Event Date
                                 </label>
                                 <input
                                     type="date"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-300 focus:border-green-500"
                                     value={date}
                                     onChange={(e) => setDate(e.target.value)}
-                                    placeholder="Date of Event"
-                                    className="w-full outline-none border-b-[2px] border-gray-400 py-2 mt-1 box-border hover:border-black focus:border-green-500"
                                     required
                                 />
                             </div>
 
-                            {/* Event Name Input */}
+                            {/* Event Name input */}
                             <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Event Name
+                                </label>
                                 <input
                                     type="text"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-300 focus:border-green-500"
+                                    placeholder="Enter event name"
                                     value={eventName}
                                     onChange={(e) =>
                                         setEventName(e.target.value)
                                     }
-                                    className="w-full outline-none border-b-[2px] border-gray-400 py-2 mt-1 box-border hover:border-black focus:border-green-500"
-                                    placeholder="Enter event name"
                                     required
                                 />
                             </div>
 
-                            {/* File Upload */}
+                            {/* File upload */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Certificate File
+                                    Certificate Document
                                 </label>
-                                <div className="flex justify-center p-2 border-2 border-gray-300 border-dashed rounded-lg hover:border-purple-400 transition-colors">
-                                    <div className="text-center">
-                                        <div className="flex text-sm text-gray-600 justify-center">
-                                            <label
-                                                htmlFor="file-upload"
-                                                className="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500"
+                                <div className="flex items-center justify-center w-full">
+                                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <svg
+                                                className="w-10 h-10 mb-3 text-gray-400"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg"
                                             >
-                                                <span>Choose File</span>
-                                                <input
-                                                    id="file-upload"
-                                                    name="file-upload"
-                                                    type="file"
-                                                    className="sr-only"
-                                                    accept=".pdf,.jpg,.png"
-                                                    onChange={handleFileChange}
-                                                />
-                                            </label>
-                                        </div>
-                                        <p className="text-xs text-gray-500">
-                                            PDF, JPG, PNG (max. 10MB)
-                                        </p>
-                                        {fileName && (
-                                            <p className="text-sm text-purple-500 font-medium mt-2">
-                                                {fileName}
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth="2"
+                                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                                ></path>
+                                            </svg>
+                                            <p className="mb-2 text-sm text-gray-500">
+                                                <span className="font-semibold">
+                                                    Click to upload
+                                                </span>{" "}
+                                                or drag and drop
                                             </p>
-                                        )}
-                                    </div>
+                                            <p className="text-xs text-gray-500">
+                                                PDF, PNG, JPG, DOC, DOCX (MAX.
+                                                10MB)
+                                            </p>
+                                        </div>
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            onChange={handleFileChange}
+                                            accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                                            multiple
+                                        />
+                                    </label>
                                 </div>
+
+                                {/* Selected files display */}
+                                {fileNames.length > 0 && (
+                                    <div className="mt-2">
+                                        <p className="text-sm font-medium text-gray-700">
+                                            Selected files ({fileNames.length}):
+                                        </p>
+                                        <ul className="mt-1 text-sm text-gray-500 list-disc list-inside">
+                                            {fileNames.map((name, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="truncate"
+                                                >
+                                                    {name}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
 
-                            {/* Upload Button */}
-                            {/* <button
-                                onClick={handleUpload}
-                                disabled={!file || !date || !eventName}
-                                className={`w-full py-3 px-4 rounded-lg font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 
-                    ${
-                        !file || !date || !eventName
-                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            : "bg-green-500 hover:bg-green-600 text-white transition-colors"
-                    }`}
-                            >
-                                Upload
-                            </button> */}
+                            {/* Upload progress */}
+                            {isUploading && (
+                                <div className="mt-4">
+                                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div
+                                            className="bg-green-600 h-2.5 rounded-full"
+                                            style={{
+                                                width: `${uploadProgress}%`,
+                                            }}
+                                        ></div>
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-1 text-right">
+                                        {uploadProgress}% uploaded
+                                    </p>
+                                </div>
+                            )}
 
-                            <div className="flex gap-2">
+                            {/* Submit button */}
+                            <div className="flex justify-end">
                                 <button
-                                    onClick={() => setIsOpen(false)}
-                                    className={`w-full py-2 px-4 rounded-sm font-medium shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
+                                    type="button"
+                                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors mr-2"
+                                    onClick={resetForm}
                                 >
                                     Cancel
                                 </button>
                                 <button
+                                    type="button"
+                                    className={`bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors ${
+                                        isUploading ||
+                                        !files.length ||
+                                        !date ||
+                                        !eventName
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
                                     onClick={handleUpload}
-                                    disabled={!file || !date || !eventName}
-                                    className={`w-full py-2 px-4 rounded-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 
-                    ${
-                        !file || !date || !eventName
-                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            : "bg-green-500 hover:bg-green-600 text-white transition-colors"
-                    }`}
+                                    disabled={
+                                        isUploading ||
+                                        !files.length ||
+                                        !date ||
+                                        !eventName
+                                    }
                                 >
-                                    Upload
+                                    {isUploading ? "Uploading..." : "Upload"}
                                 </button>
                             </div>
                         </div>
@@ -481,5 +571,3 @@ function Form({
         </div>
     );
 }
-
-export default PostCOA;

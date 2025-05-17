@@ -3,6 +3,7 @@ import axios from "axios";
 import ApplicationFormPDF from "../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
 import { formatDateTime } from "../../utils/formatDate";
+import emailjs from "@emailjs/browser";
 
 export default function Applications() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -13,7 +14,14 @@ export default function Applications() {
     const [error, setError] = useState(null);
     const [studentData, setStudentData] = useState([]);
 
-    const fetchStudentsData = async (id) => {
+    // EmailJS configuration - replace with your actual service ID, template ID, and public key
+    const EMAILJS_SERVICE_ID = "service_97rzw6o";
+    const EMAILJS_TEMPLATE_ID = "template_zgcb5c1";
+    const EMAILJS_PUBLIC_KEY = "jes1Va_kLko0tAZh5";
+
+    const Reject = "template_5f51nna";
+
+    const fetchStudentsData = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
@@ -32,34 +40,172 @@ export default function Applications() {
         fetchStudentsData();
     }, []);
 
+    const sendApprovalEmail = async (studentInfo) => {
+        try {
+            // Prepare the template parameters
+            const templateParams = {
+                to_name: `${studentInfo.first_name} ${studentInfo.last_name}`,
+                to_email: studentInfo.email,
+                school_year: studentInfo.school_year,
+                applicant_name: `${studentInfo.first_name} ${
+                    studentInfo.middle_name ? studentInfo.middle_name + " " : ""
+                }${studentInfo.last_name}`,
+                organization: "Tzu Chi Foundation Philippines - Bohol Office",
+                contact_info: "tzuchibohol2014@gmail.com | 0998 885 5342",
+            };
+
+            // Send the email
+            const response = await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                templateParams,
+                EMAILJS_PUBLIC_KEY
+            );
+
+            console.log("Email successfully sent!", response);
+            return true;
+        } catch (error) {
+            console.error("Failed to send email:", error);
+            return false;
+        }
+    };
+
+    const sendRejectionEmail = async (studentInfo) => {
+        try {
+            // Prepare the template parameters
+            const templateParams = {
+                to_name: `${studentInfo.first_name} ${studentInfo.last_name}`,
+                to_email: studentInfo.email,
+                school_year: studentInfo.school_year,
+                applicant_name: `${studentInfo.first_name} ${
+                    studentInfo.middle_name ? studentInfo.middle_name + " " : ""
+                }${studentInfo.last_name}`,
+                organization: "Tzu Chi Foundation Philippines - Bohol Office",
+                contact_info: "tzuchibohol2014@gmail.com | 0998 885 5342",
+            };
+
+            // Send the email
+            const response = await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                Reject,
+                templateParams,
+                EMAILJS_PUBLIC_KEY
+            );
+
+            console.log("Email successfully sent!", response);
+            return true;
+        } catch (error) {
+            console.error("Failed to send email:", error);
+            return false;
+        }
+    };
+
+    const rejectStudentApplication = async (studentId) => {
+        let confirmationId = window.prompt("Enter applicant's application ID:");
+
+        if (+confirmationId === studentId) {
+            try {
+                setLoading(true);
+
+                // 1. First update the application status
+                const response = await axios.post(
+                    "http://localhost:8000/app/views/update_application_status.php",
+                    {
+                        studentIds: [studentId],
+                        status: "Rejected",
+                    }
+                );
+                console.log(response.data.message);
+
+                // 2. Find the student information to use in the email
+                const studentToEmail = studentData.find(
+                    (student) => student.application_id === studentId
+                );
+
+                // 3. Send the approval email
+                if (studentToEmail) {
+                    const emailSent = await sendRejectionEmail(studentToEmail);
+
+                    if (emailSent) {
+                        toast.success(
+                            "Applicant rejected and notification email sent successfully!"
+                        );
+                    } else {
+                        toast.warning(
+                            "Applicant rejected but failed to send email notification."
+                        );
+                    }
+                } else {
+                    toast.warning(
+                        "Applicant rejected but could not find email information."
+                    );
+                }
+
+                // 4. Refresh the data after approval
+                await fetchStudentsData();
+                setLoading(false);
+            } catch (err) {
+                console.error("Error updating application status:", err);
+                setError("Failed to approve application.");
+                toast.error("Error approving application.");
+                setLoading(false);
+            }
+        } else {
+            toast.error("Incorrect application ID. Please try again.");
+        }
+    };
+
     const updateStudentApplication = async (studentId) => {
         let confirmationId = window.prompt("Enter applicant's application ID:");
 
         if (+confirmationId === studentId) {
             try {
                 setLoading(true);
+
+                // 1. First update the application status
                 const response = await axios.post(
                     "http://localhost:8000/app/views/update_application_status.php",
                     {
-                        // studentId: studentId,
                         studentIds: [studentId],
                         status: "Approved",
                     }
                 );
-                console.log(response.data.message); // Success message
-    
-                // Refresh the data after approval
+                console.log(response.data.message);
+
+                // 2. Find the student information to use in the email
+                const studentToEmail = studentData.find(
+                    (student) => student.application_id === studentId
+                );
+
+                // 3. Send the approval email
+                if (studentToEmail) {
+                    const emailSent = await sendApprovalEmail(studentToEmail);
+
+                    if (emailSent) {
+                        toast.success(
+                            "Applicant rejected and notification email sent successfully!"
+                        );
+                    } else {
+                        toast.warning(
+                            "Applicant rejected but failed to send email notification."
+                        );
+                    }
+                } else {
+                    toast.warning(
+                        "Applicant rejected but could not find email information."
+                    );
+                }
+
+                // 4. Refresh the data after approval
                 await fetchStudentsData();
-    
-                // Optional: Show success notification
-                toast.success("Applicant approved successfully.");
+                setLoading(false);
             } catch (err) {
                 console.error("Error updating application status:", err);
                 setError("Failed to approve application.");
+                toast.error("Error approving application.");
                 setLoading(false);
             }
         } else {
-            // Optional: Show error notification for incorrect ID
             toast.error("Incorrect application ID. Please try again.");
         }
     };
@@ -97,7 +243,6 @@ export default function Applications() {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     };
 
-    console.log(studentData);
     return (
         <div className="py-8">
             <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
@@ -182,11 +327,10 @@ export default function Applications() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {currentItems.map((info, index) => (
+                            {currentItems.map((info) => (
                                 <tr
                                     key={info.application_id}
-                                    className={`
-                                    } transition-colors text-center`}
+                                    className="transition-colors text-center"
                                 >
                                     <td className="py-4 whitespace-nowrap text-sm text-gray-500">
                                         {info.application_id}
@@ -211,33 +355,9 @@ export default function Applications() {
                                         {formatDateTime(info.created_at)}
                                     </td>
                                     <td className="py-4 whitespace-nowrap text-sm font-medium">
-                                        {/* <button
-                                            onClick={() => handleView(coa)}
-                                            className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-1"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                                />
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                                />
-                                            </svg>
-                                            View
-                                        </button> */}
-                                        <ApplicationFormPDF studentId={info.application_id} />
+                                        <ApplicationFormPDF
+                                            studentId={info.application_id}
+                                        />
                                         <button
                                             onClick={() =>
                                                 updateStudentApplication(
@@ -245,6 +365,7 @@ export default function Applications() {
                                                 )
                                             }
                                             className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                            disabled={loading}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -261,6 +382,31 @@ export default function Applications() {
                                                 />
                                             </svg>
                                             Approve
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                rejectStudentApplication(
+                                                    info.application_id
+                                                )
+                                            }
+                                            className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                            disabled={loading}
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-4 w-4 mr-1"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M6 18L18 6M6 6l12 12"
+                                                />
+                                            </svg>
+                                            Reject
                                         </button>
                                     </td>
                                 </tr>

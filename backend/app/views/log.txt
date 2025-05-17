@@ -174,3 +174,10 @@ null
 {"applicationIds":[]}
 {"applicationIds":[6044143]}
 {"applicationIds":[6044143]}
+{"strand":"DS"}
+{"strand":"ds"}
+{"strand":"ds"}
+{"strand":"new"}
+{"course_name":"new"}
+{"qualification":"new"}
+{"instruction":"new"}

@@ -13,16 +13,18 @@ import Events from "./pages/Scholar/Events";
 import Applications from "./pages/Staff/Applications";
 import LoginForm from "./components/LoginForm";
 import Archive from "./components/Archive";
-import ManageScholarshipInfo from "./pages/Staff/ScholarshipCriteriaPage";
-import Documents from "./pages/Scholar/Documents";
 import NotFound from "./components/NotFound";
 import ApprovedApplications from "./pages/Staff/ApprovedApplicationsPage";
 import ExaminationPage from "./pages/Staff/ExaminationPage";
-import ApplicationPeriod from "./pages/Staff/ApplicationPeriod";
 import Dashboard from "./components/Dashboard";
 import InitialInterviewPage from "./pages/Staff/InitialInterviewPage";
 import ScholarAccountManagement from "./pages/Admin/ScholarAccountManagement";
 import StaffAccountManagement from "./pages/Admin/StaffAccountManagement";
+import AcceptRejectNotificationSystem from "./pages/Staff/AcceptRejectNotificationSystem";
+import SetEvents from "./pages/Staff/SetEvents";
+import DocumentsPage from "./pages/Scholar/Documents/DocumentsPage";
+import ScholarshipCriteriaPage from "./pages/Staff/ScholarshipCriteria/ScholarshipCriteriaPage";
+import ApplicationPeriodPage from "./pages/Staff/ApplicationPeriod/ApplicationPeriodPage";
 
 const overviewData = [
     {
@@ -128,7 +130,8 @@ export function App() {
                 <Route element={<ScholarLayout />}>
                     <Route path="/scholar/dashboard" element={<Dashboard overviewData={overviewData} />} />
                     <Route path="/scholar/renew" element={<RenewalApplicationSection />} />
-                    <Route path="/scholar/documents" element={<Documents />} />
+                    {/* <Route path="/scholar/documents" element={<Documents />} /> */}
+                    <Route path="/scholar/documents" element={<DocumentsPage />} />
                     <Route path="/scholar/rendered-hours" element={<ViewRenderedHours />} />
                     <Route path="/scholar/events" element={<Events />} />
                     <Route path="/scholar/archive" element={<Archive />} />
@@ -137,12 +140,15 @@ export function App() {
                 {/* StaffLayout */}
                 <Route element={<StaffLayout />}>
                     <Route path="/staff/dashboard" element={<Dashboard overviewData={staffOverviewData} />} />
-                    <Route path="/staff/scholarship-info" element={<ManageScholarshipInfo />} />
+                    {/* <Route path="/staff/scholarship-criteria" element={<ManageScholarshipInfo />} /> */}
+                    <Route path="/staff/scholarship-criteria" element={<ScholarshipCriteriaPage />} />
                     <Route path="/staff/applications" element={<Applications />} />
                     <Route path="/staff/approved-applications" element={<ApprovedApplications />} />
                     <Route path="/staff/examination-list" element={<ExaminationPage />} />
-                    <Route path="/staff/application-period" element={<ApplicationPeriod />} />
+                    <Route path="/staff/application-period" element={<ApplicationPeriodPage />} />
                     <Route path="/staff/initial-interview" element={<InitialInterviewPage />} />
+                    <Route path="/staff/accept-reject" element={<AcceptRejectNotificationSystem />} />
+                    <Route path="/staff/set-events" element={<SetEvents />} />
                 </Route>
 
                 {/* AdminLayout */}

@@ -39,3 +39,8 @@ Base64 preview: BASE64_STRING_HERE...
 File written successfully: hansel.jpg
 File info: {"file_name":"hansel.jpg","file_path":"\/upload\/applications\/8198843\/hansel.jpg","file_type":"application\/octet-stream","file_size":12,"requirement_type":"general"}
 File saved in DB successfully
+Base upload dir: C:\Users\IDEAPAD SLIM 3\tzuchischolarship\backend\app\controllers/../../public/upload/
+Upload dir: C:\Users\IDEAPAD SLIM 3\tzuchischolarship\backend\app\controllers/../../public/upload/applications/4418395/
+Created upload dir
+Processing file: {"path":".\/Screenshot 2024-02-17 222925.png","relativePath":".\/Screenshot 2024-02-17 222925.png","preview":"blob:http:\/\/localhost:5174\/5bd19c97-effa-41ff-b839-7e70516da728"}
+No base64_data found in file entry

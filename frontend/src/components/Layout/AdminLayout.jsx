@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import SideBar from "../../pages/Scholar/SideBar";
-import TopBar from "../../pages/Scholar/TopBar";
+import TopBar from "../TopBar";
 import SideBarWithDropdown from "../SideBarWithDropdown";
 
 // const items = [
@@ -50,18 +50,6 @@ const sidebarItems = [
             { text: "Scholar Accounts", navigate: "/admin/scholar-account-management" },
             { text: "Staff Accounts", navigate: "/admin/staff-account-management" },
         ],
-    },
-    {
-        text: "Settings",
-        iconName: "settings",
-        iconStyle: "text-[1.1rem]",
-        navigate: "/"
-    },
-    {
-        text: "Activity",
-        iconName: "upload_file",
-        iconStyle: "text-[1.1rem]",
-        navigate: "/"
     },
     {
         text: "Logout",

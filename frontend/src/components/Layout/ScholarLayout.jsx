@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import SideBar from "../../pages/Scholar/SideBar";
-import TopBar from "../../pages/Scholar/TopBar";
+import TopBar from "../TopBar";
 
 const items = [
     {

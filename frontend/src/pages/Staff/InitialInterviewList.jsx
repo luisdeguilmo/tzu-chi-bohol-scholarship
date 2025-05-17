@@ -176,12 +176,12 @@ function InitialInterviewList() {
                                 >
                                     Date Approved
                                 </th>
-                                <th
+                                {/* <th
                                     scope="col"
                                     className="py-3 text-center text-xs font-medium uppercase tracking-wider"
                                 >
                                     Status
-                                </th>
+                                </th> */}
                                 <th
                                     scope="col"
                                     className="py-3 text-center text-xs font-medium uppercase tracking-wider"

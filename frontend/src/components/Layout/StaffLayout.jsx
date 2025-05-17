@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import SideBar from "../../pages/Scholar/SideBar";
-import TopBar from "../../pages/Scholar/TopBar";
 import SideBarWithDropdown from "../SideBarWithDropdown";
+import TopBar from "../TopBar";
 
 const sidebarItems = [
     {
@@ -13,7 +13,7 @@ const sidebarItems = [
         text: "Scholarship",
         iconName: "school",
         subItems: [
-            { text: "Scholarship Criteria", navigate: "/staff/scholarship-info" },
+            { text: "Scholarship Criteria", navigate: "/staff/scholarship-criteria" },
             { text: "Application Period", navigate: "/staff/application-period" },
         ],
     },
@@ -42,7 +42,7 @@ const sidebarItems = [
         text: "Events & Duty",
         iconName: "event",
         subItems: [
-            { text: "Set Events", navigate: "/" },
+            { text: "Set Events", navigate: "/staff/set-events" },
             { text: "Log Duty Hours", navigate: "/" },
         ],
     },
