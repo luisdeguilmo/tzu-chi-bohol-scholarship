@@ -13,6 +13,7 @@ const Courses = ({ label }) => {
     const [edit, setEdit] = useState(false);
     const [newText, setNewText] = useState("");
     const [rowItemId, setRowItemId] = useState(0);
+    const [numberOfItemsPerPage, setNumberOfItemsPerPage] = useState(0);
 
     const [courses, setCourses] = useState([]);
     // Track which course is being deleted
@@ -72,10 +73,12 @@ const Courses = ({ label }) => {
     // Handle page changes
     const goToPreviousPage = () => {
         setCurrentPage((prev) => Math.max(prev - 1, 1));
+        setNumberOfItemsPerPage(numberOfItemsPerPage - 5);
     };
 
     const goToNextPage = () => {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+        setNumberOfItemsPerPage(numberOfItemsPerPage + 5);
     };
 
     const handleButtonState = (value, id) => {
@@ -226,9 +229,13 @@ const Courses = ({ label }) => {
                                     </td>
                                 ) : (
                                     <td className="pl-10 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                        {`${course.row_number}. `}{" "}
+                                        {`${numberOfItemsPerPage + index + 1}. `}{" "}
                                         {course.course_name}
                                     </td>
+                                    // <td className="pl-10 py-4 text-left whitespace-nowrap text-sm text-gray-500">
+                                    //     {`${course.row_number}. `}{" "}
+                                    //     {course.course_name}
+                                    // </td>
                                 )}
                                 <td className="py-4 text-center whitespace-nowrap text-sm font-medium">
                                     <button

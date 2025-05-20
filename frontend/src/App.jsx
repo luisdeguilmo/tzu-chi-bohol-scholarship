@@ -4,27 +4,25 @@ import StaffLayout from "./components/Layout/StaffLayout";
 import HomePageLayout from "./components/Layout/HomePageLayout";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import { ApplicationSection, RenewalApplicationSection } from "./pages/Home/ApplicationSection";
 import ViewRenderedHours from "./pages/Scholar/ViewDutyHours";
 import Events from "./pages/Scholar/Events";
-import Applications from "./pages/Staff/Applications";
 import LoginForm from "./components/LoginForm";
 import Archive from "./components/Archive";
 import NotFound from "./components/NotFound";
-import ApprovedApplications from "./pages/Staff/ApprovedApplicationsPage";
-import ExaminationPage from "./pages/Staff/ExaminationPage";
+import ExaminationPage from "./pages/Staff/Examination/ExaminationPage";
 import Dashboard from "./components/Dashboard";
-import InitialInterviewPage from "./pages/Staff/InitialInterviewPage";
+import InitialInterviewPage from "./pages/Staff/InitialInterview/InitialInterviewPage";
 import ScholarAccountManagement from "./pages/Admin/ScholarAccountManagement";
 import StaffAccountManagement from "./pages/Admin/StaffAccountManagement";
-import AcceptRejectNotificationSystem from "./pages/Staff/AcceptRejectNotificationSystem";
 import SetEvents from "./pages/Staff/SetEvents";
 import DocumentsPage from "./pages/Scholar/Documents/DocumentsPage";
 import ScholarshipCriteriaPage from "./pages/Staff/ScholarshipCriteria/ScholarshipCriteriaPage";
 import ApplicationPeriodPage from "./pages/Staff/ApplicationPeriod/ApplicationPeriodPage";
+import ApplicationPage from "./pages/Staff/Application/ApplicationsPage";
+import ApprovedApplicationsPage from "./pages/Staff/ApprovedApplications/ApprovedApplicationsPage";
 
 const overviewData = [
     {
@@ -142,12 +140,11 @@ export function App() {
                     <Route path="/staff/dashboard" element={<Dashboard overviewData={staffOverviewData} />} />
                     {/* <Route path="/staff/scholarship-criteria" element={<ManageScholarshipInfo />} /> */}
                     <Route path="/staff/scholarship-criteria" element={<ScholarshipCriteriaPage />} />
-                    <Route path="/staff/applications" element={<Applications />} />
-                    <Route path="/staff/approved-applications" element={<ApprovedApplications />} />
+                    <Route path="/staff/applications" element={<ApplicationPage />} />
+                    <Route path="/staff/approved-applications" element={<ApprovedApplicationsPage />} />
                     <Route path="/staff/examination-list" element={<ExaminationPage />} />
                     <Route path="/staff/application-period" element={<ApplicationPeriodPage />} />
                     <Route path="/staff/initial-interview" element={<InitialInterviewPage />} />
-                    <Route path="/staff/accept-reject" element={<AcceptRejectNotificationSystem />} />
                     <Route path="/staff/set-events" element={<SetEvents />} />
                 </Route>
 

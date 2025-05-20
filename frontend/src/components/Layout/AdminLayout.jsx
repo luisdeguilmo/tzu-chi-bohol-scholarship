@@ -1,41 +1,6 @@
 import { Outlet } from "react-router-dom";
-import SideBar from "../../pages/Scholar/SideBar";
 import TopBar from "../TopBar";
 import SideBarWithDropdown from "../SideBarWithDropdown";
-
-// const items = [
-//     {
-//         text: "Dashboard",
-//         iconName: "dashboard",
-//         iconStyle: "text-[1.1rem]",
-//         navigate: "/admin/dashboard"
-//     },
-//     {
-//         text: "User Accounts",
-//         iconName: "manage_accounts",
-//         iconStyle: "text-[1.1rem]",
-//         navigate: "/admin/scholar-account-creator"
-//     },
-//     {
-//         text: "Settings",
-//         iconName: "settings",
-//         iconStyle: "text-[1.1rem]",
-//         navigate: "/"
-//     },
-//     {
-//         text: "Activity",
-//         iconName: "upload_file",
-//         iconStyle: "text-[1.1rem]",
-//         navigate: "/"
-//     },
-//     {
-//         text: "Logout",
-//         style: "mt-auto",
-//         iconName: "logout",
-//         iconStyle: "text-[1.1rem]",
-//         navigate: "/"
-//     },
-// ];
 
 const sidebarItems = [
     {

@@ -1,7 +1,5 @@
 import { useState } from "react";
-import NewApplications from "./NewApplications";
-import RenewalApplications from "./RenewalApplications";
-import ExaminationList from "./ExaminationList";
+import UnassignedApplicants from "./UnassignedApplicants";
 import ExaminationBatches from "./ExaminationBatches";
 import ExaminationResult from "./ExaminationResult";
 
@@ -48,7 +46,7 @@ const ExaminationPage = () => {
             </div>
 
             <div className="py-6">
-                {activeTab === "applicationList" && <ExaminationList />}
+                {activeTab === "applicationList" && <UnassignedApplicants />}
                 {activeTab === "applicationBatches" && <ExaminationBatches />}
                 {activeTab === "examinationResult" && <ExaminationResult />}
             </div>

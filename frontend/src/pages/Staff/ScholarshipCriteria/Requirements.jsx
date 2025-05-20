@@ -13,6 +13,7 @@ const Requirements = ({ label }) => {
     const [newQuantity, setNewQuantity] = useState("");
     const [newDescription, setNewDescription] = useState("");
     const [newSubmit, setNewSubmit] = useState("");
+    const [numberOfItemsPerPage, setNumberOfItemsPerPage] = useState(0);
 
     const [requirements, setRequirements] = useState([]);
 
@@ -57,10 +58,12 @@ const Requirements = ({ label }) => {
     // Handle page changes
     const goToPreviousPage = () => {
         setCurrentPage((prev) => Math.max(prev - 1, 1));
+        setNumberOfItemsPerPage(numberOfItemsPerPage - 5);
     };
 
     const goToNextPage = () => {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+        setNumberOfItemsPerPage(numberOfItemsPerPage + 5);
     };
 
     const handleButtonState = (quantity, description, submit, id) => {
@@ -243,7 +246,7 @@ const Requirements = ({ label }) => {
                                 className="hover:bg-gray-50 transition-colors text-center"
                             >
                                 {edit && rowItemId === requirement.id ? (
-                                    <td className=" py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="p-4 whitespace-nowrap text-left text-sm text-gray-500">
                                         <input
                                             className="p-2 w-full border-[1px] outline-green-500"
                                             type="text"
@@ -256,7 +259,8 @@ const Requirements = ({ label }) => {
                                         />
                                     </td>
                                 ) : (
-                                    <td className=" py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="p-4 text-left whitespace-nowrap text-sm text-gray-500">
+                                        {numberOfItemsPerPage + index + 1}{". "}
                                         {requirement.quantity}
                                     </td>
                                 )}
@@ -297,7 +301,7 @@ const Requirements = ({ label }) => {
                                         {requirement.submit}
                                     </td>
                                 )}
-                                <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                <td className="p-4 whitespace-nowrap text-sm font-medium">
                                     <button
                                         onClick={() => {
                                             {
@@ -400,7 +404,9 @@ const Requirements = ({ label }) => {
                     setIsOpen={setIsOpen}
                     onSuccess={fetchRequirements}
                     label={label}
-                    fields={scholarshipCriteriaInputFields.requirementInputFields}
+                    fields={
+                        scholarshipCriteriaInputFields.requirementInputFields
+                    }
                 />
                 {filteredRequirements.length > 0 && (
                     <>

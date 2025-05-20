@@ -181,3 +181,41 @@ null
 {"course_name":"new"}
 {"qualification":"new"}
 {"instruction":"new"}
+{"instruction":"ds"}
+{"strand":"sa"}
+{"applicantIds":[1296456],"batch":"Batch 1"}
+{"batch_name":"Batch 3"}
+{"batch_name":"Batch 2"}
+{"applicantIds":[5161991],"batch":"Batch 2"}
+{"strand":"d"}
+{"course_name":"f"}
+{"course_name":"dsm"}
+{"qualification":"new"}
+{"qualification":"usbd"}
+{"course_name":"ds"}
+{"course_name":"dsd"}
+{"strand":"iok"}
+{"strand":"pak"}
+{"course_name":"aguy'"}
+{"course_name":"gge"}
+{"course_name":"lk"}
+{"course_name":"cx"}
+{"course_name":"cxc"}
+{"course_name":"Bachelor"}
+{"course_name":"newww"}
+{"course_name":"Bac"}
+{"course_name":"Bachler"}
+{"course_name":"skisnc"}
+{"course_name":"ds"}
+{"course_name":"os"}
+{"course_name":"o"}
+{"course_name":"a"}
+{"course_name":"9"}
+{"course_name":"ato"}
+{"course_name":"sadao"}
+{"course_name":"ds"}
+{"course_name":"sad"}
+{"course_name":"fdf"}
+{"course_name":"as"}
+{"course_name":"s"}
+{"course_name":"dsd"}

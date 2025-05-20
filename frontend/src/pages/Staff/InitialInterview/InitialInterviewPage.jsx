@@ -1,45 +1,45 @@
 import { useState } from "react";
-import NewApplications from "./NewApplications";
-import RenewalApplications from "./RenewalApplications";
+import InitialInterviewList from "./InitialInterviewList";
+import InitialInterviewResultList from "./InitialInterviewResultList";
 
-const ApprovedApplicationsPage = () => {
-    const [activeTab, setActiveTab] = useState("newApplications");
+const InitialInterviewPage = () => {
+    const [activeTab, setActiveTab] = useState("initialInterviewList");
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">Approved Applications</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-6">Initial Interview</h1>
             
             <div className="border-b border-gray-200">
                 <nav className="-mb-px flex space-x-8">
                     <button
-                        onClick={() => setActiveTab("newApplications")}
+                        onClick={() => setActiveTab("initialInterviewList")}
                         className={`${
-                            activeTab === "newApplications"
+                            activeTab === "initialInterviewList"
                                 ? "border-green-500 text-green-600"
                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                     >
-                        New Applications
+                        Not Yet Interviewed
                     </button>
                     <button
-                        onClick={() => setActiveTab("renewalApplications")}
+                        onClick={() => setActiveTab("initialInterviewResultList")}
                         className={`${
-                            activeTab === "renewalApplications"
+                            activeTab === "initialInterviewResultList"
                                 ? "border-green-500 text-green-600"
                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                     >
-                        Renewal Applications
+                        Interviewed
                     </button>
                 </nav>
             </div>
 
             <div className="py-6">
-                {activeTab === "newApplications" && <NewApplications />}
-                {activeTab === "renewalApplications" && <RenewalApplications />}
+                {activeTab === "initialInterviewList" && <InitialInterviewList />}
+                {activeTab === "initialInterviewResultList" && <InitialInterviewResultList />}
             </div>
         </div>
     );
 };
 
-export default ApprovedApplicationsPage;
+export default InitialInterviewPage;

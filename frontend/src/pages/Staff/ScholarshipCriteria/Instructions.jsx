@@ -11,6 +11,7 @@ const Instruction = ({ label }) => {
     const [edit, setEdit] = useState(false);
     const [newText, setNewText] = useState("");
     const [rowItemId, setRowItemId] = useState(0);
+    const [numberOfItemsPerPage, setNumberOfItemsPerPage] = useState(0);
 
     const [instructions, setInstructions] = useState([]);
 
@@ -55,10 +56,12 @@ const Instruction = ({ label }) => {
     // Handle page changes
     const goToPreviousPage = () => {
         setCurrentPage((prev) => Math.max(prev - 1, 1));
+        setNumberOfItemsPerPage(numberOfItemsPerPage - 5);
     };
 
     const goToNextPage = () => {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+        setNumberOfItemsPerPage(numberOfItemsPerPage + 5);
     };
 
     const handleButtonState = (value, id) => {
@@ -210,7 +213,7 @@ const Instruction = ({ label }) => {
                                     </td>
                                 ) : (
                                     <td className="pl-10 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                        {`${index + 1}.`}{" "}
+                                        {`${numberOfItemsPerPage + index + 1}.`}{" "}
                                         {instruction.instruction}
                                     </td>
                                 )}

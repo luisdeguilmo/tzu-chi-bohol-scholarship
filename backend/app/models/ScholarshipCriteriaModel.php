@@ -132,24 +132,24 @@ class ScholarshipCriteriaModel {
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    // public function getAllCourses() {
-    //     $query = "SELECT * FROM " . $this->courses_table;
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->execute();
-        
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
-
     public function getAllCourses() {
-        $query = "SELECT (@row_number:=@row_number+1) AS row_number, c.* 
-                  FROM " . $this->courses_table . " c, 
-                  (SELECT @row_number:=0) r 
-                  ORDER BY c.course_name";
+        $query = "SELECT * FROM " . $this->courses_table;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    // public function getAllCourses() {
+    //     $query = "SELECT (@row_number:=@row_number+1) AS row_number, c.* 
+    //               FROM " . $this->courses_table . " c, 
+    //               (SELECT @row_number:=0) r 
+    //               ORDER BY c.course_name";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute();
+        
+    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    // }
 
     public function getCourseById($id) {
         $query = "SELECT * FROM " . $this->courses_table . " WHERE id = :id";

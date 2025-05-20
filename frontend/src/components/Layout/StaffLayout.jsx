@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import SideBar from "../../pages/Scholar/SideBar";
 import SideBarWithDropdown from "../SideBarWithDropdown";
 import TopBar from "../TopBar";
 

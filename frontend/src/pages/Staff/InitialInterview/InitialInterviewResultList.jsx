@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ApplicationFormPDF from "../../components/ApplicationFormPDF";
+import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
-import { formatDateTime } from "../../utils/formatDate";
+import { formatDateTime } from "../../../utils/formatDate";
 
-function InitialInterviewList() {
+function InitialInterviewResultList() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -176,12 +176,12 @@ function InitialInterviewList() {
                                 >
                                     Date Approved
                                 </th>
-                                {/* <th
+                                <th
                                     scope="col"
                                     className="py-3 text-center text-xs font-medium uppercase tracking-wider"
                                 >
                                     Status
-                                </th> */}
+                                </th>
                                 <th
                                     scope="col"
                                     className="py-3 text-center text-xs font-medium uppercase tracking-wider"
@@ -506,4 +506,4 @@ function Form({
     );
 }
 
-export default InitialInterviewList;
+export default InitialInterviewResultList;

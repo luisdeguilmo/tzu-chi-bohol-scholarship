@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ApplicationFormPDF from "../../components/ApplicationFormPDF";
+import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
-import { formatDateTime } from "../../utils/formatDate";
+import { formatDateTime } from "../../../utils/formatDate";
 
-export default function ExaminationList() {
+export default function UnassignedApplicants() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedBatch, setSelectedBatch] = useState("Batch 1");

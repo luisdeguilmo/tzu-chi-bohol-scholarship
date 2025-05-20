@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ApplicationFormPDF from "../../components/ApplicationFormPDF";
-import { toast } from "react-toastify";
-import { formatDateTime } from "../../utils/formatDate";
-import emailjs from "@emailjs/browser";
+import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
+import { formatDateTime } from "../../../utils/formatDate";
+import { approveStudentApplication, rejectStudentApplication } from "../../../services/applicationService";
 
-export default function Applications() {
+export default function ApplicationPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -13,13 +12,6 @@ export default function Applications() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [studentData, setStudentData] = useState([]);
-
-    // EmailJS configuration - replace with your actual service ID, template ID, and public key
-    const EMAILJS_SERVICE_ID = "service_97rzw6o";
-    const EMAILJS_TEMPLATE_ID = "template_zgcb5c1";
-    const EMAILJS_PUBLIC_KEY = "jes1Va_kLko0tAZh5";
-
-    const Reject = "template_5f51nna";
 
     const fetchStudentsData = async () => {
         try {
@@ -39,176 +31,6 @@ export default function Applications() {
     useEffect(() => {
         fetchStudentsData();
     }, []);
-
-    const sendApprovalEmail = async (studentInfo) => {
-        try {
-            // Prepare the template parameters
-            const templateParams = {
-                to_name: `${studentInfo.first_name} ${studentInfo.last_name}`,
-                to_email: studentInfo.email,
-                school_year: studentInfo.school_year,
-                applicant_name: `${studentInfo.first_name} ${
-                    studentInfo.middle_name ? studentInfo.middle_name + " " : ""
-                }${studentInfo.last_name}`,
-                organization: "Tzu Chi Foundation Philippines - Bohol Office",
-                contact_info: "tzuchibohol2014@gmail.com | 0998 885 5342",
-            };
-
-            // Send the email
-            const response = await emailjs.send(
-                EMAILJS_SERVICE_ID,
-                EMAILJS_TEMPLATE_ID,
-                templateParams,
-                EMAILJS_PUBLIC_KEY
-            );
-
-            console.log("Email successfully sent!", response);
-            return true;
-        } catch (error) {
-            console.error("Failed to send email:", error);
-            return false;
-        }
-    };
-
-    const sendRejectionEmail = async (studentInfo) => {
-        try {
-            // Prepare the template parameters
-            const templateParams = {
-                to_name: `${studentInfo.first_name} ${studentInfo.last_name}`,
-                to_email: studentInfo.email,
-                school_year: studentInfo.school_year,
-                applicant_name: `${studentInfo.first_name} ${
-                    studentInfo.middle_name ? studentInfo.middle_name + " " : ""
-                }${studentInfo.last_name}`,
-                organization: "Tzu Chi Foundation Philippines - Bohol Office",
-                contact_info: "tzuchibohol2014@gmail.com | 0998 885 5342",
-            };
-
-            // Send the email
-            const response = await emailjs.send(
-                EMAILJS_SERVICE_ID,
-                Reject,
-                templateParams,
-                EMAILJS_PUBLIC_KEY
-            );
-
-            console.log("Email successfully sent!", response);
-            return true;
-        } catch (error) {
-            console.error("Failed to send email:", error);
-            return false;
-        }
-    };
-
-    const rejectStudentApplication = async (studentId) => {
-        let confirmationId = window.prompt("Enter applicant's application ID:");
-
-        if (+confirmationId === studentId) {
-            try {
-                setLoading(true);
-
-                // 1. First update the application status
-                const response = await axios.post(
-                    "http://localhost:8000/app/views/update_application_status.php",
-                    {
-                        studentIds: [studentId],
-                        status: "Rejected",
-                    }
-                );
-                console.log(response.data.message);
-
-                // 2. Find the student information to use in the email
-                const studentToEmail = studentData.find(
-                    (student) => student.application_id === studentId
-                );
-
-                // 3. Send the approval email
-                if (studentToEmail) {
-                    const emailSent = await sendRejectionEmail(studentToEmail);
-
-                    if (emailSent) {
-                        toast.success(
-                            "Applicant rejected and notification email sent successfully!"
-                        );
-                    } else {
-                        toast.warning(
-                            "Applicant rejected but failed to send email notification."
-                        );
-                    }
-                } else {
-                    toast.warning(
-                        "Applicant rejected but could not find email information."
-                    );
-                }
-
-                // 4. Refresh the data after approval
-                await fetchStudentsData();
-                setLoading(false);
-            } catch (err) {
-                console.error("Error updating application status:", err);
-                setError("Failed to approve application.");
-                toast.error("Error approving application.");
-                setLoading(false);
-            }
-        } else {
-            toast.error("Incorrect application ID. Please try again.");
-        }
-    };
-
-    const updateStudentApplication = async (studentId) => {
-        let confirmationId = window.prompt("Enter applicant's application ID:");
-
-        if (+confirmationId === studentId) {
-            try {
-                setLoading(true);
-
-                // 1. First update the application status
-                const response = await axios.post(
-                    "http://localhost:8000/app/views/update_application_status.php",
-                    {
-                        studentIds: [studentId],
-                        status: "Approved",
-                    }
-                );
-                console.log(response.data.message);
-
-                // 2. Find the student information to use in the email
-                const studentToEmail = studentData.find(
-                    (student) => student.application_id === studentId
-                );
-
-                // 3. Send the approval email
-                if (studentToEmail) {
-                    const emailSent = await sendApprovalEmail(studentToEmail);
-
-                    if (emailSent) {
-                        toast.success(
-                            "Applicant rejected and notification email sent successfully!"
-                        );
-                    } else {
-                        toast.warning(
-                            "Applicant rejected but failed to send email notification."
-                        );
-                    }
-                } else {
-                    toast.warning(
-                        "Applicant rejected but could not find email information."
-                    );
-                }
-
-                // 4. Refresh the data after approval
-                await fetchStudentsData();
-                setLoading(false);
-            } catch (err) {
-                console.error("Error updating application status:", err);
-                setError("Failed to approve application.");
-                toast.error("Error approving application.");
-                setLoading(false);
-            }
-        } else {
-            toast.error("Incorrect application ID. Please try again.");
-        }
-    };
 
     // Filter data based on search term
     const filteredApplications = studentData.filter(
@@ -360,8 +182,12 @@ export default function Applications() {
                                         />
                                         <button
                                             onClick={() =>
-                                                updateStudentApplication(
-                                                    info.application_id
+                                                approveStudentApplication(
+                                                    info.application_id,
+                                                    studentData, 
+                                                    setLoading, 
+                                                    setError,
+                                                    fetchStudentsData
                                                 )
                                             }
                                             className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
@@ -386,7 +212,11 @@ export default function Applications() {
                                         <button
                                             onClick={() =>
                                                 rejectStudentApplication(
-                                                    info.application_id
+                                                    info.application_id,
+                                                    studentData,
+                                                    setLoading,
+                                                    setError,
+                                                    fetchStudentsData
                                                 )
                                             }
                                             className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
