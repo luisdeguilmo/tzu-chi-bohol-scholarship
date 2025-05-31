@@ -36,7 +36,7 @@ const Requirements = ({ label }) => {
     useEffect(() => {
         fetchRequirements();
     }, []);
-
+    
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -211,29 +211,29 @@ const Requirements = ({ label }) => {
             {/* Table */}
             <div className="overflow-x-auto rounded-sm border border-gray-200">
                 <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-green-100 text-green-800 text-center">
+                    <thead className="bg-gray-50 text-gray-700 text-center font-bold">
                         <tr>
                             <th
                                 scope="col"
-                                className="py-3 text-xs font-medium uppercase tracking-wider"
+                                className="py-3 text-xs uppercase tracking-wider"
                             >
                                 Quantity
                             </th>
                             <th
                                 scope="col"
-                                className="py-3 text-xs font-medium uppercase tracking-wider"
+                                className="py-3 text-xs uppercase tracking-wider"
                             >
                                 Description
                             </th>
                             <th
                                 scope="col"
-                                className="py-3 text-xs font-medium uppercase tracking-wider"
+                                className="py-3 text-xs uppercase tracking-wider"
                             >
                                 Submit During
                             </th>
                             <th
                                 scope="col"
-                                className="py-3 text-xs font-medium uppercase tracking-wider"
+                                className="py-3 text-xs uppercase tracking-wider"
                             >
                                 Actions
                             </th>
@@ -243,10 +243,10 @@ const Requirements = ({ label }) => {
                         {currentItems.map((requirement, index) => (
                             <tr
                                 key={requirement.id}
-                                className="hover:bg-gray-50 transition-colors text-center"
+                                className="hover:bg-gray-50 transition-colors text-center text-xs"
                             >
                                 {edit && rowItemId === requirement.id ? (
-                                    <td className="p-4 whitespace-nowrap text-left text-sm text-gray-500">
+                                    <td className="pl-4 whitespace-nowrap text-left text-gray-500">
                                         <input
                                             className="p-2 w-full border-[1px] outline-green-500"
                                             type="text"
@@ -259,15 +259,15 @@ const Requirements = ({ label }) => {
                                         />
                                     </td>
                                 ) : (
-                                    <td className="p-4 text-left whitespace-nowrap text-sm text-gray-500">
+                                    <td className="pl-4 text-left whitespace-nowrap text-gray-500">
                                         {numberOfItemsPerPage + index + 1}{". "}
                                         {requirement.quantity}
                                     </td>
                                 )}
                                 {edit && rowItemId === requirement.id ? (
-                                    <td className="py-4 text-sm text-gray-500">
+                                    <td className="p-3 text-gray-500">
                                         <textarea
-                                            rows={5}
+                                            rows={3}
                                             className="w-full p-2 resize-none text-justify border-[1px] outline-green-500"
                                             type="text"
                                             onChange={(e) =>
@@ -279,12 +279,12 @@ const Requirements = ({ label }) => {
                                         />
                                     </td>
                                 ) : (
-                                    <td className="py-4 max-w-md break-words text-sm text-gray-500">
+                                    <td className="py-3 max-w-md break-words text-gray-500">
                                         {requirement.description}
                                     </td>
                                 )}
                                 {edit && rowItemId === requirement.id ? (
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         <input
                                             className="p-2 w-full border-[1px] outline-green-500"
                                             type="text"
@@ -297,11 +297,11 @@ const Requirements = ({ label }) => {
                                         />
                                     </td>
                                 ) : (
-                                    <td className=" py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className=" py-3 whitespace-nowrap text-gray-500">
                                         {requirement.submit}
                                     </td>
                                 )}
-                                <td className="p-4 whitespace-nowrap text-sm font-medium">
+                                <td className="p-3 whitespace-nowrap">
                                     <button
                                         onClick={() => {
                                             {

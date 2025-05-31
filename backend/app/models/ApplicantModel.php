@@ -24,6 +24,26 @@ class ApplicantModel {
         return $stmt->fetchAll();
     }
 
+    public function getAllNewApplicants() {
+        $query = "SELECT pi.* 
+                  FROM personal_information pi
+                  JOIN application_info ai ON pi.application_id = ai.application_id
+                  WHERE ai.application_status IS NULL AND ai.status = 'New'";
+        
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll();
+    }
+
+    public function getAllRenewalApplicants() {
+        $query = "SELECT pi.* 
+                  FROM personal_information pi
+                  JOIN application_info ai ON pi.application_id = ai.application_id
+                  WHERE ai.application_status IS NULL AND ai.status = 'Old'";
+        
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll();
+    }
+
     // public function getAllApplicants() {
     //     $query = "SELECT pi.* FROM personal_information pi";
     //     $stmt = $this->pdo->query($query);

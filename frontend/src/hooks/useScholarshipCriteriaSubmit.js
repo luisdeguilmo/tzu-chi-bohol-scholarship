@@ -5,7 +5,7 @@ import axios from "axios"; // Using axios for better error handling
 function useScholarshipCriteriaSubmit(onSuccess) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    
+
     // Base URL configuration - makes it easier to update in one place
     const API_BASE_URL = "http://localhost:8000/app/views";
 
@@ -13,18 +13,32 @@ function useScholarshipCriteriaSubmit(onSuccess) {
     const handleError = (error, errorMessage) => {
         console.error(errorMessage, error);
         setError(error.message || "An unexpected error occurred");
-        toast.error(error.message || "Failed to submit the form. Please try again.");
+        toast.error(
+            error.message || "Failed to submit the form. Please try again."
+        );
         setIsLoading(false);
         return false;
     };
 
-    const handleStrandSubmit = async (e, text, setText, setIsOpen) => {
+    const handleStrandSubmit = async (
+        e,
+        text,
+        setText,
+        description,
+        setDescription,
+        setIsOpen
+    ) => {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-        
+
         // Create the data structure that matches your backend expectations
-        const data = { strand: text };
+        const data = {
+            strand: {
+                strand: text,
+                description: description,
+            },
+        };
 
         try {
             const formData = new FormData();
@@ -48,6 +62,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
             if (result.success) {
                 toast.success(result.message + ".");
                 setText("");
+                setDescription("");
                 setIsOpen(false);
                 setIsLoading(false);
                 if (onSuccess) onSuccess();
@@ -66,7 +81,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-        
+
         const data = { course_name: text };
 
         try {
@@ -107,7 +122,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-        
+
         const data = { procedure: text };
 
         try {
@@ -148,7 +163,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-        
+
         const data = { qualification: text };
 
         try {
@@ -198,7 +213,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-        
+
         const data = {
             requirement: {
                 quantity: quantity,
@@ -244,7 +259,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-        
+
         const data = { instruction: text };
 
         try {
@@ -289,7 +304,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         handleRequirementSubmit,
         handleInstructionSubmit,
         isLoading,
-        error
+        error,
     };
 }
 

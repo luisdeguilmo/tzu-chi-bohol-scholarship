@@ -178,17 +178,17 @@ const Instruction = ({ label }) => {
             {/* Table */}
             <div className="overflow-x-auto rounded-sm border border-gray-200">
                 <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-green-100 text-green-800">
+                    <thead className="bg-gray-50 text-gray-700 font-bold">
                         <tr>
                             <th
                                 scope="col"
-                                className="pl-20 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                                className="pl-20 py-3 text-left text-xs uppercase tracking-wider"
                             >
                                 Instructions
                             </th>
                             <th
                                 scope="col"
-                                className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                className="py-3 text-center text-xs uppercase tracking-wider"
                             >
                                 Actions
                             </th>
@@ -198,10 +198,10 @@ const Instruction = ({ label }) => {
                         {currentItems.map((instruction, index) => (
                             <tr
                                 key={instruction.id}
-                                className="hover:bg-gray-50 transition-colors"
+                                className="hover:bg-gray-50 transition-colors text-xs"
                             >
                                 {edit && rowItemId === instruction.id ? (
-                                    <td className="pl-10 py-4 text-left whitespace-nowrap text-sm text-gray-500">
+                                    <td className="pl-10 py-3 text-left whitespace-nowrap text-gray-500">
                                         <input
                                             className="p-2 w-full border-[1px] outline-green-500"
                                             type="text"
@@ -212,12 +212,12 @@ const Instruction = ({ label }) => {
                                         />
                                     </td>
                                 ) : (
-                                    <td className="pl-10 py-4 text-left whitespace-nowrap text-sm text-gray-500">
+                                    <td className="pl-10 py-3 text-left whitespace-nowrap text-gray-500">
                                         {`${numberOfItemsPerPage + index + 1}.`}{" "}
                                         {instruction.instruction}
                                     </td>
                                 )}
-                                <td className="py-4 text-center whitespace-nowrap text-sm font-medium">
+                                <td className="py-3 text-center whitespace-nowrap">
                                     <button
                                         onClick={(e) => {
                                             {

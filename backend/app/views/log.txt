@@ -219,3 +219,103 @@ null
 {"course_name":"as"}
 {"course_name":"s"}
 {"course_name":"dsd"}
+{"applicantIds":[6801038],"batch":"Batch 1"}
+{"batch_name":"Batch 3"}
+{"applicantIds":[1296456],"batch":"Batch 2"}
+{"batch_name":"Batch 3"}
+{"batch_name":"Batch 4"}
+{"batch_name":"Batch 5"}
+{"batch_name":"Batch 6"}
+{"batch_name":"Batch 7"}
+{"batch_name":"Batch 8"}
+{"id":1296456,"score":"43"}
+{"id":6801038,"score":"67"}
+{"applicantIds":[6801038],"batch":"Batch 1"}
+{"id":6801038,"score":"76"}
+{"applicantIds":[6801038],"batch":"Batch 1"}
+{"id":6801038,"score":"ds"}
+{"batch_name":"Batch 3"}
+{"applicantIds":[6801038],"batch":"Batch 1"}
+{"batch_name":"Batch 2"}
+{"applicantIds":[4309688],"batch":"Batch 1"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 3"}
+{"batch_name":"Batch 4"}
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+{"schedule":""}
+{"schedule":""}
+{"schedule":""}
+{"schedule":"2025-05-23T12:50"}
+{"schedule":"2025-05-23T12:50"}
+{"schedule":"2025-05-23T12:50"}
+{"schedule":"2025-05-23T12:50"}
+{"schedule":""}
+{"schedule":""}
+{"schedule":""}
+{"schedule":""}
+{"schedule":"2025-05-23T13:03"}
+{"schedule":"2025-05-23T13:03"}
+{"schedule":"2025-05-23T13:03"}
+{"schedule":"2025-05-23T13:03"}
+{"schedule":"2025-05-23T13:03"}
+{"schedule":""}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"schedule":"2025-05-23T13:10"}
+{"applicantIds":[5161991],"batch":"Batch 2"}
+{"strand":{"strand":"ds","description":""}}
+{"strand":{"strand":"ok","description":"ds"}}
+{"strand":{"strand":"HUMM *","description":"Humanities & Social Sciences"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"&","description":"&"}}
+{"strand":{"strand":"STEM *","description":"Science, Technology, Engineering & Mathematics"}}
+{"strand":{"strand":"GAS","description":"General Academic Strand"}}
+{"strand":{"strand":"ABM *","description":"Accountancy, Business & Management"}}
+{"strand":{"strand":"TVL","description":"Technical - Vocational - Livelihood\nSpecialization: choose your own specialization related to the course you want to take in college."}}
+{"course_name":"Bachelor of Science in Agriculture *"}
+{"course_name":"Bachelor of Science in Psychology"}
+{"course_name":"Bachelor of Science in Social Works *"}
+{"course_name":"Bachelor of Arts in English *"}
+{"course_name":"Bachelor of Science in Tourism Management"}
+{"course_name":"Bachelor of Science in Accountancy *"}
+{"course_name":"Bachelor of Science in Business Administration"}
+{"course_name":"Bachelor of Science in Office Administration"}
+{"course_name":"Bachelor of Science in Computer Science"}
+{"course_name":"Bachelor of Science in Information Technology *"}
+{"course_name":"Bachelor of Science in Computer Engineering"}
+{"course_name":"Bachelor of Science in Electronic Communication Engineering *"}
+{"course_name":"Bachelor of Science in Hospitality Management (BSHM)"}
+{"course_name":"Bachelor of Science in Tourism Management (BSTM)"}
+{"course_name":"Bachelor of Science in Economics"}
+{"course_name":"Bachelor of Science in Environmental Management"}
+{"course_name":"Bachelor of Arts in Communication *"}
+{"course_name":"Bachelor of Science in Journalism *"}
+{"applicantIds":[6044143],"batch":"Batch 2"}
+{"id":6801038,"score":"87"}
+{"applicantIds":[6801038,1296456,2001430],"batch":"Batch 1"}
+{"batch_name":"Batch 3"}
+{"course_name":"jgu"}
+{"strand":{"strand":"TVL","description":"Technical - Vocational - Livelihood\nSpecialization: choose your own specialization related to the course you want to take in college."}}
+{"strand":{"strand":"s","description":"s"}}

@@ -30,17 +30,20 @@ class ScholarshipCriteriaModel {
 
     // CREATE operations
     public function createStrand($data) {
-        $query = "INSERT INTO " . $this->strands_table . " 
-                  SET strand = :strand";
-        
-        $stmt = $this->pdo->prepare($query);
-        
-        $strand = htmlspecialchars(strip_tags($data));
-        
-        $stmt->bindParam(":strand", $strand);
-        
-        return $stmt->execute();
-    }
+    $query = "INSERT INTO " . $this->strands_table . " 
+              SET strand = :strand,
+              description = :description";
+    
+    $stmt = $this->pdo->prepare($query);
+    
+    $strand = strip_tags($data['strand']);
+    $description = strip_tags($data['description']);
+    
+    $stmt->bindParam(":strand", $strand);
+    $stmt->bindParam(":description", $description);
+    
+    return $stmt->execute();
+}
 
     public function createCourse($data) {
         $query = "INSERT INTO " . $this->courses_table . " 
@@ -48,7 +51,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $course_name = htmlspecialchars(strip_tags($data));
+        $course_name = strip_tags($data);
         
         $stmt->bindParam(":course_name", $course_name);
         
@@ -61,7 +64,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $qualification = htmlspecialchars(strip_tags($data));
+        $qualification = strip_tags($data);
         
         $stmt->bindParam(":qualification", $qualification);
         
@@ -76,9 +79,9 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $quantity = htmlspecialchars(strip_tags($data['quantity']));
-        $description = htmlspecialchars(strip_tags($data['description']));
-        $submit = htmlspecialchars(strip_tags($data['submit']));
+        $quantity = strip_tags($data['quantity']);
+        $description = strip_tags($data['description']);
+        $submit = strip_tags($data['submit']);
         
         $stmt->bindParam(":quantity", $quantity);
         $stmt->bindParam(":description", $description);
@@ -93,7 +96,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $procedure = htmlspecialchars(strip_tags($data));
+        $procedure = strip_tags($data);
         
         $stmt->bindParam(":procedure", $procedure);
         
@@ -106,7 +109,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $instruction = htmlspecialchars(strip_tags($data));
+        $instruction = strip_tags($data);
         
         $stmt->bindParam(":instruction", $instruction);
         
@@ -236,14 +239,17 @@ class ScholarshipCriteriaModel {
     // UPDATE operations
     public function updateStrand($id, $data) {
         $query = "UPDATE " . $this->strands_table . " 
-                  SET strand = :strand 
+                  SET strand = :strand,
+                  description = :description
                   WHERE id = :id";
         
         $stmt = $this->pdo->prepare($query);
         
-        $strand = htmlspecialchars(strip_tags($data));
+        $strand = strip_tags($data['strand']);
+        $description = strip_tags($data['description']);
         
         $stmt->bindParam(":strand", $strand);
+        $stmt->bindParam(":description", $description);
         $stmt->bindParam(":id", $id);
         
         return $stmt->execute();
@@ -256,7 +262,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $course_name = htmlspecialchars(strip_tags($data));
+        $course_name = strip_tags($data);
         
         $stmt->bindParam(":course_name", $course_name);
         $stmt->bindParam(":id", $id);
@@ -271,7 +277,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $qualification = htmlspecialchars(strip_tags($data));
+        $qualification = strip_tags($data);
         
         $stmt->bindParam(":qualification", $qualification);
         $stmt->bindParam(":id", $id);
@@ -288,9 +294,9 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $quantity = htmlspecialchars(strip_tags($data['quantity']));
-        $description = htmlspecialchars(strip_tags($data['description']));
-        $submit = htmlspecialchars(strip_tags($data['submit']));
+        $quantity = strip_tags($data['quantity']);
+        $description = strip_tags($data['description']);
+        $submit = strip_tags($data['submit']);
         
         $stmt->bindParam(":quantity", $quantity);
         $stmt->bindParam(":description", $description);
@@ -307,7 +313,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $procedure = htmlspecialchars(strip_tags($data));
+        $procedure = strip_tags($data);
         
         $stmt->bindParam(":procedure", $procedure);
         $stmt->bindParam(":id", $id);
@@ -322,7 +328,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $instruction = htmlspecialchars(strip_tags($data));
+        $instruction = strip_tags($data);
         
         $stmt->bindParam(":instruction", $instruction);
         $stmt->bindParam(":id", $id);

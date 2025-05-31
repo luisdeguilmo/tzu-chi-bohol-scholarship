@@ -9,6 +9,7 @@ class BatchModel {
 
     public $id;
     public $batch_name;
+    public $schedule;
     private $pdo;
 
     public function __construct() {
@@ -75,6 +76,28 @@ class BatchModel {
         
         return $stmt->execute();
     }
+
+    public function createSchedule($data, $id) {
+    try {
+        $query = "UPDATE " . $this->table_name . " SET schedule = :schedule WHERE batch_name = :batch_name";
+        $stmt = $this->pdo->prepare($query);
+        
+        if (!isset($data['schedule'])) {
+            throw new \Exception("Schedule data is required");
+        }
+        
+        $schedule = htmlspecialchars(strip_tags($data['schedule']));
+        
+        $stmt->bindParam(":schedule", $schedule);
+        $stmt->bindParam(":batch_name",  $id);
+        
+        return $stmt->execute();
+    
+    } catch (\Exception $e) {
+        error_log("createSchedule error: " . $e->getMessage());
+        throw $e;
+    }
+}
 
     // public function delete($id) {
     //     // First, get the file path to delete the actual file

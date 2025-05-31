@@ -5,34 +5,34 @@ import {
     sendApplicationRejectionEmail,
 } from "./emailService";
 
-export const rejectStudentApplication = async (
-    studentId,
-    studentData,
+export const rejectApplicantApplication = async (
+    applicationId,
+    applicantData,
     setLoading,
     setError,
-    fetchStudentsData
+    fetchApplicantsData
 ) => {
     const confirmationId = window.prompt("Enter applicant's application ID:");
 
-    if (+confirmationId === +studentId) {
+    if (+confirmationId === +applicationId) {
         try {
             setLoading(true);
 
             await axios.post(
                 "http://localhost:8000/app/views/update_application_status.php",
                 {
-                    studentIds: [studentId],
+                    studentIds: [applicationId],
                     status: "Rejected",
                 }
             );
 
-            const studentToEmail = studentData.find(
-                (student) => student.application_id === studentId
+            const applicantToEmail = applicantData.find(
+                (applicant) => applicant.application_id === applicationId
             );
 
-            if (studentToEmail) {
+            if (applicantToEmail) {
                 const emailSent = await sendApplicationRejectionEmail(
-                    studentToEmail
+                    applicantToEmail
                 );
                 toast[emailSent ? "success" : "warning"](
                     emailSent
@@ -45,7 +45,7 @@ export const rejectStudentApplication = async (
                 );
             }
 
-            await fetchStudentsData();
+            await fetchApplicantsData();
         } catch (err) {
             console.error("Error updating application status:", err);
             setError("Failed to reject application.");
@@ -58,34 +58,34 @@ export const rejectStudentApplication = async (
     }
 };
 
-export const approveStudentApplication = async (
-    studentId,
-    studentData,
+export const approveApplicantApplication = async (
+    applicationId,
+    applicantData,
     setLoading,
     setError,
-    fetchStudentsData
+    fetchApplicantsData
 ) => {
     const confirmationId = window.prompt("Enter applicant's application ID:");
-    console.log(confirmationId, studentId);
-    if (+confirmationId === +studentId) {
+    console.log(confirmationId, applicationId);
+    if (+confirmationId === +applicationId) {
         try {
             setLoading(true);
 
             await axios.post(
                 "http://localhost:8000/app/views/update_application_status.php",
                 {
-                    studentIds: [studentId],
+                    studentIds: [applicationId],
                     status: "Approved",
                 }
             );
 
-            const studentToEmail = studentData.find(
-                (student) => student.application_id === studentId
+            const applicantToEmail = applicantData.find(
+                (applicant) => applicant.application_id === applicationId
             );
 
-            if (studentToEmail) {
+            if (applicantToEmail) {
                 const emailSent = await sendApplicationApprovalEmail(
-                    studentToEmail
+                    applicantToEmail
                 );
                 toast[emailSent ? "success" : "warning"](
                     emailSent
@@ -98,7 +98,7 @@ export const approveStudentApplication = async (
                 );
             }
 
-            await fetchStudentsData();
+            await fetchApplicantsData();
         } catch (err) {
             console.error("Error updating application status:", err);
             setError("Failed to approve application.");

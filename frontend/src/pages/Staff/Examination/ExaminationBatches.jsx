@@ -3,13 +3,16 @@ import axios from "axios";
 import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
 import { formatDateTime } from "../../../utils/formatDate";
-import CreateBatchButton from "./CreateBatchButton";
+import BatchActions from "./BatchActions";
+import SetScheduleForm from "./SetScheduleForm";
+import { sendExaminationSchedule } from "../../../services/examinationService";
 
 export default function ExaminationBatches() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const [isOpen, setIsOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -18,9 +21,11 @@ export default function ExaminationBatches() {
     const [selectedBatch, setSelectedBatch] = useState("all");
 
     const [applicantsEachBatch, setApplicantsEachBatch] = useState([]);
+    const [applicantsToSend, setApplicantsToSend] = useState([]);
 
     const [edit, setEdit] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [score, setScore] = useState(0);
 
     const fetchBatches = async () => {
         try {
@@ -28,7 +33,6 @@ export default function ExaminationBatches() {
             const response = await axios.get(
                 `http://localhost:8000/app/views/batches.php`
             );
-            // Fix 2: Access the correct property in the response
             setBatches(response.data.data || []);
             setLoading(false);
         } catch (err) {
@@ -44,7 +48,6 @@ export default function ExaminationBatches() {
             const response = await axios.get(
                 `http://localhost:8000/app/views/batch-examination.php?batch=${selectedBatch}`
             );
-            // Access the correct property in the response
             setApplicantsEachBatch(response.data.data || []);
             setLoading(false);
         } catch (err) {
@@ -56,7 +59,6 @@ export default function ExaminationBatches() {
 
     useEffect(() => {
         fetchBatches();
-        // Initially fetch applicants for the default selected batch
     }, []);
 
     useEffect(() => {
@@ -88,88 +90,151 @@ export default function ExaminationBatches() {
     const handleButtonState = (id, value) => {
         setEdit(true);
         setEditingId(id);
-        // setNewText(value);
+        setScore(value || 0); // Set initial value
     };
 
-    const handleEdit = async (id) => {
+    const handleChange = (value) => {
+        setScore(value);
+    };
+
+    // const handleEdit = async (id) => {
+    //     setEdit(false);
+    //     setEditingId(null);
+
+    //     // Check if the user cancelled or submitted an empty string
+    //     if (score === null || score.trim() === "") {
+    //         return; // Exit if cancelled or empty
+    //     }
+
+    //     try {
+    //         // Create the data structure for the update
+    //         const data = {
+    //             id: id,
+    //             score: score, // Changed from procedure to score
+    //         };
+
+    //         // Send the PUT request with the data in the body
+    //         const response = await axios.put(
+    //             `http://localhost:8000/app/views/batch-examination.php`, // Updated endpoint
+    //             data,
+    //             {
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                 },
+    //             }
+    //         );
+
+    //         // Check for success and update the UI
+    //         if (response.data.success) {
+    //             // Update the local state to reflect the change
+    //             const updatedApplicants = applicantsEachBatch.map((item) =>
+    //                 item.applicationInfo.application_id === id
+    //                     ? {
+    //                           ...item,
+    //                           applicationInfo: {
+    //                               ...item.applicationInfo,
+    //                               score: score,
+    //                           },
+    //                       }
+    //                     : item
+    //             );
+    //             setApplicantsEachBatch(updatedApplicants);
+
+    //             // Show success message
+    //             toast.success("Score updated successfully.");
+    //         } else {
+    //             toast.error("Error: " + response.data.message);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error updating score:", error);
+    //         toast.error("Failed to update score");
+    //     }
+    // };
+
+    const handleAddScore = async (id) => {
         setEdit(false);
         setEditingId(null);
 
         // Check if the user cancelled or submitted an empty string
-        if (newText === null || newText.trim() === "") {
+        if (!score || score < 0) {
             return; // Exit if cancelled or empty
         }
 
-        // try {
-        //     // Create the data structure for the update
-        //     const data = {
-        //         id: id,
-        //         procedure: newText,
-        //     };
-
-        //     // Send the PUT request with the data in the body
-        //     const response = await axios.put(
-        //         `http://localhost:8000/app/views/procedures.php`,
-        //         data,
-        //         {
-        //             headers: {
-        //                 "Content-Type": "application/json",
-        //             },
-        //         }
-        //     );
-
-        //     // Check for success and update the UI
-        //     if (response.data.success) {
-        //         // Update the local state to reflect the change
-        //         const updatedProcedures = procedures.map((item) =>
-        //             item.id === id ? { ...item, procedure: newText } : item
-        //         );
-        //         setProcedures(updatedProcedures);
-
-        //         // Show success message
-        //         toast.success("Procedure updated successfully.");
-        //     } else {
-        //         alert("Error: " + response.data.message);
-        //     }
-        // } catch (error) {
-        //     console.error("Error updating procedure:", error);
-        //     alert("Failed to update procedure");
-        // }
-    };
-
-    // Handle batch selection change
-    const handleBatchChange = (e) => {
-        const newBatchId = e.target.value;
-        setSelectedBatch(newBatchId);
-        setCurrentPage(1); // Reset to first page when changing batches
-
-        fetchApplicantsEachBatch();
-
-        console.log(applicantsEachBatch);
-    };
-
-    const updateBatchToUnassigned = async (id) => {
         try {
-            setLoading(true);
-            const response = await axios.put(
-                "http://localhost:8000/app/views/batch-examination.php",
+            // Create the data structure for the update
+            const data = {
+                id: id,
+                score: score, // Changed from procedure to score
+            };
+
+            // Send the PUT request with the data in the body
+            const response = await axios.post(
+                `http://localhost:8000/app/views/scores.php`, // Updated endpoint
+                data,
                 {
-                    id: id,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 }
             );
-            console.log(response.data.message); // Success message
 
-            // Refresh the data after approval
-            await fetchApplicantsEachBatch();
+            // Check for success and update the UI
+            if (response.data.success) {
+                // Update the local state to reflect the change
+                const updatedApplicants = applicantsEachBatch.map((item) =>
+                    item.applicationInfo.application_id === id
+                        ? {
+                              ...item,
+                              applicationInfo: {
+                                  ...item.applicationInfo,
+                                  score: score,
+                              },
+                          }
+                        : item
+                );
+                setApplicantsEachBatch(updatedApplicants);
 
-            // Optional: Show success notification
-            toast.success("Successfully updated to unassigned.");
-        } catch (err) {
-            console.error("Error updating application batch:", err);
-            setError("Failed to update application.");
-            setLoading(false);
+                // Show success message
+                toast.success("Score updated successfully.");
+            } else {
+                toast.error("Error: " + response.data.message);
+            }
+        } catch (error) {
+            console.error("Error updating score:", error);
+            toast.error("Failed to update score");
         }
     };
+
+    // Handle batch selection change - FIXED
+    const handleBatchChange = (e) => {
+        const newBatchValue = e.target.value;
+        setSelectedBatch(newBatchValue);
+        setCurrentPage(1); // Reset to first page when changing batches
+        console.log("Selected batch:", newBatchValue);
+    };
+
+    // const updateBatchToUnassigned = async (id) => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await axios.put(
+    //             "http://localhost:8000/app/views/batch-examination.php",
+    //             {
+    //                 id: id,
+    //             }
+    //         );
+    //         console.log(response.data.message); // Success message
+
+    //         // Refresh the data after approval
+    //         await fetchApplicantsEachBatch();
+
+    //         // Optional: Show success notification
+    //         toast.success("Successfully updated to unassigned.");
+    //     } catch (err) {
+    //         console.error("Error updating application batch:", err);
+    //         setError("Failed to update application.");
+    //         setLoading(false);
+    //     }
+    // };
 
     // Filter data based on search term
     const filteredApplications = applicantsEachBatch.filter((applicant) => {
@@ -186,6 +251,7 @@ export default function ExaminationBatches() {
         const { applicationInfo, personalInfo } = applicant;
 
         return (
+            applicationInfo.application_id.toString().includes(searchTerm) ||
             applicationInfo.application_status
                 ?.toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
@@ -226,10 +292,61 @@ export default function ExaminationBatches() {
         fetchBatches(); // Refresh the batches list
     };
 
+    const getSchedule = (selectedBatch) => {
+        if (selectedBatch === "all") return false;
+        const batch = batches.find(
+            (batch) => batch.batch_name === selectedBatch
+        );
+        return batch.schedule;
+    };
+
     // Find the batch name from the batch ID
     const getBatchName = (batchId) => {
         const batch = batches.find((b) => b.id === batchId);
         return batch ? batch.batch_name : "Unassigned";
+    };
+
+    const handleSendSchedule = () => {
+        applicantsEachBatch.forEach((applicant) => {
+            const { applicationInfo, personalInfo } = applicant;
+            sendExaminationSchedule(
+                applicant.application_id,
+                applicationInfo,
+                personalInfo,
+                getDateAndTime,
+                setLoading,
+                setError
+            );
+        });
+    };
+
+    const getDateAndTime = () => {
+        if (selectedBatch === "all") return false;
+
+        const batch = batches.find(
+            (batch) => batch.batch_name === selectedBatch
+        );
+
+        const datetimeString = batch.schedule; // Assuming format: "2025-05-22 11:51:21"
+        if (!datetimeString) return false;
+
+        const dateObj = new Date(datetimeString);
+
+        // Format date: "January 20, 2026"
+        const formattedDate = dateObj.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+
+        // Format time: "10:00 AM"
+        const formattedTime = dateObj.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+        });
+
+        return { date: formattedDate, time: formattedTime };
     };
 
     return (
@@ -241,35 +358,22 @@ export default function ExaminationBatches() {
                     </h2>
 
                     <div className="flex items-center space-x-4">
-                        {/* Batch Dropdown - FIX: Use id as value instead of batch_name */}
+                        {/* Batch Dropdown - FIXED */}
                         <div className="relative">
                             <select
                                 value={selectedBatch}
                                 onChange={handleBatchChange}
                                 className="appearance-none bg-white border border-gray-300 rounded-lg py-2 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-500"
                             >
-                                {/* {selectedBatch === "all" ? (
-                                    <option value='all'>Select Batch</option>
-                                ) : (
-                                    <option value='all' disabled>
-                                        Select Batch
-                                    </option>
-                                )} */}
                                 <option value="all">All Batches</option>
-                                {batches.length > 0 ? (
-                                    batches.map((batch) => (
-                                        <option
-                                            key={batch.id}
-                                            value={batch.batch_name}
-                                        >
-                                            {batch.batch_name}
-                                        </option>
-                                    ))
-                                ) : (
-                                    <option disabled>
-                                        No batches available
+                                {batches.map((batch) => (
+                                    <option
+                                        key={batch.id}
+                                        value={batch.batch_name}
+                                    >
+                                        {batch.batch_name}
                                     </option>
-                                )}
+                                ))}
                             </select>
                             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                 <svg
@@ -309,6 +413,21 @@ export default function ExaminationBatches() {
                     </div>
                 </div>
 
+                {/* Loading state */}
+                {loading && (
+                    <div className="text-center py-10">
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                        <p className="mt-2 text-gray-500">Loading...</p>
+                    </div>
+                )}
+
+                {/* Error state */}
+                {error && (
+                    <div className="text-center py-10 bg-red-50 rounded-lg">
+                        <p className="text-red-600">{error}</p>
+                    </div>
+                )}
+
                 {/* No batches state */}
                 {!loading && !error && batches.length === 0 && (
                     <div className="text-center py-10 bg-gray-50 rounded-lg">
@@ -336,38 +455,44 @@ export default function ExaminationBatches() {
                 )}
 
                 {/* Table */}
-                {!loading && batches.length > 0 && (
+                {!loading && !error && batches.length > 0 && (
                     <div className="overflow-x-auto rounded-[4px] border border-gray-200">
                         <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-green-100 text-green-800">
+                            <thead className="bg-gray-50 text-gray-800 font-bold">
                                 <tr>
                                     <th
                                         scope="col"
-                                        className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                        className="px-3 py-3 text-center text-xs uppercase tracking-wider"
                                     >
                                         Application ID
                                     </th>
                                     <th
                                         scope="col"
-                                        className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-center text-xs uppercase tracking-wider"
                                     >
                                         Name
                                     </th>
                                     <th
                                         scope="col"
-                                        className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-center text-xs uppercase tracking-wider"
                                     >
                                         Batch
                                     </th>
                                     <th
                                         scope="col"
-                                        className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-center text-xs uppercase tracking-wider"
                                     >
                                         Date Applied
                                     </th>
                                     <th
                                         scope="col"
-                                        className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-center text-xs uppercase tracking-wider"
+                                    >
+                                        Exam Schedule
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="py-3 text-center text-xs uppercase tracking-wider"
                                     >
                                         Score
                                     </th>
@@ -379,7 +504,7 @@ export default function ExaminationBatches() {
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white divide-y divide-gray-200 text-xs">
                                 {currentItems.length > 0 ? (
                                     currentItems.map((info, index) => {
                                         const {
@@ -392,25 +517,34 @@ export default function ExaminationBatches() {
                                                 key={index}
                                                 className="transition-colors text-center"
                                             >
-                                                <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="py-3 whitespace-nowrap text-gray-500">
                                                     {
                                                         applicationInfo.application_id
                                                     }
                                                 </td>
-                                                <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-500">
+                                                <td className="py-3 whitespace-nowrap font-medium text-gray-500">
                                                     {personalInfo.last_name +
                                                         ", " +
                                                         personalInfo.middle_name +
                                                         ", " +
                                                         personalInfo.first_name}
                                                 </td>
-                                                <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="py-3 whitespace-nowrap text-gray-500">
                                                     {applicationInfo.batch}
                                                 </td>
-                                                <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {formatDateTime(personalInfo.created_at)}
+                                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                                    {formatDateTime(
+                                                        personalInfo.created_at
+                                                    )}
                                                 </td>
-                                                <td className="py-4 text-center whitespace-nowrap text-sm text-gray-500">
+                                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                                    {formatDateTime(
+                                                        getSchedule(
+                                                            applicationInfo.batch
+                                                        )
+                                                    ) || "Not Set"}
+                                                </td>
+                                                <td className="py-3 text-center whitespace-nowrap text-gray-500">
                                                     {edit &&
                                                     editingId ===
                                                         applicationInfo.application_id ? (
@@ -423,46 +557,17 @@ export default function ExaminationBatches() {
                                                                         .value
                                                                 )
                                                             }
-                                                            // value={newText}
+                                                            value={score}
                                                         />
                                                     ) : (
-                                                        <span>{applicationInfo.score || '--'}
+                                                        <span>
+                                                            {applicationInfo.score ||
+                                                                "--"}
                                                         </span>
                                                     )}
                                                 </td>
-                                                {/* <td className="py-4 whitespace-nowrap text-sm font-medium">
-                                                    <ApplicationFormPDF
-                                                        studentId={
-                                                            applicationInfo.application_id
-                                                        }
-                                                    />
-                                                    <button
-                                                        onClick={() =>
-                                                            updateBatchToUnassigned(
-                                                                applicationInfo.application_id
-                                                            )
-                                                        }
-                                                        className="inline-flex items-center text-red-600 hover:text-red-900"
-                                                    >
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            className="h-4 w-4 mr-1"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                            stroke="currentColor"
-                                                        >
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                strokeWidth={2}
-                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7"
-                                                            />
-                                                        </svg>
-                                                        Remove
-                                                    </button>
-                                                </td> */}
 
-                                                <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                                <td className="py-3 whitespace-nowrap font-medium">
                                                     <button
                                                         onClick={() => {
                                                             if (
@@ -470,17 +575,18 @@ export default function ExaminationBatches() {
                                                                 editingId ===
                                                                     applicationInfo.application_id
                                                             ) {
-                                                                handleEdit(
+                                                                handleAddScore(
                                                                     applicationInfo.application_id
                                                                 );
                                                             } else {
                                                                 handleButtonState(
                                                                     applicationInfo.application_id,
-                                                                    applicationInfo.application_id
+                                                                    applicationInfo.score ||
+                                                                        ""
                                                                 );
                                                             }
                                                         }}
-                                                        className="inline-flex items-center text-green-600 hover:text-red-900"
+                                                        className="inline-flex items-center text-green-600 hover:text-green-900"
                                                     >
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
@@ -500,6 +606,8 @@ export default function ExaminationBatches() {
                                                         editingId ===
                                                             applicationInfo.application_id
                                                             ? "Save"
+                                                            : applicationInfo.score
+                                                            ? "Edit Score"
                                                             : "Add Score"}
                                                     </button>
                                                 </td>
@@ -509,8 +617,8 @@ export default function ExaminationBatches() {
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan="8"
-                                            className="text-center py-10"
+                                            colSpan="6"
+                                            className="text-center py-3"
                                         >
                                             <div className="flex flex-col items-center justify-center">
                                                 <svg
@@ -527,7 +635,7 @@ export default function ExaminationBatches() {
                                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                                     />
                                                 </svg>
-                                                <p className="mt-2 text-gray-500">
+                                                <p className="text-gray-500">
                                                     {selectedBatch === "all"
                                                         ? "No applications found. Try adjusting your search."
                                                         : "No applications in this batch. Students may need to be assigned."}
@@ -543,15 +651,48 @@ export default function ExaminationBatches() {
 
                 {/* Bottom controls area */}
                 <div className="flex justify-between items-center mt-6">
-                    <CreateBatchButton
-                        isOpen={isOpen}
-                        setIsOpen={setIsOpen}
-                        onSuccess={handleBatchCreated}
-                        selectedBatch={selectedBatch}
-                        batches={batches}
-                        setBatches={setBatches}
-                        applicantsEachBatch={applicantsEachBatch}
-                    />
+                    <div className="flex items-center">
+                        {selectedBatch !== "all" && (
+                            <>
+                                <SetScheduleForm
+                                    isOpen={isModalOpen}
+                                    setIsOpen={setIsModalOpen}
+                                    batches={batches}
+                                    selectedBatch={selectedBatch}
+                                    onSuccess={fetchBatches}
+                                />
+                                <button
+                                    onClick={handleSendSchedule}
+                                    className="text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5 mr-1"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                        />
+                                    </svg>
+                                    Send Email
+                                </button>
+                            </>
+                        )}
+                        <BatchActions
+                            isOpen={isOpen}
+                            setIsOpen={setIsOpen}
+                            onSuccess={handleBatchCreated}
+                            selectedBatch={selectedBatch}
+                            batches={batches}
+                            setBatches={setBatches}
+                            applicantsEachBatch={applicantsEachBatch}
+                        />
+                    </div>
 
                     {!loading && filteredApplications.length > 0 && (
                         <>

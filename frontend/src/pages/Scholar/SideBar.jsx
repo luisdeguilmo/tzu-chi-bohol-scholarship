@@ -56,7 +56,7 @@ function SideBar({ items }) {
                         <li
                             onClick={() => handleClick(item.navigate)}
                             key={index}
-                            className={`flex items-center gap-3 cursor-pointer hover:bg-gray-200 whitespace-nowrap w-full px-3 py-1 rounded-lg ${item.style}`}
+                            className={`flex items-center gap-3 cursor-pointer hover:bg-gray-200 whitespace-nowrap w-full px-3 py-2 rounded-lg ${item.style}`}
                         >
                             <span
                                 className={`material-symbols-outlined md:${item.iconStyle} text-xl`}

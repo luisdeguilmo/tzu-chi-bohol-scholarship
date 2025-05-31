@@ -51,7 +51,7 @@ export default function NewApprovedApplications() {
             toast.success("Status successfully updated." + ".");
 
             // Refresh the data after approval
-            await fetchStudentsData();    
+            await fetchStudentsData();
         } catch (err) {
             console.error("Error updating application status:", err);
             setError("Failed to approve application.");
@@ -103,7 +103,8 @@ export default function NewApprovedApplications() {
     };
 
     const selectAllVisible = () => {
-        const visibleIds = currentItems.map((item) => item.id);
+        const visibleIds = currentItems.map((item) => item.application_id);
+        // item.application_status !== "Examination"
         if (selectedApplications.length === visibleIds.length) {
             // If all are selected, deselect all
             setSelectedApplications([]);
@@ -122,39 +123,66 @@ export default function NewApprovedApplications() {
                         Applications
                     </h2>
 
-                    {/* Search */}
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg
-                                className="w-4 h-4 text-gray-500"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
+                    <div className="flex items-center space-x-4">
+                        {/* Batch Dropdown - FIX: Use id as value instead of batch_name */}
+                        <div className="relative">
+                            <select className="appearance-none bg-white border border-gray-300 rounded-lg py-2 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-500">
+                                {/* {selectedBatch === "all" ? (
+                                    <option value='all'>Select Batch</option>
+                                ) : (
+                                    <option value='all' disabled>
+                                        Select Batch
+                                    </option>
+                                )} */}
+                                <option value={new Date}>Today</option>
+                                <option value="">2025</option>
+                                <option value="">2026</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg
+                                    className="fill-current h-4 w-4"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                            </div>
                         </div>
-                        <input
-                            type="text"
-                            placeholder="Search applications..."
-                            className="pl-10 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+
+                        {/* Search */}
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg
+                                    className="w-4 h-4 text-gray-500"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search applications..."
+                                className="pl-10 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
                     </div>
                 </div>
 
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
                     <table className="w-[1200px] divide-y divide-gray-200">
-                        <thead className="bg-green-100 text-green-800">
+                        <thead className="bg-gray-50 text-gray-800 font-bold">
                             <tr>
-                                <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                                    <input
+                                <th className="pl-4 py-3 text-center text-xs uppercase tracking-wider">
+                                    {/* <input
                                         type="checkbox"
                                         className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                                         checked={
@@ -163,91 +191,94 @@ export default function NewApprovedApplications() {
                                                 currentItems.length
                                         }
                                         onChange={selectAllVisible}
-                                    />
+                                    /> */}
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Application ID
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Name
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Date Applied
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Date Approved
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Status
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Actions
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white divide-y divide-gray-200 text-xs">
                             {currentItems.map((info, index) => (
                                 <tr
                                     key={info.application_id}
                                     className={` transition-colors text-center`}
                                 >
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <input
-                                            type="checkbox"
-                                            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                                            checked={selectedApplications.includes(
-                                                info.application_id
-                                            )}
-                                            onChange={() =>
-                                                toggleApplicationSelection(
+                                    <td className="py-3 whitespace-nowrap text-sm text-gray-500">
+                                        {info.application_status ===
+                                            "Approved" && (
+                                            <input
+                                                type="checkbox"
+                                                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                                                checked={selectedApplications.includes(
                                                     info.application_id
-                                                )
-                                            }
-                                            disabled={
-                                                info.application_status !==
-                                                "Approved"
-                                            }
-                                        />
+                                                )}
+                                                onChange={() =>
+                                                    toggleApplicationSelection(
+                                                        info.application_id
+                                                    )
+                                                }
+                                                disabled={
+                                                    info.application_status !==
+                                                    "Approved"
+                                                }
+                                            />
+                                        )}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {info.application_id}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-500">
+                                    <td className="py-3 whitespace-nowrap font-medium text-gray-500">
                                         {info.last_name +
                                             ", " +
                                             info.middle_name +
                                             ", " +
                                             info.first_name}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {formatDateTime(info.created_at)}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {info.approved_at
                                             ? formatDateTime(info.approved_at)
                                             : "--"}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
                                         <span
-                                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                            className={`inline-flex px-2 py-1 text-xs rounded-full ${
                                                 info.application_status ===
                                                 "Examination"
                                                     ? "bg-green-100 text-green-800"
@@ -263,7 +294,7 @@ export default function NewApprovedApplications() {
                                                 : "Pending"}
                                         </span>
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                    <td className="py-3 whitespace-nowrap font-medium">
                                         <ApplicationFormPDF
                                             studentId={info.application_id}
                                         />
@@ -334,9 +365,25 @@ export default function NewApprovedApplications() {
                     )}
                 </div>
 
+                <div className="w-[max-content] py-4">
+                    <label className="flex gap-2 items-center text-sm font-medium text-gray-700">
+                        <input
+                            type="checkbox"
+                            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                            checked={
+                                currentItems.length > 0 &&
+                                selectedApplications.length ===
+                                    currentItems.length
+                            }
+                            onChange={selectAllVisible}
+                        />
+                        Select All
+                    </label>
+                </div>
+
                 {/* Pagination */}
                 {filteredApplications.length > 0 && (
-                    <div className="flex justify-between items-center mt-6">
+                    <div className="flex justify-between items-center">
                         <div className="flex justify-between items-center mb-4">
                             <button
                                 onClick={updateStudentApplication}

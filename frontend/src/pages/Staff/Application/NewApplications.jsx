@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import { formatDateTime } from "../../../utils/formatDate";
+import { approveApplicantApplication, rejectApplicantApplication } from "../../../services/applicationService";
 
-export default function RenewalApprovedApplications() {
+export default function NewApplications() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -12,11 +13,11 @@ export default function RenewalApprovedApplications() {
     const [error, setError] = useState(null);
     const [studentData, setStudentData] = useState([]);
 
-    const fetchStudentsData = async (id) => {
+    const fetchStudentsData = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/applicants.php?application_status=Approved&status=Old`
+                `http://localhost:8000/app/views/applicants.php?status=New`
             );
             setStudentData(response.data.personalInfo);
             setLoading(false);
@@ -64,7 +65,6 @@ export default function RenewalApprovedApplications() {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     };
 
-    console.log(studentData);
     return (
         <div className="py-8">
             <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
@@ -100,7 +100,7 @@ export default function RenewalApprovedApplications() {
                 </div>
 
                 {/* Table */}
-                <div className="overflow-x-auto rounded-lg border border-gray-200">
+                <div className="overflow-x-auto rounded-[4px] border border-gray-200">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50 text-gray-800 font-bold">
                             <tr>
@@ -120,24 +120,6 @@ export default function RenewalApprovedApplications() {
                                     scope="col"
                                     className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
-                                    Gender
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs uppercase tracking-wider"
-                                >
-                                    Age
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs uppercase tracking-wider"
-                                >
-                                    Contact
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs uppercase tracking-wider"
-                                >
                                     Date Applied
                                 </th>
                                 <th
@@ -149,15 +131,15 @@ export default function RenewalApprovedApplications() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200 text-xs">
-                            {currentItems.map((info, index) => (
+                            {currentItems.map((info) => (
                                 <tr
                                     key={info.application_id}
-                                    className={` transition-colors text-center`}
+                                    className="transition-colors text-center"
                                 >
                                     <td className="py-3 whitespace-nowrap text-gray-500">
                                         {info.application_id}
                                     </td>
-                                    <td className="py-3 whitespace-nowrap font-medium text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-sm text-gray-500">
                                         {info.last_name +
                                             ", " +
                                             info.middle_name +
@@ -165,21 +147,24 @@ export default function RenewalApprovedApplications() {
                                             info.first_name}
                                     </td>
                                     <td className="py-3 whitespace-nowrap text-gray-500">
-                                        {info.gender}
-                                    </td>
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
-                                        {info.age}
-                                    </td>
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
-                                        {info.contact_number}
-                                    </td>
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {formatDateTime(info.created_at)}
                                     </td>
                                     <td className="py-3 whitespace-nowrap font-medium">
-                                        {/* <button
-                                            onClick={() => handleView(coa)}
-                                            className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
+                                        <ApplicationFormPDF
+                                            studentId={info.application_id}
+                                        />
+                                        <button
+                                            onClick={() =>
+                                                approveApplicantApplication(
+                                                    info.application_id,
+                                                    studentData, 
+                                                    setLoading, 
+                                                    setError,
+                                                    fetchStudentsData
+                                                )
+                                            }
+                                            className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                            disabled={loading}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -192,18 +177,40 @@ export default function RenewalApprovedApplications() {
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     strokeWidth={2}
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                    d="M5 13l4 4L19 7"
                                                 />
+                                            </svg>
+                                            Approve
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                rejectApplicantApplication(
+                                                    info.application_id,
+                                                    studentData,
+                                                    setLoading,
+                                                    setError,
+                                                    fetchStudentsData
+                                                )
+                                            }
+                                            className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                            disabled={loading}
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-4 w-4 mr-1"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
                                                 <path
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     strokeWidth={2}
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                                    d="M6 18L18 6M6 6l12 12"
                                                 />
                                             </svg>
-                                            View
-                                        </button> */}
-                                        <ApplicationFormPDF studentId={info.application_id} />
+                                            Reject
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

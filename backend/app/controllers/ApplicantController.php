@@ -19,11 +19,21 @@ try {
     $application_status = $_GET['application_status'] ?? null;
     $status = $_GET['status'] ?? null;
     $batch = $_GET['batch'] ?? null;
+
+    // if ($application_status === null && $status === null) {
+    //     // No filters - get all applicants
+    //     $data = $applicant->getAllApplicants();
+    // }
     
     // Determine which method to call based on parameters
-    if ($application_status === null && $status === null) {
-        // No filters - get all applicants
-        $data = $applicant->getAllApplicants();
+    if ($application_status === null) {
+        if ($status === 'New') {
+            $data = $applicant->getAllNewApplicants();
+        } else if ($status === 'Old') {
+            $data = $applicant->getAllRenewalApplicants();
+        } else {
+            $data = $applicant->getAllApplicants();
+        }
     } else if ($application_status === 'under_review') {
         // Get applications under review
         $data = $applicant->getApplicantsUnderReview();

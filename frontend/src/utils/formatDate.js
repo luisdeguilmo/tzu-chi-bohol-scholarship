@@ -1,4 +1,6 @@
 export function formatDateTime(dateString) {
+    if (!dateString) return false;
+    
     const date = new Date(dateString);
 
     const hasTime = dateString.includes('T') || dateString.includes(' ');

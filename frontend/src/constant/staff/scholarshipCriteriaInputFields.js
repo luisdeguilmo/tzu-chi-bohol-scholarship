@@ -1,6 +1,7 @@
 const scholarshipCriteriaInputFields = {
     strandInputField: [
         { name: "Strand", type: "text", placeholder: "Enter strand name" },
+        { name: "Description", type: "textarea", placeholder: "Enter description" },
     ],
 
     courseInputField: [
@@ -9,7 +10,7 @@ const scholarshipCriteriaInputFields = {
 
     requirementInputFields: [
         { name: "Quantity", type: "text", placeholder: "Enter quantity" },
-        { name: "Description", type: "text", placeholder: "Enter description" },
+        { name: "Description", type: "textarea", placeholder: "Enter description" },
         { name: "Submit During", type: "text", placeholder: "Enter submit during" },
     ],
 

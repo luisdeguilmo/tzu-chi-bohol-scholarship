@@ -3,36 +3,55 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import FormModal from "./FormModal";
 import scholarshipCriteriaInputFields from "../../../constant/staff/scholarshipCriteriaInputFields";
+import SearchBar from "../../../components/ScholarshipCriteria/SearchBar";
 
-const Procedures = ({ label }) => {
+const Strandss = ({ label }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [edit, setEdit] = useState(false);
     const [newText, setNewText] = useState("");
-    const [editingId, setEditingId] = useState(null);
-    const [numberOfItemsPerPage, setNumberOfItemsPerPage] = useState(0)
+    const [rowItemId, setRowItemId] = useState(0);
+    const [newDescription, setNewDescription] = useState("");
+    const [numberOfItemsPerPage, setNumberOfItemsPerPage] = useState(0);
+    const [strands, setStrands] = useState([]);
 
-    const [procedures, setProcedures] = useState([]);
+    const handleDescriptionChange = (value) => {
+        setNewDescription(value);
+    };
 
-    const fetchProcedures = async () => {
+    const fetchStrands = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/procedures.php`
+                `http://localhost:8000/app/views/strands.php`
             );
-            // Access the correct property in the response
-            setProcedures(response.data.data || []);
+            // Decode HTML entities in the data when it's received
+            const decodedStrands =
+                response.data.data?.map((strand) => ({
+                    ...strand,
+                    strand: decodeHTMLEntities(strand.strand),
+                })) || [];
+
+            setStrands(decodedStrands);
             setLoading(false);
         } catch (err) {
-            console.error("Error fetching procedures data:", err);
-            setError("Failed to load procedures data. Please try again.");
+            console.error("Error fetching strands data:", err);
+            setError("Failed to load strands data. Please try again.");
             setLoading(false);
         }
     };
 
+    // Function to decode HTML entities to plain text
+    const decodeHTMLEntities = (text) => {
+        if (!text) return "";
+        const textArea = document.createElement("textarea");
+        textArea.innerHTML = text;
+        return textArea.value;
+    };
+
     useEffect(() => {
-        fetchProcedures();
+        fetchStrands();
     }, []);
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -40,15 +59,15 @@ const Procedures = ({ label }) => {
     const itemsPerPage = 5;
 
     // Filter data based on search term
-    const filteredProcedures = procedures.filter((procedure) =>
-        procedure.procedure.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredStrands = strands.filter((strand) =>
+        strand.strand.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Calculate pagination
-    const totalPages = Math.ceil(filteredProcedures.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredStrands.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredProcedures.slice(
+    const currentItems = filteredStrands.slice(
         indexOfFirstItem,
         indexOfLastItem
     );
@@ -64,10 +83,11 @@ const Procedures = ({ label }) => {
         setNumberOfItemsPerPage(numberOfItemsPerPage + 5);
     };
 
-    const handleButtonState = (id, value) => {
+    const handleButtonState = (value, description, id) => {
         setEdit(true);
-        setEditingId(id);
         setNewText(value);
+        setNewDescription(description);
+        setRowItemId(id);
     };
 
     const handleChange = (value) => {
@@ -76,105 +96,99 @@ const Procedures = ({ label }) => {
 
     const handleEdit = async (id) => {
         setEdit(false);
-        setEditingId(null);
 
         // Check if the user cancelled or submitted an empty string
-        if (newText === null || newText.trim() === "") {
+        if (
+            newText === null ||
+            newText.trim() === "" ||
+            newDescription === null ||
+            newDescription.trim() === ""
+        ) {
             return; // Exit if cancelled or empty
         }
 
         try {
             // Create the data structure for the update
+            // No need to encode here as that should be handled server-side
             const data = {
-                id: id,
-                procedure: newText,
+                strand: {
+                    id: id,
+                    strand: newText,
+                    description: newDescription,
+                },
             };
 
+            console.log(data);
+
             // Send the PUT request with the data in the body
-            const response = await axios.put(
-                `http://localhost:8000/app/views/procedures.php`,
-                data,
+            const response = await fetch(
+                `http://localhost:8000/app/views/strands.php`,
                 {
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    body: JSON.stringify(data),
                 }
             );
 
+            const result = await response.json();
+
             // Check for success and update the UI
-            if (response.data.success) {
+            if (result.success) {
                 // Update the local state to reflect the change
-                const updatedProcedures = procedures.map((item) =>
-                    item.id === id ? { ...item, procedure: newText } : item
+                const updatedStrands = strands.map((item) =>
+                    item.id === id
+                        ? {
+                              ...item,
+                              strand: newText,
+                              description: newDescription,
+                          }
+                        : item
                 );
-                setProcedures(updatedProcedures);
+                setStrands(updatedStrands);
 
                 // Show success message
-                toast.success("Procedure updated successfully.");
+                toast.success("Strand updated successfully.");
             } else {
                 alert("Error: " + response.data.message);
             }
         } catch (error) {
-            console.error("Error updating procedure:", error);
-            alert("Failed to update procedure");
+            console.error("Error updating strand:", error);
+            alert("Failed to update strand");
         }
     };
 
-    // Handle procedure deletion
+    // Handle strand deletion
     const handleDelete = async (id, index) => {
         try {
             // Make the API call to delete
-            const response = await axios.delete(
-                `http://localhost:8000/app/views/procedures.php?id=${id}`
+            await axios.delete(
+                `http://localhost:8000/app/views/strands.php?id=${id}`
             );
 
-            if (response.data.success) {
-                // Update local state after successful deletion
-                const updatedProcedures = procedures.filter(
-                    (procedure) => procedure.id !== id
-                );
-                setProcedures(updatedProcedures);
-                toast.success("Procedure deleted successfully.");
-            } else {
-                alert("Error: " + response.data.message);
-            }
+            // Update local state after successful deletion
+            const updatedStrands = strands.filter((strand) => strand.id !== id);
+            setStrands(updatedStrands);
+
+            toast.success("Strand deleted successfully.");
 
             if (index === 0) goToPreviousPage();
         } catch (error) {
-            console.error("Error deleting procedure:", error);
-            alert("Failed to delete procedure");
+            console.error("Error deleting strand:", error);
+            alert("Failed to delete strand");
         }
     };
 
     return (
         <div className="bg-white rounded-md shadow-md p-6">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-bold text-gray-800">Procedures</h3>
+                <h3 className="text-lg font-bold text-gray-800">
+                    {label || "Strands"}
+                </h3>
 
                 {/* Search */}
-                <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg
-                            className="w-4 h-4 text-gray-500"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path
-                                fillRule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                clipRule="evenodd"
-                            />
-                        </svg>
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="Search procedures..."
-                        className="pl-10 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
+                <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder={'Search strands...'} />
             </div>
 
             {/* Table */}
@@ -186,7 +200,13 @@ const Procedures = ({ label }) => {
                                 scope="col"
                                 className="pl-20 py-3 text-left text-xs uppercase tracking-wider"
                             >
-                                Procedure
+                                {label || "Strands"}
+                            </th>
+                            <th
+                                scope="col"
+                                className="py-3 text-center text-xs uppercase tracking-wider"
+                            >
+                                Description
                             </th>
                             <th
                                 scope="col"
@@ -197,40 +217,58 @@ const Procedures = ({ label }) => {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {currentItems.map((procedure, index) => (
+                        {currentItems.map((strand, index) => (
                             <tr
-                                key={procedure.id}
-                                className="hover:bg-gray-50 transition-colors text-xs"
+                                key={strand.id}
+                                className="hover:bg-gray-50 transition-colors text-center text-xs"
                             >
-                                <td className="pl-5 py-3 text-left whitespace-nowrap text-gray-500">
-                                    {edit && editingId === procedure.id ? (
+
+                                {edit && rowItemId === strand.id ? (
+                                    <td className="pl-5 py-3 text-left whitespace-nowrap text-gray-500">
                                         <input
-                                            className="p-2 w-full border-[1px] outline-green-500"
+                                            className="w-full p-2 border-[1px] outline-green-500"
                                             type="text"
                                             onChange={(e) =>
                                                 handleChange(e.target.value)
                                             }
                                             value={newText}
                                         />
-                                    ) : (
-                                        <span>{`${index + 1}. ${procedure.procedure
-                                            }`}</span>
-                                    )}
-                                </td>
-                                <td className="pr-5 py-3 text-right whitespace-nowrap font-medium">
+                                    </td>
+                                ) : (
+                                    <td className="pl-5 py-3 text-left whitespace-nowrap text-gray-500">
+                                        {`${numberOfItemsPerPage + index + 1}.`}{" "}
+                                        {strand.strand}
+                                    </td>
+                                )}
+                                {edit && rowItemId === strand.id ? (
+                                    <td className="p-3 text-gray-500">
+                                        <textarea
+                                            rows={3}
+                                            className="w-full p-2 resize-none text-justify border-[1px] outline-green-500"
+                                            type="text"
+                                            onChange={(e) =>
+                                                handleDescriptionChange(
+                                                    e.target.value
+                                                )
+                                            }
+                                            value={newDescription}
+                                        />
+                                    </td>
+                                ) : (
+                                    <td className="py-3 max-w-md break-words text-gray-500">
+                                        {strand.description}
+                                    </td>
+                                )}
+                                <td className="pr-5 py-3 text-right whitespace-nowrap">
                                     <button
                                         onClick={() => {
-                                            if (
-                                                edit &&
-                                                editingId === procedure.id
-                                            ) {
-                                                handleEdit(procedure.id);
-                                            } else {
-                                                handleButtonState(
-                                                    procedure.id,
-                                                    procedure.procedure
-                                                );
-                                            }
+                                            edit && rowItemId === strand.id
+                                                ? handleEdit(strand.id)
+                                                : handleButtonState(
+                                                      strand.strand,
+                                                      strand.description,
+                                                      strand.id
+                                                  );
                                         }}
                                         className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                                     >
@@ -248,14 +286,14 @@ const Procedures = ({ label }) => {
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                             />
                                         </svg>
-                                        {edit && editingId === procedure.id
+                                        {edit && rowItemId === strand.id
                                             ? "Save Changes"
                                             : "Edit"}
                                     </button>
                                     <button
                                         onClick={() =>
                                             handleDelete(
-                                                procedure.id,
+                                                strand.id,
                                                 currentItems.length - 1
                                             )
                                         }
@@ -301,8 +339,8 @@ const Procedures = ({ label }) => {
                             />
                         </svg>
                         <p className="mt-2 text-gray-500">
-                            No procedures found. Try adjusting your search or
-                            upload a new procedure.
+                            No strands found. Try adjusting your search or add a
+                            new strand.
                         </p>
                     </div>
                 )}
@@ -313,30 +351,26 @@ const Procedures = ({ label }) => {
                 <FormModal
                     isOpen={isOpen}
                     setIsOpen={setIsOpen}
-                    onSuccess={fetchProcedures}
-                    label={label}
-                    fields={
-                        scholarshipCriteriaInputFields.procedureInputFields
-                    }
+                    onSuccess={fetchStrands}
+                    label={label || "Strand"}
+                    fields={scholarshipCriteriaInputFields.strandInputField}
                 />
-                {filteredProcedures.length > 0 && (
+                {filteredStrands.length > 0 && (
                     <>
                         <div className="text-sm text-gray-600">
                             Showing {indexOfFirstItem + 1}-
-                            {Math.min(
-                                indexOfLastItem,
-                                filteredProcedures.length
-                            )}{" "}
-                            of {filteredProcedures.length} procedures
+                            {Math.min(indexOfLastItem, filteredStrands.length)}{" "}
+                            of {filteredStrands.length} strands
                         </div>
                         <div className="flex space-x-2">
                             <button
                                 onClick={goToPreviousPage}
                                 disabled={currentPage === 1}
-                                className={`px-4 py-2 rounded-md ${currentPage === 1
+                                className={`px-4 py-2 rounded-md ${
+                                    currentPage === 1
                                         ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                                         : "bg-green-600 text-white hover:bg-green-600 transition-all"
-                                    }`}
+                                }`}
                             >
                                 Previous
                             </button>
@@ -346,11 +380,12 @@ const Procedures = ({ label }) => {
                                     currentPage === totalPages ||
                                     totalPages === 0
                                 }
-                                className={`px-4 py-2 rounded-md ${currentPage === totalPages ||
-                                        totalPages === 0
+                                className={`px-4 py-2 rounded-md ${
+                                    currentPage === totalPages ||
+                                    totalPages === 0
                                         ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                                         : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                                    }`}
+                                }`}
                             >
                                 Next
                             </button>
@@ -362,4 +397,4 @@ const Procedures = ({ label }) => {
     );
 };
 
-export default Procedures;
+export default Strandss;

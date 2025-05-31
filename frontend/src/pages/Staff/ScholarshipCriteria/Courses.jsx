@@ -21,37 +21,6 @@ const Courses = ({ label }) => {
     const [courseToDelete, setCourseToDelete] = useState(null);
 
     // Open delete modal with the specific course
-    const openDeleteModal = (courseId, length) => {
-        setCourseToDelete({ id: courseId, length: length });
-        setIsDeleteModalOpen(true);
-    };
-
-    // Close modal function
-    const closeDeleteModal = () => {
-        setIsDeleteModalOpen(false);
-        setCourseToDelete(null);
-    };
-
-    const fetchCourses = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get(
-                `http://localhost:8000/app/views/courses.php`
-            );
-            // Fix 2: Access the correct property in the response
-            setCourses(response.data.data || []);
-            setLoading(false);
-        } catch (err) {
-            console.error("Error fetching courses data:", err);
-            setError("Failed to load courses data. Please try again.");
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchCourses();
-    }, []);
-
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -90,6 +59,37 @@ const Courses = ({ label }) => {
     const handleChange = (value) => {
         setNewText(value);
     };
+
+    const openDeleteModal = (courseId, length) => {
+        setCourseToDelete({ id: courseId, length: length });
+        setIsDeleteModalOpen(true);
+    };
+
+    // Close modal function
+    const closeDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setCourseToDelete(null);
+    };
+
+    const fetchCourses = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `http://localhost:8000/app/views/courses.php`
+            );
+            // Fix 2: Access the correct property in the response
+            setCourses(response.data.data || []);
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching courses data:", err);
+            setError("Failed to load courses data. Please try again.");
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCourses();
+    }, []);
 
     const handleEdit = async (id) => {
         setEdit(false);
@@ -194,17 +194,17 @@ const Courses = ({ label }) => {
             {/* Table */}
             <div className="overflow-x-auto rounded-sm border border-gray-200">
                 <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-green-100 text-green-800">
+                    <thead className="bg-gray-50 text-gray-700 font-bold">
                         <tr>
                             <th
                                 scope="col"
-                                className="pl-20 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                                className="pl-20 py-3 text-left text-xs uppercase tracking-wider"
                             >
                                 Course Name
                             </th>
                             <th
                                 scope="col"
-                                className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                className="pr-14 py-3 text-right text-xs uppercase tracking-wider"
                             >
                                 Actions
                             </th>
@@ -214,10 +214,10 @@ const Courses = ({ label }) => {
                         {currentItems.map((course, index) => (
                             <tr
                                 key={course.id}
-                                className="hover:bg-gray-50 transition-colors"
+                                className="hover:bg-gray-50 transition-colors text-xs"
                             >
                                 {edit && rowItemId === course.id ? (
-                                    <td className="pl-10 py-4 text-left whitespace-nowrap text-sm text-gray-500">
+                                    <td className="pl-5 py-3 text-left whitespace-nowrap text-gray-500">
                                         <input
                                             className="p-2 w-full border-[1px] outline-green-500"
                                             type="text"
@@ -228,16 +228,14 @@ const Courses = ({ label }) => {
                                         />
                                     </td>
                                 ) : (
-                                    <td className="pl-10 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                        {`${numberOfItemsPerPage + index + 1}. `}{" "}
+                                    <td className="pl-5 py-3 text-left whitespace-nowrap text-gray-500">
+                                        {`${
+                                            numberOfItemsPerPage + index + 1
+                                        }. `}{" "}
                                         {course.course_name}
                                     </td>
-                                    // <td className="pl-10 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                    //     {`${course.row_number}. `}{" "}
-                                    //     {course.course_name}
-                                    // </td>
                                 )}
-                                <td className="py-4 text-center whitespace-nowrap text-sm font-medium">
+                                <td className="pr-5 py-3 text-right whitespace-nowrap">
                                     <button
                                         onClick={(e) => {
                                             {

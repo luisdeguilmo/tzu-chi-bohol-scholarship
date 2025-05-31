@@ -152,11 +152,11 @@ class StrandController {
             }
             
             // Check if ID is provided
-            if (!isset($data['id'])) {
+            if (!isset($data['strand']['id'])) {
                 throw new \Exception("ID is required for update");
             }
             
-            $id = $data['id'];
+            $id = $data['strand']['id'];
             
             // Process application data
             $criteria = new ScholarshipCriteriaModel();

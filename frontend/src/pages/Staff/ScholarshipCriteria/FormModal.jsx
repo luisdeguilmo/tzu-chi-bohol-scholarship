@@ -1,6 +1,5 @@
 import { useState } from "react";
 import useScholarshipCriteriaSubmit from "../../../hooks/useScholarshipCriteriaSubmit";
-import scholarshipCriteriaInputFields from "../../../constant/staff/scholarshipCriteriaInputFields";
 
 function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
     const [text, setText] = useState("");
@@ -21,7 +20,7 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
     const handleSubmit = (e) => {
         switch (label) {
             case "Strand":
-                handleStrandSubmit(e, text, setText, setIsOpen);
+                handleStrandSubmit(e, text, setText, description, setDescription, setIsOpen);
                 break;
 
             case "Course":
@@ -107,7 +106,10 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
                             <div>
                                 {fields.map((field, index) =>
                                     field.type === "text" ? (
-                                        <label key={index} className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm">
+                                        <label
+                                            key={index}
+                                            className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm"
+                                        >
                                             {field.name}
                                             <input
                                                 type="text"
@@ -116,8 +118,6 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
                                                     label === "Requirement"
                                                         ? index === 0
                                                             ? quantity
-                                                            : index === 1
-                                                            ? description
                                                             : submit
                                                         : text
                                                 }
@@ -127,12 +127,6 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
                                                     ) {
                                                         if (index === 0) {
                                                             setQuantity(
-                                                                e.target.value
-                                                            );
-                                                        } else if (
-                                                            index === 1
-                                                        ) {
-                                                            setDescription(
                                                                 e.target.value
                                                             );
                                                         } else {
@@ -147,9 +141,25 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
                                                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                                             />
                                         </label>
+                                    ) : field.type === "textarea" ? (
+                                        <label
+                                            key={index}
+                                            className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm"
+                                        >
+                                            {field.name}
+                                            <textarea
+                                                name=""
+                                                id=""
+                                                rows={4}
+                                                value={description}
+                                                onChange={(e) => setDescription(e.target.value)}
+                                                placeholder={field.placeholder}
+                                                className="w-full resize-none border border-gray-300 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                            ></textarea>
+                                        </label>
                                     ) : null
                                 )}
-                            </div>
+                            </div>             
 
                             {/* Action Buttons */}
                             <div className="flex gap-2">

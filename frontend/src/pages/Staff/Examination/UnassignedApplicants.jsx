@@ -60,12 +60,12 @@ export default function UnassignedApplicants() {
             alert("Please select at least one applicant");
             return;
         }
-        
+
         if (!selectedBatch) {
             alert("Please select a batch");
             return;
         }
-    
+
         try {
             setLoading(true);
             const response = await axios.post(
@@ -76,29 +76,31 @@ export default function UnassignedApplicants() {
                 },
                 {
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        "Content-Type": "application/json",
+                    },
                 }
             );
-    
+
             if (response.data.success) {
                 // Refresh the data after assignment
                 await fetchStudentsData();
-    
+
                 // Clear selections
                 setSelectedApplicants([]);
-    
+
                 // Show success notification
                 toast.success(response.data.message + ".");
             } else {
                 alert("Error: " + response.data.message);
             }
-    
+
             setLoading(false);
         } catch (err) {
             console.error("Error assigning batch:", err);
-            setError("Failed to assign batch to applicants: " + 
-                     (err.response?.data?.message || err.message));
+            setError(
+                "Failed to assign batch to applicants: " +
+                    (err.response?.data?.message || err.message)
+            );
             setLoading(false);
         }
     };
@@ -196,10 +198,10 @@ export default function UnassignedApplicants() {
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-green-100 text-green-800">
+                        <thead className="bg-gray-50 text-gray-700 font-bold">
                             <tr>
-                                <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                                    <input
+                                <th className="px-3 py-3 flex justify-center gap-2 text-center text-xs uppercase tracking-wider">
+                                    {/* <input
                                         type="checkbox"
                                         className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                                         checked={
@@ -209,20 +211,21 @@ export default function UnassignedApplicants() {
                                         }
                                         onChange={selectAllVisible}
                                     />
+                                    Select All */}
                                 </th>
-                                <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="px-3 py-3 text-center text-xs uppercase tracking-wider">
                                     Application ID
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Name
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Batch
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Date Applied
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
@@ -231,7 +234,7 @@ export default function UnassignedApplicants() {
                             {currentItems.map((info) => (
                                 <tr
                                     key={info.application_id}
-                                    className={`transition-colors text-center ${
+                                    className={`transition-colors text-center text-xs ${
                                         selectedApplicants.includes(
                                             info.application_id
                                         )
@@ -239,7 +242,7 @@ export default function UnassignedApplicants() {
                                             : ""
                                     }`}
                                 >
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         <input
                                             type="checkbox"
                                             className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
@@ -253,10 +256,10 @@ export default function UnassignedApplicants() {
                                             }
                                         />
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {info.application_id}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {info.last_name +
                                             ", " +
                                             info.first_name +
@@ -264,13 +267,13 @@ export default function UnassignedApplicants() {
                                                 ? " " + info.middle_name
                                                 : "")}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {"Unassigned"}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {formatDateTime(info.created_at)}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                    <td className="py-3 whitespace-nowrap font-medium">
                                         <ApplicationFormPDF
                                             studentId={info.application_id}
                                         />
@@ -304,40 +307,60 @@ export default function UnassignedApplicants() {
                     )}
                 </div>
 
+                <div className="w-[max-content] py-4">
+                    <label className="flex gap-2 items-center text-sm font-medium text-gray-700">
+                        <input
+                            type="checkbox"
+                            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                            checked={
+                                currentItems.length > 0 &&
+                                selectedApplicants.length ===
+                                    currentItems.length
+                            }
+                            onChange={selectAllVisible}
+                        />
+                        Select All
+                    </label>
+                </div>
+
                 {/* Batch Assignment Controls */}
                 <div className="flex items-center justify-between">
                     {filteredApplications.length > 0 && (
-                        <div className="flex items-center gap-2 mt-4">
-                            <div className="flex-none text-sm font-medium text-gray-700">
-                                Assign Selected to:
+                        <div>
+                            <div className="flex items-center gap-2">
+                                {/* <div className="flex-none text-sm font-medium text-gray-700">
+                                    Assign Selected to:
+                                </div> */}
+                                <select
+                                    className="border border-gray-300 rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    value={selectedBatch}
+                                    onChange={(e) =>
+                                        setSelectedBatch(e.target.value)
+                                    }
+                                >
+                                    {batches.map((batch) => (
+                                        <option value={batch.batch_name}>
+                                            {batch.batch_name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    onClick={assignStudentsToBatch}
+                                    disabled={selectedApplicants.length === 0}
+                                    className={`px-4 py-2 rounded-md ${
+                                        selectedApplicants.length === 0
+                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                            : "bg-green-500 text-white hover:bg-green-600 transition-all"
+                                    }`}
+                                >
+                                    Assign Selected
+                                </button>
                             </div>
-                            <select
-                                className="border border-gray-300 rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                value={selectedBatch}
-                                onChange={(e) =>
-                                    setSelectedBatch(e.target.value)
-                                }
-                            >
-                                {batches.map(batch => 
-                                    <option value={batch.batch_name}>{batch.batch_name}</option>
-                                )}
-                            </select>
-                            <button
-                                onClick={assignStudentsToBatch}
-                                disabled={selectedApplicants.length === 0}
-                                className={`px-4 py-2 rounded-md ${
-                                    selectedApplicants.length === 0
-                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                        : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                                }`}
-                            >
-                                Submit
-                            </button>
                         </div>
                     )}
 
                     {filteredApplications.length > 0 && (
-                        <div className="text-sm text-gray-600 mx-auto mt-4">
+                        <div className="text-sm text-gray-600 mx-auto">
                             Showing {indexOfFirstItem + 1}-
                             {Math.min(
                                 indexOfLastItem,
@@ -349,7 +372,7 @@ export default function UnassignedApplicants() {
 
                     {/* Pagination */}
                     {filteredApplications.length > 0 && (
-                        <div className="flex justify-between items-center mt-6">
+                        <div className="flex justify-between items-center">
                             <div className="flex space-x-2">
                                 <button
                                     onClick={goToPreviousPage}

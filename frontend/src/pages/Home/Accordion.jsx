@@ -175,14 +175,16 @@ function Accordion() {
                     </h3>
                     <ul className="my-6 list-none list-inside columns-2 text-sm space-y-2">
                         {strands.map((strand, index) => (
-                            <li key={index}>{strand.strand}</li>
+                            <li key={index}>
+                                <span className="font-bold">{strand.strand}</span> - <span className="text-gray-800">{strand.description}</span>
+                            </li>
                         ))}
                     </ul>
                     <h3 className="font-bold text-center">
                         List of Courses Accepted for College
                     </h3>
                     <ul
-                        className={`mt-6 mb-4 list-none list-inside text-sm space-y-2 ${
+                        className={`mt-6 mb-4 list-none list-inside text-sm space-y-2 text-gray-800 ${
                             courseLength <= 10
                                 ? "columns-1"
                                 : courseLength <= 20
@@ -191,9 +193,7 @@ function Accordion() {
                         }`}
                     >
                         {courses.map((course, index) => (
-                            <li key={index}>
-                                {course.course_name}
-                            </li>
+                            <li key={index}>{course.course_name}</li>
                         ))}
                     </ul>
                 </>
@@ -203,7 +203,7 @@ function Accordion() {
             id: 2,
             title: "Qualifications",
             content: (
-                <ul className="list-decimal list-inside text-sm space-y-2">
+                <ul className="list-decimal list-inside text-sm space-y-2 text-gray-800">
                     {qualifications.map((qualification, index) => (
                         <li key={index}>{qualification.qualification}</li>
                     ))}
@@ -214,7 +214,7 @@ function Accordion() {
             id: 3,
             title: "Requirements",
             content: (
-                <table className={`w-full ${tableStyle} text-gray-700`}>
+                <table className={`w-full ${tableStyle} text-gray-800`}>
                     <thead>
                         <tr className={tableStyle}>
                             <th colSpan={3} className={tableStyle}>
@@ -249,7 +249,7 @@ function Accordion() {
             id: 4,
             title: "Procedure",
             content: (
-                <ul className="list-decimal list-inside text-sm space-y-2">
+                <ul className="list-decimal list-inside text-sm space-y-2 text-gray-800">
                     {procedure.map((pro, index) => (
                         <li key={index}>{pro.procedure}</li>
                     ))}
@@ -260,7 +260,7 @@ function Accordion() {
             id: 5,
             title: "Instruction",
             content: (
-                <ul className="list-decimal list-inside text-sm space-y-2">
+                <ul className="list-decimal list-inside text-sm space-y-2 text-gray-800">
                     {instructions.map((instruction, index) => (
                         <li key={index}>{instruction.instruction}</li>
                     ))}

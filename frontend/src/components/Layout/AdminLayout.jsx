@@ -6,7 +6,7 @@ const sidebarItems = [
     {
         text: "Dashboard",
         iconName: "dashboard",
-        navigate: "/staff/dashboard",
+        navigate: "/admin/dashboard",
     },
     {
         text: "Manage Accounts",
