@@ -4,9 +4,39 @@
     Header set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
     Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
     Header set Access-Control-Max-Age "3600"
-    
-    # Handle OPTIONS preflight requests
+</IfModule>
+
+# Handle OPTIONS preflight requests
+<IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Preflight handling (CORS)
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ $1 [R=200,L]
+
+    # Rewrite all other requests to index.php (except for existing files)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
 </IfModule>
+
+# Prevent directory browsing (Security best practice)
+Options -Indexes
+
+# Allow access to image files
+<FilesMatch "\.(jpg|jpeg|png|gif|bmp|webp)$">
+    Require all granted
+</FilesMatch>
+
+# Allow access to PDF files
+<FilesMatch "\.(pdf)$">
+    Require all granted
+</FilesMatch>
+
+# Deny access to PHP files for security
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>
+
+# Enable directory browsing (optional — not recommended for production)
+# Options +Indexes

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
-import { formatDateTime } from "../../../utils/formatDate";
+import { formatDateTime } from "../../../utils/formatDateTime";
 import BatchActions from "./BatchActions";
 import SetScheduleForm from "./SetScheduleForm";
 import { sendExaminationSchedule } from "../../../services/examinationService";
+import ExaminationResultTable from "./ExaminationResultTable";
+import ResultActions from "./ResultActions";
 
 export default function ExaminationBatches() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -19,13 +20,14 @@ export default function ExaminationBatches() {
     const [studentData, setStudentData] = useState([]);
     const [batches, setBatches] = useState([]);
     const [selectedBatch, setSelectedBatch] = useState("all");
+    const [selectedApplicants, setSelectedApplicants] = useState("all");
 
     const [applicantsEachBatch, setApplicantsEachBatch] = useState([]);
-    const [applicantsToSend, setApplicantsToSend] = useState([]);
-
     const [edit, setEdit] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [score, setScore] = useState(0);
+
+    const [applicantsIds, setApplicantsIds] = useState([]);
 
     const fetchBatches = async () => {
         try {
@@ -46,7 +48,7 @@ export default function ExaminationBatches() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/batch-examination.php?batch=${selectedBatch}`
+                `http://localhost:8000/app/views/batch-examination.php?batch=${selectedBatch}&score=true`
             );
             setApplicantsEachBatch(response.data.data || []);
             setLoading(false);
@@ -96,60 +98,6 @@ export default function ExaminationBatches() {
     const handleChange = (value) => {
         setScore(value);
     };
-
-    // const handleEdit = async (id) => {
-    //     setEdit(false);
-    //     setEditingId(null);
-
-    //     // Check if the user cancelled or submitted an empty string
-    //     if (score === null || score.trim() === "") {
-    //         return; // Exit if cancelled or empty
-    //     }
-
-    //     try {
-    //         // Create the data structure for the update
-    //         const data = {
-    //             id: id,
-    //             score: score, // Changed from procedure to score
-    //         };
-
-    //         // Send the PUT request with the data in the body
-    //         const response = await axios.put(
-    //             `http://localhost:8000/app/views/batch-examination.php`, // Updated endpoint
-    //             data,
-    //             {
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                 },
-    //             }
-    //         );
-
-    //         // Check for success and update the UI
-    //         if (response.data.success) {
-    //             // Update the local state to reflect the change
-    //             const updatedApplicants = applicantsEachBatch.map((item) =>
-    //                 item.applicationInfo.application_id === id
-    //                     ? {
-    //                           ...item,
-    //                           applicationInfo: {
-    //                               ...item.applicationInfo,
-    //                               score: score,
-    //                           },
-    //                       }
-    //                     : item
-    //             );
-    //             setApplicantsEachBatch(updatedApplicants);
-
-    //             // Show success message
-    //             toast.success("Score updated successfully.");
-    //         } else {
-    //             toast.error("Error: " + response.data.message);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error updating score:", error);
-    //         toast.error("Failed to update score");
-    //     }
-    // };
 
     const handleAddScore = async (id) => {
         setEdit(false);
@@ -209,32 +157,36 @@ export default function ExaminationBatches() {
     const handleBatchChange = (e) => {
         const newBatchValue = e.target.value;
         setSelectedBatch(newBatchValue);
-        setCurrentPage(1); // Reset to first page when changing batches
-        console.log("Selected batch:", newBatchValue);
+        setCurrentPage(1);
     };
 
-    // const updateBatchToUnassigned = async (id) => {
-    //     try {
-    //         setLoading(true);
-    //         const response = await axios.put(
-    //             "http://localhost:8000/app/views/batch-examination.php",
-    //             {
-    //                 id: id,
-    //             }
-    //         );
-    //         console.log(response.data.message); // Success message
+    const handleApplicantsChange = (e) => {
+        let ids = [];
+        const newValue = e.target.value;
+        setSelectedApplicants(newValue);
+        setCurrentPage(1);
 
-    //         // Refresh the data after approval
-    //         await fetchApplicantsEachBatch();
+        // if (newValue === 'passed') {
+        //     applicantsEachBatch.forEach(applicant => {
+        //         const { applicationInfo } = applicant;
+        //         if (applicationInfo.score > 50) {
+        //             ids.push(applicationInfo.application_id);
+        //         }     
+        //     });
+        //     setApplicantsIds([...applicantsIds, ...ids]);
+        // } else if (newValue === 'failed') {
+        //    ids = applicantsEachBatch.filter(applicant => {
+        //         const { applicationInfo } = applicant;
+        //         if (applicationInfo.score < 50) {
+        //             return applicationInfo.application_id;
+        //         }
+        //     });
+        //     // setApplicantsIds(ids);
+        // }
 
-    //         // Optional: Show success notification
-    //         toast.success("Successfully updated to unassigned.");
-    //     } catch (err) {
-    //         console.error("Error updating application batch:", err);
-    //         setError("Failed to update application.");
-    //         setLoading(false);
-    //     }
-    // };
+        // console.log(ids);
+        // console.log(applicantsIds);
+    };
 
     // Filter data based on search term
     const filteredApplications = applicantsEachBatch.filter((applicant) => {
@@ -354,10 +306,30 @@ export default function ExaminationBatches() {
             <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg font-bold text-gray-800">
-                        Examination Batches
+                        Applications
                     </h2>
 
                     <div className="flex items-center space-x-4">
+                        <div className="relative">
+                            <select
+                                value={selectedApplicants}
+                                onChange={handleApplicantsChange}
+                                className="appearance-none bg-white border border-gray-300 rounded-lg py-2 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-500"
+                            >
+                                <option value="all">All</option>
+                                <option value="passed">Passed</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg
+                                    className="fill-current h-4 w-4"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                            </div>
+                        </div>
                         {/* Batch Dropdown - FIXED */}
                         <div className="relative">
                             <select
@@ -456,8 +428,8 @@ export default function ExaminationBatches() {
 
                 {/* Table */}
                 {!loading && !error && batches.length > 0 && (
-                    <div className="overflow-x-auto rounded-[4px] border border-gray-200">
-                        <table className="min-w-full divide-y divide-gray-200">
+                    <div className="overflow-x-auto overflow-y-hidden rounded-[4px] border border-gray-200">
+                        <table className="w-[1160px] divide-y divide-gray-200">
                             <thead className="bg-gray-50 text-gray-800 font-bold">
                                 <tr>
                                     <th
@@ -517,69 +489,79 @@ export default function ExaminationBatches() {
                                                 key={index}
                                                 className="transition-colors text-center"
                                             >
-                                                <td className="py-3 whitespace-nowrap text-gray-500">
-                                                    {
-                                                        applicationInfo.application_id
-                                                    }
-                                                </td>
-                                                <td className="py-3 whitespace-nowrap text-gray-500">
-                                                    {personalInfo.last_name +
-                                                        ", " +
-                                                        personalInfo.middle_name +
-                                                        ", " +
-                                                        personalInfo.first_name}
-                                                </td>
-                                                <td className="py-3 whitespace-nowrap text-gray-500">
-                                                    {applicationInfo.batch}
-                                                </td>
-                                                <td className="py-3 whitespace-nowrap text-gray-500">
-                                                    {formatDateTime(
-                                                        personalInfo.created_at
-                                                    )}
-                                                </td>
-                                                <td className="py-3 whitespace-nowrap text-gray-500">
-                                                    {formatDateTime(
-                                                        getSchedule(
-                                                            applicationInfo.batch
-                                                        )
-                                                    ) || "Not Set"}
-                                                </td>
-                                                <td className="py-3 text-center whitespace-nowrap text-gray-500">
-                                                    {edit &&
-                                                    editingId ===
-                                                        applicationInfo.application_id ? (
-                                                        <input
-                                                            className="p-1 w-16 text-center border-[1px] outline-green-500"
-                                                            type="text"
-                                                            onChange={(e) =>
-                                                                handleChange(
-                                                                    e.target
-                                                                        .value
-                                                                )
-                                                            }
-                                                            value={score}
-                                                        />
-                                                    ) : (
-                                                        <span>
-                                                            {applicationInfo.score ||
-                                                                "--"}
-                                                        </span>
-                                                    )}
-                                                </td>
-
-                                                <td className="py-3 whitespace-nowrap font-medium">
-                                                    <span
-                                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium
-                                                        ${
-                                                            applicationInfo.score >
-                                                            60
-                                                                ? "bg-green-100 text-green-800"
-                                                                : "bg-yellow-100 text-yellow-800"
-                                                        }`}
-                                                    >
-                                                        {applicationInfo.score > 60 ? "Passed" : "Failed"}
-                                                    </span>
-                                                </td>
+                                                {selectedApplicants ===
+                                                "passed" ? (
+                                                    <>
+                                                        {applicationInfo.score >
+                                                            50 && (
+                                                            <ExaminationResultTable
+                                                                index={index}
+                                                                applicationInfo={
+                                                                    applicationInfo
+                                                                }
+                                                                personalInfo={
+                                                                    personalInfo
+                                                                }
+                                                                handleChange={
+                                                                    handleChange
+                                                                }
+                                                                getSchedule={
+                                                                    getSchedule
+                                                                }
+                                                                edit={edit}
+                                                                editingId={
+                                                                    editingId
+                                                                }
+                                                                score={50}
+                                                            />
+                                                        )}
+                                                    </>
+                                                ) : selectedApplicants ===
+                                                  "failed" ? (
+                                                    <>
+                                                        {applicationInfo.score <
+                                                            50 && (
+                                                            <ExaminationResultTable
+                                                                index={index}
+                                                                applicationInfo={
+                                                                    applicationInfo
+                                                                }
+                                                                personalInfo={
+                                                                    personalInfo
+                                                                }
+                                                                handleChange={
+                                                                    handleChange
+                                                                }
+                                                                getSchedule={
+                                                                    getSchedule
+                                                                }
+                                                                edit={edit}
+                                                                editingId={
+                                                                    editingId
+                                                                }
+                                                                score={50}
+                                                            />
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <ExaminationResultTable
+                                                        index={index}
+                                                        applicationInfo={
+                                                            applicationInfo
+                                                        }
+                                                        personalInfo={
+                                                            personalInfo
+                                                        }
+                                                        handleChange={
+                                                            handleChange
+                                                        }
+                                                        getSchedule={
+                                                            getSchedule
+                                                        }
+                                                        edit={edit}
+                                                        editingId={editingId}
+                                                    />
+                                                )}
                                             </tr>
                                         );
                                     })
@@ -621,44 +603,13 @@ export default function ExaminationBatches() {
                 {/* Bottom controls area */}
                 <div className="flex justify-between items-center mt-6">
                     <div className="flex items-center">
-                        {selectedBatch !== "all" && (
-                            <>
-                                <SetScheduleForm
-                                    isOpen={isModalOpen}
-                                    setIsOpen={setIsModalOpen}
-                                    batches={batches}
-                                    selectedBatch={selectedBatch}
-                                    onSuccess={fetchBatches}
-                                />
-                                <button
-                                    onClick={handleSendSchedule}
-                                    className="text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5 mr-1"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                        />
-                                    </svg>
-                                    Send Email
-                                </button>
-                            </>
-                        )}
-                        <BatchActions
+                        <ResultActions
                             isOpen={isOpen}
                             setIsOpen={setIsOpen}
                             onSuccess={handleBatchCreated}
                             selectedBatch={selectedBatch}
-                            batches={batches}
-                            setBatches={setBatches}
+                            selectedApplicants={selectedApplicants}
+                            setLoading={setLoading}
                             applicantsEachBatch={applicantsEachBatch}
                         />
                     </div>

@@ -9,7 +9,7 @@ header("Content-Type: application/json");
 require_once __DIR__ . "/../../vendor/autoload.php";
 require_once __DIR__ . '/../../config/Database.php';
 
-use App\Models\ApplicationsModel;
+use App\Models\ApplicantModel;
 use Config\Database;
 
 class BatchExaminationController {
@@ -73,7 +73,7 @@ class BatchExaminationController {
             }
             
             // Process multiple applicants
-            $applicationInfo = new ApplicationsModel();
+            $applicationInfo = new ApplicantModel();
             $successCount = 0;
             
             foreach ($data['applicantIds'] as $applicantId) {
@@ -128,7 +128,7 @@ class BatchExaminationController {
             }
             
             // Process application data
-            $applicationInfo = new ApplicationsModel();
+            $applicationInfo = new ApplicantModel();
             
             if (!$applicationInfo->markAsUnassigned($data['id'])) {
                 throw new \Exception("Failed to add batch information");
@@ -158,14 +158,30 @@ class BatchExaminationController {
 
     private function handleGet() {
         try {
-            $criteria = new ApplicationsModel();
+            $criteria = new ApplicantModel();
             
             // Get ID parameter if it exists
             $id = isset($_GET['batch']) ? $_GET['batch'] : null;
+            $hasScore = isset($_GET['score']) ? $_GET['score'] : null;
             
-            if ($id) {
+            if ($id && $hasScore) {
                 // Get specific procedure
-                $result = $criteria->getApplicantsByBatch($id);
+                $result = $criteria->getApplicantsByBatch($id, $hasScore);
+                
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode(array(
+                        "success" => true,
+                        "data" => $result
+                    ));
+                } else {
+                    echo json_encode(array(
+                        "message" => "Batch not found",
+                        "data" => $result
+                    ));
+                }
+            } else if ($id && !$hasScore) {
+                $result = $criteria->getApplicantsByBatch($id, $hasScore);
                 
                 if ($result) {
                     http_response_code(200);

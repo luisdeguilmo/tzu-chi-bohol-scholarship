@@ -15,7 +15,7 @@ const ScholarshipCriteriaTableRow = ({
     primaryField, // The main field to display in first column
 }) => {
     return (
-        <tr className="hover:bg-gray-50 transition-colors text-center text-xs">
+        <tr className={` hover:bg-gray-50  text-center text-xs`}>
             {/* First column - primary field */}
             {isEditing ? (
                 <td className="pl-5 py-3 text-left whitespace-nowrap text-gray-500">

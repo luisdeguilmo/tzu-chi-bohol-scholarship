@@ -32,6 +32,9 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
                 },
             };
 
+            console.log(endpoint.slice(0, -1));
+            console.log(data);
+
             const response = await fetch(
                 `http://localhost:8000/app/views/${endpoint}.php`,
                 {

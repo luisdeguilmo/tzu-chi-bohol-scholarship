@@ -1,39 +1,34 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
-import { formatDateTime } from "../../../utils/formatDate";
-import { approveApplicantApplication, rejectApplicantApplication } from "../../../services/applicationService";
+import { formatDateTime } from "../../../utils/formatDateTime";
+import { manageApplication } from "../../../services/applicationService";
+import { useApplications } from "../../../hooks/useApplications";
+import SearchInput from "../../../components/SearchInput";
+import { usePagination } from "../../../hooks/usePagination";
+import Pagination from "../../../components/Pagination";
+import EmptyState from "../../../components/EmptyState";
+import axios from "axios";
+import ApplicationFormPDFCopy from "../../../components/ApplicationFormPDFCopy";
+import { useApplicantData } from "../../../hooks/useApplicantData";
+import { generatePDF } from "../../../utils/generatePdf";
+import { convertImageToBase64 } from "../../../utils/convertImageToBase64";
+import { getProfilePictureBase64 } from "../../../utils/getProfilePictureBase64";
 
 export default function NewApplications() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const [isOpen, setIsOpen] = useState(false);
+    const [applicationId, setApplicationId] = useState(null);
+    const itemsPerPage = 5;
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [studentData, setStudentData] = useState([]);
+    const { loading, error, applications, fetchApplications } =
+        useApplications("New");
+    const { approveApplication, rejectApplication } = manageApplication();
+    const { applicantData, fetchApplicantData } = useApplicantData();
 
-    const fetchStudentsData = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get(
-                `http://localhost:8000/app/views/applicants.php?status=New`
-            );
-            setStudentData(response.data.personalInfo);
-            setLoading(false);
-        } catch (err) {
-            console.error("Error fetching student data:", err);
-            setError("Failed to load student data. Please try again.");
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchStudentsData();
-    }, []);
+    console.log("Applications:", applications);
 
     // Filter data based on search term
-    const filteredApplications = studentData.filter(
+    const filteredApplications = applications.filter(
         (applicant) =>
             applicant.last_name
                 .toLowerCase()
@@ -47,22 +42,87 @@ export default function NewApplications() {
             applicant.created_at.includes(searchTerm)
     );
 
-    // Calculate pagination
-    const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredApplications.slice(
+    const {
+        currentItems,
+        currentPage,
+        totalPages,
         indexOfFirstItem,
-        indexOfLastItem
-    );
+        indexOfLastItem,
+        numberOfItemsPerPage,
+        goToPreviousPage,
+        goToNextPage,
+    } = usePagination(filteredApplications, itemsPerPage);
 
-    // Handle page changes
-    const goToPreviousPage = () => {
-        setCurrentPage((prev) => Math.max(prev - 1, 1));
+    const [profilePics, setProfilePics] = useState({});
+
+    // Get profile picture URL for display
+    const getProfilePicture = async (applicationId) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:8000/backend/api/applications/${applicationId}/profile-picture`
+            );
+            console.log(response.data.profile_picture_url);
+            return response.data.profile_picture_url;
+        } catch (error) {
+            console.error("Error fetching profile picture:", error);
+            return null;
+        }
     };
 
-    const goToNextPage = () => {
-        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    useEffect(() => {
+        const fetchAllPics = async () => {
+            const pics = {};
+            for (const app of applications) {
+                const url = await getProfilePicture(app.application_id);
+                pics[app.application_id] = url;
+            }
+            setProfilePics(pics);
+        };
+        fetchAllPics();
+    }, [applications]);
+
+    console.log("Profile Pictures:", profilePics);
+
+    const handleViewPdf = async (id) => {
+        try {
+            // Set the application ID first
+            setApplicationId(id);
+
+            // Fetch applicant data and wait for it to complete
+            const data = await fetchApplicantData(id);
+
+            // Use the returned data directly instead of relying on state
+            if (data) {
+                await generatePDF("view", id, data);
+            } else {
+                console.error("No applicant data received");
+                alert("Unable to generate PDF: No applicant data found");
+            }
+        } catch (error) {
+            console.error("Error in handleViewPdf:", error);
+            alert("Error generating PDF. Please try again.");
+        }
+    };
+
+    const handleDownloadPdf = async (id) => {
+        try {
+            // Set the application ID first
+            setApplicationId(id);
+
+            // Fetch applicant data and wait for it to complete
+            const data = await fetchApplicantData(id);
+
+            // Use the returned data directly instead of relying on state
+            if (data) {
+                await generatePDF("download", id, data);
+            } else {
+                console.error("No applicant data received");
+                alert("Unable to generate PDF: No applicant data found");
+            }
+        } catch (error) {
+            console.error("Error in handleViewPdf:", error);
+            alert("Error generating PDF. Please try again.");
+        }
     };
 
     return (
@@ -74,36 +134,18 @@ export default function NewApplications() {
                     </h2>
 
                     {/* Search */}
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg
-                                className="w-4 h-4 text-gray-500"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Search applications..."
-                            className="pl-10 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
+                    <SearchInput
+                        searchTerm={searchTerm}
+                        onSearchChange={setSearchTerm}
+                        placeholder={"Search applications..."}
+                    />
                 </div>
 
                 {/* Table */}
-                <div className="overflow-x-auto rounded-[4px] border border-gray-200">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50 text-gray-800 font-bold">
-                            <tr>
+                <div className="overflow-x-auto rounded-[4px]">
+                    <table className="w-[1166px] relative border border-gray-100">
+                        <thead className="bg-gray-50 text-gray-700 font-bold">
+                            <tr className="border-b border-gray-100">
                                 <th
                                     scope="col"
                                     className="py-3 text-center text-xs uppercase tracking-wider"
@@ -114,7 +156,7 @@ export default function NewApplications() {
                                     scope="col"
                                     className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
-                                    Name
+                                    Applicant
                                 </th>
                                 <th
                                     scope="col"
@@ -124,72 +166,118 @@ export default function NewApplications() {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs uppercase tracking-wider"
+                                    className="py-3 pr-20 text-right text-xs uppercase tracking-wider"
                                 >
-                                    Actions
+                                    Action
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200 text-xs">
+                        <tbody className="bg-white text-xs">
                             {currentItems.map((info) => (
                                 <tr
                                     key={info.application_id}
-                                    className="transition-colors text-center"
+                                    className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
                                 >
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-900 font-bold">
                                         {info.application_id}
                                     </td>
-                                    <td className="py-3 whitespace-nowrap text-sm text-gray-500">
-                                        {info.last_name +
-                                            ", " +
-                                            info.middle_name +
-                                            ", " +
-                                            info.first_name}
+                                    <td className="py-3 flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                        <div className="w-[max-content] ml-36 flex text-left gap-2">
+                                            <img
+                                                src={
+                                                    profilePics[
+                                                        info.application_id
+                                                    ]
+                                                }
+                                                alt="Profile"
+                                                className="w-10 h-10 object-cover rounded-full mx-auto"
+                                            />
+                                            <div>
+                                                <p className="font-bold">
+                                                    {info.first_name +
+                                                        " " +
+                                                        info.last_name}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    {info.email}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td className="py-3 whitespace-nowrap text-gray-500">
                                         {formatDateTime(info.created_at)}
                                     </td>
-                                    <td className="py-3 whitespace-nowrap font-medium">
-                                        <ApplicationFormPDF
-                                            studentId={info.application_id}
-                                        />
+                                    <td className="py-3 pr-10 whitespace-nowrap text-right font-medium">
+                                        {/* <button
+                                            onClick={() =>
+                                                handlePdfOpen(
+                                                    info.application_id
+                                                )
+                                            }
+                                            className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
+                                            disabled={loading}
+                                        >
+                                            PDF
+                                        </button> */}
+
                                         <button
                                             onClick={() =>
-                                                approveApplicantApplication(
-                                                    info.application_id,
-                                                    studentData, 
-                                                    setLoading, 
-                                                    setError,
-                                                    fetchStudentsData
+                                                handleViewPdf(
+                                                    info.application_id
                                                 )
                                             }
                                             className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
-                                            disabled={loading}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-1"
+                                                class="w-5 h-5 text-blue-600"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
                                             >
                                                 <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M5 13l4 4L19 7"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                />
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                                 />
                                             </svg>
-                                            Approve
                                         </button>
                                         <button
                                             onClick={() =>
-                                                rejectApplicantApplication(
+                                                handleDownloadPdf(
+                                                    info.application_id
+                                                )
+                                            }
+                                            className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                class="w-5 h-5 text-green-600"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12"
+                                                />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                approveApplication(
                                                     info.application_id,
-                                                    studentData,
-                                                    setLoading,
-                                                    setError,
-                                                    fetchStudentsData
+                                                    applications,
+                                                    fetchApplications
                                                 )
                                             }
                                             className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
@@ -197,19 +285,44 @@ export default function NewApplications() {
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-1"
+                                                class="w-5 h-5 text-green-500"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
                                             >
                                                 <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M6 18L18 6M6 6l12 12"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M9 12l2 2 4-4M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"
                                                 />
                                             </svg>
-                                            Reject
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                rejectApplication(
+                                                    info.application_id,
+                                                    applications,
+                                                    fetchApplications
+                                                )
+                                            }
+                                            className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                            disabled={loading}
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                class="w-5 h-5 text-red-500"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M15 9l-6 6M9 9l6 6M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"
+                                                />
+                                            </svg>
                                         </button>
                                     </td>
                                 </tr>
@@ -219,71 +332,28 @@ export default function NewApplications() {
 
                     {/* Empty state */}
                     {currentItems.length === 0 && (
-                        <div className="text-center py-10">
-                            <svg
-                                className="mx-auto h-12 w-12 text-gray-400"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                            </svg>
-                            <p className="mt-2 text-gray-500">
-                                No documents found. Try adjusting your search or
-                                upload a new document.
-                            </p>
-                        </div>
+                        <EmptyState message="No applications found." />
                     )}
                 </div>
 
                 {/* Pagination */}
                 {filteredApplications.length > 0 && (
                     <div className="flex justify-between items-center mt-6">
-                        <div className="text-sm text-gray-600">
-                            Showing {indexOfFirstItem + 1}-
-                            {Math.min(
-                                indexOfLastItem,
-                                filteredApplications.length
-                            )}{" "}
-                            of {filteredApplications.length} applications
-                        </div>
-                        <div className="flex space-x-2">
-                            <button
-                                onClick={goToPreviousPage}
-                                disabled={currentPage === 1}
-                                className={`px-4 py-2 rounded-md ${
-                                    currentPage === 1
-                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                        : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                                }`}
-                            >
-                                Previous
-                            </button>
-                            <button
-                                onClick={goToNextPage}
-                                disabled={
-                                    currentPage === totalPages ||
-                                    totalPages === 0
-                                }
-                                className={`px-4 py-2 rounded-md ${
-                                    currentPage === totalPages ||
-                                    totalPages === 0
-                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                        : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                                }`}
-                            >
-                                Next
-                            </button>
-                        </div>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPrevious={goToPreviousPage}
+                            onNext={goToNextPage}
+                            indexOfFirstItem={indexOfFirstItem}
+                            indexOfLastItem={indexOfLastItem}
+                            totalItems={filteredApplications.length}
+                            itemLabel={"applications"}
+                        />
                     </div>
                 )}
             </div>
+
+            {isOpen && <ApplicationFormPDFCopy studentId={applicationId} />}
         </div>
     );
 }

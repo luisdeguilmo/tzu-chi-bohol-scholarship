@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Controllers;
+
 require_once __DIR__ . "/../../config/Database.php";
 
-// CORS headers again in PHP (in case .htaccess isn't enough)
+// CORS headers
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
@@ -19,6 +20,7 @@ use App\Models\FamilyMemberModel;
 use App\Models\ScholarModel;
 use App\Models\AssistanceModel;
 use App\Models\RequirementModel;
+use App\Models\ProfilePictureModel; // Add this new model
 
 class ApplicationController {
 
@@ -30,20 +32,15 @@ class ApplicationController {
     }
 
     public function createApplication() {
-        // Start transaction
         $this->pdo->beginTransaction();
 
         try {
-            // Handle data from both FormData and direct JSON
+            // Handle data from FormData or JSON
             if (isset($_POST['applicationData'])) {
-                // Handle data from FormData
                 $data = json_decode($_POST['applicationData'], true);
             } else {
-                // Handle direct JSON input 
                 $data = json_decode(file_get_contents("php://input"), true);
             }
-            
-            file_put_contents("log.txt", json_encode($data) . PHP_EOL, FILE_APPEND);
             
             if (!$data) {
                 throw new \Exception("No data provided");
@@ -57,110 +54,288 @@ class ApplicationController {
                 throw new \Exception("Failed to create application");
             }
 
-            // Process personal information
-            $personal = new PersonalModel($this->pdo);
-            if (!$personal->create($data['personal_information'], $application_id)) {
-                throw new \Exception("Failed to save personal information");
-            } 
+            // Process other data (personal, education, family, etc.)
+            $this->processApplicationData($data, $application_id);
 
-            // Process education information
-            $education = new EducationModel($this->pdo);
-            if (!$education->create($data['educational_background'], $application_id)) {
-                throw new \Exception("Failed to save education information");
+            // Handle profile picture upload
+            if (isset($_FILES['picture'])) {
+                $this->handleProfilePictureUpload($_FILES['picture'], $application_id);
             }
 
-             // Process family information
-            $family = new FamilyModel($this->pdo);
-            if (!$family->create($data['parents_guardian'], $application_id)) {
-                throw new \Exception("Failed to save family information");
-            }
-
-            // Process contact person
-            $contactPerson = new ContactPersonModel($this->pdo);
-            if (isset($data['contact_person']) && !empty($data['contact_person'])) {
-                if (!$contactPerson->create($data['contact_person'], $application_id)) {
-                    throw new \Exception("Failed to save contact person");
-                }
-            }
-
-            if (isset($data['family_members']) && is_array($data['family_members'])) {
-                $familyMember = new FamilyMemberModel($this->pdo);
-                foreach ($data['family_members'] as $member) {
-                    if (!$familyMember->create($member, $application_id)) {
-                        throw new \Exception("Failed to save family member");
-                    }
-                }
-            }
-
-            // Process tzu chi scholars
-            if (isset($data['tzu_chi_siblings']) && is_array($data['tzu_chi_siblings'])) {
-                $scholar = new ScholarModel($this->pdo);
-                foreach ($data['tzu_chi_siblings'] as $scholarData) {
-                    if (!$scholar->create($scholarData, $application_id)) {
-                        throw new \Exception("Failed to save scholar");
-                    }
-                }
-            }
-
-            // Process assistance list
-            if (isset($data['other_assistance']) && is_array($data['other_assistance'])) {
-                $assistance = new AssistanceModel($this->pdo);
-                foreach ($data['other_assistance'] as $assistanceData) {
-                    if (!$assistance->create($assistanceData, $application_id)) {
-                        throw new \Exception("Failed to save assistance");
-                    }
-                }
-            }
-
-            // Handle file uploads from FormData
+            // Handle requirement files upload
             if (isset($_FILES['files'])) {
-                $this->handleFileUploads($_FILES['files'], $application_id);
+                $this->handleRequirementFilesUpload($_FILES['files'], $application_id);
             }
 
-            // Handle base64 encoded files in the JSON data
+            // Handle base64 files from JSON (if any)
             if (isset($data['uploaded_files']) && is_array($data['uploaded_files'])) {
-                $this->handleUploadedFilesFromJson($data['uploaded_files'], $application_id);
+                $this->handleRequirementFilesFromJson($data['uploaded_files'], $application_id);
             }
 
-            // Commit transaction if everything went well
+            if (isset($data['picture_file']) && $data['picture_file']) {
+                $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
+            }
+
             $this->pdo->commit();
             
-            // Return success response
             http_response_code(201);
-            echo json_encode(array(
+            echo json_encode([
                 "success" => true,
                 "message" => "Application created successfully",
                 "application_id" => $application_id
-            ));
+            ]);
 
         } catch (\Exception $e) {
-            // Roll back transaction on error
             $this->pdo->rollBack();
             
             http_response_code(400);
-            echo json_encode(array(
+            echo json_encode([
                 "success" => false,
                 "message" => $e->getMessage()
-            ));
+            ]);
         }
     }
 
-    // Handle file uploads from FormData
-    private function handleFileUploads($files, $application_id) {
-        $base_upload_dir = __DIR__ . "/../../public/upload/";
-        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/";
-    
-        // Create directories if they don't exist
-        if (!is_dir($base_upload_dir)) {
-            mkdir($base_upload_dir, 0777, true);
+    private function processApplicationData($data, $application_id) {
+        // Process personal information
+        $personal = new PersonalModel($this->pdo);
+        if (!$personal->create($data['personal_information'], $application_id)) {
+            throw new \Exception("Failed to save personal information");
+        } 
+
+        // Process education information
+        $education = new EducationModel($this->pdo);
+        if (!$education->create($data['educational_background'], $application_id)) {
+            throw new \Exception("Failed to save education information");
         }
-    
+
+        // Process family information
+        $family = new FamilyModel($this->pdo);
+        if (!$family->create($data['parents_guardian'], $application_id)) {
+            throw new \Exception("Failed to save family information");
+        }
+
+        // Process contact person
+        $contactPerson = new ContactPersonModel($this->pdo);
+        if (isset($data['contact_person']) && !empty($data['contact_person'])) {
+            if (!$contactPerson->create($data['contact_person'], $application_id)) {
+                throw new \Exception("Failed to save contact person");
+            }
+        }
+
+        // Process family members
+        if (isset($data['family_members']) && is_array($data['family_members'])) {
+            $familyMember = new FamilyMemberModel($this->pdo);
+            foreach ($data['family_members'] as $member) {
+                if (!$familyMember->create($member, $application_id)) {
+                    throw new \Exception("Failed to save family member");
+                }
+            }
+        }
+
+        // Process tzu chi scholars
+        if (isset($data['tzu_chi_siblings']) && is_array($data['tzu_chi_siblings'])) {
+            $scholar = new ScholarModel($this->pdo);
+            foreach ($data['tzu_chi_siblings'] as $scholarData) {
+                if (!$scholar->create($scholarData, $application_id)) {
+                    throw new \Exception("Failed to save scholar");
+                }
+            }
+        }
+
+        // Process assistance list
+        if (isset($data['other_assistance']) && is_array($data['other_assistance'])) {
+            $assistance = new AssistanceModel($this->pdo);
+            foreach ($data['other_assistance'] as $assistanceData) {
+                if (!$assistance->create($assistanceData, $application_id)) {
+                    throw new \Exception("Failed to save assistance");
+                }
+            }
+        }
+    }
+
+    public function getProfilePicture($application_id) {
+        try {
+            $profilePictureModel = new ProfilePictureModel();
+            $profile_url = $profilePictureModel->getFileUrlByApplicationId($application_id);
+            
+            if ($profile_url) {
+                echo json_encode([
+                    "success" => true,
+                    "profile_picture_url" => $profile_url
+                ]);
+            } else {
+                http_response_code(404);
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Profile picture not found"
+                ]);
+            }
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "success" => false,
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
+
+
+    public function getProfilePicture64($application_id) {
+    try {
+        $profilePictureModel = new ProfilePictureModel();
+        $profile_url = $profilePictureModel->getFileUrlByApplicationId($application_id);
+        
+        if (!$profile_url) {
+            http_response_code(404);
+            echo json_encode([
+                "success" => false,
+                "message" => "Profile picture not found"
+            ]);
+            return;
+        }
+
+        // Convert URL to file path
+        $parsedUrl = parse_url($profile_url);
+        $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
+        
+        // Validate file exists and is readable
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            http_response_code(404);
+            echo json_encode([
+                "success" => false,
+                "message" => "Profile picture file not accessible"
+            ]);
+            return;
+        }
+
+        // Read file and convert to base64
+        $imageData = file_get_contents($filePath);
+        if ($imageData === false) {
+            http_response_code(500);
+            echo json_encode([
+                "success" => false,
+                "message" => "Failed to read profile picture file"
+            ]);
+            return;
+        }
+
+        // Get MIME type - using multiple methods for compatibility
+        $mimeType = null;
+        
+        // Method 1: Try finfo if available
+        if (class_exists('finfo')) {
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->buffer($imageData);
+        }
+        
+        // Method 2: Fallback to getimagesizefromstring
+        if (!$mimeType) {
+            $imageInfo = getimagesizefromstring($imageData);
+            if ($imageInfo !== false) {
+                $mimeType = $imageInfo['mime'];
+            }
+        }
+        
+        // Method 3: Fallback to file extension
+        if (!$mimeType) {
+            $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+            $mimeTypes = [
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'webp' => 'image/webp'
+            ];
+            $mimeType = $mimeTypes[$extension] ?? 'image/jpeg'; // Default to jpeg
+        }
+        
+        // Validate it's an image
+        if (!in_array($mimeType, ['image/jpeg', 'image/png', 'image/gif', 'image/webp'])) {
+            http_response_code(400);
+            echo json_encode([
+                "success" => false,
+                "message" => "Invalid image file type: " . $mimeType
+            ]);
+            return;
+        }
+
+        // Convert to base64
+        $base64 = base64_encode($imageData);
+        $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
+
+        echo json_encode([
+            "success" => true,
+            "profile_picture_base64" => $base64Image,
+            "base64" => $base64Image, // Alternative key for compatibility
+            "mime_type" => $mimeType
+        ]);
+
+        } catch (\Exception $e) {
+            error_log("Profile picture error: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                "success" => false,
+                "message" => "Internal server error: " . $e->getMessage()
+            ]);
+        }
+    }
+
+
+    private function handleProfilePictureUpload($file, $application_id) {
+        $base_upload_dir = __DIR__ . "/../../public/upload/";
+        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/profile/";
+
+        // Create directories if they don't exist
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }
-    
+
+        $filename = $file['name'];
+        $tmp_name = $file['tmp_name'];
+        $filetype = $file['type'];
+        $filesize = $file['size'];
+
+        // Get custom filename if provided
+        $custom_filename = null;
+        if (isset($_POST['pictureInfo'])) {
+            $pictureInfo = json_decode($_POST['pictureInfo'], true);
+            $custom_filename = $pictureInfo['filename'] ?? null;
+        }
+
+        $file_extension = pathinfo($filename, PATHINFO_EXTENSION);
+        $unique_filename = $custom_filename ?: ('profile_' . uniqid() . '.' . $file_extension);
+        $target_file = $upload_dir . $unique_filename;
+
+        if (move_uploaded_file($tmp_name, $target_file)) {
+            $db_file_path = "/upload/applications/" . $application_id . "/profile/" . $unique_filename;
+
+            $profilePictureModel = new ProfilePictureModel();
+            $file_data = [
+                'file_name' => $filename,
+                'file_path' => $db_file_path,
+                'file_type' => $filetype,
+                'file_size' => $filesize
+            ];
+
+            if (!$profilePictureModel->create($file_data, $application_id)) {
+                throw new \Exception("Failed to save profile picture info");
+            }
+        } else {
+            throw new \Exception("Failed to upload profile picture");
+        }
+    }
+
+    private function handleRequirementFilesUpload($files, $application_id) {
+        $base_upload_dir = __DIR__ . "/../../public/upload/";
+        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/requirements/";
+
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
         $requirementModel = new RequirementModel($this->pdo);
-    
+
         // Handle array of files
         if (isset($files['name']) && is_array($files['name'])) {
             $count = count($files['name']);
@@ -176,87 +351,57 @@ class ApplicationController {
                     $fileInfo = json_decode($_POST['fileInfo'][$i], true);
                 }
                 
-                // Use custom filename if provided in fileInfo
                 $custom_filename = ($fileInfo && isset($fileInfo['filename'])) ? $fileInfo['filename'] : null;
+                $requirement_category = ($fileInfo && isset($fileInfo['category'])) ? $fileInfo['category'] : 'other';
                 
                 $file_extension = pathinfo($filename, PATHINFO_EXTENSION);
-                $unique_filename = ($custom_filename) ? $custom_filename : uniqid() . '.' . $file_extension;
+                $unique_filename = $custom_filename ?: (uniqid() . '.' . $file_extension);
                 $target_file = $upload_dir . $unique_filename;
-    
-                // Move the uploaded file to the target directory
+
                 if (move_uploaded_file($tmp_name, $target_file)) {
-                    $db_file_path = "/upload/applications/" . $application_id . "/" . $unique_filename;
-    
+                    $db_file_path = "/upload/applications/" . $application_id . "/requirements/" . $unique_filename;
+
                     $file_data = [
                         'file_name' => $filename,
                         'file_path' => $db_file_path,
                         'file_type' => $filetype,
                         'file_size' => $filesize,
-                        'requirement_type' => 'general' // Adjust as needed
+                        'requirement_type' => 'general',
+                        'requirement_category' => $requirement_category
                     ];
-    
+
                     if (!$requirementModel->create($file_data, $application_id)) {
-                        throw new \Exception("Failed to save file info: $filename");
+                        throw new \Exception("Failed to save requirement file info: $filename");
                     }
                 } else {
-                    throw new \Exception("Failed to upload file: $filename");
+                    throw new \Exception("Failed to upload requirement file: $filename");
                 }
             }
         }
     }
-    
-    // Handle base64 encoded files from JSON
-    private function handleUploadedFilesFromJson($uploaded_files, $application_id) {
+
+    private function handleRequirementFilesFromJson($uploaded_files, $application_id) {
         $base_upload_dir = __DIR__ . "/../../public/upload/";
-        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/";
-    
-        // Debug
-        file_put_contents("debug_log.txt", "Base upload dir: " . $base_upload_dir . PHP_EOL, FILE_APPEND);
-        file_put_contents("debug_log.txt", "Upload dir: " . $upload_dir . PHP_EOL, FILE_APPEND);
-    
-        // Create directories if they don't exist
-        if (!is_dir($base_upload_dir)) {
-            mkdir($base_upload_dir, 0777, true);
-            file_put_contents("debug_log.txt", "Created base dir" . PHP_EOL, FILE_APPEND);
-        }
-    
+        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/requirements/";
+
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
-            file_put_contents("debug_log.txt", "Created upload dir" . PHP_EOL, FILE_APPEND);
         }
-    
+
         $requirementModel = new RequirementModel($this->pdo);
-    
+
         foreach ($uploaded_files as $file) {
-            // Debug
-            file_put_contents("debug_log.txt", "Processing file: " . json_encode($file) . PHP_EOL, FILE_APPEND);
-            
-            // Handle base64 encoded files or file data from client
             if (isset($file['base64_data'])) {
-                $filename = $file['filename'] ?? uniqid() . '.jpg';
+                $filename = $file['filename'] ?? uniqid() . '.pdf';
+                $category = $file['category'] ?? 'other';
                 $target_file = $upload_dir . $filename;
                 
-                // Debug - track what we're doing
-                file_put_contents("debug_log.txt", "Target file: " . $target_file . PHP_EOL, FILE_APPEND);
-                
-                // Get first 20 chars of base64 for debug (not the whole string)
-                $base64_preview = substr($file['base64_data'], 0, 20) . "...";
-                file_put_contents("debug_log.txt", "Base64 preview: " . $base64_preview . PHP_EOL, FILE_APPEND);
-                
-                // Decode and save the file
                 $file_data = base64_decode($file['base64_data']);
                 
                 if (file_put_contents($target_file, $file_data)) {
-                    $db_file_path = "/upload/applications/" . $application_id . "/" . $filename;
+                    $db_file_path = "/upload/applications/" . $application_id . "/requirements/" . $filename;
                     
-                    // Debug - confirm file was written
-                    file_put_contents("debug_log.txt", "File written successfully: " . $filename . PHP_EOL, FILE_APPEND);
-                    
-                    // Get file mime type and size
-                    $mime_type = "application/octet-stream"; // Default
-                    if (function_exists('mime_content_type')) {
-                        $mime_type = mime_content_type($target_file);
-                    }
+                    $mime_type = mime_content_type($target_file) ?: "application/octet-stream";
                     $file_size = filesize($target_file);
                     
                     $file_info = [
@@ -264,25 +409,53 @@ class ApplicationController {
                         'file_path' => $db_file_path,
                         'file_type' => $mime_type,
                         'file_size' => $file_size,
-                        'requirement_type' => 'general' // Adjust as needed
+                        'requirement_type' => 'general',
+                        'requirement_category' => $category
                     ];
                     
-                    // Debug
-                    file_put_contents("debug_log.txt", "File info: " . json_encode($file_info) . PHP_EOL, FILE_APPEND);
-                    
                     if (!$requirementModel->create($file_info, $application_id)) {
-                        file_put_contents("debug_log.txt", "Failed to save file info in DB" . PHP_EOL, FILE_APPEND);
-                        throw new \Exception("Failed to save file info: $filename");
+                        throw new \Exception("Failed to save requirement file info: $filename");
                     }
-                    
-                    file_put_contents("debug_log.txt", "File saved in DB successfully" . PHP_EOL, FILE_APPEND);
                 } else {
-                    file_put_contents("debug_log.txt", "Failed to write file to disk" . PHP_EOL, FILE_APPEND);
-                    throw new \Exception("Failed to save file: $filename");
+                    throw new \Exception("Failed to save requirement file: $filename");
+                }
+            }
+        }
+    }
+
+    private function handleProfilePictureFromJson($picture_file, $application_id) {
+        $base_upload_dir = __DIR__ . "/../../public/upload/";
+        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/profile/";
+
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
+        if (isset($picture_file['base64_data'])) {
+            $filename = $picture_file['filename'] ?? 'profile_' . uniqid() . '.jpg';
+            $target_file = $upload_dir . $filename;
+            
+            $file_data = base64_decode($picture_file['base64_data']);
+            
+            if (file_put_contents($target_file, $file_data)) {
+                $db_file_path = "/upload/applications/" . $application_id . "/profile/" . $filename;
+                
+                $mime_type = mime_content_type($target_file) ?: "image/jpeg";
+                $file_size = filesize($target_file);
+                
+                $profilePictureModel = new ProfilePictureModel();
+                $file_info = [
+                    'file_name' => $filename,
+                    'file_path' => $db_file_path,
+                    'file_type' => $mime_type,
+                    'file_size' => $file_size
+                ];
+                
+                if (!$profilePictureModel->create($file_info, $application_id)) {
+                    throw new \Exception("Failed to save profile picture info: $filename");
                 }
             } else {
-                file_put_contents("debug_log.txt", "No base64_data found in file entry" . PHP_EOL, FILE_APPEND);
-                throw new \Exception("Invalid file data provided - missing base64_data");
+                throw new \Exception("Failed to save profile picture: $filename");
             }
         }
     }

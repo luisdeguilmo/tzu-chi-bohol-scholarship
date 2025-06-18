@@ -1,6 +1,6 @@
 // components/CriteriaTable.jsx
 import React, { useMemo } from 'react';
-import SearchInput from './SearchInput';
+import SearchInput from '../SearchInput';
 import ScholarshipCriteriaTableRow from './ScholarshipCriteriaTableRow';
 import EmptyState from '../EmptyState';
 import Pagination from '../Pagination';
@@ -32,6 +32,7 @@ const ScholarshipCriteriaTable = ({
         onFieldChange,
         onSave,
         onStartEdit,
+        onDelete
     } = editState;
 
     const {
@@ -92,8 +93,8 @@ const ScholarshipCriteriaTable = ({
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto rounded-sm border border-gray-200">
-                <table className="min-w-full divide-y divide-gray-200">
+            <div className="overflow-x-auto rounded-sm border border-gray-100">
+                <table className="w-[1160px] divide-y divide-gray-200">
                     <thead className="bg-gray-50 text-gray-700 font-bold">
                         <tr>
                             {headers.map((header, index) => (
@@ -125,6 +126,7 @@ const ScholarshipCriteriaTable = ({
                                 onStartEdit={onStartEdit}
                                 fields={fields}
                                 primaryField={primaryField}
+                                className={'border border-blue-500'}
                             />
                         ))}
                     </tbody>

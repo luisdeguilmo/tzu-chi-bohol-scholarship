@@ -47,7 +47,7 @@ class ScholarshipCriteriaModel {
 
     public function createCourse($data) {
         $query = "INSERT INTO " . $this->courses_table . " 
-                  SET course_name = :course_name";
+                  SET course = :course_name";
         
         $stmt = $this->pdo->prepare($query);
         
@@ -257,12 +257,12 @@ class ScholarshipCriteriaModel {
 
     public function updateCourse($id, $data) {
         $query = "UPDATE " . $this->courses_table . " 
-                  SET course_name = :course_name 
+                  SET course = :course_name 
                   WHERE id = :id";
         
         $stmt = $this->pdo->prepare($query);
         
-        $course_name = strip_tags($data);
+        $course_name = strip_tags($data['course']);
         
         $stmt->bindParam(":course_name", $course_name);
         $stmt->bindParam(":id", $id);
@@ -277,7 +277,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $qualification = strip_tags($data);
+        $qualification = strip_tags($data['qualification']);
         
         $stmt->bindParam(":qualification", $qualification);
         $stmt->bindParam(":id", $id);
@@ -313,7 +313,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $procedure = strip_tags($data);
+        $procedure = strip_tags($data['procedure']);
         
         $stmt->bindParam(":procedure", $procedure);
         $stmt->bindParam(":id", $id);
@@ -328,7 +328,7 @@ class ScholarshipCriteriaModel {
         
         $stmt = $this->pdo->prepare($query);
         
-        $instruction = strip_tags($data);
+        $instruction = strip_tags($data['instruction']);
         
         $stmt->bindParam(":instruction", $instruction);
         $stmt->bindParam(":id", $id);

@@ -37,8 +37,8 @@ function SideBar({ items }) {
             )}
 
             <nav
-                className={`group lg:h-auto h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[250px] lg:hover:items-stretch z-30 overflow-hidden transition-all duration-200 ${
-                    isOpen ? "lg:w-[250px] w-[300px]" : "w-[0] lg:w-[70px]"
+                className={`group lg:h-auto h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[300px] lg:hover:items-stretch z-30 overflow-hidden transition-all duration-200 ${
+                    isOpen ? "lg:w-[300px] w-[300px]" : "w-[0] lg:w-[70px]"
                 } ${!isOpen && "items-center"}`}
             >
                 {isOpen && (
@@ -56,12 +56,12 @@ function SideBar({ items }) {
                         <li
                             onClick={() => handleClick(item.navigate)}
                             key={index}
-                            className={`flex items-center gap-3 cursor-pointer hover:bg-gray-200 whitespace-nowrap w-full px-3 py-2 rounded-lg ${item.style}`}
+                            className={`flex items-center gap-4 text-gray-800 cursor-pointer hover:bg-gray-200 whitespace-nowrap w-full px-3 py-2 rounded-lg ${item.style}`}
                         >
                             <span
-                                className={`material-symbols-outlined md:${item.iconStyle} text-xl`}
+                                className={`material-symbols-outlined md:${item.iconStyle}`}
                             >
-                                {item.iconName}
+                                {item.icon}
                             </span>
                             {isOpen ? (
                                 <p className="lg:block group-hover:block">

@@ -213,17 +213,17 @@ const StaffAccountManagement = () => {
                 {/* Table */}
                 <div className="overflow-x-auto rounded-sm border border-gray-200">
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-green-100 text-green-800 text-center">
+                        <thead className="bg-gray-50 text-gray-700 text-center font-bold">
                             <tr>
                                 <th
                                     scope="col"
-                                    className="py-3 text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-xs uppercase tracking-wider"
                                 >
                                     Name
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-xs uppercase tracking-wider"
                                 >
                                     Email
                                 </th>
@@ -235,7 +235,7 @@ const StaffAccountManagement = () => {
                                 </th> */}
                                 <th
                                     scope="col"
-                                    className="py-3 text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-xs uppercase tracking-wider"
                                 >
                                     Actions
                                 </th>
@@ -245,10 +245,10 @@ const StaffAccountManagement = () => {
                             {currentItems.map((staff, index) => (
                                 <tr
                                     key={staff.id}
-                                    className="hover:bg-gray-50 transition-colors text-center"
+                                    className="hover:bg-gray-50 transition-colors text-center text-xs"
                                 >
                                     {edit && rowItemId === staff.id ? (
-                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
                                             <input
                                                 className="p-2 w-full border-[1px] outline-green-500"
                                                 type="text"
@@ -261,12 +261,12 @@ const StaffAccountManagement = () => {
                                             />
                                         </td>
                                     ) : (
-                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
                                             {staff.name}
                                         </td>
                                     )}
                                     {edit && rowItemId === staff.id ? (
-                                        <td className="py-4 text-sm text-gray-500">
+                                        <td className="py-3 text-gray-500">
                                             <input
                                                 className="p-2 w-full border-[1px] outline-green-500"
                                                 type="email"
@@ -279,7 +279,7 @@ const StaffAccountManagement = () => {
                                             />
                                         </td>
                                     ) : (
-                                        <td className="py-4 max-w-md break-words text-sm text-gray-500">
+                                        <td className="py-3 max-w-md break-words text-gray-500">
                                             {staff.email}
                                         </td>
                                     )}
@@ -304,7 +304,7 @@ const StaffAccountManagement = () => {
                                             {staff.role}
                                         </td>
                                     )} */}
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                    <td className="py-3 whitespace-nowrap font-medium">
                                         <button
                                             onClick={() => {
                                                 {

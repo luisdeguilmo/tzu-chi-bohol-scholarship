@@ -1,27 +1,25 @@
-import React from "react";
-
 const Pagination = ({
-    indexOfFirstItem, 
+    indexOfFirstItem,
     indexOfLastItem,
     totalItems,
-    onNext, 
+    onNext,
     onPrevious,
     currentPage,
     totalPages,
-    itemLabel = 'items'
+    itemLabel = "items",
 }) => {
     return (
         <>
             <div className="text-sm text-gray-600">
                 Showing {indexOfFirstItem + 1}-
-                {Math.min(indexOfLastItem, totalItems)} of{" "}
-                {totalItems} {itemLabel}
+                {Math.min(indexOfLastItem, totalItems)} of {totalItems}{" "}
+                {itemLabel}
             </div>
             <div className="flex space-x-2">
                 <button
                     onClick={onPrevious}
                     disabled={currentPage === 1}
-                    className={`px-4 py-2 rounded-md ${
+                    className={`px-4 py-2 rounded-sm ${
                         currentPage === 1
                             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                             : "bg-green-600 text-white hover:bg-green-600 transition-all"
@@ -32,7 +30,7 @@ const Pagination = ({
                 <button
                     onClick={onNext}
                     disabled={currentPage === totalPages || totalPages === 0}
-                    className={`px-4 py-2 rounded-md ${
+                    className={`px-4 py-2 rounded-sm ${
                         currentPage === totalPages || totalPages === 0
                             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                             : "bg-green-500 text-white hover:bg-green-600 transition-all"

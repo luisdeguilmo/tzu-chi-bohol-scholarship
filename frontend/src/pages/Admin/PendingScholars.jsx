@@ -170,9 +170,9 @@ export default function PendingScholars() {
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-green-100 text-green-800">
+                        <thead className="bg-gray-50 text-gray-700 font-bold">
                             <tr>
-                                <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="px-3 py-3 text-center text-xs uppercase tracking-wider">
                                     <input
                                         type="checkbox"
                                         className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
@@ -184,16 +184,16 @@ export default function PendingScholars() {
                                         onChange={selectAllVisible}
                                     />
                                 </th>
-                                <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="px-3 py-3 text-center text-xs uppercase tracking-wider">
                                     ID
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Name
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Email
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Status
                                 </th>
                             </tr>
@@ -208,9 +208,9 @@ export default function PendingScholars() {
                                         )
                                             ? "bg-green-50"
                                             : ""
-                                    }`}
+                                    } text-xs`}
                                 >
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         <input
                                             type="checkbox"
                                             className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
@@ -228,16 +228,16 @@ export default function PendingScholars() {
                                             }
                                         />
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {scholar.application_id}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-500">
+                                    <td className="py-3 whitespace-nowrap font-medium text-gray-500">
                                         {scholar.first_name}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {scholar.email}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                             Pending
                                         </span>

@@ -31,6 +31,7 @@ if (!$data) {
 
 $studentId = $data['studentIds'] ?? null;
 $status = $data['status'] ?? null;
+$application_approved = $data['application_approved'] ?? null;
 $batch = $data['batch'] ?? null;
 $today = date("Y-m-d H:i:s"); 
 
@@ -45,12 +46,12 @@ $successCount = 0;
 try {
     
     $application = new ApplicationsModel();
-    $application->updateApplicationStatus($studentId, $status, $batch, $today);
+    $application->updateApplicationStatus($studentId, $status, $application_approved, $batch, $today);
 
     foreach ($data['studentIds'] as $studentId) {
         try {
             // First update status
-            if ($application->updateApplicationStatus($studentId, $status, $batch, $today)) {
+            if ($application->updateApplicationStatus($studentId, $status, $application_approved, $batch, $today)) {
                 // Then create account
                 $successCount++;
                 echo json_encode(["message" => "Status updated successfully"]);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
-import { formatDateTime } from "../../../utils/formatDate";
+import { formatDateTime } from "../../../utils/formatDateTime";
 
 export default function NewApprovedApplications() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -17,10 +17,13 @@ export default function NewApprovedApplications() {
     const fetchStudentsData = async (id) => {
         try {
             setLoading(true);
+            // const response = await axios.get(
+            //     `http://localhost:8000/app/views/application-examination.php?application_status=Approved&application_status=Examination&status=New`
+            // );
             const response = await axios.get(
-                `http://localhost:8000/app/views/application-examination.php?application_status=Approved&application_status=Examination&status=New`
+                `http://localhost:8000/app/views/applicants.php?approved=1&status=New`
             );
-            setStudentData(response.data.data);
+            setStudentData(response.data.data || []);
             setLoading(false);
         } catch (err) {
             console.error("Error fetching student data:", err);
@@ -134,7 +137,7 @@ export default function NewApprovedApplications() {
                                         Select Batch
                                     </option>
                                 )} */}
-                                <option value={new Date}>Today</option>
+                                <option value={new Date()}>Today</option>
                                 <option value="">2025</option>
                                 <option value="">2026</option>
                             </select>
@@ -178,21 +181,9 @@ export default function NewApprovedApplications() {
 
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
-                    <table className="w-[1200px] divide-y divide-gray-200">
+                    <table className="w-[1160px] divide-y divide-gray-200">
                         <thead className="bg-gray-50 text-gray-800 font-bold">
                             <tr>
-                                <th className="pl-4 py-3 text-center text-xs uppercase tracking-wider">
-                                    {/* <input
-                                        type="checkbox"
-                                        className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                                        checked={
-                                            currentItems.length > 0 &&
-                                            setSelectedApplications.length ===
-                                                currentItems.length
-                                        }
-                                        onChange={selectAllVisible}
-                                    /> */}
-                                </th>
                                 <th
                                     scope="col"
                                     className="py-3 text-center text-xs uppercase tracking-wider"
@@ -221,12 +212,6 @@ export default function NewApprovedApplications() {
                                     scope="col"
                                     className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
-                                    Status
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs uppercase tracking-wider"
-                                >
                                     Actions
                                 </th>
                             </tr>
@@ -237,36 +222,11 @@ export default function NewApprovedApplications() {
                                     key={info.application_id}
                                     className={` transition-colors text-center`}
                                 >
-                                    <td className="py-3 whitespace-nowrap text-sm text-gray-500">
-                                        {info.application_status ===
-                                            "Approved" && (
-                                            <input
-                                                type="checkbox"
-                                                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                                                checked={selectedApplications.includes(
-                                                    info.application_id
-                                                )}
-                                                onChange={() =>
-                                                    toggleApplicationSelection(
-                                                        info.application_id
-                                                    )
-                                                }
-                                                disabled={
-                                                    info.application_status !==
-                                                    "Approved"
-                                                }
-                                            />
-                                        )}
-                                    </td>
                                     <td className="py-3 whitespace-nowrap text-gray-500">
                                         {info.application_id}
                                     </td>
                                     <td className="py-3 whitespace-nowrap font-medium text-gray-500">
-                                        {info.last_name +
-                                            ", " +
-                                            info.middle_name +
-                                            ", " +
-                                            info.first_name}
+                                        {info.first_name + " " + info.last_name}
                                     </td>
                                     <td className="py-3 whitespace-nowrap text-gray-500">
                                         {formatDateTime(info.created_at)}
@@ -276,64 +236,10 @@ export default function NewApprovedApplications() {
                                             ? formatDateTime(info.approved_at)
                                             : "--"}
                                     </td>
-                                    <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
-                                        <span
-                                            className={`inline-flex px-2 py-1 text-xs rounded-full ${
-                                                info.application_status ===
-                                                "Examination"
-                                                    ? "bg-green-100 text-green-800"
-                                                    : info.application_status ===
-                                                      "Approved"
-                                                    ? "bg-yellow-100 text-yellow-800"
-                                                    : "bg-red-100 text-red-800"
-                                            }`}
-                                        >
-                                            {info.application_status ===
-                                            "Examination"
-                                                ? "Approved"
-                                                : "Pending"}
-                                        </span>
-                                    </td>
                                     <td className="py-3 whitespace-nowrap font-medium">
                                         <ApplicationFormPDF
                                             studentId={info.application_id}
                                         />
-                                        {/* <button
-                                            disabled={
-                                                info.application_status ===
-                                                "Examination"
-                                            }
-                                            onClick={() => {
-                                                updateStudentApplication(
-                                                    info.application_id
-                                                );
-                                                // addBatchColumn(
-                                                //     info.application_id
-                                                // );
-                                            }}
-                                            className={`${
-                                                info.application_status ===
-                                                "Examination"
-                                                    ? "text-gray-400"
-                                                    : "text-green-600 hover:text-green-900"
-                                            } inline-flex items-center mr-3`}
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-1"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M15 10l-4.5 4.5L9 13m12-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                            </svg>
-                                            Approve for Exam
-                                        </button> */}
                                     </td>
                                 </tr>
                             ))}
@@ -365,42 +271,9 @@ export default function NewApprovedApplications() {
                     )}
                 </div>
 
-                <div className="w-[max-content] py-4">
-                    <label className="flex gap-2 items-center text-sm font-medium text-gray-700">
-                        <input
-                            type="checkbox"
-                            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                            checked={
-                                currentItems.length > 0 &&
-                                selectedApplications.length ===
-                                    currentItems.length
-                            }
-                            onChange={selectAllVisible}
-                        />
-                        Select All
-                    </label>
-                </div>
-
                 {/* Pagination */}
                 {filteredApplications.length > 0 && (
-                    <div className="flex justify-between items-center">
-                        <div className="flex justify-between items-center mb-4">
-                            <button
-                                onClick={updateStudentApplication}
-                                disabled={
-                                    selectedApplications.length === 0 || loading
-                                }
-                                className={`px-4 py-2 rounded-md ${
-                                    selectedApplications.length === 0 || loading
-                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                        : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                                }`}
-                            >
-                                {loading
-                                    ? "Processing..."
-                                    : "Approve for Examination"}
-                            </button>
-                        </div>
+                    <div className="flex justify-between items-center mt-6">
                         <div className="text-sm text-gray-600">
                             Showing {indexOfFirstItem + 1}-
                             {Math.min(

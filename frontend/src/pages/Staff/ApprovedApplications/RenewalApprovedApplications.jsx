@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
-import { formatDateTime } from "../../../utils/formatDate";
+import { formatDateTime } from "../../../utils/formatDateTime";
 
 export default function RenewalApprovedApplications() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,9 +16,9 @@ export default function RenewalApprovedApplications() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/applicants.php?application_status=Approved&status=Old`
+                `http://localhost:8000/app/views/applicants.php?approved=1&status=Old`
             );
-            setStudentData(response.data.personalInfo);
+            setStudentData(response.data.data);
             setLoading(false);
         } catch (err) {
             console.error("Error fetching student data:", err);
@@ -100,8 +100,8 @@ export default function RenewalApprovedApplications() {
                 </div>
 
                 {/* Table */}
-                <div className="overflow-x-auto rounded-lg border border-gray-200">
-                    <table className="min-w-full divide-y divide-gray-200">
+                <div className="overflow-x-auto rounded-[4px] border border-gray-200">
+                    <table className="w-[1160px] divide-y divide-gray-200">
                         <thead className="bg-gray-50 text-gray-800 font-bold">
                             <tr>
                                 <th
@@ -177,32 +177,6 @@ export default function RenewalApprovedApplications() {
                                         {formatDateTime(info.created_at)}
                                     </td>
                                     <td className="py-3 whitespace-nowrap font-medium">
-                                        {/* <button
-                                            onClick={() => handleView(coa)}
-                                            className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-1"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                                />
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                                />
-                                            </svg>
-                                            View
-                                        </button> */}
                                         <ApplicationFormPDF studentId={info.application_id} />
                                     </td>
                                 </tr>

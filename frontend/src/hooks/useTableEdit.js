@@ -52,7 +52,7 @@ export const useTableEdit = () => {
     };
 
     const cancelEdit = () => {
-        setEdit(false);
+        setEdit(false); 
         setEditData({});
         setRowItemId(0);
     };

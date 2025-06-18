@@ -34,7 +34,8 @@ const sidebarItems = [
             { text: "Approved Applications", navigate: "/staff/approved-applications" },
             { text: "Entrance Examination", navigate: "/staff/examination-list" },
             { text: "Initial Interview", navigate: "/staff/initial-interview" },
-            { text: "Home Visitation", navigate: "/staff/approved-applications" },
+            { text: "Home Visitation", navigate: "/staff/home-visitation" },
+            { text: "Final Interview", navigate: "" },
         ],
     },
     {
@@ -42,6 +43,7 @@ const sidebarItems = [
         iconName: "event",
         subItems: [
             { text: "Set Events", navigate: "/staff/set-events" },
+            { text: "Volunteer Activities", navigate: "/staff/volunteer-activities" },
             { text: "Log Duty Hours", navigate: "/" },
         ],
     },
@@ -62,7 +64,6 @@ export default function StaffLayout() {
                 <SideBarWithDropdown items={sidebarItems} />
                 <div className="w-full h-[90vh] overflow-y-scroll scroll-smooth">
                     <Outlet />
-                    {/* <Dashboard overviewData={overviewData} /> */}
                 </div>
             </div>
         </div>

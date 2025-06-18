@@ -152,11 +152,11 @@ class InstructionController {
             }
             
             // Check if ID is provided
-            if (!isset($data['id'])) {
+            if (!isset($data['instruction']['id'])) {
                 throw new \Exception("ID is required for update");
             }
             
-            $id = $data['id'];
+            $id = $data['instruction']['id'];
             
             // Process application data
             $criteria = new ScholarshipCriteriaModel();

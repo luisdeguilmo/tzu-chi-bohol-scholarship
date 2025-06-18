@@ -120,12 +120,6 @@ class CertificateOfAppearanceController {
         }
     }
     
-    /**
-     * Validate required fields in data
-     * 
-     * @param array $data Input data to validate
-     * @throws \Exception If validation fails
-     */
     private function validateRequiredFields($data) {
         // Check for required fields
         if (empty($data['event_name'])) {
@@ -141,25 +135,11 @@ class CertificateOfAppearanceController {
             throw new \Exception("Invalid date format. Please use YYYY-MM-DD");
         }
     }
-    
-    /**
-     * Generate unique application ID
-     * 
-     * @return string Generated application ID
-     */
+
     private function generateApplicationId() {
         return date('Ymd') . rand(1000, 9999);
     }
 
-    /**
-     * Handle file uploads from FormData
-     * 
-     * @param array $files Files from $_FILES
-     * @param string $application_id Application ID
-     * @param string $event_name Event name
-     * @param string $event_date Event date
-     * @throws \Exception If file upload fails
-     */
     private function handleFileUploads($files, $application_id, $event_name, $event_date) {
         // Handle array of files
         if (isset($files['name']) && is_array($files['name'])) {
@@ -213,15 +193,6 @@ class CertificateOfAppearanceController {
         }
     }
     
-    /**
-     * Handle base64 encoded files from JSON
-     * 
-     * @param array $uploaded_files Array of file data
-     * @param string $application_id Application ID
-     * @param string $event_name Event name
-     * @param string $event_date Event date
-     * @throws \Exception If file upload fails
-     */
     private function handleUploadedFilesFromJson($uploaded_files, $application_id, $event_name, $event_date) {
         foreach ($uploaded_files as $file) {
             // Validate file data
@@ -303,12 +274,6 @@ class CertificateOfAppearanceController {
         }
     }
     
-    /**
-     * Get MIME type from file extension
-     * 
-     * @param string $extension File extension
-     * @return string MIME type
-     */
     private function getMimeTypeFromExtension($extension) {
         $extension = strtolower($extension);
         

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
-import { formatDateTime } from "../../../utils/formatDate";
+import { formatDateTime } from "../../../utils/formatDateTime";
 import BatchActions from "./BatchActions";
 import SetScheduleForm from "./SetScheduleForm";
 import { sendExaminationSchedule } from "../../../services/examinationService";
@@ -68,29 +68,29 @@ export default function ExaminationBatches() {
         }
     }, [selectedBatch]);
 
-    const fetchStudentsData = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get(
-                `http://localhost:8000/app/views/applicants.php?status=Examination`
-            );
-            setStudentData(response.data.personalInfo || []);
-            setLoading(false);
-        } catch (err) {
-            console.error("Error fetching student data:", err);
-            setError("Failed to load student data. Please try again.");
-            setLoading(false);
-        }
-    };
+    // const fetchStudentsData = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await axios.get(
+    //             `http://localhost:8000/app/views/applicants.php?status=Examination`
+    //         );
+    //         setStudentData(response.data.personalInfo || []);
+    //         setLoading(false);
+    //     } catch (err) {
+    //         console.error("Error fetching student data:", err);
+    //         setError("Failed to load student data. Please try again.");
+    //         setLoading(false);
+    //     }
+    // };
 
-    useEffect(() => {
-        fetchStudentsData();
-    }, []);
+    // useEffect(() => {
+    //     fetchStudentsData();
+    // }, []);
 
     const handleButtonState = (id, value) => {
         setEdit(true);
         setEditingId(id);
-        setScore(value || 0); // Set initial value
+        setScore(value || ''); // Set initial value
     };
 
     const handleChange = (value) => {
@@ -354,7 +354,7 @@ export default function ExaminationBatches() {
             <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg font-bold text-gray-800">
-                        Examination Batches
+                        Applications
                     </h2>
 
                     <div className="flex items-center space-x-4">
@@ -457,7 +457,7 @@ export default function ExaminationBatches() {
                 {/* Table */}
                 {!loading && !error && batches.length > 0 && (
                     <div className="overflow-x-auto rounded-[4px] border border-gray-200">
-                        <table className="min-w-full divide-y divide-gray-200">
+                        <table className="w-[1160px] divide-y divide-gray-200">
                             <thead className="bg-gray-50 text-gray-800 font-bold">
                                 <tr>
                                     <th
@@ -561,8 +561,7 @@ export default function ExaminationBatches() {
                                                         />
                                                     ) : (
                                                         <span>
-                                                            {applicationInfo.score ||
-                                                                "--"}
+                                                            {applicationInfo.score}
                                                         </span>
                                                     )}
                                                 </td>
@@ -586,27 +585,48 @@ export default function ExaminationBatches() {
                                                                 );
                                                             }
                                                         }}
-                                                        className="inline-flex items-center text-green-600 hover:text-green-900"
+                                                        className={`inline-flex items-center ${applicationInfo.score != null ? 'text-blue-600 hover:text-blue-900' : 'text-green-600 hover:text-green-900'}`}
                                                     >
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            className="h-4 w-4 mr-1"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                            stroke="currentColor"
-                                                        >
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                strokeWidth={2}
-                                                                d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H7v-3.414a2 2 0 01.586-1.414z"
-                                                            />
-                                                        </svg>
+                                                        {applicationInfo.score != null ? (
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                className="h-4 w-4 mr-1"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                                stroke="currentColor"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    strokeWidth={
+                                                                        2
+                                                                    }
+                                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                                />
+                                                            </svg>
+                                                        ) : (
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                className="h-4 w-4 mr-1"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                                stroke="currentColor"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    strokeWidth={
+                                                                        2
+                                                                    }
+                                                                    d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H7v-3.414a2 2 0 01.586-1.414z"
+                                                                />
+                                                            </svg>
+                                                        )}
                                                         {edit &&
                                                         editingId ===
                                                             applicationInfo.application_id
                                                             ? "Save"
-                                                            : applicationInfo.score
+                                                            : applicationInfo.score != null
                                                             ? "Edit Score"
                                                             : "Add Score"}
                                                     </button>

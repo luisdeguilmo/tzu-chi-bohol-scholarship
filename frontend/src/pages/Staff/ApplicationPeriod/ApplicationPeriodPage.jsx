@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { formatDateTime } from "../../../utils/formatDate";
+import { formatDateTime } from "../../../utils/formatDateTime";
 import ApplicationPeriodEditForm from "./ApplicationPeriodEditForm";
 import ApplicationPeriodForm from "./ApplicationPeriodForm";
 
@@ -132,34 +132,34 @@ export default function ApplicationPeriodPage() {
                     <div className="overflow-x-auto rounded-md border border-gray-200">
                         <table className="w-[1300px] divide-y divide-gray-200">
                             <thead className="bg-green-100 text-green-800">
-                                <tr className="text-center">
+                                <tr className="text-center bg-gray-50 text-gray-800 font-bold">
                                     <th
                                         scope="col"
-                                        className="py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs uppercase tracking-wider"
                                     >
                                         Start Date
                                     </th>
                                     <th
                                         scope="col"
-                                        className="py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs uppercase tracking-wider"
                                     >
                                         End Date
                                     </th>
                                     <th
                                         scope="col"
-                                        className="py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs uppercase tracking-wider"
                                     >
                                         Status
                                     </th>
                                     <th
                                         scope="col"
-                                        className="py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs uppercase tracking-wider"
                                     >
                                         Message
                                     </th>
                                     <th
                                         scope="col"
-                                        className="py-3 text-xs font-medium uppercase tracking-wider"
+                                        className="py-3 text-xs uppercase tracking-wider"
                                     >
                                         Action
                                     </th>
@@ -169,19 +169,19 @@ export default function ApplicationPeriodPage() {
                                 {currentItems.map((application) => (
                                     <tr
                                         key={application.id}
-                                        className="hover:bg-gray-50 transition-colors text-center"
+                                        className="hover:bg-gray-50 transition-colors text-center text-xs"
                                     >
-                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
                                             {formatDateTime(
                                                 application.start_date
                                             )}
                                         </td>
-                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
                                             {formatDateTime(
                                                 application.end_date
                                             )}
                                         </td>
-                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
                                             <span
                                                 className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                                                     application.status ===
@@ -196,10 +196,10 @@ export default function ApplicationPeriodPage() {
                                                 {application.status}
                                             </span>
                                         </td>
-                                        <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
                                             {application.announcement_message}
                                         </td>
-                                        <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                        <td className="py-3 whitespace-nowrap font-medium">
                                             {application.editable ? (
                                                 <button
                                                     onClick={() =>

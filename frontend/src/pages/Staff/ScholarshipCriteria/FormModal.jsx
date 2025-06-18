@@ -1,5 +1,9 @@
 import { useState } from "react";
 import useScholarshipCriteriaSubmit from "../../../hooks/useScholarshipCriteriaSubmit";
+import { strandsTableConfig } from "../../../constant/scholarshipCriteria/scholarshipCriteriaTableConfig";
+import Strands from "./Strands";
+import { usePagination } from "../../../hooks/usePagination";
+import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
 
 function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
     const [text, setText] = useState("");
@@ -20,7 +24,14 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
     const handleSubmit = (e) => {
         switch (label) {
             case "Strand":
-                handleStrandSubmit(e, text, setText, description, setDescription, setIsOpen);
+                handleStrandSubmit(
+                    e,
+                    text,
+                    setText,
+                    description,
+                    setDescription,
+                    setIsOpen
+                );
                 break;
 
             case "Course":
@@ -66,7 +77,7 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
         <div>
             <button
                 onClick={() => setIsOpen(true)}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center"
+                className="bg-green-500 text-white px-4 py-2 rounded-sm hover:bg-green-600 transition-colors flex items-center"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -87,8 +98,8 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
 
             {isOpen && (
                 <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="w-[80%] md:w-[50%] lg:w-[30%] bg-white rounded-lg shadow-md overflow-hidden">
-                        <div className="bg-green-500 px-6 py-2 flex justify-between items-center">
+                    <div className="p-8 space-y-4 w-[80%] md:w-[50%] lg:w-[30%] bg-white rounded-sm shadow-md overflow-hidden">
+                        {/* <div className="bg-green-500 px-6 py-2 flex justify-between items-center">
                             <h2 className="text-md text-white">
                                 Add New {label}
                             </h2>
@@ -99,16 +110,29 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
                             >
                                 &times;
                             </button>
+                        </div> */}
+
+                        <div className="relative flex justify-between items-center">
+                            <h2 className="absolute font-semibold left-[50%] translate-x-[-50%] text-md whitespace-nowrap text-center text-gray-700">
+                                Add New {label}
+                            </h2>
+                            <button
+                                type="button"
+                                onClick={() => setIsOpen(false)}
+                                className="absolute right-0 text-gray-500 text-3xl"
+                            >
+                                &times;
+                            </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-8 space-y-4">
+                        <form onSubmit={handleSubmit} className="">
                             {/* Form Inputs */}
                             <div>
                                 {fields.map((field, index) =>
                                     field.type === "text" ? (
                                         <label
                                             key={index}
-                                            className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm"
+                                            className="py-2 flex flex-col gap-[1px] text-gray-600 text-sm"
                                         >
                                             {field.name}
                                             <input
@@ -121,6 +145,7 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
                                                             : submit
                                                         : text
                                                 }
+                                                required
                                                 onChange={(e) => {
                                                     if (
                                                         label === "Requirement"
@@ -144,7 +169,7 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
                                     ) : field.type === "textarea" ? (
                                         <label
                                             key={index}
-                                            className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm"
+                                            className="py-2 flex flex-col gap-[1px] text-gray-600 text-sm"
                                         >
                                             {field.name}
                                             <textarea
@@ -152,14 +177,19 @@ function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
                                                 id=""
                                                 rows={4}
                                                 value={description}
-                                                onChange={(e) => setDescription(e.target.value)}
+                                                required
+                                                onChange={(e) =>
+                                                    setDescription(
+                                                        e.target.value
+                                                    )
+                                                }
                                                 placeholder={field.placeholder}
                                                 className="w-full resize-none border border-gray-300 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-green-500"
                                             ></textarea>
                                         </label>
                                     ) : null
                                 )}
-                            </div>             
+                            </div>
 
                             {/* Action Buttons */}
                             <div className="flex gap-2">

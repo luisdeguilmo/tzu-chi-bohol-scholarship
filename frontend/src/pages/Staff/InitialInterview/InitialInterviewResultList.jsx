@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
-import { formatDateTime } from "../../../utils/formatDate";
+import { formatDateTime } from "../../../utils/formatDateTime";
 
 function InitialInterviewResultList() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -149,42 +149,42 @@ function InitialInterviewResultList() {
 
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
-                    <table className="w-[1200px] divide-y divide-gray-200">
-                        <thead className="bg-green-100 text-green-800">
+                    <table className="w-[1160px] divide-y divide-gray-200">
+                        <thead className="bg-gray-50 text-gray-700 font-bold">
                             <tr>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Application ID
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Name
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Date Applied
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Date Approved
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Status
                                 </th>
                                 <th
                                     scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
+                                    className="py-3 text-center text-xs uppercase tracking-wider"
                                 >
                                     Actions
                                 </th>
@@ -194,27 +194,27 @@ function InitialInterviewResultList() {
                             {currentItems.map((info, index) => (
                                 <tr
                                     key={info.application_id}
-                                    className={` transition-colors text-center`}
+                                    className={` transition-colors text-center text-xs`}
                                 >
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {info.application_id}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-500">
+                                    <td className="py-3 whitespace-nowrap font-medium text-gray-500">
                                         {info.last_name +
                                             ", " +
                                             info.middle_name +
                                             ", " +
                                             info.first_name}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {formatDateTime(info.created_at)}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {info.approved_at ? formatDateTime(info.approved_at) : "--"}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-3 whitespace-nowrap text-gray-500">
                                         <span
-                                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                            className={`inline-flex px-2 py-1 text-xs rounded-full ${
                                                 info.application_status === "Examination"
                                                     ? "bg-green-100 text-green-800"
                                                     : info.application_status ===
@@ -226,7 +226,7 @@ function InitialInterviewResultList() {
                                             {info.application_status === "Examination" ? "Approved" : "Pending"}
                                         </span>
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                    <td className="py-3 whitespace-nowrap font-medium">
                                         <ApplicationFormPDF
                                             studentId={info.application_id}
                                         />
@@ -352,156 +352,6 @@ function InitialInterviewResultList() {
                     </div>
                 )}
             </div>
-        </div>
-    );
-}
-
-function Form({
-    isOpen,
-    setIsOpen,
-    file,
-    setFile,
-    fileName,
-    setFileName,
-    documentTypes,
-    semesters,
-    documentType,
-    setDocumentType,
-    semester,
-    setSemester,
-    handleFileChange,
-    handleUpload,
-}) {
-    return (
-        <div>
-            <button
-                onClick={() => setIsOpen(true)}
-                className="bg-green-500 text-white px-4 py-2 rounded-sm hover:bg-green-600 transition-colors"
-            >
-                Upload Document
-            </button>
-
-            {isOpen && (
-                <div
-                    // onClick={() => setIsOpen(false)}
-                    className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50"
-                >
-                    <div className="w-[80%] md:w-[50%] lg:w-[40%] bg-white rounded-lg shadow-md overflow-hidden">
-                        <div className="bg-green-500 px-4 py-3 flex justify-between items-center">
-                            <h2 className="text-lg font-semibold text-white">
-                                Upload COE & Grades
-                            </h2>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="text-white text-2xl"
-                            >
-                                &times;
-                            </button>
-                        </div>
-
-                        <div className="p-8 space-y-4">
-                            {/* Document Type Selection */}
-                            <div className="relative">
-                                <label className="absolute top-[-10px] text-gray-600 text-sm">
-                                    Document Type
-                                </label>
-                                <select
-                                    value={documentType}
-                                    onChange={(e) =>
-                                        setDocumentType(e.target.value)
-                                    }
-                                    className="w-full border-b-2 border-gray-400 py-2 mt-1 focus:border-green-500"
-                                    required
-                                >
-                                    <option value="">
-                                        Select document type
-                                    </option>
-                                    {documentTypes.map((type) => (
-                                        <option key={type} value={type}>
-                                            {type}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {/* Semester Selection */}
-                            <div className="relative">
-                                <label className="absolute top-[-10px] text-gray-600 text-sm">
-                                    Semester
-                                </label>
-                                <select
-                                    value={semester}
-                                    onChange={(e) =>
-                                        setSemester(e.target.value)
-                                    }
-                                    className="w-full border-b-2 border-gray-400 py-2 mt-1 focus:border-green-500"
-                                    required
-                                >
-                                    <option value="">Select semester</option>
-                                    {semesters.map((sem) => (
-                                        <option key={sem} value={sem}>
-                                            {sem}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="mt-1 flex justify-center p-2 border-2 border-gray-300 border-dashed rounded-lg hover:border-purple-400 transition-colors">
-                                <div className="space-y-1 text-center">
-                                    <div className="flex text-sm text-gray-600 justify-center">
-                                        <label
-                                            htmlFor="file-upload"
-                                            className="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500"
-                                        >
-                                            <span>Choose File</span>
-                                            <input
-                                                id="file-upload"
-                                                name="file-upload"
-                                                type="file"
-                                                className="sr-only"
-                                                accept=".pdf,.jpg,.png"
-                                                onChange={handleFileChange}
-                                            />
-                                        </label>
-                                    </div>
-                                    <p className="text-xs text-gray-500">
-                                        PDF, JPG, PNG (max 10MB)
-                                    </p>
-                                    {fileName && (
-                                        <p className="text-sm text-purple-500 font-medium mt-2">
-                                            {fileName}
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Upload Button */}
-
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => setIsOpen(false)}
-                                    className={`w-full py-2 px-4 rounded-sm font-medium shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleUpload}
-                                    disabled={
-                                        !file || !documentType || !semester
-                                    }
-                                    className={`w-full py-2 px-4 rounded-sm font-medium shadow-sm focus:ring-2 focus:ring-green-500 transition-colors ${
-                                        !file || !documentType || !semester
-                                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                            : "bg-green-500 hover:bg-green-600 text-white"
-                                    }`}
-                                >
-                                    Upload
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

@@ -97,9 +97,9 @@ class CourseController {
             $this->pdo->beginTransaction();
             
             // Handle data from both FormData and direct JSON
-            if (isset($_POST['course_name'])) {
+            if (isset($_POST['course'])) {
                 // Handle data from FormData
-                $data = json_decode($_POST['course_name'], true);
+                $data = json_decode($_POST['course'], true);
             } else {
                 // Handle direct JSON input
                 $data = json_decode(file_get_contents("php://input"), true);
@@ -114,7 +114,7 @@ class CourseController {
             // Process application data
             $criteria = new ScholarshipCriteriaModel();
             
-            if (!$criteria->createCourse($data['course_name'])) {
+            if (!$criteria->createCourse($data['course'])) {
                 throw new \Exception("Failed to save course information");
             }
             
@@ -152,11 +152,11 @@ class CourseController {
             }
             
             // Check if ID is provided
-            if (!isset($data['id'])) {
+            if (!isset($data['course']['id'])) {
                 throw new \Exception("ID is required for update");
             }
             
-            $id = $data['id'];
+            $id = $data['course']['id'];
             
             // Process application data
             $criteria = new ScholarshipCriteriaModel();
@@ -167,7 +167,7 @@ class CourseController {
                 throw new \Exception("Course not found");
             }
             
-            if (!$criteria->updateCourse($id, $data['course_name'])) {
+            if (!$criteria->updateCourse($id, $data['course'])) {
                 throw new \Exception("Failed to update course information");
             }
             

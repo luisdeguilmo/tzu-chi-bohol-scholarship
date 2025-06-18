@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
 import { usePagination } from "../../../hooks/usePagination";
 import { useTableEdit } from "../../../hooks/useTableEdit";
-import { strandsTableConfig } from "../../../constant/scholarshipCriteria/strandsTableConfig";
+import { strandsTableConfig } from "../../../constant/scholarshipCriteria/scholarshipCriteriaTableConfig";
 import scholarshipCriteriaInputFields from "../../../constant/staff/scholarshipCriteriaInputFields";
 import ScholarshipCriteriaTable from "../../../components/ScholarshipCriteria/ScholarshipCriteriaTable";
 
 const Strands = ({ label = "Strands" }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
+    const itemsPerPage = 5;
     // Custom hooks
     const {
         items: strands,
@@ -30,7 +31,7 @@ const Strands = ({ label = "Strands" }) => {
     );
 
     // Pagination
-    const paginationState = usePagination(filteredStrands, 5);
+    const paginationState = usePagination(filteredStrands, itemsPerPage);
 
     // Event handlers
     const handleSave = async (id) => {
@@ -55,6 +56,7 @@ const Strands = ({ label = "Strands" }) => {
 
     const handleDelete = async (id) => {
         const success = await deleteStrand(id);
+
         if (
             success &&
             paginationState.currentItems.length === 1 &&

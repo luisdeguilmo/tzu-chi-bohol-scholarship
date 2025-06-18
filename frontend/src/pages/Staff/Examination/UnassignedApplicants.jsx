@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import { toast } from "react-toastify";
-import { formatDateTime } from "../../../utils/formatDate";
+import { formatDateTime } from "../../../utils/formatDateTime";
 
 export default function UnassignedApplicants() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -40,9 +40,9 @@ export default function UnassignedApplicants() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/applicants.php?application_status=Examination&batch=Unassigned`
+                `http://localhost:8000/app/views/applicants.php?entrance_examination=1&batch=Unassigned`
             );
-            setStudentData(response.data.personalInfo);
+            setStudentData(response.data.data || []);
             setLoading(false);
         } catch (err) {
             console.error("Error fetching student data:", err);
@@ -54,6 +54,8 @@ export default function UnassignedApplicants() {
     useEffect(() => {
         fetchStudentsData();
     }, []);
+
+    console.log(studentData);
 
     const assignStudentsToBatch = async () => {
         if (selectedApplicants.length === 0) {
@@ -166,7 +168,7 @@ export default function UnassignedApplicants() {
             <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg font-bold text-gray-800">
-                        Unassigned Applicants
+                        Applications
                     </h2>
 
                     {/* Search */}
@@ -197,7 +199,7 @@ export default function UnassignedApplicants() {
 
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <table className="w-[1160px] divide-y divide-gray-200">
                         <thead className="bg-gray-50 text-gray-700 font-bold">
                             <tr>
                                 <th className="px-3 py-3 flex justify-center gap-2 text-center text-xs uppercase tracking-wider">
@@ -226,14 +228,17 @@ export default function UnassignedApplicants() {
                                     Date Applied
                                 </th>
                                 <th className="py-3 text-center text-xs uppercase tracking-wider">
+                                    Date Approved
+                                </th>
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {currentItems.map((info) => (
+                            {currentItems.map((info, index) => (
                                 <tr
-                                    key={info.application_id}
+                                    key={index}
                                     className={`transition-colors text-center text-xs ${
                                         selectedApplicants.includes(
                                             info.application_id
@@ -273,6 +278,9 @@ export default function UnassignedApplicants() {
                                     <td className="py-3 whitespace-nowrap text-gray-500">
                                         {formatDateTime(info.created_at)}
                                     </td>
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
+                                        {formatDateTime(info.approved_at)}
+                                    </td>
                                     <td className="py-3 whitespace-nowrap font-medium">
                                         <ApplicationFormPDF
                                             studentId={info.application_id}
@@ -307,21 +315,23 @@ export default function UnassignedApplicants() {
                     )}
                 </div>
 
-                <div className="w-[max-content] py-4">
-                    <label className="flex gap-2 items-center text-sm font-medium text-gray-700">
-                        <input
-                            type="checkbox"
-                            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                            checked={
-                                currentItems.length > 0 &&
-                                selectedApplicants.length ===
-                                    currentItems.length
-                            }
-                            onChange={selectAllVisible}
-                        />
-                        Select All
-                    </label>
-                </div>
+                {currentItems.length > 0 && (
+                    <div className="w-[max-content] py-4">
+                        <label className="flex gap-2 items-center text-sm font-medium text-gray-700">
+                            <input
+                                type="checkbox"
+                                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                                checked={
+                                    currentItems.length > 0 &&
+                                    selectedApplicants.length ===
+                                        currentItems.length
+                                }
+                                onChange={selectAllVisible}
+                            />
+                            Select All
+                        </label>
+                    </div>
+                )}
 
                 {/* Batch Assignment Controls */}
                 <div className="flex items-center justify-between">
@@ -338,8 +348,11 @@ export default function UnassignedApplicants() {
                                         setSelectedBatch(e.target.value)
                                     }
                                 >
-                                    {batches.map((batch) => (
-                                        <option value={batch.batch_name}>
+                                    {batches.map((batch, index) => (
+                                        <option
+                                            key={index}
+                                            value={batch.batch_name}
+                                        >
                                             {batch.batch_name}
                                         </option>
                                     ))}

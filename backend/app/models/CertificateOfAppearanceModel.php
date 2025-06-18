@@ -8,8 +8,6 @@ class CertificateOfAppearanceModel {
     
     public $id;
     public $application_id;
-    public $event_name;
-    public $event_date;
     public $file_name;
     public $file_path;
     public $file_type;
@@ -19,16 +17,18 @@ class CertificateOfAppearanceModel {
     
     private $pdo;
     
-    public function __construct() {
-        $db = new Database();
-        $this->pdo = $db->getConnection();
+    public function __construct($pdo = null) {
+        if ($pdo) {
+            $this->pdo = $pdo;
+        } else {
+            $db = new Database();
+            $this->pdo = $db->getConnection();
+        }
     }
     
     public function createCOA($file_data, $application_id) {
         $query = "INSERT INTO " . $this->table_name . " 
                    SET application_id = :application_id,
-                       event_name = :event_name,
-                       event_date = :event_date,
                        file_name = :file_name,
                        file_path = :file_path, 
                        file_type = :file_type,
@@ -40,8 +40,6 @@ class CertificateOfAppearanceModel {
         
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->event_name = htmlspecialchars(strip_tags($file_data['event_name'] ?? ''));
-        $this->event_date = htmlspecialchars(strip_tags($file_data['event_date'] ?? ''));
         $this->file_name = htmlspecialchars(strip_tags($file_data['file_name']));
         $this->file_path = htmlspecialchars(strip_tags($file_data['file_path']));
         $this->file_type = htmlspecialchars(strip_tags($file_data['file_type']));
@@ -51,8 +49,6 @@ class CertificateOfAppearanceModel {
         
         // Bind values
         $stmt->bindParam(":application_id", $this->application_id);
-        $stmt->bindParam(":event_name", $this->event_name);
-        $stmt->bindParam(":event_date", $this->event_date);
         $stmt->bindParam(":file_name", $this->file_name);
         $stmt->bindParam(":file_path", $this->file_path);
         $stmt->bindParam(":file_type", $this->file_type);
@@ -70,6 +66,23 @@ class CertificateOfAppearanceModel {
         
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(1, $application_id);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+    
+    public function getAllDocumentsWithActivity() {
+        $query = "SELECT 
+                    c.*,
+                    a.activity_name,
+                    a.activity_date as activity_scheduled_date,
+                    a.activity_time,
+                    a.created_at as activity_created_at
+                  FROM " . $this->table_name . " c
+                  LEFT JOIN activities a ON c.application_id = a.id
+                  ORDER BY c.uploaded_at DESC";
+        
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         
         return $stmt;
@@ -123,3 +136,4 @@ class CertificateOfAppearanceModel {
         return false;
     }
 }
+?>

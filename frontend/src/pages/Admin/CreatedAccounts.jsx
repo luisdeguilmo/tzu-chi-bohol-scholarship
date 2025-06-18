@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { formatDateTime } from "../../utils/formatDate";
+import { formatDateTime } from "../../utils/formatDateTime";
 
 export default function CreatedAccounts() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -198,9 +198,9 @@ export default function CreatedAccounts() {
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px] border border-gray-200">
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-green-100 text-green-800">
+                        <thead className="bg-gray-50 text-gray-700 font-bold">
                             <tr>
-                                <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="px-3 py-3 text-center text-xs uppercase tracking-wider">
                                     <input
                                         type="checkbox"
                                         className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
@@ -212,22 +212,22 @@ export default function CreatedAccounts() {
                                         onChange={selectAllVisible}
                                     />
                                 </th>
-                                <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="px-3 py-3 text-center text-xs uppercase tracking-wider">
                                     ID
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Name
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Email
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Password
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Created
                                 </th>
-                                <th className="py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                <th className="py-3 text-center text-xs uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
@@ -240,9 +240,9 @@ export default function CreatedAccounts() {
                                         selectedAccounts.includes(account.id)
                                             ? "bg-green-50"
                                             : ""
-                                    }`}
+                                    } text-xs`}
                                 >
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         <input
                                             type="checkbox"
                                             className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
@@ -256,24 +256,24 @@ export default function CreatedAccounts() {
                                             }
                                         />
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {account.id}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-500">
+                                    <td className="py-3 whitespace-nowrap font-medium text-gray-500">
                                         {account.name}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {account.email}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {account.password}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         {account.created_at
                                             ? formatDateTime(account.created_at)
                                             : "--"}
                                     </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium">
+                                    <td className="py-3 whitespace-nowrap font-medium">
                                         <button
                                             onClick={() =>
                                                 resetPassword(account.id)

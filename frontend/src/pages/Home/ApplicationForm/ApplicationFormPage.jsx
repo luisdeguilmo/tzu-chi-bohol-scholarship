@@ -103,38 +103,59 @@ function ApplicationForm({ includeRequirements = true }) {
     // Handle final form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        formData.application_info.status = 'New';
+        formData.application_info.status = "New";
         console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
-    
+
         const submitStudentData = async () => {
             try {
                 setLoading(true);
-    
+
                 const formDataToSend = new FormData();
-    
+
                 // Separate application data (excluding files)
                 const applicationData = { ...formData };
                 delete applicationData.uploaded_files;
-    
+
                 formDataToSend.append(
-                    'applicationData',
+                    "applicationData",
                     JSON.stringify(applicationData)
                 );
-    
+
+                // Append the 2x2 picture file if it exists
+                if (formData.picture_file && formData.picture_file.fileObj) {
+                    formDataToSend.append(
+                        "picture",
+                        formData.picture_file.fileObj
+                    );
+                    // Also send the filename info
+                    formDataToSend.append(
+                        "pictureInfo",
+                        JSON.stringify({
+                            filename: formData.picture_file.filename,
+                        })
+                    );
+                }
+                
                 // Append files one by one
-                if (formData.uploaded_files && formData.uploaded_files.length > 0) {
+                if (
+                    formData.uploaded_files &&
+                    formData.uploaded_files.length > 0
+                ) {
                     formData.uploaded_files.forEach((fileItem) => {
                         // If we have the actual file object stored in fileObj property
                         if (fileItem.fileObj) {
-                            formDataToSend.append('files[]', fileItem.fileObj);
+                            formDataToSend.append("files[]", fileItem.fileObj);
                         }
                         // Also send the filename format as a separate key
-                        formDataToSend.append('fileInfo[]', JSON.stringify({ 
-                            filename: fileItem.filename 
-                        }));
+                        formDataToSend.append(
+                            "fileInfo[]",
+                            JSON.stringify({
+                                filename: fileItem.filename,
+                            })
+                        );
                     });
                 }
-    
+
                 const response = await axios.post(
                     "http://localhost:8000/backend/api/applications",
                     formDataToSend,
@@ -144,12 +165,12 @@ function ApplicationForm({ includeRequirements = true }) {
                         },
                     }
                 );
-    
+
                 console.log("Server response:", response.data);
                 toast.success("Application submitted successfully!");
                 setLoading(false);
                 setTimeout(() => {
-                    navigate('/');
+                    navigate("/");
                 }, 1000);
             } catch (err) {
                 console.error("Error submitting data:", err);
@@ -158,10 +179,10 @@ function ApplicationForm({ includeRequirements = true }) {
                 setLoading(false);
             }
         };
-    
+
         submitStudentData();
     };
-    
+
     console.log(formData);
 
     // Render form step components

@@ -1,45 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import SearchInput from "../../components/SearchInput";
+import SearchInputMobile from "../../components/SearchInputMobile";
+import { formatDateTime } from "../../utils/formatDateTime";
+import { formatDate } from "../../utils/formatDate";
+import { formatTime } from "../../utils/formatTime";
+import { useEvents } from "../../hooks/useEvents";
+import DocumentForm from "./DocumentForm";
 
 export default function Events() {
+    const [activeTab, setActiveTab] = useState("upcoming");
+    const itemsPerPage = 6;
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    // const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
 
-    const events = [
-        {
-            id: 1,
-            date: "2025-06-05",
-            time: "10:00 AM",
-            eventName: "Scholarship Orientation",
-            location: "Room 001",
-        },
-        {
-            id: 2,
-            date: "2025-06-05",
-            time: "8:00 AM",
-            eventName: "Scholarship Orientation",
-            location: "Room 002",
-        },
-        {
-            id: 3,
-            date: "2025-06-05",
-            time: "2:00 PM",
-            eventName: "Scholarship Orientation",
-            location: "Room 003",
-        },
-    ];
-
-    // const handleDelete = (id) => {
-    //     const updatedDocuments = events.filter((event) => event.id !== event);
-    //     setDocuments(updatedDocuments);
-    // };
+    const { events, fetchEvents } = useEvents();
 
     // Filter data based on search term
-    const filteredEvents = events.filter(
-        (event) =>
-            event.eventName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            event.date.includes(searchTerm) ||
-            event.location.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredEvents = events.filter((event) =>
+        event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Calculate pagination
@@ -60,183 +43,150 @@ export default function Events() {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     };
 
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        fetchEvents(tab);
+        setCurrentPage(1);
+        console.log(events);
+    };
+
     return (
-        <div className="py-8">
-            <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-gray-900">
-                        Events
+        <div className="">
+            <div className="flex flex-col h-screen max-w-7xl mx-auto rounded-lg p-6">
+                <SearchInputMobile
+                    searchTerm={searchTerm}
+                    onSearchChange={setSearchTerm}
+                    placeholder={"Search events..."}
+                />
+
+                <div className="my-4 p-6 bg-green-500 rounded-md">
+                    <h2 className="text-md font-medium text-white">
+                        Upcoming Events
                     </h2>
-
-                    {/* Search */}
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg
-                                className="w-4 h-4 text-gray-500"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Search events..."
-                            className="pl-10 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
+                    <p className="text-3xl font-bold text-white">2</p>
                 </div>
 
-                {/* Table */}
-                <div className="overflow-x-auto rounded-lg border border-gray-200">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-green-100 text-green-800">
-                            <tr>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
-                                >
-                                    Date
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
-                                >
-                                    Time
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
-                                >
-                                    Event Name
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
-                                >
-                                    Location
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="py-3 text-center text-xs font-medium uppercase tracking-wider"
-                                >
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {currentItems.map((event) => (
-                                <tr
-                                    key={event.id}
-                                    className="hover:bg-gray-50 transition-colors text-center"
-                                >
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {event.date}
-                                    </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {event.time}
-                                    </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {event.eventName}
-                                    </td>
-                                    <td className="py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {event.location}
-                                    </td>
-                                    <td className="py-4 whitespace-nowrap text-sm font-medium">
-                                        <button
-                                            // onClick={() => handleView(coa)}
-                                            className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-1"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                                />
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                                />
-                                            </svg>
-                                            View
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="space-x-2 mb-4">
+                    {/* <button
+                        onClick={() => handleTabChange("all")}
+                        className={`px-6 py-2 text-sm text-gray-600 rounded-full border-[1px] border-gray-300 ${
+                            activeTab === "all"
+                                ? "bg-green-500 text-white"
+                                : "bg-transparent"
+                        }`}
+                    >
+                        All
+                    </button> */}
+                    <button
+                        onClick={() => handleTabChange("upcoming")}
+                        className={`px-6 py-2 text-sm text-gray-600 rounded-full border-[1px] border-gray-300 ${
+                            activeTab === "upcoming"
+                                ? "bg-green-500 text-white"
+                                : "bg-transparent"
+                        }`}
+                    >
+                        Upcoming
+                    </button>
+                    <button
+                        onClick={() => handleTabChange("ended")}
+                        className={`px-6 py-2 text-sm text-gray-600 rounded-full border-[1px] border-gray-300 ${
+                            activeTab === "ended"
+                                ? "bg-green-500 text-white"
+                                : "bg-transparent"
+                        }`}
+                    >
+                        Ended
+                        {/* <select
+                            className={`${
+                                activeTab === "previous"
+                                    ? "bg-green-500 text-white"
+                                    : "bg-transparent"
+                            } outline-none`}
+                            name=""
+                            id=""
+                        >
+                            Previous
+                            <option value="">2024</option>
+                        </select> */}
+                    </button>
+                </div>
 
-                    {/* Empty state */}
-                    {currentItems.length === 0 && (
-                        <div className="text-center py-10">
-                            <svg
-                                className="mx-auto h-12 w-12 text-gray-400"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                            </svg>
-                            <p className="mt-2 text-gray-500">
-                                No documents found. Try adjusting your search or
-                                upload a new document.
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {currentItems.map((event, index) => (
+                        <li
+                            key={index}
+                            className="relative p-5 duration-100 transition-all hover:border-l-[6px] hover:border-green-500 bg-white rounded-lg shadow-md"
+                        >
+                            <p className="text-xs font-medium text-gray-500">
+                                {formatDate(event.date)},{" "}
+                                {formatTime(event.time)}
                             </p>
-                        </div>
-                    )}
-                </div>
+                            <p className="py-2 font-bold text-gray-800 text-xl">
+                                {event.event_name}
+                            </p>
+                            <p className="flex items-center text-xs text-gray-500">
+                                <svg
+                                    className="w-4 h-4 text-gray-500"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path d="M10 2C6.686 2 4 4.686 4 8c0 4.418 6 10 6 10s6-5.582 6-10c0-3.314-2.686-6-6-6zm0 8.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" />
+                                </svg>
+
+                                {event.event_location}
+                            </p>
+                            {/* {activeTab === "ended" && (
+                                // <button
+                                //     // onClick={() => setIsOpen(true)}
+                                //     className="py-2 pl-2 pr-1 absolute bottom-4 right-4 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors flex justify-center items-center"
+                                // >
+                                //     <svg
+                                //         xmlns="http://www.w3.org/2000/svg"
+                                //         className="h-5 w-5 mr-1"
+                                //         fill="none"
+                                //         viewBox="0 0 24 24"
+                                //         stroke="currentColor"
+                                //     >
+                                //         <path
+                                //             strokeLinecap="round"
+                                //             strokeLinejoin="round"
+                                //             strokeWidth={2}
+                                //             d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                //         />
+                                //     </svg>
+                                // </button>
+                                // <DocumentForm isOpen={isOpen} setIsOpen={setIsOpen} />
+                            )} */}
+                        </li>
+                    ))}
+                </ul>
 
                 {/* Pagination */}
-                {filteredEvents.length > 0 && (
-                    <div className="flex justify-between items-center mt-6">
-                        <div className="text-sm text-gray-600">
-                            Showing {indexOfFirstItem + 1}-
-                            {Math.min(
-                                indexOfLastItem,
-                                filteredEvents.length
-                            )}{" "}
-                            of {filteredEvents.length} events
-                        </div>
-                        <div className="flex space-x-2">
+                {filteredEvents.length > 6 && (
+                    <div className="flex justify-center items-center mt-8 py-4">
+                        <div className="flex items-center space-x-2">
                             <button
                                 onClick={goToPreviousPage}
                                 disabled={currentPage === 1}
-                                className={`px-4 py-2 rounded-md ${
+                                className={`px-4 py-1 rounded-md ${
                                     currentPage === 1
                                         ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                                         : "bg-green-500 text-white hover:bg-green-600 transition-all"
                                 }`}
                             >
-                                Previous
+                                Prev
                             </button>
+                            <div className="text-sm text-gray-600">
+                                {currentPage} of {totalPages}
+                            </div>
                             <button
                                 onClick={goToNextPage}
                                 disabled={
                                     currentPage === totalPages ||
                                     totalPages === 0
                                 }
-                                className={`px-4 py-2 rounded-md ${
+                                className={`px-4 py-1 rounded-md ${
                                     currentPage === totalPages ||
                                     totalPages === 0
                                         ? "bg-gray-200 text-gray-400 cursor-not-allowed"
@@ -248,6 +198,8 @@ export default function Events() {
                         </div>
                     </div>
                 )}
+
+                
             </div>
         </div>
     );

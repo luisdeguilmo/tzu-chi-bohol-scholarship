@@ -59,7 +59,7 @@ class ApplicationsModel {
         // Fetch other assistance
         $data["otherAssistance"] = $this->fetchMultiple("SELECT * FROM other_assistance WHERE application_id = ?", [$studentId]);
 
-        $data["requirements"] = $this->fetchMultiple("SELECT * FROM uploaded_files WHERE application_id = ?", [$studentId]);
+        $data["requirements"] = $this->fetchMultiple("SELECT * FROM application_requirements WHERE application_id = ?", [$studentId]);
 
         if (!empty($data["requirements"])) {
             foreach ($data["requirements"] as &$requirement) {
@@ -88,48 +88,205 @@ class ApplicationsModel {
         return $stmt->fetchAll();
     }
 
-    public function updateApplicationStatus($studentId, $status, $batch, $today) {
-        $query = "UPDATE application_info SET application_status = :application_status, batch = :batch, approved_at = :approved_at WHERE application_id = :application_id";
+    public function markAsInitialInterview($studentId, $data) {
+        $updateQuery = "UPDATE application_info SET application_status = :application_status, initial_interview = :initial_interview WHERE application_id = :application_id";
+        $updateStmt = $this->pdo->prepare($updateQuery);
+        $updateStmt->bindParam(':application_id', $studentId);
+        $updateStmt->bindParam(':application_status', $data['application_status']);
+        $updateStmt->bindParam(':initial_interview', $data['initial_interview']);
+        
+        if (!$updateStmt->execute()) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    public function updateApplicationStatus($studentId, $status, $approved, $batch, $today) {
+        $query = "UPDATE application_info SET application_status = :application_status, application_approved = :application_approved, entrance_examination = :entrance_examination, batch = :batch, approved_at = :approved_at WHERE application_id = :application_id";
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':application_status', $status);
         $stmt->bindParam(':application_id', $studentId);
+        $stmt->bindParam(':application_status', $status);
+        $stmt->bindParam(':application_approved', $approved);
+        $stmt->bindParam(':entrance_examination', $approved);
         $stmt->bindParam(':batch', $batch);
         $stmt->bindParam(':approved_at', $today);
         $stmt->execute();
     }
 
-    public function markAsUnassigned($studentId) {
-        // Now update the specific student record
-        $updateQuery = "UPDATE application_info SET batch = 'Unassigned' WHERE application_id = :application_id";
-        $updateStmt = $this->pdo->prepare($updateQuery);
-        $updateStmt->bindParam(':application_id', $studentId);
+    // public function markAsUnassigned($studentId) {
+    //     // Now update the specific student record
+    //     $updateQuery = "UPDATE application_info SET batch = 'Unassigned' WHERE application_id = :application_id";
+    //     $updateStmt = $this->pdo->prepare($updateQuery);
+    //     $updateStmt->bindParam(':application_id', $studentId);
         
-        if (!$updateStmt->execute()) {
-            return false;
-        }
+    //     if (!$updateStmt->execute()) {
+    //         return false;
+    //     }
         
-        return true;
-    }
+    //     return true;
+    // }
 
-    public function assignApplicants($studentId, $batchValue) {
-        // Update the specific student record
-        $updateQuery = "UPDATE application_info SET batch = :batch WHERE application_id = :application_id";
-        $updateStmt = $this->pdo->prepare($updateQuery);
-        $updateStmt->bindParam(':application_id', $studentId);
-        $updateStmt->bindParam(':batch', $batchValue); // Fixed typo: was :bact
+    // public function assignApplicants($studentId, $batchValue) {
+    //     // Update the specific student record
+    //     $updateQuery = "UPDATE application_info SET batch = :batch WHERE application_id = :application_id";
+    //     $updateStmt = $this->pdo->prepare($updateQuery);
+    //     $updateStmt->bindParam(':application_id', $studentId);
+    //     $updateStmt->bindParam(':batch', $batchValue); // Fixed typo: was :bact
         
-        if (!$updateStmt->execute()) {
-            return false;
-        }
+    //     if (!$updateStmt->execute()) {
+    //         return false;
+    //     }
         
-        return true;
-    }
+    //     return true;
+    // }
+
+    // public function getApplicationIdsByBatchWithScore($batchValue) {
+    //     if ($batchValue === 'all') {
+    //         $query = "SELECT application_id FROM application_info WHERE (batch IS NOT NULL AND batch != 'Unassigned') AND score IS NOT NULL";
+    //         $stmt = $this->pdo->prepare($query);
+    //         // application_status = 'Examination' AND
+    //         if (!$stmt->execute()) {
+    //             return false; // Database error
+    //         }
+            
+    //         return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    //     }
+        
+    //     // First check if the batch exists
+    //     $checkQuery = "SELECT COUNT(*) FROM application_info WHERE batch = :batch AND score IS NOT NULL";
+    //     $checkStmt = $this->pdo->prepare($checkQuery);
+    //     $checkStmt->bindParam(':batch', $batchValue);
+        
+    //     if (!$checkStmt->execute()) {
+    //         return false; // Database error
+    //     }
+        
+    //     // If count is 0, the batch doesn't exist, but we should return an empty array, not false
+    //     $count = $checkStmt->fetchColumn();
+    //     if ($count == 0) {
+    //         return []; // Return empty array for non-existent batch
+    //     }
+        
+    //     // Get Application Ids by Batch
+    //     $query = "SELECT application_id FROM application_info WHERE batch = :batch AND score IS NOT NULL";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->bindParam(':batch', $batchValue);
+        
+    //     if (!$stmt->execute()) {
+    //         return false; // Database error
+    //     }
+        
+    //     return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    // }
     
-
-    // public function getApplicantsByBatch($batchValue) {
+    // public function getApplicantsByBatchWithScore($batchValue) {
+    //     $applicationIds = $this->getApplicationIdsByBatchWithScore($batchValue);
         
+    //     // If false is returned, there was a database error
+    //     if ($applicationIds === false) {
+    //         return false; // Let the caller handle the database error
+    //     }
+        
+    //     // At this point, $applicationIds is either a populated array or an empty array
+    //     // We don't need additional empty checks since getApplicationIdsByBatch now properly
+    //     // handles non-existent batches by returning an empty array
+        
+    //     $data = [];
+        
+    //     // Process each application ID (will skip if array is empty)
+    //     foreach ($applicationIds as $applicationId) {
+    //         // Fetch application information
+    //         $applicationInfo = $this->fetchSingle("SELECT * FROM application_info WHERE application_id = ?", [$applicationId]);
+            
+    //         // Fetch personal information
+    //         $personalInfo = $this->fetchSingle("SELECT * FROM personal_information WHERE application_id = ?", [$applicationId]);
+            
+    //         // Add to results
+    //         $data[] = [
+    //             "applicationInfo" => $applicationInfo,
+    //             "personalInfo" => $personalInfo
+    //         ];
+    //     }
+        
+    //     return $data;
+    // }
+
+    // public function getApplicationIdsByBatch($batchValue) {
+    //     if ($batchValue === 'all') {
+    //         $query = "SELECT application_id FROM application_info WHERE (batch IS NOT NULL AND batch != 'Unassigned')";
+    //         $stmt = $this->pdo->prepare($query);
+    //         // application_status = 'Examination'
+    //         if (!$stmt->execute()) {
+    //             return false; // Database error
+    //         }
+            
+    //         return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    //     }
+        
+    //     // First check if the batch exists
+    //     $checkQuery = "SELECT COUNT(*) FROM application_info WHERE batch = :batch";
+    //     $checkStmt = $this->pdo->prepare($checkQuery);
+    //     $checkStmt->bindParam(':batch', $batchValue);
+        
+    //     if (!$checkStmt->execute()) {
+    //         return false; // Database error
+    //     }
+        
+    //     // If count is 0, the batch doesn't exist, but we should return an empty array, not false
+    //     $count = $checkStmt->fetchColumn();
+    //     if ($count == 0) {
+    //         return []; // Return empty array for non-existent batch
+    //     }
+        
+    //     // Get Application Ids by Batch
+    //     $query = "SELECT application_id FROM application_info WHERE batch = :batch";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->bindParam(':batch', $batchValue);
+        
+    //     if (!$stmt->execute()) {
+    //         return false; // Database error
+    //     }
+        
+    //     return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    // }
+    
+    // public function getApplicantsByBatch($batchValue) {
+    //     // Get all application IDs matching the batch
+    //     $applicationIds = $this->getApplicationIdsByBatch($batchValue);
+        
+    //     // If false is returned, there was a database error
+    //     if ($applicationIds === false) {
+    //         return false; // Let the caller handle the database error
+    //     }
+        
+    //     // At this point, $applicationIds is either a populated array or an empty array
+    //     // We don't need additional empty checks since getApplicationIdsByBatch now properly
+    //     // handles non-existent batches by returning an empty array
+        
+    //     $data = [];
+        
+    //     // Process each application ID (will skip if array is empty)
+    //     foreach ($applicationIds as $applicationId) {
+    //         // Fetch application information
+    //         $applicationInfo = $this->fetchSingle("SELECT * FROM application_info WHERE application_id = ?", [$applicationId]);
+            
+    //         // Fetch personal information
+    //         $personalInfo = $this->fetchSingle("SELECT * FROM personal_information WHERE application_id = ?", [$applicationId]);
+            
+    //         // Add to results
+    //         $data[] = [
+    //             "applicationInfo" => $applicationInfo,
+    //             "personalInfo" => $personalInfo
+    //         ];
+    //     }
+        
+    //     return $data; // Will be empty array if batch doesn't exist
+    // }
+
+    // public function getBatches() {
     //     // Get all students with the specified batch value
-    //     $query = "SELECT * FROM application_info WHERE batch = :batch_value";
+    //     $query = "SELECT * FROM application_info";
     //     $stmt = $this->pdo->prepare($query);
     //     $stmt->bindParam(':batch_value', $batchValue);
         
@@ -140,92 +297,6 @@ class ApplicationsModel {
     //     // Return all matching student records
     //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     // }
-
-    public function getApplicationIdsByBatch($batchValue) {
-        if ($batchValue === 'all') {
-            $query = "SELECT application_id FROM application_info WHERE application_status = 'Examination' AND (batch IS NOT NULL AND batch != 'Unassigned')";
-            $stmt = $this->pdo->prepare($query);
-            
-            if (!$stmt->execute()) {
-                return false; // Database error
-            }
-            
-            return $stmt->fetchAll(\PDO::FETCH_COLUMN);
-        }
-        
-        // First check if the batch exists
-        $checkQuery = "SELECT COUNT(*) FROM application_info WHERE batch = :batch";
-        $checkStmt = $this->pdo->prepare($checkQuery);
-        $checkStmt->bindParam(':batch', $batchValue);
-        
-        if (!$checkStmt->execute()) {
-            return false; // Database error
-        }
-        
-        // If count is 0, the batch doesn't exist, but we should return an empty array, not false
-        $count = $checkStmt->fetchColumn();
-        if ($count == 0) {
-            return []; // Return empty array for non-existent batch
-        }
-        
-        // Get Application Ids by Batch
-        $query = "SELECT application_id FROM application_info WHERE batch = :batch";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':batch', $batchValue);
-        
-        if (!$stmt->execute()) {
-            return false; // Database error
-        }
-        
-        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
-    }
-    
-    public function getApplicantsByBatch($batchValue) {
-        // Get all application IDs matching the batch
-        $applicationIds = $this->getApplicationIdsByBatch($batchValue);
-        
-        // If false is returned, there was a database error
-        if ($applicationIds === false) {
-            return false; // Let the caller handle the database error
-        }
-        
-        // At this point, $applicationIds is either a populated array or an empty array
-        // We don't need additional empty checks since getApplicationIdsByBatch now properly
-        // handles non-existent batches by returning an empty array
-        
-        $data = [];
-        
-        // Process each application ID (will skip if array is empty)
-        foreach ($applicationIds as $applicationId) {
-            // Fetch application information
-            $applicationInfo = $this->fetchSingle("SELECT * FROM application_info WHERE application_id = ?", [$applicationId]);
-            
-            // Fetch personal information
-            $personalInfo = $this->fetchSingle("SELECT * FROM personal_information WHERE application_id = ?", [$applicationId]);
-            
-            // Add to results
-            $data[] = [
-                "applicationInfo" => $applicationInfo,
-                "personalInfo" => $personalInfo
-            ];
-        }
-        
-        return $data; // Will be empty array if batch doesn't exist
-    }
-
-    public function getBatches() {
-        // Get all students with the specified batch value
-        $query = "SELECT * FROM application_info";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':batch_value', $batchValue);
-        
-        if (!$stmt->execute()) {
-            return false;
-        }
-        
-        // Return all matching student records
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
 
 
 
@@ -332,8 +403,5 @@ class ApplicationsModel {
     //     error_log("Found {$count} records in personal_information table");
     //     return $count > 0;
     // }
-    
-    
-    
 }
 ?>

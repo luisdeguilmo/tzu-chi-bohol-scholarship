@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import { ApplicationSection, RenewalApplicationSection } from "./pages/Home/ApplicationSection";
-import ViewRenderedHours from "./pages/Scholar/ViewDutyHours";
+import ViewRenderedHours from "./pages/Scholar/ViewDutyHoursCopy";
 import Events from "./pages/Scholar/Events";
 import LoginForm from "./components/LoginForm";
 import Archive from "./components/Archive";
@@ -17,12 +17,16 @@ import Dashboard from "./components/Dashboard";
 import InitialInterviewPage from "./pages/Staff/InitialInterview/InitialInterviewPage";
 import ScholarAccountManagement from "./pages/Admin/ScholarAccountManagement";
 import StaffAccountManagement from "./pages/Admin/StaffAccountManagement";
-import SetEvents from "./pages/Staff/SetEvents";
 import DocumentsPage from "./pages/Scholar/Documents/DocumentsPage";
 import ScholarshipCriteriaPage from "./pages/Staff/ScholarshipCriteria/ScholarshipCriteriaPage";
 import ApplicationPeriodPage from "./pages/Staff/ApplicationPeriod/ApplicationPeriodPage";
 import ApplicationPage from "./pages/Staff/Application/ApplicationsPage";
 import ApprovedApplicationsPage from "./pages/Staff/ApprovedApplications/ApprovedApplicationsPage";
+import EventsPage from "./pages/Staff/Event/EventsPage";
+import HoursLog from "./pages/Scholar/HoursLog";
+import HomeVisitation from "./pages/Staff/HomeVisitation/HomeVisitation";
+import CertificateOfAppearance from "./pages/Scholar/CertificateOfAppearance";
+import ActivitiesPage from "./pages/Staff/VolunteerActivities/ActivitiesPage";
 
 const overviewData = [
     {
@@ -130,7 +134,8 @@ export function App() {
                     <Route path="/scholar/renew" element={<RenewalApplicationSection />} />
                     {/* <Route path="/scholar/documents" element={<Documents />} /> */}
                     <Route path="/scholar/documents" element={<DocumentsPage />} />
-                    <Route path="/scholar/rendered-hours" element={<ViewRenderedHours />} />
+                    <Route path="/scholar/coa" element={<CertificateOfAppearance />} />
+                    <Route path="/scholar/rendered-hours" element={<HoursLog />} />
                     <Route path="/scholar/events" element={<Events />} />
                     <Route path="/scholar/archive" element={<Archive />} />
                 </Route>
@@ -145,7 +150,9 @@ export function App() {
                     <Route path="/staff/examination-list" element={<ExaminationPage />} />
                     <Route path="/staff/application-period" element={<ApplicationPeriodPage />} />
                     <Route path="/staff/initial-interview" element={<InitialInterviewPage />} />
-                    <Route path="/staff/set-events" element={<SetEvents />} />
+                    <Route path="/staff/home-visitation" element={<HomeVisitation />} />
+                    <Route path="/staff/set-events" element={<EventsPage />} />
+                    <Route path="/staff/volunteer-activities" element={<ActivitiesPage />} />
                 </Route>
 
                 {/* AdminLayout */}

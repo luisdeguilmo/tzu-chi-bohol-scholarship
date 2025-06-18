@@ -5,7 +5,7 @@ namespace App\Models;
 use Config\Database;
 
 class RequirementModel {
-    private $table_name = "uploaded_files";
+    private $table_name = "application_requirements";
 
     public $id;
     public $application_id;

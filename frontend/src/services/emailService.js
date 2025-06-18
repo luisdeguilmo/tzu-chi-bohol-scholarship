@@ -90,7 +90,8 @@
 //     }
 // };
 
-const BREVO_API_KEY = process.env.BREVO_API_KEY;
+// const BREVO_API_KEY = process.env.REACT_APP_BREVO_API_KEY;
+const BREVO_API_KEY = import.meta.env.VITE_BREVO_API_KEY;
 const BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 const ORGANIZATION_NAME = "Tzu Chi Foundation Philippines - Bohol Office";
 const CONTACT_INFO = "tzuchibohol2014@gmail.com | 0998 885 5342";
@@ -147,14 +148,14 @@ const sendEmail = async (to, subject, htmlContent) => {
             },
             body: JSON.stringify(requestBody),
         });
-        
+
         const responseText = await response.text();
         console.log("Response body:", responseText);
 
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status} - ${responseText}`);
         }
-        
+
         console.log("Email successfully sent!");
         return true;
     } catch (error) {
@@ -193,8 +194,46 @@ export const sendApplicationRejectionEmail = async (studentInfo) => {
     const htmlContent = `
         <p>Dear ${fullName},</p>
         <p>We regret to inform you that your scholarship application for SY ${studentInfo.school_year} was not approved.</p>
-        <p>Thank you for your interest in ${ORGANIZATION_NAME}.</p>
-        <p>For inquiries, contact: ${CONTACT_INFO}</p>
+        <p style="line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;">${ORGANIZATION_NAME}</p>
+        <p style="line-height: 1.5; font-size: 12px; margin: 0;">${ORGANIZATION_ADDRESS}</p>
+        <p style="line-height: 1.5; font-size: 12px; margin: 0;">Contact: ${CONTACT_INFO}</p>
+    `;
+    return sendEmail(studentInfo.email, subject, htmlContent);
+};
+
+export const sendExaminationPassedEmail = async (studentInfo) => {
+    const fullName = `${studentInfo.first_name} ${studentInfo.last_name}`;
+    const subject = "Scholarship Application Approved";
+    const htmlContent = `
+    <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+        <p style="margin-bottom: 16px;">Dear <strong>${fullName}</strong>,</p>
+        <p style="margin-bottom: 16px;">
+            Congratulations! We are pleased to inform you that your application for the
+            <strong>Tzu Chi Scholarship Program</strong> for Academic Year 
+            <strong>${studentInfo.school_year}</strong> has been 
+            <span style="font-weight: bold;">approved</span>.
+        </p>
+        <p style="padding-bottom: 32px;">We look forward to supporting your academic journey.</p> 
+        <p style="line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;">${ORGANIZATION_NAME}</p>
+        <p style="line-height: 1.5; font-size: 12px; margin: 0;">${ORGANIZATION_ADDRESS}</p>
+        <p style="line-height: 1.5; font-size: 12px; margin: 0;">Contact: ${CONTACT_INFO}</p>
+    </div>
+`;
+
+    return sendEmail(studentInfo.email, subject, htmlContent);
+};
+
+export const sendExaminationFailedEmail = async (studentInfo) => {
+    const fullName = `${studentInfo.first_name} ${
+        studentInfo.middle_name ? studentInfo.middle_name + " " : ""
+    }${studentInfo.last_name}`;
+    const subject = "Scholarship Application Update";
+    const htmlContent = `
+        <p>Dear ${fullName},</p>
+        <p>We regret to inform you that your scholarship application for SY ${studentInfo.school_year} was not approved.</p>
+        <p style="line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;">${ORGANIZATION_NAME}</p>
+        <p style="line-height: 1.5; font-size: 12px; margin: 0;">${ORGANIZATION_ADDRESS}</p>
+        <p style="line-height: 1.5; font-size: 12px; margin: 0;">Contact: ${CONTACT_INFO}</p>
     `;
     return sendEmail(studentInfo.email, subject, htmlContent);
 };
@@ -207,7 +246,7 @@ export const sendApplicationRejectionEmail = async (studentInfo) => {
 //         <p>Dear ${fullName},</p>
 //         <p style="margin-bottom: 16px;">
 //             We are pleased to inform you that you are scheduled to take the entrance examination for the
-//             <strong>Tzu Chi Scholarship Program</strong> for Academic Year 
+//             <strong>Tzu Chi Scholarship Program</strong> for Academic Year
 //             <strong>${applicant.school_year}</strong>.
 //         </p>
 //         <p style="margin-bottom: 16px;">
@@ -226,12 +265,16 @@ export const sendApplicationRejectionEmail = async (studentInfo) => {
 //     return sendEmail(applicant.email, subject, htmlContent);
 // };
 
-export const sendExaminationScheduleEmail = async (applicationInfo, personalInfo, dateAndTime) => {
+export const sendExaminationScheduleEmail = async (
+    applicationInfo,
+    personalInfo,
+    dateAndTime
+) => {
     try {
         const result = dateAndTime();
-        
+
         const { date, time } = result;
-        
+
         const fullName = `${personalInfo.first_name} ${personalInfo.last_name}`;
         const subject = "Scholarship Examination Schedule";
         const htmlContent = `
