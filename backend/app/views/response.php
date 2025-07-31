@@ -48,6 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $controller->getProfilePicture64($applicationId);
         exit();
     }
+
+    if (count($uri) >= 6 && $uri[5] === 'requirements') {
+        $applicationId = $uri[4];
+        $controller->getRequirements64($applicationId);
+        exit();
+    }
 }
 
 // Function to handle image conversion

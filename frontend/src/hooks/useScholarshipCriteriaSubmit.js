@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios"; // Using axios for better error handling
+import BASE_URL from "../config";
 
 function useScholarshipCriteriaSubmit(onSuccess) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
     // Base URL configuration - makes it easier to update in one place
-    const API_BASE_URL = "http://localhost:8000/app/views";
+    const API_BASE_URL = `${BASE_URL}app/views`;
 
     // Generic error handler to provide consistent error handling
     const handleError = (error, errorMessage) => {
@@ -20,19 +21,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         return false;
     };
 
-    const handleStrandSubmit = async (
-        e,
-        text,
-        setText,
-        description,
-        setDescription,
-        setIsOpen
-    ) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError(null);
-
-        // Create the data structure that matches your backend expectations
+    const createStrand = async (text, description, onSuccess) => {
         const data = {
             strand: {
                 strand: text,
@@ -61,9 +50,6 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
             if (result.success) {
                 toast.success(result.message + ".");
-                setText("");
-                setDescription("");
-                setIsOpen(false);
                 setIsLoading(false);
                 if (onSuccess) onSuccess();
                 return true;
@@ -77,11 +63,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         }
     };
 
-    const handleCourseSubmit = async (e, text, setText, setIsOpen) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError(null);
-
+    const createCourse = async (text, onSuccess) => {
         const data = { course_name: text };
 
         try {
@@ -103,8 +85,6 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
             if (result.success) {
                 toast.success(result.message + ".");
-                setText("");
-                setIsOpen(false);
                 setIsLoading(false);
                 if (onSuccess) onSuccess();
                 return true;
@@ -118,11 +98,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         }
     };
 
-    const handleProcedureSubmit = async (e, text, setText, setIsOpen) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError(null);
-
+    const createProcedure = async (text, onSuccess) => {
         const data = { procedure: text };
 
         try {
@@ -144,8 +120,6 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
             if (result.success) {
                 toast.success(result.message + ".");
-                setText("");
-                setIsOpen(false);
                 setIsLoading(false);
                 if (onSuccess) onSuccess();
                 return true;
@@ -159,11 +133,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         }
     };
 
-    const handleQualificationSubmit = async (e, text, setText, setIsOpen) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError(null);
-
+    const createQualification = async (text, onSuccess) => {
         const data = { qualification: text };
 
         try {
@@ -185,8 +155,6 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
             if (result.success) {
                 toast.success(result.message + ".");
-                setText("");
-                setIsOpen(false);
                 setIsLoading(false);
                 if (onSuccess) onSuccess();
                 return true;
@@ -200,20 +168,12 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         }
     };
 
-    const handleRequirementSubmit = async (
-        e,
+    const createRequirement = async (
         quantity,
-        setQuantity,
         description,
-        setDescription,
         submit,
-        setSubmit,
-        setIsOpen
+        onSuccess
     ) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError(null);
-
         const data = {
             requirement: {
                 quantity: quantity,
@@ -238,10 +198,6 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
             if (result.success) {
                 toast.success(result.message + ".");
-                setQuantity("");
-                setDescription("");
-                setSubmit("");
-                setIsOpen(false);
                 setIsLoading(false);
                 if (onSuccess) onSuccess();
                 return true;
@@ -255,11 +211,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         }
     };
 
-    const handleInstructionSubmit = async (e, text, setText, setIsOpen) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError(null);
-
+    const createInstruction = async (text, onSuccess) => {
         const data = { instruction: text };
 
         try {
@@ -281,8 +233,6 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
             if (result.success) {
                 toast.success(result.message + ".");
-                setText("");
-                setIsOpen(false);
                 setIsLoading(false);
                 if (onSuccess) onSuccess();
                 return true;
@@ -297,12 +247,12 @@ function useScholarshipCriteriaSubmit(onSuccess) {
     };
 
     return {
-        handleStrandSubmit,
-        handleCourseSubmit,
-        handleProcedureSubmit,
-        handleQualificationSubmit,
-        handleRequirementSubmit,
-        handleInstructionSubmit,
+        createStrand,
+        createCourse,
+        createQualification,
+        createRequirement,
+        createProcedure,
+        createInstruction,
         isLoading,
         error,
     };

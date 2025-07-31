@@ -1,218 +1,211 @@
-import { useState } from "react";
 import useScholarshipCriteriaSubmit from "../../../hooks/useScholarshipCriteriaSubmit";
-import { strandsTableConfig } from "../../../constant/scholarshipCriteria/scholarshipCriteriaTableConfig";
-import Strands from "./Strands";
-import { usePagination } from "../../../hooks/usePagination";
-import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
+import InputModal from "../../../components/InputModal";
+import { useCriteria } from "../../../context/CriteriaContext";
+import { useEffect } from "react";
 
-function FormModal({ isOpen, setIsOpen, onSuccess, label, fields }) {
-    const [text, setText] = useState("");
-    const [quantity, setQuantity] = useState("");
-    const [description, setDescription] = useState("");
-    const [submit, setSubmit] = useState("");
+function FormModal({
+    isOpen,
+    isEditing,
+    setIsOpen,
+    onSuccess,
+    onEdit,
+    label,
+    fields,
+    updateItem,
+    endpoint,
+}) {
+    const {
+        id,
+        text,
+        quantity,
+        description,
+        submit,
+        setId,
+        setText,
+        setQuantity,
+        setDescription,
+        setSubmit,
+    } = useCriteria();
+
+    useEffect(() => {
+        if (!isEditing) {
+            resetFields();
+        }
+    }, []);
 
     const {
-        handleStrandSubmit,
-        handleCourseSubmit,
-        handleProcedureSubmit,
-        handleQualificationSubmit,
-        handleRequirementSubmit,
-        handleInstructionSubmit,
+        createStrand,
+        createCourse,
+        createQualification,
+        createRequirement,
+        createProcedure,
+        createInstruction,
         isLoading,
     } = useScholarshipCriteriaSubmit(onSuccess);
 
-    const handleSubmit = (e) => {
+    const handleCreate = () => {
         switch (label) {
             case "Strand":
-                handleStrandSubmit(
-                    e,
-                    text,
-                    setText,
-                    description,
-                    setDescription,
-                    setIsOpen
-                );
+                createStrand(text, description);
                 break;
 
             case "Course":
-                handleCourseSubmit(e, text, setText, setIsOpen);
+                createCourse(text);
                 break;
 
             case "Procedure":
-                handleProcedureSubmit(e, text, setText, setIsOpen);
+                createProcedure(text);
                 break;
 
             case "Qualification":
-                handleQualificationSubmit(e, text, setText, setIsOpen);
+                createQualification(text);
                 break;
 
             case "Instruction":
-                handleInstructionSubmit(e, text, setText, setIsOpen);
+                createInstruction(text);
                 break;
 
             case "Requirement":
-                handleRequirementSubmit(
-                    e,
-                    quantity,
-                    setQuantity,
-                    description,
-                    setDescription,
-                    submit,
-                    setSubmit,
-                    setIsOpen
-                );
+                createRequirement(quantity, description, submit);
                 break;
 
             default:
                 console.error("Unknown label type:", label);
         }
+
+        setIsOpen(false);
+        resetFields();
+    };
+
+    const handleEdit = async () => {
+        let data = {};
+
+        if (endpoint === "strand") {
+            data.strand = text;
+            data.description = description;
+        } else if (endpoint === "requirement") {
+            data.quantity = text;
+            data.description = description;
+            data.submit = submit;
+        } else {
+            data[endpoint] = text;
+        }
+
+        const success = await updateItem(id, endpoint, data);
+
+        if (success) data = null;
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (isEditing) handleEdit();
+        else handleCreate();
+        setIsOpen(false);
+    };
+
+    const resetFields = () => {
+        setId("");
+        setText("");
+        setQuantity("");
+        setDescription("");
+        setSubmit("");
     };
 
     const handleCancel = (e) => {
         e.preventDefault(); // Prevent form submission
         setIsOpen(false);
+        resetFields();
+        if (isEditing) {
+            onEdit(false);
+        }
     };
 
     return (
-        <div>
-            <button
-                onClick={() => setIsOpen(true)}
-                className="bg-green-500 text-white px-4 py-2 rounded-sm hover:bg-green-600 transition-colors flex items-center"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                </svg>
-                Add {label}
-            </button>
-
-            {isOpen && (
-                <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="p-8 space-y-4 w-[80%] md:w-[50%] lg:w-[30%] bg-white rounded-sm shadow-md overflow-hidden">
-                        {/* <div className="bg-green-500 px-6 py-2 flex justify-between items-center">
-                            <h2 className="text-md text-white">
-                                Add New {label}
-                            </h2>
-                            <button
-                                type="button"
-                                onClick={() => setIsOpen(false)}
-                                className="text-white text-2xl"
+        <InputModal
+            label={label}
+            isOpen={isOpen}
+            isEditing={isEditing}
+            onEdit={onEdit}
+            resetFields={resetFields}
+            onClose={setIsOpen}
+        >
+            <form onSubmit={handleSubmit} className="pt-4 pb-6 px-6">
+                {/* Form Inputs */}
+                <div>
+                    {fields.map((field, index) =>
+                        field.type === "text" ? (
+                            <label
+                                key={index}
+                                className="py-2 flex flex-col gap-[1px] text-gray-600 text-xs"
                             >
-                                &times;
-                            </button>
-                        </div> */}
-
-                        <div className="relative flex justify-between items-center">
-                            <h2 className="absolute font-semibold left-[50%] translate-x-[-50%] text-md whitespace-nowrap text-center text-gray-700">
-                                Add New {label}
-                            </h2>
-                            <button
-                                type="button"
-                                onClick={() => setIsOpen(false)}
-                                className="absolute right-0 text-gray-500 text-3xl"
+                                {field.name}
+                                <input
+                                    type="text"
+                                    placeholder={field.placeholder}
+                                    value={
+                                        label === "Requirement"
+                                            ? index === 0
+                                                ? quantity
+                                                : submit
+                                            : text
+                                    }
+                                    required
+                                    onChange={(e) => {
+                                        if (label === "Requirement") {
+                                            if (index === 0) {
+                                                setQuantity(e.target.value);
+                                            } else {
+                                                setSubmit(e.target.value);
+                                            }
+                                        } else {
+                                            setText(e.target.value);
+                                        }
+                                    }}
+                                    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                />
+                            </label>
+                        ) : field.type === "textarea" ? (
+                            <label
+                                key={index}
+                                className="py-2 flex flex-col gap-[1px] text-gray-600 text-xs"
                             >
-                                &times;
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="">
-                            {/* Form Inputs */}
-                            <div>
-                                {fields.map((field, index) =>
-                                    field.type === "text" ? (
-                                        <label
-                                            key={index}
-                                            className="py-2 flex flex-col gap-[1px] text-gray-600 text-sm"
-                                        >
-                                            {field.name}
-                                            <input
-                                                type="text"
-                                                placeholder={field.placeholder}
-                                                value={
-                                                    label === "Requirement"
-                                                        ? index === 0
-                                                            ? quantity
-                                                            : submit
-                                                        : text
-                                                }
-                                                required
-                                                onChange={(e) => {
-                                                    if (
-                                                        label === "Requirement"
-                                                    ) {
-                                                        if (index === 0) {
-                                                            setQuantity(
-                                                                e.target.value
-                                                            );
-                                                        } else {
-                                                            setSubmit(
-                                                                e.target.value
-                                                            );
-                                                        }
-                                                    } else {
-                                                        setText(e.target.value);
-                                                    }
-                                                }}
-                                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            />
-                                        </label>
-                                    ) : field.type === "textarea" ? (
-                                        <label
-                                            key={index}
-                                            className="py-2 flex flex-col gap-[1px] text-gray-600 text-sm"
-                                        >
-                                            {field.name}
-                                            <textarea
-                                                name=""
-                                                id=""
-                                                rows={4}
-                                                value={description}
-                                                required
-                                                onChange={(e) =>
-                                                    setDescription(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder={field.placeholder}
-                                                className="w-full resize-none border border-gray-300 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            ></textarea>
-                                        </label>
-                                    ) : null
-                                )}
-                            </div>
-
-                            {/* Action Buttons */}
-                            <div className="flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={handleCancel}
-                                    className={`w-full py-2 px-4 rounded-sm shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className={`w-full py-2 px-4 rounded-sm shadow-sm focus:outline-none bg-green-500 text-white hover:bg-green-600`}
-                                >
-                                    {/* Add {label} */}{" "}
-                                    {isLoading ? "Submitting" : `Add ${label}`}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                                {field.name}
+                                <textarea
+                                    name=""
+                                    id=""
+                                    rows={4}
+                                    value={description}
+                                    required
+                                    onChange={(e) =>
+                                        setDescription(e.target.value)
+                                    }
+                                    placeholder={field.placeholder}
+                                    className="w-full resize-none border border-gray-300 rounded-md p-1 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                ></textarea>
+                            </label>
+                        ) : null
+                    )}
                 </div>
-            )}
-        </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2 text-sm mt-2">
+                    <button
+                        type="button"
+                        onClick={handleCancel}
+                        className={`w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className={`w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none bg-green-600 text-white hover:bg-green-700`}
+                    >
+                        {/* Add {label} */}{" "}
+                        {isLoading ? "Submitting" : `Add ${label}`}
+                    </button>
+                </div>
+            </form>
+        </InputModal>
     );
 }
 

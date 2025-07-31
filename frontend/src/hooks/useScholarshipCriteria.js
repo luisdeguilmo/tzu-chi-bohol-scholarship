@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import BASE_URL from "../config";
 
 export const useScholarshipCriteria = (endpoint, entityName) => {
     const [items, setItems] = useState([]);
@@ -11,7 +12,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/${endpoint}.php`
+                `${BASE_URL}app/views/${endpoint}.php`
             );
             
             setItems(response.data.data || []);
@@ -23,10 +24,10 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
         }
     };
 
-    const updateItem = async (id, updateData) => {
+    const updateItem = async (id, endpoint, updateData) => {
         try {
             const data = {
-                [endpoint.slice(0, -1)]: { // Remove 's' from endpoint (strands -> strand)
+                [endpoint]: { // Remove 's' from endpoint (strands -> strand)
                     id: id,
                     ...updateData,
                 },
@@ -36,7 +37,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
             console.log(data);
 
             const response = await fetch(
-                `http://localhost:8000/app/views/${endpoint}.php`,
+                `${BASE_URL}app/views/${endpoint+"s"}.php`,
                 {
                     method: "PUT",
                     headers: {
@@ -68,7 +69,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
     const deleteItem = async (id) => {
         try {
             await axios.delete(
-                `http://localhost:8000/app/views/${endpoint}.php?id=${id}`
+                `${BASE_URL}app/views/${endpoint}.php?id=${id}`
             );
 
             const updatedItems = items.filter((item) => item.id !== id);

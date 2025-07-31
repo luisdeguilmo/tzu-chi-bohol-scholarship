@@ -4,177 +4,58 @@ import {
     sendApplicationApprovalEmail,
     sendApplicationRejectionEmail,
 } from "./emailService";
-import { useState } from "react";
-
-// export const rejectApplicantApplication = () => {
-//     const [rejectLoading, setRejectLoading] = useState(false);
-//     const [rejectError, setRejectError] = useState(null);
-
-//     const rejectApplication = async (
-//         applicationId,
-//         applicantData,
-//         onSuccess
-//     ) => {
-//         const confirmationId = window.prompt(
-//             "Enter applicant's application ID:"
-//         );
-
-//         if (+confirmationId === +applicationId) {
-//             try {
-//                 setRejectLoading(true);
-
-//                 await axios.post(
-//                     "http://localhost:8000/app/views/update_application_status.php",
-//                     {
-//                         studentIds: [applicationId],
-//                         status: "Rejected",
-//                     }
-//                 );
-
-//                 const applicantToEmail = applicantData.find(
-//                     (applicant) => applicant.application_id === applicationId
-//                 );
-
-//                 if (applicantToEmail) {
-//                     const emailSent = await sendApplicationRejectionEmail(
-//                         applicantToEmail
-//                     );
-//                     toast[emailSent ? "success" : "warning"](
-//                         emailSent
-//                             ? "Applicant rejected and notification email sent successfully!"
-//                             : "Applicant rejected but failed to send email notification."
-//                     );
-//                 } else {
-//                     toast.warning(
-//                         "Applicant rejected but could not find email information."
-//                     );
-//                 }
-
-//                 await onSuccess();
-//             } catch (err) {
-//                 console.error("Error updating application status:", err);
-//                 setRejectError("Failed to reject application.");
-//                 toast.error("Error rejecting application.");
-//             } finally {
-//                 setRejectLoading(false);
-//             }
-//         } else {
-//             toast.error("Incorrect application ID. Please try again.");
-//         }
-//     };
-
-//     return { rejectLoading, rejectError, rejectApplication };
-// };
-
-// export const approveApplicantApplication = () => {
-//     const [approveLoading, setApproveLoading] = useState(false);
-//     const [approveError, setApproveError] = useState(null);
-
-//     const approveApplication = async (
-//         applicationId,
-//         applicantData,
-//         onSuccess
-//     ) => {
-//         const confirmationId = window.prompt(
-//             "Enter applicant's application ID:"
-//         );
-
-//         if (+confirmationId === +applicationId) {
-//             try {
-//                 setApproveLoading(true);
-
-//                 await axios.post(
-//                     "http://localhost:8000/app/views/update_application_status.php",
-//                     {
-//                         studentIds: [applicationId],
-//                         status: "Approved",
-//                         application_approved: 1,
-//                     }
-//                 );
-
-//                 const applicantToEmail = applicantData.find(
-//                     (applicant) => applicant.application_id === applicationId
-//                 );
-
-//                 if (applicantToEmail) {
-//                     const emailSent = await sendApplicationApprovalEmail(
-//                         applicantToEmail
-//                     );
-//                     toast[emailSent ? "success" : "warning"](
-//                         emailSent
-//                             ? "Applicant approved and notification email sent successfully!"
-//                             : "Applicant approved but failed to send email notification."
-//                     );
-//                 } else {
-//                     toast.warning(
-//                         "Applicant approved but could not find email information."
-//                     );
-//                 }
-
-//                 await onSuccess();
-//             } catch (err) {
-//                 console.error("Error updating application status:", err);
-//                 setApproveError("Failed to approve application.");
-//                 toast.error("Error approving application.");
-//             } finally {
-//                 setApproveLoading(false);
-//             }
-//         } else {
-//             toast.error("Incorrect application ID. Please try again.");
-//         }
-//     };
-
-//     return { approveLoading, approveError, approveApplication };
-// };
+import BASE_URL from "../config";
 
 export const manageApplication = () => {
+    const approveApplication = async (applicant) => {
+        console.log(applicant);
+        try {
+            // const applicantToEmail = applicant.find(
+            //     (applicant) => applicant.application_id === applicationId
+            // );
 
-    const approveApplication = async (
-        applicationId,
-        applicantData,
-        onSuccess
-    ) => {
-        const confirmationId = window.prompt(
-            "Enter applicant's application ID:"
-        );
+            // if (!applicant) {
+            //     toast.error(
+            //         "Cannot approve application: Email information not found."
+            //     );
+            //     return;
+            // }
 
-        if (+confirmationId === +applicationId) {
-            try {
-                await axios.post(
-                    "http://localhost:8000/app/views/update_application_status.php",
-                    {
-                        studentIds: [applicationId],
-                        status: "Approved",
-                        application_approved: 1,
-                    }
-                );
+            // // Send email FIRST, before updating status
+            // const emailSent = await sendApplicationApprovalEmail(applicant);
 
-                const applicantToEmail = applicantData.find(
-                    (applicant) => applicant.application_id === applicationId
-                );
+            // if (!emailSent) {
+            //     toast.error(
+            //         "Cannot approve application: Failed to send notification email."
+            //     );
+            //     return;
+            // }
 
-                if (applicantToEmail) {
-                    const emailSent = await sendApplicationApprovalEmail(
-                        applicantToEmail
-                    );
-                    toast[emailSent ? "success" : "warning"](
-                        emailSent
-                            ? "Applicant approved and notification email sent successfully!"
-                            : "Applicant approved but failed to send email notification."
-                    );
-                } else {
-                    toast.warning(
-                        "Applicant approved but could not find email information."
-                    );
+            // Only update status if email was sent successfully
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=approve`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    school_year: applicant.school_year,
+                    is_application_approved: 1,
                 }
+            );
 
-                await onSuccess();
-            } catch (err) {
-                console.error("Error updating application status:", err);
-                toast.error("Error approving application.");
-            } 
-        } else {
-            toast.error("Incorrect application ID. Please try again.");
+            if (response.data.success) {
+                toast.success(
+                    "Application approved and notification email sent successfully!"
+                );
+                return true;
+            }
+
+            return false;
+        } catch (err) {
+            console.error("Error approving application:", err);
+            toast.error("Error approving application.");
+            return false;
         }
     };
 
@@ -183,47 +64,46 @@ export const manageApplication = () => {
         applicantData,
         onSuccess
     ) => {
-        const confirmationId = window.prompt(
-            "Enter applicant's application ID:"
-        );
+        try {
+            const applicantToEmail = applicantData.find(
+                (applicant) => applicant.application_id === applicationId
+            );
 
-        if (+confirmationId === +applicationId) {
-            try {
-                await axios.post(
-                    "http://localhost:8000/app/views/update_application_status.php",
-                    {
-                        studentIds: [applicationId],
-                        status: "Rejected",
-                        application_approved: 0
-                    }
+            if (!applicantToEmail) {
+                toast.error(
+                    "Cannot reject application: Email information not found."
                 );
+                return;
+            }
 
-                const applicantToEmail = applicantData.find(
-                    (applicant) => applicant.application_id === applicationId
+            // Send email FIRST, before updating status
+            const emailSent = await sendApplicationRejectionEmail(
+                applicantToEmail
+            );
+
+            if (!emailSent) {
+                toast.error(
+                    "Cannot reject application: Failed to send notification email."
                 );
+                return;
+            }
 
-                if (applicantToEmail) {
-                    const emailSent = await sendApplicationRejectionEmail(
-                        applicantToEmail
-                    );
-                    toast[emailSent ? "success" : "warning"](
-                        emailSent
-                            ? "Applicant rejected and notification email sent successfully!"
-                            : "Applicant rejected but failed to send email notification."
-                    );
-                } else {
-                    toast.warning(
-                        "Applicant rejected but could not find email information."
-                    );
+            // Only update status if email was sent successfully
+            await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=reject`,
+                {
+                    application_id: applicationId,
+                    is_application_rejected: 1,
                 }
+            );
 
-                await onSuccess();
-            } catch (err) {
-                console.error("Error updating application status:", err);
-                toast.error("Error rejecting application.");
-            } 
-        } else {
-            toast.error("Incorrect application ID. Please try again.");
+            toast.success(
+                "Application rejected and notification email sent successfully!"
+            );
+            await onSuccess();
+        } catch (err) {
+            console.error("Error rejecting application:", err);
+            toast.error("Error rejecting application.");
         }
     };
 

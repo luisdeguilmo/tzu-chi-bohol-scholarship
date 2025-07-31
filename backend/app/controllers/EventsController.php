@@ -11,6 +11,7 @@ require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/ApplicationPeriodModel.php';
 
 use App\Models\EventsModel;
+use App\Models\ScholarOverviewDataModel;
 use Config\Database;
 
 class EventsController {
@@ -48,56 +49,31 @@ class EventsController {
 
     private function handleGet() {
         try {
-            $event = new EventsModel();
+            $events = new EventsModel();
+            $joinedScholars = new ScholarOverviewDataModel();
             
             // Get ID parameter if it exists
             $id = isset($_GET['id']) ? $_GET['id'] : null;
             $tab = $_GET['tab'] ?? null;
+            $year = $_GET['year'] ?? null;
+            $month = $_GET['month'] ?? null;
+            $sortOrder = $_GET['sort_order'] ?? null;
+            $iScholar = $_GET['is_scholar'] ?? null;
+            $isStaff = $_GET['is_staff'] ?? null;
 
-            
-            // if ($id ) {
-            //     // Get specific application period
-            //     $result = $event->getApplicationPeriodById($id);
-                
-            //     if ($result) {
-            //         http_response_code(200);
-            //         echo json_encode(array(
-            //             "success" => true,
-            //             "data" => $result
-            //         ));
-            //     } else {
-            //         http_response_code(404);
-            //         echo json_encode(array(
-            //             "success" => false,
-            //             "message" => "Application period not found"
-            //         ));
-            //     }
-            // } else 
-            if ($tab === 'upcoming') {
-                $result = $event->getUpcomingEvents();
+            $result = [];
 
-                http_response_code(200);
-                echo json_encode(array(
-                    "success" => true,
-                    "data" => $result,
-                ));
-            } else if ($tab === 'ended') {
-                $result = $event->getEndedEvents();
-
-                http_response_code(200);
-                echo json_encode(array(
-                    "success" => true,
-                    "data" => $result,
-                ));
-            } else {
-                $results = $event->getAllEvents();
-                
-                http_response_code(200);
-                echo json_encode(array(
-                    "success" => true,
-                    "data" => $results,
-                ));
+            if ($iScholar) {
+                $result = $events->getEventsByTabAndScholarId($tab, $id, $joinedScholars);
+            } else if ($isStaff) {
+                $result = $events->getEventsByYearAndMonth($year, $joinedScholars);
             }
+
+            http_response_code(200);
+            echo json_encode(array(
+                "success" => true,
+                "data" => $result,
+            ));
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode(array(

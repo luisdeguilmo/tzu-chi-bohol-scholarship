@@ -9,6 +9,10 @@ class ActivityService {
     private $activityModel;
     private $certificateModel;
     private $fileUploadService;
+
+    public function generateBatchId() {
+        return uniqid('batch_', true);
+    }
     
     public function __construct($pdo) {
         $this->activityModel = new ActivityModel($pdo);
@@ -17,11 +21,12 @@ class ActivityService {
     }
     
     public function createActivityWithFiles($activityData, $files = null, $base64Files = null) {
+        $batch_id = $this->generateBatchId();
         // Validate activity data
         $this->validateActivityData($activityData);
         
         // Create activity
-        $activityId = $this->activityModel->createActivity($activityData);
+        $activityId = $this->activityModel->createActivity($activityData, $batch_id);
         
         if (!$activityId) {
             throw new \Exception("Failed to create activity");
@@ -54,7 +59,7 @@ class ActivityService {
                 'requirement_type' => 'certificate_of_appearance'
             ];
             
-            if (!$this->certificateModel->createCOA($fileData, $activityId)) {
+            if (!$this->certificateModel->createCOA($fileData, $activityId, $batch_id)) {
                 throw new \Exception("Failed to save file info: " . $file['original_name']);
             }
         }
@@ -63,7 +68,7 @@ class ActivityService {
     }
     
     private function validateActivityData($data) {
-        $required = ['application_id', 'activity_name', 'activity_date', 'activity_time'];
+        $required = ['application_id', 'activity_name', 'activity_location', 'activity_date', 'start_time', 'end_time', 'activity_status'];
         
         foreach ($required as $field) {
             if (!isset($data[$field]) || empty(trim($data[$field]))) {

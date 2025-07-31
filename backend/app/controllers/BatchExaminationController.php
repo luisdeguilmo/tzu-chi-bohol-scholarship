@@ -163,47 +163,119 @@ class BatchExaminationController {
             // Get ID parameter if it exists
             $id = isset($_GET['batch']) ? $_GET['batch'] : null;
             $hasScore = isset($_GET['score']) ? $_GET['score'] : null;
-            
-            if ($id && $hasScore) {
-                // Get specific procedure
-                $result = $criteria->getApplicantsByBatch($id, $hasScore);
+
+            $result = [];
+
+            if ($id == 'all') {
+                $result = $criteria->getBatches();
+            } else if ($hasScore && $id.str_contains($id, "Batch")) {
+                $result = $criteria->getApplicantsByBatch($id);
+            } else if (!$hasScore && $id.str_contains($id, "Batch")) {
+                $result = $criteria->getApplicantsByBatch($id);
+            } 
                 
-                if ($result) {
-                    http_response_code(200);
-                    echo json_encode(array(
-                        "success" => true,
-                        "data" => $result
-                    ));
-                } else {
-                    echo json_encode(array(
-                        "message" => "Batch not found",
-                        "data" => $result
-                    ));
-                }
-            } else if ($id && !$hasScore) {
-                $result = $criteria->getApplicantsByBatch($id, $hasScore);
-                
-                if ($result) {
-                    http_response_code(200);
-                    echo json_encode(array(
-                        "success" => true,
-                        "data" => $result
-                    ));
-                } else {
-                    echo json_encode(array(
-                        "message" => "Batch not found",
-                        "data" => $result
-                    ));
-                }
-            } else {
-                $results = $criteria->getBatches();
-                
+            if ($result) {
                 http_response_code(200);
                 echo json_encode(array(
                     "success" => true,
-                    "data" => $results
+                    "data" => $result
+                ));
+            } else {
+                echo json_encode(array(
+                    "message" => "Batch not found",
+                    "data" => $result
                 ));
             }
+
+            // if ($id != 'all' && $hasScore) {
+            //     $result = $criteria->getApplicantsByBatchs($id);
+                
+            //     if ($result) {
+            //         http_response_code(200);
+            //         echo json_encode(array(
+            //             "success" => true,
+            //             "data" => $result
+            //         ));
+            //     } else {
+            //         echo json_encode(array(
+            //             "message" => "Batch not found",
+            //             "data" => $result
+            //         ));
+            //     }
+            // } else if ($id != 'all' && $hasScore) {
+            //     $result = $criteria->getApplicantsByBatchs($id);
+                
+            //     if ($result) {
+            //         http_response_code(200);
+            //         echo json_encode(array(
+            //             "success" => true,
+            //             "data" => $result
+            //         ));
+            //     } else {
+            //         echo json_encode(array(
+            //             "message" => "Batch not found",
+            //             "data" => $result
+            //         ));
+            //     }
+            // } else {
+            //     $result = $criteria->getBatches();
+                
+            //     if ($result) {
+            //         http_response_code(200);
+            //         echo json_encode(array(
+            //             "success" => true,
+            //             "data" => $result
+            //         ));
+            //     } else {
+            //         echo json_encode(array(
+            //             "message" => "Batch not found",
+            //             "data" => $result
+            //         ));
+            //     }
+            // }
+
+            
+            
+            // if ($id && $id != 'all' && $hasScore) {
+            //     // Get specific procedure
+            //     $result = $criteria->getApplicantsByBatchs($id);
+                
+            //     if ($result) {
+            //         http_response_code(200);
+            //         echo json_encode(array(
+            //             "success" => true,
+            //             "data" => $result
+            //         ));
+            //     } else {
+            //         echo json_encode(array(
+            //             "message" => "Batch not found",
+            //             "data" => $result
+            //         ));
+            //     }
+            // } else if ($id && $id != 'all' && !$hasScore) {
+            //     $result = $criteria->getApplicantsByBatchs($id);
+                
+            //     if ($result) {
+            //         http_response_code(200);
+            //         echo json_encode(array(
+            //             "success" => true,
+            //             "data" => $result
+            //         ));
+            //     } else {
+            //         echo json_encode(array(
+            //             "message" => "Batch not found",
+            //             "data" => $result
+            //         ));
+            //     }
+            // } else {
+            //     $results = $criteria->getApplicantsByBatchs($id);
+                
+            //     http_response_code(200);
+            //     echo json_encode(array(
+            //         "success" => true,
+            //         "data" => $results
+            //     ));
+            // }
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode(array(

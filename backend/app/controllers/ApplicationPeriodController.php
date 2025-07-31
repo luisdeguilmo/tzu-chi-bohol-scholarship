@@ -39,6 +39,10 @@ class ApplicationPeriodController {
             case "PUT":
                 $this->handlePut();
                 break;
+            case "DELETE":
+                $this->handleDelete();
+                break;
+
             default:
                 http_response_code(405);
                 echo json_encode(array("message" => "Method not allowed"));
@@ -124,7 +128,7 @@ class ApplicationPeriodController {
                 "message" => "Application period created successfully"
             ));
         } catch (\Exception $e) {
-            // Roll back transaction on error
+            // Roll back transaction on error\
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
@@ -195,6 +199,42 @@ class ApplicationPeriodController {
                 "success" => false,
                 "message" => $e->getMessage()
             ));
+        }
+    }
+
+    public function handleDelete() {
+        try {
+            $this->pdo->beginTransaction();
+
+            $id = (int) $_GET['id'] ?? null;
+
+            $applicationPeriod = new ApplicationPeriodModel();
+
+            if (!$applicationPeriod->getApplicationPeriodById($id)) {
+                throw new \Exception("ID is required");
+            }
+
+            if (!$applicationPeriod->deleteApplicationPeriod($id)) {
+                throw new \Exception("Unable to delete application period");
+            }
+
+            $this->pdo->commit();
+
+            http_response_code(200);
+            echo json_encode(array(
+                "success" => true,
+                "message" => "Application period successfully deleted"
+            ));
+        } catch (\Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+
+                http_response_code(400);
+                echo json_encode(array(
+                    "success" => false,
+                    "message" => $e->getMessage()
+                ));
+            }
         }
     }
 }

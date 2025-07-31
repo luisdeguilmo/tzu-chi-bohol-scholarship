@@ -19,21 +19,19 @@ class ScholarAccountModel {
     }
 
     public function getCreatedAccounts() {
-        $query = "SELECT * FROM " . $this->scholar_table;
+        $query = "SELECT * FROM " . $this->scholar_table . " s JOIN users u ON s.account_id = u.account_id";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    public function getPendingScholars($application_status) {
+    public function getPendingScholars() {
         try {
             $query = "SELECT * FROM " . $this->table_name . " ai 
                      JOIN personal_information pi ON ai.application_id = pi.application_id 
-                     WHERE application_status = :application_status";
+                     WHERE status = 'Pending'";
             $stmt = $this->pdo->prepare($query);
-            
-            $stmt->bindParam(":application_status", $application_status);
             $stmt->execute();
             
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -43,7 +41,7 @@ class ScholarAccountModel {
     }
 
     public function getPendingScholarById($application_id) {
-        $query = "SELECT pi.email, ai.application_id 
+        $query = "SELECT pi.first_name, pi.last_name, pi.email, ai.application_id 
                   FROM " . $this->table_name . " ai 
                   JOIN personal_information pi ON ai.application_id = pi.application_id 
                   WHERE ai.application_id = :application_id";
@@ -64,6 +62,28 @@ class ScholarAccountModel {
         $stmt->bindParam(':application_id', $application_id);
         return $stmt->execute();
     }
+
+    public function createScholar($data, $today) {
+        $query = "INSERT INTO scholars (account_id, first_name, last_name, created_at) VALUES (:account_id, :first_name, :last_name, :created_at)";
+
+        $stmt = $this->pdo->prepare($query);
+
+        $account_id = htmlspecialchars(strip_tags($data['application_id']));
+        $first_name = htmlspecialchars(strip_tags($data['first_name']));
+        $last_name = htmlspecialchars(strip_tags($data['last_name']));
+        $created_at = htmlspecialchars(strip_tags($today));
+
+        $stmt->bindParam(':account_id', $account_id);
+        $stmt->bindParam(':first_name', $first_name);
+        $stmt->bindParam(':last_name', $last_name);
+        $stmt->bindParam(':created_at', $created_at);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
+    }
     
     public function createAccount($application_id, $today) {
         // Get scholar data first
@@ -71,8 +91,13 @@ class ScholarAccountModel {
         if (!$scholarData) {
             throw new \Exception("Scholar application not found");
         }
-        
-        $query = "INSERT INTO scholars (email, password, created_at, application_id) 
+
+        $isSuccess = $this->createScholar($scholarData, $today);
+        if (!$isSuccess) {
+            throw new \Exception("Failed to create scholar");
+        }
+
+        $query = "INSERT INTO users (email, password, created_at, account_id) 
                  VALUES (:email, :password, :created_at, :application_id)";
         $stmt = $this->pdo->prepare($query);
         
@@ -91,6 +116,7 @@ class ScholarAccountModel {
         $stmt->bindParam(":password", $hashedPassword);
         $stmt->bindParam(":created_at", $sanitized_created_at);
         $stmt->bindParam(":application_id", $sanitized_application_id);
+        // $stmt->bindParam(":type", 'Scholar');
         
         return $stmt->execute();
     }

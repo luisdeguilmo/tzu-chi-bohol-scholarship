@@ -145,29 +145,37 @@ const FamilyListForm = ({ formData, updateFormData }) => {
             <div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
                     {familyMembersInputFields.map((input) => (
-                        <input
-                            type={input.type}
-                            name={input.name}
-                            value={newMember[input.name]}
-                            onChange={handleChange}
-                            placeholder={input.placeholder}
-                            className="w-full outline-none border-b-[2px] border-gray-400 py-2 mt-1 box-border hover:border-black focus:border-green-500"
-                        />
+                        <div>
+                            <label className="block mb-1 text-gray-600 text-xs">
+                                {input.label}
+                            </label>
+                            <input
+                                type={input.type}
+                                name={input.name}
+                                value={newMember[input.name]}
+                                onChange={handleChange}
+                                placeholder={input.placeholder}
+                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            />
+                        </div>
                     ))}
 
                     <div className="block relative">
-                        <label
+                        {/* <label
                             htmlFor="living"
                             className="absolute top-[-10px] text-gray-600 text-sm"
                         >
                             Status
+                        </label> */}
+                        <label className="block mb-1 text-gray-600 text-xs">
+                            Living w/ Family or Not?
                         </label>
                         <select
                             id="living"
                             name="living_with_family"
                             value={newMember.living_with_family}
                             onChange={handleChange}
-                            className="w-full outline-none border-b-[2px] border-gray-400 py-2 mt-1 box-border hover:border-black focus:border-green-500"
+                            className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="" disabled>
                                 Select
@@ -180,30 +188,30 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                 <button
                     type="button"
                     onClick={addFamilyMember}
-                    className="col-span-3 my-7 shadow-lg bg-green-500 text-white p-2 rounded-sm"
+                    className="col-span-3 my-7 shadow-lg bg-green-600 text-sm rounded-md text-white p-2"
                 >
                     Add Member
                 </button>
             </div>
 
             {/* Family Members Table */}
-            <div className="overflow-scroll">
+            <div className="overflow-y-auto">
                 {sortedFamily.length > 0 && (
-                    <table className="w-full border-collapse border border-gray-300 mb-6">
+                    <table className="w-full mb-6 lg:w-[100%] min-w-[1000px]">
                         <thead>
-                            <tr className="bg-gray-200">
+                            <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
                                 {[
                                     "Name",
                                     "Relationship",
                                     "Age",
                                     "Gender",
                                     "Civil Status",
-                                    "Living?",
+                                    "Living w/ Family or Not?",
                                     "Education/Job",
                                     "Income",
                                     "Action",
                                 ].map((header) => (
-                                    <th key={header} className="border p-2">
+                                    <th key={header} className="py-4 font-semibold text-xs">
                                         {header}
                                     </th>
                                 ))}
@@ -211,35 +219,35 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         </thead>
                         <tbody>
                             {sortedFamily.map((member, index) => (
-                                <tr key={index} className="border">
-                                    <td className="border p-2">
+                                <tr key={index} className="text-center text-xs border-y border-gray-200 text-gray-500">
+                                    <td className="py-5">
                                         {member.name}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="py-2">
                                         {member.relationship}
                                     </td>
-                                    <td className="border p-2">{member.age}</td>
-                                    <td className="border p-2">
+                                    <td className="py-2">{member.age}</td>
+                                    <td className="py-2">
                                         {member.gender}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="py-2">
                                         {member.civil_status}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="py-2">
                                         {member.living_with_family}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="py-2">
                                         {member.education_occupation}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="py-2">
                                         {member.monthly_income}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="py-2">
                                         <button
                                             onClick={() =>
                                                 removeFamilyMember(index)
                                             }
-                                            className="text-red-500 hover:text-red-700"
+                                            className="text-red-600 hover:text-red-700"
                                         >
                                             Remove
                                         </button>
@@ -258,31 +266,36 @@ const FamilyListForm = ({ formData, updateFormData }) => {
             <div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
                     {scholarsInputFields.map((input) => (
-                        <input
-                            type={input.type}
-                            name={input.name}
-                            value={newScholar[input.name]}
-                            onChange={handleScholarChange}
-                            placeholder={input.placeholder}
-                            className="w-full outline-none border-b-[2px] border-gray-400 py-2 mt-1 box-border hover:border-black focus:border-green-500"
-                        />
+                        <div>
+                            <label className="block mb-1 text-gray-600 text-xs">
+                                {input.label}
+                            </label>
+                            <input
+                                type={input.type}
+                                name={input.name}
+                                value={newScholar[input.name]}
+                                onChange={handleScholarChange}
+                                placeholder={input.placeholder}
+                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            />
+                        </div>
                     ))}
                 </div>
                 <button
                     type="button"
                     onClick={addScholar}
-                    className="col-span-3 my-7 shadow-lg bg-green-500 text-white p-2 rounded-sm"
+                    className="col-span-3 my-7 shadow-lg bg-green-600 text-sm rounded-md text-white p-2"
                 >
                     Add Scholar
                 </button>
             </div>
 
             {/* Display Scholars in a Table */}
-            <div className="overflow-scroll">
+            <div className="overflow-y-auto">
                 {tzu_chi_siblings.length > 0 && (
-                    <table className="w-full border-collapse border border-gray-300">
+                    <table className="w-full mb-6 lg:w-[100%] min-w-[1000px]">
                         <thead>
-                            <tr className="bg-gray-200">
+                            <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
                                 {[
                                     "Name",
                                     "Year Level",
@@ -291,7 +304,7 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                     "School Year",
                                     "Action",
                                 ].map((header) => (
-                                    <th key={header} className="border p-2">
+                                    <th key={header} className="py-4 font-semibold text-xs">
                                         {header}
                                     </th>
                                 ))}
@@ -299,26 +312,26 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         </thead>
                         <tbody>
                             {tzu_chi_siblings.map((scholar, index) => (
-                                <tr key={index} className="border">
-                                    <td className="border p-2">
+                                <tr key={index} className="text-center text-xs border-y border-gray-200 text-gray-500">
+                                    <td className="py-5">
                                         {scholar.name}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="p-2">
                                         {scholar.year_level}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="p-2">
                                         {scholar.school}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="p-2">
                                         {scholar.course}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="p-2">
                                         {scholar.school_year}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="p-2">
                                         <button
                                             onClick={() => removeScholar(index)}
-                                            className="text-red-500 hover:text-red-700"
+                                            className="text-red-600 hover:text-red-700"
                                         >
                                             Remove
                                         </button>
@@ -338,38 +351,43 @@ const FamilyListForm = ({ formData, updateFormData }) => {
             <div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
                     {assistanceInputFields.map((input) => (
-                        <input
-                            type={input.type}
-                            name={input.name}
-                            value={newAssistance[input.name]}
-                            onChange={handleAssistanceChange}
-                            placeholder={input.placeholder}
-                            className="w-full outline-none border-b-[2px] border-gray-400 py-2 mt-1 box-border hover:border-black focus:border-green-500"
-                        />
+                        <div>
+                            <label className="block mb-1 text-gray-600 text-xs">
+                                {input.label}
+                            </label>
+                            <input
+                                type={input.type}
+                                name={input.name}
+                                value={newAssistance[input.name]}
+                                onChange={handleAssistanceChange}
+                                placeholder={input.placeholder}
+                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            />
+                        </div>
                     ))}
                 </div>
                 <button
                     type="button"
                     onClick={addAssistance}
-                    className="col-span-3 my-7 shadow-lg bg-green-500 text-white p-2 rounded-sm"
+                    className="col-span-3 my-7 shadow-lg bg-green-600 text-sm rounded-md text-white p-2"
                 >
                     Add Assistance
                 </button>
             </div>
 
             {/* Assistance Table */}
-            <div className="overflow-scroll">
+            <div className="overflow-y-auto">
                 {other_assistance.length > 0 && (
-                    <table className="w-full border-collapse border border-gray-300">
+                    <table className="w-full mb-6 lg:w-[100%] min-w-[1000px]">
                         <thead>
-                            <tr className="bg-gray-200">
+                            <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
                                 {[
                                     "Organization",
                                     "Type of Support",
                                     "Amount",
                                     "Action",
                                 ].map((header) => (
-                                    <th key={header} className="border p-2">
+                                    <th key={header} className="py-4 font-semibold text-xs">
                                         {header}
                                     </th>
                                 ))}
@@ -377,22 +395,22 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         </thead>
                         <tbody>
                             {other_assistance.map((assistance, index) => (
-                                <tr key={index} className="border">
-                                    <td className="border p-2">
+                                <tr key={index} className="text-center text-xs border-y border-gray-200 text-gray-500">
+                                    <td className="py-5">
                                         {assistance.organization_name}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="py-2">
                                         {assistance.support_type}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="py-2">
                                         {assistance.amount}
                                     </td>
-                                    <td className="border p-2">
+                                    <td className="py-2">
                                         <button
                                             onClick={() =>
                                                 removeAssistance(index)
                                             }
-                                            className="text-red-500 hover:text-red-700"
+                                            className="text-red-600 hover:text-red-700"
                                         >
                                             Remove
                                         </button>

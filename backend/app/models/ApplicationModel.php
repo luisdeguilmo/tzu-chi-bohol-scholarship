@@ -9,7 +9,6 @@ class ApplicationModel {
 
     public $id;
     public $sy;
-    public $case_no;
     public $created_at;
 
     private $pdo;
@@ -20,19 +19,21 @@ class ApplicationModel {
     }
 
     public function create($data) {
-        // Generate a unique random application_id
+        // Generate a unique random application_id`
         $application_id = $this->generateUniqueApplicationId();
     
         $query = "INSERT INTO " . $this->table_name . " 
-                  SET application_id = :application_id, school_year = :school_year, status = :status";
+                  SET application_id = :application_id, school_year = :school_year, type = :status, scholar_id = :scholar_id, created_at = NOW()";
     
         $stmt = $this->pdo->prepare($query);
     
         // Sanitize and bind
         $school_year = htmlspecialchars(strip_tags($data['school_year']));
         $status = htmlspecialchars(strip_tags($data['status']));
+        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id']));
     
         $stmt->bindParam(":application_id", $application_id);
+        $stmt->bindParam(":scholar_id", $scholar_id);
         $stmt->bindParam(":school_year", $school_year);
         $stmt->bindParam(":status", $status);
     

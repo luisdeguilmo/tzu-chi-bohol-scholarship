@@ -176,7 +176,13 @@ function Accordion() {
                     <ul className="my-6 list-none list-inside columns-2 text-sm space-y-2">
                         {strands.map((strand, index) => (
                             <li key={index}>
-                                <span className="font-bold">{strand.strand}</span> - <span className="text-gray-800">{strand.description}</span>
+                                <span className="font-bold">
+                                    {strand.strand}
+                                </span>{" "}
+                                -{" "}
+                                <span className="text-gray-800">
+                                    {strand.description}
+                                </span>
                             </li>
                         ))}
                     </ul>
@@ -184,7 +190,7 @@ function Accordion() {
                         List of Courses Accepted for College
                     </h3>
                     <ul
-                        className={`mt-6 mb-4 list-none list-inside text-sm space-y-2 text-gray-800 ${
+                        className={`mt-6 mb-4 list-none list-inside text-xs space-y-2 text-gray-700 ${
                             courseLength <= 10
                                 ? "columns-1"
                                 : courseLength <= 20
@@ -193,7 +199,7 @@ function Accordion() {
                         }`}
                     >
                         {courses.map((course, index) => (
-                            <li key={index}>{course.course_name}</li>
+                            <li key={index}>{course.course}</li>
                         ))}
                     </ul>
                 </>
@@ -287,16 +293,16 @@ function Accordion() {
                     >
                         <div className="flex items-center gap-3">
                             <div
-                                className={`flex bg-green-500 text-white items-center justify-center w-8 h-8 rounded-full`}
+                                className={`flex bg-green-600 text-white items-center justify-center w-8 h-8 rounded-full`}
                             >
                                 {index + 1}
                             </div>
-                            <span className="font-semibold">
+                            <span className="text-sm font-semibold">
                                 {accordion.title}
                             </span>
                         </div>
                         {openAccordionIndex === index ? (
-                            <ChevronUp className="text-green-500" size={20} />
+                            <ChevronUp className="text-green-600" size={20} />
                         ) : (
                             <ChevronDown className="text-gray-500" size={20} />
                         )}

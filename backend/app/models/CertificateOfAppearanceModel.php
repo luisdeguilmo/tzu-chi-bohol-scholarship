@@ -25,8 +25,8 @@ class CertificateOfAppearanceModel {
             $this->pdo = $db->getConnection();
         }
     }
-    
-    public function createCOA($file_data, $application_id) {
+
+    public function createCOA($file_data, $application_id, $batch_id) {
         $query = "INSERT INTO " . $this->table_name . " 
                    SET application_id = :application_id,
                        file_name = :file_name,
@@ -34,6 +34,7 @@ class CertificateOfAppearanceModel {
                        file_type = :file_type,
                        file_size = :file_size,
                        requirement_type = :requirement_type,
+                       batch_id = :batch_id,
                        uploaded_at = :uploaded_at";
         
         $stmt = $this->pdo->prepare($query);
@@ -54,6 +55,7 @@ class CertificateOfAppearanceModel {
         $stmt->bindParam(":file_type", $this->file_type);
         $stmt->bindParam(":file_size", $this->file_size);
         $stmt->bindParam(":requirement_type", $this->requirement_type);
+        $stmt->bindParam(":batch_id", $batch_id);
         $stmt->bindParam(":uploaded_at", $this->uploaded_at);
         
         return $stmt->execute();

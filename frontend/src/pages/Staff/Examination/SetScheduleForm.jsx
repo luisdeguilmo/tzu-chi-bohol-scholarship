@@ -1,19 +1,34 @@
+import { CalendarCog, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useSchedule } from "../../../hooks/useSchedule";
 
-export default function SetScheduleForm({ isOpen, setIsOpen, batches, selectedBatch, onSuccess }) {
-    const [schedule, setSchedule] = useState("");
+export default function SetScheduleForm({
+    isOpen,
+    setIsOpen,
+    batches,
+    selectedBatch,
+    onSuccess,
+}) {
+    const [date, setDate] = useState("");
+    const [time, setTime] = useState("");
     const [editing, setEditing] = useState(false);
+    const { createSchedule } = useSchedule();
 
     // Use useEffect to set the initial schedule value when component mounts or selectedBatch changes
     useEffect(() => {
         if (selectedBatch && batches) {
-            const batch = batches.find(batch => batch.batch_name === selectedBatch);
+            const batch = batches.find(
+                (batch) => batch.batch_name === selectedBatch
+            );
             if (batch && batch.schedule) {
-                setSchedule(batch.schedule);
+                const dateAndTime = batch.schedule.split(" ");
+                setDate(dateAndTime[0]);
+                setTime(dateAndTime[1]);
                 setEditing(true);
             } else {
-                setSchedule("");
+                setDate("");
+                setTime("");
                 setEditing(false);
             }
         }
@@ -22,41 +37,19 @@ export default function SetScheduleForm({ isOpen, setIsOpen, batches, selectedBa
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const batchToDelete = batches.find(
+        const batchToSet = batches.find(
             (batch) => batch.batch_name === selectedBatch
         );
 
-        // Create the data structure that matches your backend expectations
-        const data = {
-            schedule: schedule,
-        };
-
-        try {
-            const response = await fetch(
-                `http://localhost:8000/app/views/schedule.php?id=${batchToDelete.batch_name}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json", // Important for JSON body
-                    },
-                    body: JSON.stringify(data),
-                }
-            );
-
-            const result = await response.json(); // Parse as JSON instead of text
-
-            if (result.success) {
-                toast.success(result.message + ".");
-                setSchedule("");
-                setIsOpen(false);
-            } else {
-                alert("Error: " + result.message);
-            }
-            if (onSuccess) onSuccess();
-        } catch (error) {
-            console.error("Submission error:", error);
-            alert("Failed to submit the form. Please try again.");
-        }
+        await createSchedule(
+            date,
+            time,
+            setDate,
+            setTime,
+            batchToSet,
+            onSuccess,
+            setIsOpen
+        );
     };
 
     const handleCancel = (e) => {
@@ -67,7 +60,9 @@ export default function SetScheduleForm({ isOpen, setIsOpen, batches, selectedBa
     // Helper function to check if batch has schedule (no state updates)
     const hasSchedule = () => {
         if (!selectedBatch || !batches) return false;
-        const batch = batches.find(batch => batch.batch_name === selectedBatch);
+        const batch = batches.find(
+            (batch) => batch.batch_name === selectedBatch
+        );
         return batch && batch.schedule;
     };
 
@@ -75,85 +70,96 @@ export default function SetScheduleForm({ isOpen, setIsOpen, batches, selectedBa
         <div>
             <button
                 onClick={() => setIsOpen(true)}
-                className="text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center"
+                title={hasSchedule() ? "Edit Schedule" : "Set Schedule"}
+                className="text-green-600 text-xs rounded-lg hover:underline transition-colors flex items-center"
             >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                </svg>
+                <CalendarCog className="w-4 h-4 mr-1" />
                 {hasSchedule() ? "Edit Schedule" : "Set Schedule"}
             </button>
 
-            {isOpen && (
-                <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="w-[80%] md:w-[50%] lg:w-[30%] bg-white rounded-lg shadow-md overflow-hidden">
-                        <div className="bg-green-500 px-6 py-2 flex justify-between items-center">
-                            <h2 className="text-md text-white">
-                                Set Schedule
-                            </h2>
-                            <button
-                                type="button"
-                                onClick={() => setIsOpen(false)}
-                                className="text-white text-2xl"
-                            >
-                                &times;
-                            </button>
+            <div
+                className={`fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-60 p-4 animate-in fade-in duration-200 ${
+                    isOpen ? "block" : "hidden"
+                }`}
+                // onKeyDown={handleKeyDown}
+                // onClick={handleBackdropClick}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+            >
+                <div className="relative w-full sm:w-[60%] md:[45%] lg:w-[40%] xl:w-[30%] bg-white rounded-xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200">
+                    {/* Header */}
+                    <div className="relative px-6 py-4 border-b border-slate-200">
+                        <h2
+                            id="modal-title"
+                            className="text-lg text-slate-700 pr-10 leading-tight"
+                        >
+                            {editing ? "Update Schedule" : "Set Schedule"}
+                        </h2>
+                        <button
+                            type="button"
+                            onClick={() => setIsOpen(false)}
+                            className="absolute top-3 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-100 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
+                            aria-label="Close modal"
+                        >
+                            <X size={18} />
+                        </button>
+                    </div>
+
+                    {/* Content */}
+                    <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                        {/* Start Date Input */}
+                        <div>
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm">
+                                Batch
+                                <input
+                                    readOnly
+                                    type="text"
+                                    value={selectedBatch}
+                                    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none"
+                                />
+                            </label>
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm">
+                                Date
+                                <input
+                                    required
+                                    type="date"
+                                    value={date}
+                                    onChange={(e) => setDate(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </label>
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm">
+                                Time
+                                <input
+                                    required
+                                    type="time"
+                                    value={time}
+                                    onChange={(e) => setTime(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </label>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-8 space-y-4">
-                            {/* Form Inputs */}
-                            <div>
-                                <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm">
-                                    Batch
-                                    <input
-                                        readOnly
-                                        type="text"
-                                        value={selectedBatch}
-                                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none"
-                                    />
-                                </label>
-                                <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm">
-                                    Date & Time
-                                    <input
-                                        required
-                                        type="datetime-local"
-                                        value={schedule}
-                                        onChange={(e) => setSchedule(e.target.value)}
-                                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    />
-                                </label>
-                            </div>
-
-                            {/* Action Buttons */}
-                            <div className="flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={handleCancel}
-                                    className={`w-full py-2 px-4 rounded-sm shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className={`w-full py-2 px-4 rounded-sm shadow-sm focus:outline-none bg-green-500 text-white hover:bg-green-600`}
-                                >
-                                    {editing ? "Update" : "Set"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        {/* Action Buttons */}
+                        <div className="flex gap-2 text-sm">
+                            <button
+                                type="button"
+                                onClick={handleCancel}
+                                className={`w-full py-2 px-4 rounded-lg shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className={`w-full py-2 px-4 rounded-lg shadow-sm focus:outline-none bg-green-600 text-white hover:bg-green-700`}
+                            >
+                                {editing ? "Update" : "Set"}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            )}
+            </div>
         </div>
     );
 }

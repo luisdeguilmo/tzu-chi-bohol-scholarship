@@ -1,7 +1,7 @@
 // config/strandsConfig.js
 export const strandsTableConfig = {
     headers: [
-        { name: 'strand', label: 'Strands' },
+        { name: 'strand', label: 'Strand' },
         { name: 'description', label: 'Description' },
         { name: 'actions', label: 'Actions' }
     ],
@@ -11,7 +11,7 @@ export const strandsTableConfig = {
             type: 'text',
             placeholder: 'Enter strand name',
             required: true,
-            className: 'pl-5 py-3 text-left whitespace-nowrap text-gray-500'
+            className: 'py-3 text-center whitespace-nowrap text-gray-500'
         },
         {
             name: 'description',
@@ -29,8 +29,8 @@ export const strandsTableConfig = {
 
 export const coursesTableConfig = {
     headers: [
-        { name: "course", label: "Courses" },
-        { name: "actions", label: "Actions" },
+        { name: "course", label: "Course" },
+        { name: "actions", label: "Action" },
     ],
     fields: [
         {
@@ -38,7 +38,7 @@ export const coursesTableConfig = {
             type: "text",
             placeholder: "Enter course name",
             required: true,
-            className: "pl-5 py-3 text-left whitespace-nowrap text-gray-500",
+            className: "py-3 whitespace-nowrap text-gray-500",
         },
     ],
     primaryField: "course",
@@ -48,7 +48,7 @@ export const coursesTableConfig = {
 export const qualificationsTableConfig = {
     headers: [
         { name: "qualification", label: "Qualifications" },
-        { name: "actions", label: "Actions" },
+        { name: "actions", label: "Action" },
     ],
     fields: [
         {
@@ -56,7 +56,7 @@ export const qualificationsTableConfig = {
             type: "text",
             placeholder: "Enter qualification name",
             required: true,
-            className: "pl-5 py-3 text-left whitespace-nowrap text-gray-500",
+            className: "py-3 text-center whitespace-nowrap text-gray-500",
         },
     ],
     primaryField: "qualification",
@@ -69,7 +69,7 @@ export const requirementsTableConfig = {
         { name: 'quantity', label: 'Quantity' },
         { name: 'description', label: 'Description' },
         { name: 'submit', label: 'Submit During' },
-        { name: "actions", label: "Actions" },
+        { name: "actions", label: "Action" },
     ],
     fields: [
         {
@@ -77,7 +77,7 @@ export const requirementsTableConfig = {
             type: 'text',
             placeholder: 'Enter quantity',
             required: true,
-            className: 'pl-5 py-3 text-left whitespace-nowrap text-gray-500'
+            className: 'py-3 text-left whitespace-nowrap text-gray-500'
         },
         {
             name: 'description',
@@ -93,7 +93,7 @@ export const requirementsTableConfig = {
             type: 'text',
             placeholder: 'Enter submit during',
             required: true,
-            className: 'pl-5 py-3 text-left whitespace-nowrap text-gray-500'
+            className: 'py-3 text-left whitespace-nowrap text-gray-500'
         },
     ],
     primaryField: 'quantity',
@@ -103,7 +103,7 @@ export const requirementsTableConfig = {
 export const proceduresTableConfig = {
     headers: [
         { name: "procedure", label: "Procedures" },
-        { name: "actions", label: "Actions" },
+        { name: "actions", label: "Action" },
     ],
     fields: [
         {
@@ -111,7 +111,7 @@ export const proceduresTableConfig = {
             type: "text",
             placeholder: "Enter procedure",
             required: true,
-            className: "pl-5 py-3 text-left whitespace-nowrap text-gray-500",
+            className: "py-3 text-left whitespace-nowrap text-gray-500",
         },
     ],
     primaryField: "procedure",
@@ -121,7 +121,7 @@ export const proceduresTableConfig = {
 export const instructionsTableConfig = {
     headers: [
         { name: "instruction", label: "Instructions" },
-        { name: "actions", label: "Actions" },
+        { name: "actions", label: "Action" },
     ],
     fields: [
         {
@@ -129,7 +129,7 @@ export const instructionsTableConfig = {
             type: "text",
             placeholder: "Enter instruction",
             required: true,
-            className: "pl-5 py-3 text-left whitespace-nowrap text-gray-500",
+            className: "py-3 text-left whitespace-nowrap text-gray-500",
         },
     ],
     primaryField: "instruction",

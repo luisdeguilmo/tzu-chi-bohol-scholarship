@@ -1,16 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import BASE_URL from "../config";
 
-export const useScholarsAndActivities = ( tab ) => {
+export const useScholarsAndActivities = (tab, year, month) => {
     const [scholars, setScholars] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchScholars = async () => {
+    const fetchScholars = async (tab, year, month) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/scholars-activities.php?tab=${tab}`
+                `${BASE_URL}app/views/scholars-activities.php?tab=${tab}&year=${year}&month=${month}`
             );
             // Set application periods data
             setScholars(response.data.data || []);
@@ -26,8 +27,8 @@ export const useScholarsAndActivities = ( tab ) => {
     };
 
     useEffect(() => {
-        fetchScholars();
-    }, [tab]);
+        fetchScholars(tab, year, month);
+    }, [tab, year, month]);
 
     return { scholars, fetchScholars };
 };

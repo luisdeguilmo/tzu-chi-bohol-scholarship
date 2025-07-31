@@ -7,6 +7,7 @@ use App\Models\ApplicantModel;
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 
 try {
     // $applicant = new ApplicantModel();
@@ -24,26 +25,47 @@ try {
     $entrance_examination = $_GET['entrance_examination'] ?? null;
     $initial_interview = $_GET['initial_interview'] ?? null;
 
+    if ($application_status === "pending") {
+        if ($status === 'new') {
+            $data = $applicant->getAllNewApplicants();
+        } else if ($status === 'old') {
+            $data = $applicant->getAllRenewalApplicants();
+        } else {
+            $data = $applicant->getAllApplicants();
+        }
+    } else if ($application_status === "approved") {
+        if ($status === 'new') {
+            $data = $applicant->getAllReviewedApplicants($status);
+            echo json_encode(array("data" => $data));
+            return;
+        } else if ($status === 'old') {
+            $data = $applicant->getAllReviewedApplicants($status);
+            echo json_encode(array("data" => $data));
+            return;
+        } 
+    }
+
     // if ($application_status === null && $status === null) {
     //     // No filters - get all applicants
     //     $data = $applicant->getAllApplicants();
     // }
 
-    if ($approved === null && $entrance_examination === null && $initial_interview === null) {
+    // if ($approved === null && $entrance_examination === null && $initial_interview === null) {
+    //     if ($status === 'New') {
+    //         $data = $applicant->getAllNewApplicants();
+    //     } else if ($status === 'Old') {
+    //         $data = $applicant->getAllRenewalApplicants();
+    //     } else {
+    //         $data = $applicant->getAllApplicants();
+    //     }
+    // }
+      if ($approved === '1' && $entrance_examination === null && $initial_interview === null) {
         if ($status === 'New') {
-            $data = $applicant->getAllNewApplicants();
-        } else if ($status === 'Old') {
-            $data = $applicant->getAllRenewalApplicants();
-        } else {
-            $data = $applicant->getAllApplicants();
-        }
-    } else if ($approved === '1' && $entrance_examination === null && $initial_interview === null) {
-        if ($status === 'New') {
-            $data = $applicant->getAllApprovedApplicants($status);
+            $data = $applicant->getAllReviewedApplicants($status);
             echo json_encode(array("data" => $data));
             return;
         } else if ($status === 'Old') {
-            $data = $applicant->getAllApprovedApplicants($status);
+            $data = $applicant->getAllReviewedApplicants($status);
             echo json_encode(array("data" => $data));
             return;
         } 

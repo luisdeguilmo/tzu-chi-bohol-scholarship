@@ -1,17 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import BASE_URL from "../config";
 
-export const useActivities = () => {
-    const [currentTab, setCurrentTab] = useState("all");
+export const useActivities = (tab, userId) => {
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchActivities = async (tab) => {
+    const fetchActivities = async (tab, userId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/activities.php?tab=${tab}`
+                `${BASE_URL}app/views/activities.php?tab=${tab}&id=${userId}`
             );
             // Set application periods data
             setActivities(response.data.data || []);
@@ -27,7 +27,7 @@ export const useActivities = () => {
     };
 
     useEffect(() => {
-        fetchActivities();
+        fetchActivities(tab, userId);
     }, []);
 
     return { activities, fetchActivities };

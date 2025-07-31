@@ -1,6 +1,10 @@
 // import { NewApplicationForm, RenewalApplicationForm } from "./ApplicationForm";
 
-import { NewApplicationForm, RenewalApplicationForm } from "./ApplicationForm/ApplicationFormPage";
+import { useLocation } from "react-router-dom";
+import {
+    NewApplicationForm,
+    RenewalApplicationForm,
+} from "./ApplicationForm/ApplicationFormPage";
 
 // function ApplicationSection() {
 //     return (
@@ -27,9 +31,14 @@ function ApplicationSection() {
 }
 
 function RenewalApplicationSection() {
+    const location = useLocation();
+    let userId = location.state?.id;
+
+    console.log(userId);
+
     return (
         <div className="py-5 bg-white">
-            <RenewalApplicationForm />
+            <RenewalApplicationForm userId={userId} />
         </div>
     );
 }

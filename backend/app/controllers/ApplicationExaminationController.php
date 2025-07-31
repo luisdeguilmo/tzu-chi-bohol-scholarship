@@ -25,7 +25,7 @@ try {
          (in_array('Approved', $application_status) || in_array('Examination', $application_status)))
     ) {
         if ($status === 'New') {
-            $data = $applicant->getApprovedAndExaminationApplicants();
+            // $data = $applicant->getApprovedAndExaminationApplicants();
             echo json_encode(["data" => $data]);
         } else {
             http_response_code(400);

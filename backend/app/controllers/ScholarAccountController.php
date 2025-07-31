@@ -136,7 +136,7 @@ class ScholarAccountController {
             // Get ID parameter if it exists
             $application_status = isset($_GET['application_status']) ? $_GET['application_status'] : null;
             
-            if (!$application_status) {
+            if ($application_status === 'created') {
                 // Get specific scholar
                 $result = $model->getCreatedAccounts();
                 
@@ -153,8 +153,8 @@ class ScholarAccountController {
                         "message" => "Scholar not found"
                     ));
                 }
-            } else {
-                $results = $model->getPendingScholars($application_status);
+            } else if ($application_status === 'pending') {
+                $results = $model->getPendingScholars();
                 
                 http_response_code(200);
                 echo json_encode(array(

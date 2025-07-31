@@ -14,30 +14,25 @@ const FormFields = ({
             : section;
 
     return (
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4">
             {fields.map((field) => (
                 <div key={field.name}>
                     {field.type === "select" ? (
-                        <div className="block w-full mb-2 relative">
-                            <label
-                                htmlFor={field.name}
-                                className="absolute top-[-10px] text-gray-600 text-sm"
-                            >
+                        <div className="block w-full relative">
+                            <label className="block mb-1 text-gray-600 text-xs">
                                 {field.label}
-                                {field.required && (
-                                    <span className="text-red-500">*</span>
-                                )}
                             </label>
                             <select
                                 id={field.name}
                                 name={field.name}
                                 value={formData[section][field.name]}
                                 onChange={(e) => handleInputChange(section, e)}
-                                className={`w-full outline-none border-b-[2px] ${
-                                    errors && errors[field.name]
-                                        ? "border-red-500"
-                                        : "border-gray-400"
-                                } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
+                                // className={`w-full outline-none border-b-[2px] ${
+                                //     errors && errors[field.name]
+                                //         ? "border-red-500"
+                                //         : "border-gray-400"
+                                // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
+                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required={field.required}
                             >
                                 {field.options.map((option) => (
@@ -58,6 +53,9 @@ const FormFields = ({
                         </div>
                     ) : (
                         <div className="relative">
+                            <label className="block mb-1 text-gray-600 text-xs">
+                                {field.label}
+                            </label>
                             <input
                                 type={field.type}
                                 name={field.name}
@@ -68,11 +66,12 @@ const FormFields = ({
                                 placeholder={`${field.label}${
                                     field.required ? "*" : ""
                                 }`}
-                                className={`w-full outline-none border-b-[2px] ${
-                                    errors && errors[field.name]
-                                        ? "border-red-500"
-                                        : "border-gray-400"
-                                } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
+                                // className={`w-full outline-none border-b-[2px] ${
+                                //     errors && errors[field.name]
+                                //         ? "border-red-500"
+                                //         : "border-gray-400"
+                                // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
+                                className="w-full border text-sm text-slate-700 border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required={field.required}
                             />
                             {errors && errors[field.name] && (

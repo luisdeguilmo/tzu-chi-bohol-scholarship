@@ -12,6 +12,7 @@ require_once __DIR__ . '/../Models/BatchModel.php';
 
 use App\Models\ActivityModel;
 use Config\Database;
+use Exception;
 
 class ScholarVolunteerActivityController {
     private $pdo;
@@ -101,41 +102,24 @@ class ScholarVolunteerActivityController {
             // Get ID parameter if it exists
             $id = isset($_GET['id']) ? $_GET['id'] : null;
             $tab = $_GET['tab'] ?? null; 
-            
-            if ($id && $tab === null) {
-                // Get specific procedure
-                $result = $activity->getActivityById($id);
-                
-                if ($result) {
-                    http_response_code(200);
-                    echo json_encode(array(
-                        "success" => true,
-                        "data" => $result
-                    ));
-                } else {
-                    http_response_code(404);
-                    echo json_encode(array(
-                        "success" => false,
-                        "message" => "Activity not found"
-                    ));
-                }
-            } else if ($id === null && $tab === 'pending') {
-                $results = $activity->getScholarWithCurrentMonthActivities($tab);
-                
-                http_response_code(200);
-                echo json_encode(array(
-                    "success" => true,
-                    "data" => $results
-                ));
-            } else {
-                $results = $activity->getAllActivities();
-                
-                http_response_code(200);
-                echo json_encode(array(
-                    "success" => true,
-                    "data" => $results
-                ));
+            $year = $_GET['year'] ?? null; 
+            $month = $_GET['month'] ?? null; 
+
+            $activities = [];
+
+            if ($tab === 'pending') {
+                $activities = $activity->getActivitiesByTab($tab, $year, $month);
+            } else if ($tab === 'recorded') {
+                $activities = $activity->getActivitiesByTab($tab, $year, $month);
             }
+
+            $result = $activity->getAllScholarsWithFiles($activities, $activity);
+
+            http_response_code(200);
+            echo json_encode(array(
+                "success" => true,
+                "data" => $result
+            ));
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode(array(
@@ -144,6 +128,16 @@ class ScholarVolunteerActivityController {
             ));
         }
     }  
+
+    public function handlePost() {
+        try {
+            $this->pdo->beginTransaction();
+
+            
+        } catch (\Exception $e) {
+
+        }
+    }
 
     // private function handleDelete() {
     //     try {

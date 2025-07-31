@@ -75,62 +75,59 @@ class ProfilePictureModel {
         }
     }
 
-
-    // Updated methods for ProfilePictureModel.php
-
-public function getFileUrlByApplicationId($application_id) {
-    try {
-        $query = "SELECT file_name, file_path FROM " . $this->table_name . " 
-                 WHERE application_id = ? 
-                 ORDER BY uploaded_at DESC 
-                 LIMIT 1";
-        
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$application_id]);
-        
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        
-        if ($row) {
-            // Extract filename from path
-            $filename = basename($row['file_path']);
+    public function getFileUrlByApplicationId($application_id) {
+        try {
+            $query = "SELECT file_name, file_path FROM " . $this->table_name . " 
+                    WHERE application_id = ? 
+                    ORDER BY uploaded_at DESC 
+                    LIMIT 1";
             
-            // Return the URL using the serving endpoint
-            $base_url = $this->getBaseUrl();
-            return $base_url . "/public/upload/applications/" . $application_id . "/profile/" . urlencode($filename);
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$application_id]);
+            
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if ($row) {
+                // Extract filename from path
+                $filename = basename($row['file_path']);
+                
+                // Return the URL using the serving endpoint
+                $base_url = $this->getBaseUrl();
+                return $base_url . "/public/upload/applications/" . $application_id . "/profile/" . urlencode($filename);
+            }
+            
+            return null;
+        } catch (\Exception $e) {
+            error_log("Error getting file URL by application ID: " . $e->getMessage());
+            return null;
         }
-        
-        return null;
-    } catch (\Exception $e) {
-        error_log("Error getting file URL by application ID: " . $e->getMessage());
-        return null;
     }
-}
 
-public function getFileUrl($id) {
-    try {
-        $query = "SELECT file_path, application_id FROM " . $this->table_name . " WHERE id = ?";
-        
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$id]);
-        
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        
-        if ($row) {
-            // Extract filename from path
-            $filename = basename($row['file_path']);
-            $application_id = $row['application_id'];
-            // http://localhost:8000/public/upload/applications/7294153/profile/WIN_20240514_08_32_24_Pro.jpg
-            // Return the URL using the serving endpoint
-            $base_url = $this->getBaseUrl();
-            return $base_url . "/public/upload/applications/" . $application_id . "/profile/" . urlencode($filename);
+    public function getFileUrl($id) {
+        try {
+            $query = "SELECT file_path, application_id FROM " . $this->table_name . " WHERE id = ?";
+            
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$id]);
+            
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if ($row) {
+                // Extract filename from path
+                $filename = basename($row['file_path']);
+                $application_id = $row['application_id'];
+                // http://localhost:8000/public/upload/applications/7294153/profile/WIN_20240514_08_32_24_Pro.jpg
+                // Return the URL using the serving endpoint
+                $base_url = $this->getBaseUrl();
+                return $base_url . "/public/upload/applications/" . $application_id . "/profile/" . urlencode($filename);
+            }
+            
+            return null;
+        } catch (\Exception $e) {
+            error_log("Error getting file URL: " . $e->getMessage());
+            return null;
         }
-        
-        return null;
-    } catch (\Exception $e) {
-        error_log("Error getting file URL: " . $e->getMessage());
-        return null;
     }
-}
 
 
 

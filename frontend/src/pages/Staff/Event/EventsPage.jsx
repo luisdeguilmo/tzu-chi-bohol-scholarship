@@ -1,288 +1,220 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { formatDateTime } from "../../../utils/formatDateTime";
-import EventForm from "./EventForm";
+import { useEffect, useState } from "react";
+import { formatDate } from "../../../utils/formatDate";
+import { formatTime } from "../../../utils/formatTime";
+import EmptyState from "../../../components/EmptyState";
+import { usePagination } from "../../../hooks/usePagination";
+import Pagination from "../../../components/Pagination";
+import AddEventFormModal from "./AddEventFormModal";
+import { useEventsOnStaff } from "../../../hooks/useEventsOnStaff";
+import EventDetailsModal from "../../../components/EventDetailsModal";
+import { date } from "../../../utils/getDateAndTime";
+import TableToolbar from "../../../components/TableToolbar";
+import Table from "../../../components/Table";
+import { eventTableHeaders } from "../../../constant/tableHeaders";
 
 export default function EventsPage() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const itemsPerPage = 5;
+    const [sortBy, setSortBy] = useState("newest");
+    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [isOpenFormModal, setIsOpenFormModal] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [isOpenEventDetailsModal, setIsOpenEventDetailsModal] =
+        useState(false);
+    const [year, setYear] = useState("2025");
 
-    const [events, setEvents] = useState([]);
-    const [editingPeriod, setEditingPeriod] = useState(null);
-
-    const fetchEvents = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get(
-                `http://localhost:8000/app/views/events.php`
-            );
-            // Set application periods data
-            setEvents(response.data.data || []);
-            // Set active application period flag
-            setLoading(false);
-        } catch (err) {
-            console.error("Error fetching application period data:", err);
-            setError(
-                "Failed to load application period data. Please try again."
-            );
-            setLoading(false);
-        }
-    };
+    const { events, fetchEvents } = useEventsOnStaff(year);
 
     useEffect(() => {
-        fetchEvents();
-    }, []);
+        fetchEvents(year);
+    }, [year]);
 
     // Filter data based on search term
     const filteredEvents = events.filter((event) =>
         event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Calculate pagination
-    const totalPages = Math.ceil(filteredEvents.length / itemsPerPage);
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredEvents.slice(
+    const sortedApplications = [...filteredEvents].sort((a, b) => {
+        switch (sortBy) {
+            case "newest":
+                return new Date(b.date) - new Date(a.date);
+            case "oldest":
+                return new Date(a.date) - new Date(b.date);
+            case "name":
+                return a.first_name.localeCompare(b.first_name);
+            default:
+                return 0;
+        }
+    });
+
+    const handleOpenDetailsModal = (event) => {
+        setSelectedEvent(event);
+        setIsOpenEventDetailsModal(true);
+    };
+
+    const {
+        currentItems,
+        currentPage,
+        setCurrentPage,
+        totalPages,
         indexOfFirstItem,
-        indexOfLastItem
-    );
+        indexOfLastItem,
+        goToPreviousPage,
+        goToNextPage,
+    } = usePagination(sortedApplications, itemsPerPage);
 
-    // Handle page changes
-    const goToPreviousPage = () => {
-        setCurrentPage((prev) => Math.max(prev - 1, 1));
+    const handleChangeYear = (year) => {
+        setYear(year);
+        setCurrentPage(1);
     };
 
-    const goToNextPage = () => {
-        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-    };
-
-    // Handle edit action
-    const handleEdit = (event) => {
-        setEditingPeriod(event);
+    const handleRefresh = () => {
+        fetchApplications(activeTab);
+        setSelectedItems([]);
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">
-                Application Period
-            </h2>
-            <div className="flex gap-4">
-                <EventForm onSuccess={fetchEvents} />
-                <div className="w-[70%] mx-auto bg-white rounded-md shadow-md p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-bold text-gray-800">
-                            Events
-                        </h3>
-
-                        {/* Search */}
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg
-                                    className="w-4 h-4 text-gray-500"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Search by status..."
-                                className="pl-10 p-2 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-green-300 focus:border-green-500 transition-all"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
+        <div className="lg:p-6">
+            {/* <EventForm onSuccess={fetchEvents} /> */}
+            <div className="w-[100%] mx-auto bg-white rounded-md shadow p-6">
+                <TableToolbar
+                    items={events}
+                    label={"Events"}
+                    placeholder={"events"}
+                    searchTerm={searchTerm}
+                    itemsPerPage={itemsPerPage}
+                    sortBy={sortBy}
+                    sortedItems={sortedApplications}
+                    onOpen={setIsOpenFormModal}
+                    onRefresh={handleRefresh}
+                    onSort={setSortBy}
+                    onSearchChange={setSearchTerm}
+                    onChangeItemsPerPage={setItemsPerPage}
+                    firstIndex={indexOfFirstItem}
+                    lastIndex={indexOfLastItem}
+                    addButton={true}
+                >
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-600">Year:</span>
+                        <select
+                            value={year}
+                            onChange={(e) => handleChangeYear(Number(e.target.value))}
+                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value={2025}>2025</option>
+                            <option value={2024}>2024</option>
+                        </select>
                     </div>
+                </TableToolbar>
 
-                    {/* Table */}
-                    <div className="overflow-x-auto rounded-md border border-gray-200">
-                        <table className="w-[1300px] divide-y divide-gray-200">
-                            <thead className="bg-green-100 text-green-800">
-                                <tr className="text-center bg-gray-50 text-gray-800 font-bold">
-                                    <th
-                                        scope="col"
-                                        className="py-3 text-xs uppercase tracking-wider"
+                {/* Table */}
+                <div className="overflow-x-auto rounded-[4px]">
+                    <Table tableHeaders={eventTableHeaders}>
+                        {currentItems.map((event) => (
+                            <tr
+                                key={event.id}
+                                className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
+                            >
+                                <td className="py-5 whitespace-nowrap text-gray-700 font-bold">
+                                    {event.event_name}
+                                </td>
+                                <td className="py-3 whitespace-nowrap text-xs text-gray-700">
+                                    {event.event_location}
+                                </td>
+                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                    {formatDate(event.date)}
+                                </td>
+                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                    {formatTime(event.start_time)} -{" "}
+                                    {formatTime(event.end_time)}
+                                </td>
+                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                    <span
+                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium
+                                            ${
+                                                event.date +
+                                                    " " +
+                                                    event.end_time >
+                                                date.getCurrentDateAndTime()
+                                                    ? "bg-green-100 text-green-800"
+                                                    : "bg-red-100 text-red-900"
+                                            }`}
                                     >
-                                        Date & Time
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="py-3 text-xs uppercase tracking-wider"
+                                        {event.date + " " + event.end_time >
+                                        date.getCurrentDateAndTime()
+                                            ? "Upcoming"
+                                            : "Ended"}
+                                    </span>
+                                </td>
+                                <td className="py-3 whitespace-nowrap font-medium">
+                                    <button
+                                        onClick={() =>
+                                            handleOpenDetailsModal(event)
+                                        }
+                                        className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
                                     >
-                                        Event Name
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="py-3 text-xs uppercase tracking-wider"
-                                    >
-                                        Event Location
-                                    </th>
-                                    {/* <th
-                                        scope="col"
-                                        className="py-3 text-xs uppercase tracking-wider"
-                                    >
-                                        Message
-                                    </th> */}
-                                    <th
-                                        scope="col"
-                                        className="py-3 text-xs uppercase tracking-wider"
-                                    >
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {currentItems.map((event) => (
-                                    <tr
-                                        key={event.id}
-                                        className="hover:bg-gray-50 transition-colors text-center text-xs"
-                                    >
-                                        <td className="py-3 whitespace-nowrap text-gray-500">
-                                            {formatDateTime(
-                                                event.event_date_time
-                                            )}
-                                        </td>
-                                        <td className="py-3 whitespace-nowrap text-gray-500">
-                                            {event.event_name}
-                                        </td>
-                                        <td className="py-3 whitespace-nowrap text-gray-500">
-                                            {event.event_location}
-                                        </td>
-                                        <td className="py-3 whitespace-nowrap font-medium">
-                                            {event.editable ? (
-                                                <button
-                                                    onClick={() =>
-                                                        handleEdit(application)
-                                                    }
-                                                    className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        className="h-4 w-4 mr-1"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke="currentColor"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth={2}
-                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                                        />
-                                                    </svg>
-                                                    Edit
-                                                </button>
-                                            ) : (
-                                                <span className="text-gray-400 italic text-xs">
-                                                    Edit not available for this
-                                                    event
-                                                </span>
-                                            )}
-                                            <button
-                                                onClick={() =>
-                                                    handleEdit(application)
-                                                }
-                                                className="inline-flex items-center text-red-600 hover:text-red-900 mr-3"
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-4 w-4 mr-1"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7"
-                                                    />
-                                                </svg>
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="w-4 h-4 text-blue-600"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                            />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </Table>
 
-                        {/* Empty state */}
-                        {currentItems.length === 0 && (
-                            <div className="text-center py-10">
-                                <svg
-                                    className="mx-auto h-12 w-12 text-gray-400"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                    />
-                                </svg>
-                                <p className="mt-2 text-gray-500">
-                                    No events found. Try adjusting your search
-                                    or create a new event.
-                                </p>
-                            </div>
-                        )}
-                    </div>
+                    {/* Empty state */}
+                    {currentItems.length === 0 && (
+                        <EmptyState message="No events found." />
+                    )}
+                </div>
 
+                <div className="flex justify-between items-center mt-6">
                     {/* Pagination */}
-                    {fetchEvents.length > 0 && (
-                        <div className="flex justify-between items-center mt-6">
-                            <div className="text-sm text-gray-600">
-                                Showing {indexOfFirstItem + 1}-
-                                {Math.min(
-                                    indexOfLastItem,
-                                    filteredEvents.length
-                                )}{" "}
-                                of {filteredEvents.length} events
-                            </div>
-                            <div className="flex space-x-2">
-                                <button
-                                    onClick={goToPreviousPage}
-                                    disabled={currentPage === 1}
-                                    className={`px-4 py-2 rounded-sm ${
-                                        currentPage === 1
-                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                            : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                                    }`}
-                                >
-                                    Previous
-                                </button>
-                                <button
-                                    onClick={goToNextPage}
-                                    disabled={
-                                        currentPage === totalPages ||
-                                        totalPages === 0
-                                    }
-                                    className={`px-4 py-2 rounded-sm ${
-                                        currentPage === totalPages ||
-                                        totalPages === 0
-                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                            : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                                    }`}
-                                >
-                                    Next
-                                </button>
-                            </div>
+                    {events.length > 0 && (
+                        <div className="flex justify-end gap-4 items-center">
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPrevious={goToPreviousPage}
+                                onNext={goToNextPage}
+                                indexOfFirstItem={indexOfFirstItem}
+                                indexOfLastItem={indexOfLastItem}
+                                totalItems={filteredEvents.length}
+                                itemLabel={"events"}
+                            />
                         </div>
                     )}
                 </div>
             </div>
+
+            <AddEventFormModal
+                isOpen={isOpenFormModal}
+                onClose={setIsOpenFormModal}
+                onSuccess={fetchEvents}
+            />
+
+            <EventDetailsModal
+                isOpen={isOpenEventDetailsModal}
+                onClose={setIsOpenEventDetailsModal}
+                event={selectedEvent}
+                isStaff={true}
+            />
         </div>
     );
 }

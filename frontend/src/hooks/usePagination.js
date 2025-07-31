@@ -8,6 +8,8 @@ export const usePagination = (items, itemsPerPage = 5) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
+    console.log("Items: ", items);
+
     const currentItems = useMemo(() => 
         items.slice(indexOfFirstItem, indexOfLastItem),
         [items, indexOfFirstItem, indexOfLastItem]
@@ -30,11 +32,13 @@ export const usePagination = (items, itemsPerPage = 5) => {
 
     return {
         currentPage,
+        setCurrentPage,
         totalPages,
         currentItems,
         indexOfFirstItem,
         indexOfLastItem,
         numberOfItemsPerPage,
+        setNumberOfItemsPerPage,
         goToPreviousPage,
         goToNextPage,
         resetPagination,

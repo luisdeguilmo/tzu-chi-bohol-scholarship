@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import BASE_URL from "../config";
 
 export const useApplicantData = () => {
     const [applicantData, setApplicantData] = useState(null);
@@ -11,7 +12,7 @@ export const useApplicantData = () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                `http://localhost:8000/app/views/applications.php?applicationId=${id}`
+                `${BASE_URL}app/views/applications.php?applicationId=${id}`
             );
             setApplicantData(response.data || []);
             console.log(response.data);

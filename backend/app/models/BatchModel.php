@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+date_default_timezone_set('Asia/Manila');
+
 use Config\Database;
 
 class BatchModel {
@@ -10,30 +12,13 @@ class BatchModel {
     public $id;
     public $batch_name;
     public $schedule;
+    private $currentYear;
     private $pdo;
 
     public function __construct() {
         $db = new Database();
         $this->pdo = $db->getConnection();
-    }
-
-    // public function create($file_data, $application_id) {
-    //     $query = "INSERT INTO " . $this->table_name . " 
-    //               SET batch_name = :batch_name";
-
-    //     $stmt = $this->pdo->prepare($query);
-
-    //     // Sanitize inputs
-    //     $this->batch_name = htmlspecialchars(strip_tags($file_data['batch_name']));
-
-    //     // Bind values
-    //     $stmt->bindParam(":batch_name", $this->batch_name);
-
-    //     return $stmt->execute();
-    // }
-
-    public function addColumn() {
-        
+        $this->currentYear = 2024;
     }
  
     public function getBatches() {
@@ -65,7 +50,7 @@ class BatchModel {
 
     public function createBatch($data) {
         $query = "INSERT INTO " . $this->table_name . "
-                  SET batch_name = :batch_name";
+                  SET batch_name = :batch_name, created_at = NOW()";
         
         $stmt = $this->pdo->prepare($query);
         

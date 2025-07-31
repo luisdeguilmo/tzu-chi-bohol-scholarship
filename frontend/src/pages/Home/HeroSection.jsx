@@ -79,21 +79,21 @@ function HeroSection() {
                     <div className="mt-5 flex justify-center gap-5">
                         <button
                             onClick={handleClick}
-                            className="w-28 p-2 text-white bg-green-600 rounded-sm"
+                            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                         >
                             Apply Now
                         </button>
                         <button
                             onClick={() => navigate("/login", { state: scholar })}
                             // onClick={() => navigate("/login", { state: userType })}
-                            className="w-28 p-2 border border-green-500 rounded-sm"
+                            className="w-28 p-2 border border-green-500 rounded-lg"
                         >
                             Login
                         </button>
                     </div>
                 </div>
                 <div className="mt-10">
-                    <p className="text-center text-lg">
+                    <p className="text-center text-sm md:text-lg">
                         {announcementMessage}
                     </p>
                 </div>

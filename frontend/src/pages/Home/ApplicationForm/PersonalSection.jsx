@@ -13,7 +13,7 @@ const PersonalSection = ({
     const [errors, setErrors] = useState({});
 
     return (
-        <form className="w-[75%] sm:w-[80%] lg:w-[65%] mx-auto">
+        <form className="w-[85%] sm:w-[80%] xl:w-[70%] mx-auto">
             <h2 className="pb-6 font-bold">Personal Information</h2>
             <FormFields
                 fields={formConfig[FORM_SECTIONS.PERSONAL]}

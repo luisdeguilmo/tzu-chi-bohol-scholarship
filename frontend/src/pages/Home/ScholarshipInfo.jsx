@@ -5,8 +5,8 @@ function ScholarshipInfo() {
     return (
         <section className="px-5 py-8 bg-white">
             <div className="mb-6 mx-auto w-max flex items-center gap-2">
-                <Award className="text-green-600" size={32} />
-                <h2 className="text-3xl font-bold text-gray-800">
+                <Award className="text-green-600" />
+                <h2 className="text-xl md:text-2xl font-bold text-gray-800">
                     Scholarship Criteria
                 </h2>
             </div>

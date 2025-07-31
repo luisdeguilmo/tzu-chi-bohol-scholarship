@@ -7,10 +7,10 @@ function Footer() {
                 <div className="flex items-center w-fit mx-auto">
                     <img className="w-12" src={Logo} alt="Tzu Chi Logo" />
                     <div>
-                        <h2 className="text-2xl font-bold">Tzu Chi Foundation Bohol</h2>
+                        <h2 className="text-xl font-bold">Tzu Chi Foundation Bohol</h2>
                     </div>
                 </div>
-                <p className="text-center text-gray-300">
+                <p className="text-center text-sm text-gray-300">
                     The hope of parents are with children and children's hopes
                     are in education.
                 </p>
@@ -18,7 +18,7 @@ function Footer() {
             <div className="w-[80%]">
                 <div className="text-center">
                     <h4 className="text-lg pt-4 pb-1 font-semibold">Contact Us</h4>
-                    <ul className="flex flex-col items-center text-gray-300">
+                    <ul className="flex flex-col items-center text-sm text-gray-300">
                         <li className="flex items-center gap-2 text">
                             {/* <span className="material-symbols-outlined">
                                 call
@@ -84,7 +84,7 @@ function Footer() {
             </div>
             <div className="border-t-[1px] h-1 w-[90%]"></div>
             <div>
-                <p className="pb-8">
+                <p className="pb-8 text-xs md:text-sm">
                     &copy; {new Date().getFullYear()} Tzu Chi Foundation Bohol. All
                     Rights Reserved.
                 </p>

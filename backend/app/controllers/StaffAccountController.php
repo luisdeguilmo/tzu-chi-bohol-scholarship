@@ -1,6 +1,8 @@
 <?php 
 namespace App\Controllers;
 
+date_default_timezone_set('Asia/Manila');
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
@@ -110,8 +112,10 @@ class StaffAccountController {
             
             // Process procedure data
             $criteria = new StaffAccountModel();
+
+            $today = date("Y-m-d H:i:s"); 
             
-            if (!$criteria->createStaff($data['staff'])) {
+            if (!$criteria->createAccount($data['staff'], $today)) {
                 throw new \Exception("Failed to save staff information");
             }
             

@@ -21,6 +21,7 @@ const NavigationButtons = ({
     isLast,
     prevStep,
     nextStep,
+    disabled,
     handleSubmit,
     handleRenewSubmit,
     formData,
@@ -85,7 +86,7 @@ const NavigationButtons = ({
         <div className="mt-4">
             {!isFirst && (
                 <button
-                    className="mr-2 px-5 py-[6px] bg-gray-200 text-gray-600 rounded-md"
+                    className="mr-2 px-5 py-[6px] bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm rounded-md"
                     onClick={prevStep}
                 >
                     Previous
@@ -94,15 +95,16 @@ const NavigationButtons = ({
 
             {!isLast ? (
                 <button
-                    className="px-5 py-[6px] bg-green-500 text-white rounded-md shadow-lg"
+                    className="px-5 py-[6px] bg-green-600 hover:bg-green-700 text-white text-sm rounded-md shadow-lg"
                     onClick={checkAndProceed}
                 >
                     Next
                 </button>
             ) : (
                 <button
-                    className="px-5 py-[6px] bg-green-500 text-white rounded-md shadow-lg"
+                    className={`px-5 py-[6px] ${disabled ? "bg-green-400" : "bg-green-600 hover:bg-green-700"} text-white text-sm rounded-md shadow-lg`}
                     onClick={checkAndProceed}
+                    disabled={disabled}
                 >
                     Submit
                 </button>

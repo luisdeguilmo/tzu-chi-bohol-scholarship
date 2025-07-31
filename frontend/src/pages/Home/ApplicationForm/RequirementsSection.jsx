@@ -6,6 +6,7 @@ const RequirementsSection = ({
     formData,
     setFormData,
     prevStep,
+    nextStep,
     handleSubmit,
 }) => {
     // Function to update the files-related data in the main form state
@@ -28,9 +29,9 @@ const RequirementsSection = ({
             />
             <NavigationButtons
                 isFirst={false}
-                isLast={true}
+                isLast={false}
                 prevStep={prevStep}
-                handleSubmit={handleSubmit}
+                nextStep={nextStep}
                 sections={null}
             />
         </div>

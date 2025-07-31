@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import BASE_URL from "../config";
 
 export const useApplications = (status) => {
     const [applications, setApplications] = useState([]);
@@ -10,7 +11,7 @@ export const useApplications = (status) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/applicants.php?status=${status}`
+                `${BASE_URL}app/views/applicants.php?application_status=pending&status=${status}`
             );
             setApplications(response.data.personalInfo || []);
             setLoading(false);
@@ -22,7 +23,9 @@ export const useApplications = (status) => {
     };
 
     useEffect(() => {
-        fetchApplications();
+        if (status) {
+            fetchApplications();
+        }
     }, [status]);
 
     return { applications, loading, error, fetchApplications };

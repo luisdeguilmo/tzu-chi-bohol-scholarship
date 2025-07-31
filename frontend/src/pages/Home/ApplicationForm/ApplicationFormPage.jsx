@@ -11,6 +11,8 @@ import RequirementsSection from "./RequirementsSection";
 import ProgressIndicator from "./ProgressIndicator";
 import formConfig from "../../../constant/application/formConfig";
 import FORM_SECTIONS from "../../../constant/application/formSections";
+import ReviewSection from "./ReviewSection";
+import BASE_URL from "../../../config";
 
 const generateInitialState = (fieldsConfig) => {
     const initialState = {};
@@ -21,7 +23,7 @@ const generateInitialState = (fieldsConfig) => {
     return initialState;
 };
 
-function ApplicationForm({ includeRequirements = true }) {
+function ApplicationForm({ includeRequirements = true, userId }) {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
     const [loading, setLoading] = useState(false); // For showing a loading spinner or message
@@ -42,6 +44,10 @@ function ApplicationForm({ includeRequirements = true }) {
             section: FORM_SECTIONS.REQUIREMENTS,
         });
     }
+
+    steps.push({
+        label: "Review",
+    });
 
     // Total number of steps in the form
     const totalSteps = steps.length;
@@ -94,9 +100,43 @@ function ApplicationForm({ includeRequirements = true }) {
         setCurrentStep((prev) => Math.max(prev - 1, 1));
     };
 
-    const handleRenewSubmit = (e) => {
+    const handleRenewSubmit = async (e) => {
         e.preventDefault();
-        // setFormData(formData.application_info.status = 'Old');
+        formData.application_info.status = "Old";
+        formData.application_info.scholar_id = 8979061;
+
+        try {
+            const formDataToSend = new FormData();
+
+            const applicationData = { ...formData };
+
+            formDataToSend.append(
+                "applicationData",
+                JSON.stringify(applicationData)
+            );
+
+            console.log(formDataToSend);
+
+            const response = await axios.post(
+                `${BASE_URL}app/views/renewal.php`,
+                formDataToSend,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
+            console.log("Server response:", response.data);
+            toast.success("Application submitted successfully!");
+            setLoading(false);
+            setTimeout(() => {
+                navigate("/scholar/renew");
+            }, 1000);
+        } catch (error) {
+            console.log("Error: ", error);
+            alert("Failed: ", error);
+        }
         console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
     };
 
@@ -135,7 +175,7 @@ function ApplicationForm({ includeRequirements = true }) {
                         })
                     );
                 }
-                
+
                 // Append files one by one
                 if (
                     formData.uploaded_files &&
@@ -157,7 +197,7 @@ function ApplicationForm({ includeRequirements = true }) {
                 }
 
                 const response = await axios.post(
-                    "http://localhost:8000/backend/api/applications",
+                    `${BASE_URL}backend/api/applications`,
                     formDataToSend,
                     {
                         headers: {
@@ -233,8 +273,8 @@ function ApplicationForm({ includeRequirements = true }) {
                             handleInputChange={handleInputChange}
                             prevStep={prevStep}
                             nextStep={nextStep}
-                            handleRenewSubmit={handleRenewSubmit}
-                            isLast={true}
+                            // handleRenewSubmit={handleRenewSubmit}
+                            // isLast={true}
                         />
                     );
                 }
@@ -246,11 +286,25 @@ function ApplicationForm({ includeRequirements = true }) {
                             formData={formData}
                             setFormData={setFormData}
                             prevStep={prevStep}
-                            handleSubmit={handleSubmit}
+                            nextStep={nextStep}
+                            // handleSubmit={handleSubmit}
                         />
                     );
                 }
-                return null;
+            case 6:
+                return (
+                    <ReviewSection
+                        formData={formData}
+                        prevStep={prevStep}
+                        nextStep={nextStep}
+                        handleSubmit={
+                            !includeRequirements
+                                ? handleRenewSubmit
+                                : handleSubmit
+                        }
+                        isLast={true}
+                    />
+                );
             default:
                 return null;
         }
@@ -258,8 +312,6 @@ function ApplicationForm({ includeRequirements = true }) {
 
     return (
         <div className="flex flex-col items-center">
-            {/* Add Toaster component for notifications */}
-
             <ProgressIndicator steps={steps} currentStep={currentStep} />
             {renderStep()}
         </div>
@@ -270,8 +322,8 @@ function NewApplicationForm() {
     return <ApplicationForm includeRequirements={true} />;
 }
 
-function RenewalApplicationForm() {
-    return <ApplicationForm includeRequirements={false} />;
+function RenewalApplicationForm(userId) {
+    return <ApplicationForm includeRequirements={false} userId={userId} />;
 }
 
 export { ApplicationForm, NewApplicationForm, RenewalApplicationForm };

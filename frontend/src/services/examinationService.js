@@ -1,21 +1,21 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { sendExaminationScheduleEmail } from "./emailService";
-import { useEffect } from "react";
+import { getSchedule } from "../utils/getSchedule";
+import BASE_URL from "../config";
 
 export const sendExaminationSchedule = async (
-    applicationId,
-    applicationInfo,
-    personalInfo,
-    dateAndTime,
+    applicant,
+    batches, 
+    selectedBatchInBatches,
     setLoading,
     setError
 ) => {
     if (applicationInfo) {
         const emailSent = await sendExaminationScheduleEmail(
-            applicationInfo,
-            personalInfo,
-            dateAndTime
+            applicant,
+            batches, 
+    selectedBatchInBatches,
         );
         toast[emailSent ? "success" : "warning"](
             emailSent
@@ -35,7 +35,7 @@ export const proceedToInterview = async (ids) => {
     try {
         // setLoading(true);
         const response = await axios.post(
-            "http://localhost:8000/app/views/initial-interview.php",
+            `${BASE_URL}app/views/initial-interview.php`,
             {
                 applicantIds: ids,
                 application_status: "Initial Interview",

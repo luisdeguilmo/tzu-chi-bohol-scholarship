@@ -1,3 +1,4 @@
+import { Upload } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -7,36 +8,53 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
     // Keep track of file previews separately for display purposes
     const [filePreviews, setFilePreviews] = useState([]);
     // Separate state for 2x2 picture
-    const [pictureFile, setPictureFile] = useState(formData.picture_file || null);
+    const [pictureFile, setPictureFile] = useState(
+        formData.picture_file || null
+    );
     const [picturePreview, setPicturePreview] = useState(null);
 
     // Dropzone for 2X2 Picture (single image only)
-    const { getRootProps: getPictureRootProps, getInputProps: getPictureInputProps } = useDropzone({
+    const {
+        getRootProps: getPictureRootProps,
+        getInputProps: getPictureInputProps,
+    } = useDropzone({
         accept: {
-            'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.bmp', '.webp', '.heic', '.heif']
+            "image/*": [
+                ".jpeg",
+                ".jpg",
+                ".png",
+                ".gif",
+                ".bmp",
+                ".webp",
+                ".heic",
+                ".heif",
+            ],
         },
         maxFiles: 1,
         onDrop: (acceptedFiles) => {
             if (acceptedFiles.length > 0) {
                 const file = acceptedFiles[0];
-                
+
                 // Clean up previous preview
                 if (picturePreview) {
                     URL.revokeObjectURL(picturePreview);
                 }
-                
+
                 // Format the file
                 const formattedFile = {
-                    filename: file.name,
+                    filename: file.name
+                        .replaceAll("(", "")
+                        .replaceAll(")", "")
+                        .replaceAll(" ", "_"),
                     fileObj: file,
                 };
-                
+
                 setPictureFile(formattedFile);
-                
+
                 // Create preview
                 const preview = URL.createObjectURL(file);
                 setPicturePreview({
-                    name: file.name,
+                    name: file.name.replaceAll(" ", "_"),
                     size: file.size,
                     type: file.type,
                     preview: preview,
@@ -46,7 +64,10 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
     });
 
     // Dropzone for Other Requirements (multiple files)
-    const { getRootProps: getOtherRootProps, getInputProps: getOtherInputProps } = useDropzone({
+    const {
+        getRootProps: getOtherRootProps,
+        getInputProps: getOtherInputProps,
+    } = useDropzone({
         accept: "image/*, .pdf, .doc, .docx",
         onDrop: (acceptedFiles) => {
             // Format the files with just the filename property
@@ -118,30 +139,23 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
 
     return (
         <>
-            <h2 className="font-bold mb-4">2X2 Picture</h2>
+            <h2 className="font-bold text-sm text-gray-700 mb-4">
+                1x1 Picture
+            </h2>
             <div className="flex flex-col items-center border-2 border-dashed rounded-lg w-full">
                 <div
                     {...getPictureRootProps()}
                     className="w-full p-2 text-center rounded-lg cursor-pointer bg-white hover:bg-gray-50"
                 >
                     <input {...getPictureInputProps()} />
-                    <p className="text-gray-500">
-                        {pictureFile ? 'Click to replace image' : 'Drag & drop your 2x2 picture here, or click to select'}
+                    <p className="text-gray-500 text-xs">
+                        {pictureFile
+                            ? "Click to replace image"
+                            : "Drag & drop your 2x2 picture here, or click to select"}
                     </p>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mt-2 mx-auto text-black"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v4h16v-4"
-                        />
-                    </svg>
+                    <span className="mx-auto">
+                        <Upload className="text-gray-700" />
+                    </span>
                 </div>
 
                 {picturePreview && (
@@ -181,30 +195,21 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
                 )}
             </div>
 
-            <h2 className="font-bold mt-14 mb-4">Other Requirements</h2>
+            <h2 className="font-bold text-sm text-gray-700 mt-14 mb-4">
+                Other Requirements
+            </h2>
             <div className="flex flex-col items-center border-2 border-dashed rounded-lg w-full">
                 <div
                     {...getOtherRootProps()}
                     className="w-full p-2 text-center rounded-lg cursor-pointer bg-white hover:bg-gray-50"
                 >
                     <input {...getOtherInputProps()} />
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 text-xs">
                         Drag & drop files here, or click to select
                     </p>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mt-2 mx-auto text-black"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v4h16v-4"
-                        />
-                    </svg>
+                    <span className="mx-auto">
+                        <Upload className="text-gray-700" />
+                    </span>
                 </div>
 
                 {filePreviews.length > 0 && (

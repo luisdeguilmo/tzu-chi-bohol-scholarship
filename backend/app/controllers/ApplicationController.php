@@ -21,6 +21,7 @@ use App\Models\ScholarModel;
 use App\Models\AssistanceModel;
 use App\Models\RequirementModel;
 use App\Models\ProfilePictureModel; // Add this new model
+use App\Models\RequirementsModel;
 
 class ApplicationController {
 
@@ -180,7 +181,6 @@ class ApplicationController {
         }
     }
 
-
     public function getProfilePicture64($application_id) {
     try {
         $profilePictureModel = new ProfilePictureModel();
@@ -280,6 +280,121 @@ class ApplicationController {
             ]);
         }
     }
+
+    public function getRequirements64($application_id) {
+    try {
+        $requirementsModel = new RequirementsModel(); // Adjust class name as needed
+        $requirements_urls = $requirementsModel->getFileUrlByApplicationId($application_id);
+
+        
+        if (!$requirements_urls) {
+            http_response_code(404);
+            echo json_encode([
+                "success" => false,
+                "message" => "Requirements not found"
+            ]);
+            return;
+        }
+        
+        $requirements_base64 = [];
+        $mimeTypes = [
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp'
+        ];
+        
+        // Process each URL in the array
+        foreach ($requirements_urls as $index => $requirement_url) {
+            try {
+                // Convert URL to file path
+                $parsedUrl = parse_url($requirement_url);
+                $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
+                
+                // Validate file exists and is readable
+                if (!file_exists($filePath) || !is_readable($filePath)) {
+                    $requirements_base64[] = [
+                        "index" => $index,
+                        "success" => false,
+                        "message" => "Requirement file not accessible",
+                        "url" => $requirement_url
+                    ];
+                    continue;
+                }
+                
+                // Read file and convert to base64
+                $imageData = file_get_contents($filePath);
+                if ($imageData === false) {
+                    $requirements_base64[] = [
+                        "index" => $index,
+                        "success" => false,
+                        "message" => "Failed to read requirement file",
+                        "url" => $requirement_url
+                    ];
+                    continue;
+                }
+                
+                // Get MIME type from file extension
+                $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                $mimeType = $mimeTypes[$extension] ?? null;
+                
+                // Validate it's a supported image type
+                if (!$mimeType) {
+                    $requirements_base64[] = [
+                        "index" => $index,
+                        "success" => false,
+                        "message" => "Unsupported file type: " . $extension,
+                        "url" => $requirement_url
+                    ];
+                    continue;
+                }
+                
+                // Convert to base64
+                $base64 = base64_encode($imageData);
+                $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
+                
+                $requirements_base64[] = [
+                    "index" => $index,
+                    "success" => true,
+                    "requirement_base64" => $base64Image,
+                    "base64" => $base64Image, // Alternative key for compatibility
+                    "mime_type" => $mimeType,
+                    "url" => $requirement_url
+                ];
+                
+            } catch (\Exception $fileException) {
+                error_log("Error processing requirement file {$index}: " . $fileException->getMessage());
+                $requirements_base64[] = [
+                    "index" => $index,
+                    "success" => false,
+                    "message" => "Error processing file: " . $fileException->getMessage(),
+                    "url" => $requirement_url
+                ];
+            }
+        }
+        
+        // Check if any files were successfully processed
+        // $successfulFiles = array_filter($requirements_base64, function($item) {
+        //     return $item['success'] === true;
+        // });
+        
+        echo json_encode([
+            "success" => true,
+            "total_files" => count($requirements_urls),
+            // "successful_files" => count($successfulFiles),
+            "requirements" => $requirements_base64
+        ]);
+        
+    } catch (\Exception $e) {
+        error_log("Requirements error: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            "success" => false,
+            "message" => "Internal server error: " . $e->getMessage()
+        ]);
+    }
+}
 
 
     private function handleProfilePictureUpload($file, $application_id) {

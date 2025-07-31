@@ -1,13 +1,9 @@
 import { convertImageToBase64 } from "./convertImageToBase64";
-import { getProfilePictureBase64 } from "./getProfilePictureBase64";
+import { getProfilePicture } from "./getProfilePicture";
+import { getRequirements } from "./getRequirements";
 import FormLogo from "/src/assets/form_logo.png";
 
-export const generatePDF = async (
-    action,
-    applicationId,
-    applicantData
-) => {
-
+export const generatePDF = async (action, applicationId, applicantData) => {
     if (!applicantData) {
         alert("No student data available");
         return;
@@ -27,7 +23,7 @@ export const generatePDF = async (
                 "Getting profile picture for student ID:",
                 applicationId
             );
-            profilePictureBase64 = await getProfilePictureBase64(applicationId);
+            profilePictureBase64 = await getProfilePicture(applicationId);
 
             if (!profilePictureBase64) {
                 console.warn(
@@ -36,8 +32,33 @@ export const generatePDF = async (
             }
         }
 
-        console.log("Profile picture base64:", profilePictureBase64);
-        console.log("Logo base64:", logoBase64);
+        let requirementsBase64 = null;
+        if (applicationId) {
+            console.log("Getting requirements for student ID:", applicationId);
+            requirementsBase64 = await getRequirements(applicationId);
+
+            if (!requirementsBase64) {
+                console.warn(
+                    "Failed to get requirements, PDF will be generated without them"
+                );
+            }
+        }
+
+        console.log("Profile picture base64:", requirementsBase64);
+
+        const requirementImages = [];
+        if (requirementsBase64 && Array.isArray(requirementsBase64)) {
+            requirementsBase64.forEach((requirement, index) => {
+                if (requirement.success && requirement.base64) {
+                    requirementImages.push({
+                        image: requirement.base64,
+                        width: 500, // scale down proportionally to fit within 500x300
+                        alignment: "center",
+                        margin: [0, 10, 0, 10], // optional spacing between images
+                    });
+                }
+            });
+        }
 
         // Extract data for easier access
         const {
@@ -46,7 +67,6 @@ export const generatePDF = async (
             educationalBackground,
             familyInfo,
             otherAssistance,
-            requirements,
         } = applicantData;
 
         const content = [
@@ -945,6 +965,18 @@ export const generatePDF = async (
                         ]),
                     ],
                 },
+            },
+            {
+                pageBreak: "before", 
+                stack: [
+                    {
+                        text: "Requirements",
+                        fontSize: 16,
+                        alignment: "center",
+                        margin: [0, 0, 0, 10],
+                    },
+                    ...requirementImages,
+                ],
             },
         ];
 

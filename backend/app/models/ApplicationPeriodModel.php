@@ -119,35 +119,12 @@ class ApplicationPeriodModel {
         return $stmt->fetchColumn() > 0;
     }
     
-    // private function updateAllApplicationPeriodStatuses() {
-    //     $query = "SELECT id, start_date, end_date FROM " . $this->table_name;
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->execute();
-    //     $periods = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
-    //     foreach ($periods as $period) {
-    //         $status = $this->calculateStatus($period['start_date'], $period['end_date']);
-            
-    //         $updateQuery = "UPDATE " . $this->table_name . "
-    //                        SET status = :status
-    //                        WHERE id = :id";
-    //         $updateStmt = $this->pdo->prepare($updateQuery);
-    //         $updateStmt->bindParam(":status", $status);
-    //         $updateStmt->bindParam(":id", $period['id']);
-    //         $updateStmt->execute();
-    //     }
-    // }
-    
-    // private function calculateStatus($startDate, $endDate) {
-    //     $currentDate = date('Y-m-d');
-        
-    //     if ($currentDate < $startDate) {
-    //         return "Pending";
-    //     } elseif ($currentDate >= $startDate && $currentDate <= $endDate) {
-    //         return "Active";
-    //     } else {
-    //         return "Closed";
-    //     }
-    // }
+    public function deleteApplicationPeriod($id) {
+        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":id", $id, \PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
 ?>

@@ -6,13 +6,13 @@ function TopBar() {
             {/* <h1 className="w-full ml-[30px] text-gray-800 text-lg font-semibold">
                 Dashboard
             </h1> */}
-            <div className="flex justify-center items-center ml-7">
+            <div className="flex justify-center items-center ml-10">
                 <img
-                    className="w-[70px] mx-auto"
+                    className="w-[60px] mx-auto"
                     src={Logo}
                     alt="Tzu Chi Logo"
                 />
-                <div className="flex flex-col p-1 ml-[-6px]">
+                <div className="flex flex-col p-1 ml-[6px]">
                     <h2 className="text-[14px] font-bold whitespace-nowrap">
                         Tzu Chi Foundation
                     </h2>

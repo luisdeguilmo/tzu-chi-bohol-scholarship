@@ -149,11 +149,11 @@ class ProcedureController {
             }
             
             // Check if ID is provided
-            if (!isset($data['id'])) {
+            if (!isset($data['procedure']['id'])) {
                 throw new \Exception("ID is required for update");
             }
             
-            $id = $data['id'];
+            $id = $data['procedure']['id'];
             
             // Process procedure data
             $criteria = new ScholarshipCriteriaModel();
