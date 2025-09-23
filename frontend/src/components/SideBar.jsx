@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
-import { AlignJustify, ChevronDown, ChevronUp } from "lucide-react";
+import { AlignJustify, ChevronDown, ChevronUp, X } from "lucide-react";
 
 function SideBar({ items }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -25,9 +25,22 @@ function SideBar({ items }) {
     };
 
     const handleLogout = () => {
-        toast.success("Logged out successfully");
-        logout();
-        navigate("/login");
+        try {
+            const userType = user.type || "scholar";
+            toast.success("Logged out successfully");
+            logout();
+
+            if (userType === "scholar") {
+                navigate("/login/scholar");
+            } else if (userType === "staff") {
+                navigate("/login/staff");
+            } else if (userType === "admin") {
+                navigate("/login/admin");
+            }
+        } catch (error) {
+            console.error("Logout error:", error);
+            toast.error("Failed to log out. Please try again.");
+        }
     };
 
     const handleClick = (path, tab) => {
@@ -53,7 +66,7 @@ function SideBar({ items }) {
             {isOpen ? (
                 <span
                     onClick={() => setIsOpen(false)}
-                    className="hover:bg-gray-200 p-2 rounded-lg cursor-pointer absolute top-2.5 left-[11px] z-10"
+                    className="hover:bg-gray-100 p-2 rounded-lg cursor-pointer absolute top-2 left-[11px] z-10"
                     title="Close sidebar"
                 >
                     <AlignJustify className="w-6 h-6 text-slate-500" />
@@ -61,7 +74,7 @@ function SideBar({ items }) {
             ) : (
                 <span
                     onClick={() => setIsOpen(true)}
-                    className="material-symbols-outlined hover:bg-gray-200 p-2 rounded-lg cursor-pointer absolute top-2.5 left-[11px] z-20"
+                    className="material-symbols-outlined hover:bg-gray-100 p-2 rounded-lg cursor-pointer absolute top-2 left-[11px] z-20"
                     title="Open sidebar"
                 >
                     <AlignJustify className="w-6 h-6 text-slate-500" />
@@ -69,21 +82,21 @@ function SideBar({ items }) {
             )}
 
             <nav
-                className={`group lg:h-[91.5vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[300px] lg:hover:items-stretch z-20 overflow-hidden transition-all duration-200 ${
-                    isOpen ? "lg:w-[300px] w-[300px]" : "w-[0] lg:w-[70px]"
+                className={`group lg:h-[91.5vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[320px] lg:hover:items-stretch z-20 overflow-hidden transition-all duration-200 ${
+                    isOpen ? "lg:w-[320px] w-[300px]" : "w-[0] lg:w-[70px]"
                 } ${!isOpen && "items-center"}`}
             >
                 {isOpen && (
-                    <span
+                    <X
                         onClick={() => setIsOpen(false)}
-                        className="material-symbols-outlined hover:bg-gray-200 p-2 rounded-lg cursor-pointer absolute z-20 top-2 right-2 lg:hidden"
+                        className="w-10 h-10 text-gray-600 hover:bg-gray-100 p-2 rounded-lg cursor-pointer absolute z-20 top-2 right-3.5 lg:hidden"
                         title="Close sidebar"
                     >
                         close
-                    </span>
+                    </X>
                 )}
 
-                <ul className="h-[100%] mt-8 lg:mt-0 p-4 flex flex-col gap-1 text-[.9rem] text-gray-900">
+                <ul className="h-[100%] mt-10 lg:mt-0 p-4 flex flex-col gap-1 text-[.9rem] text-gray-900">
                     {items.map((item, index) => (
                         <li key={index} className={`w-full ${item.style}`}>
                             {item.subItems ? (

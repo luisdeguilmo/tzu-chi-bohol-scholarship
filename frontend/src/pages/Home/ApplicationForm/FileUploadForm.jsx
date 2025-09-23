@@ -13,6 +13,37 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
     );
     const [picturePreview, setPicturePreview] = useState(null);
 
+    console.log(filePreviews);
+
+    useEffect(() => {
+        if (formData?.picture_file?.fileObj) {
+            const preview = URL.createObjectURL(formData.picture_file.fileObj);
+
+            setPicturePreview({
+                name: formData.picture_file.fileObj.name.replaceAll(" ", "_"),
+                size: formData.picture_file.size,
+                type: formData.picture_file.fileObj.type,
+                preview: preview,
+            });
+        }
+
+        if (formData?.uploaded_files.length > 0) {
+            const newPrevious = [];
+
+            formData?.uploaded_files.forEach((item) => {
+                const preview = URL.createObjectURL(item.fileObj);
+                newPrevious.push({
+                    name: item.fileObj.name.replaceAll(" ", "_"),
+                    size: item.fileObj.size,
+                    type: item.fileObj.type,
+                    preview: preview,
+                });
+            });
+
+            setFilePreviews([...filePreviews, ...newPrevious]);
+        }
+    }, []);
+
     // Dropzone for 2X2 Picture (single image only)
     const {
         getRootProps: getPictureRootProps,
@@ -137,6 +168,14 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
         setPicturePreview(null);
     };
 
+    console.log(
+        "---------------------------------------------------------------------"
+    );
+    console.log(formData);
+    console.log(
+        "---------------------------------------------------------------------"
+    );
+
     return (
         <>
             <h2 className="font-bold text-sm text-gray-700 mb-4">
@@ -147,28 +186,32 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
                     {...getPictureRootProps()}
                     className="w-full p-2 text-center rounded-lg cursor-pointer bg-white hover:bg-gray-50"
                 >
-                    <input {...getPictureInputProps()} />
+                    <input
+                        {...getPictureInputProps()}
+                        disabled={formData.picture_file}
+                    />
                     <p className="text-gray-500 text-xs">
                         {pictureFile
                             ? "Click to replace image"
                             : "Drag & drop your 2x2 picture here, or click to select"}
                     </p>
-                    <span className="mx-auto">
+                    <span className="w-[max-content] pt-3 block mx-auto">
                         <Upload className="text-gray-700" />
                     </span>
                 </div>
 
                 {picturePreview && (
-                    <div className="mt-4 w-full">
+                    <div className="mt-2 w-full">
                         <div className="p-2 bg-white rounded-lg shadow flex justify-between items-center">
                             <img
                                 src={picturePreview.preview}
                                 alt={picturePreview.name}
                                 className="w-12 h-12 object-cover rounded mr-2"
                             />
-                            <span className="text-sm text-gray-700">
-                                {picturePreview.name} (
-                                {(picturePreview.size / 1024).toFixed(2)} KB)
+                            <span className="text-xs text-gray-700">
+                                {picturePreview.name}
+                                {/* (
+                                {(picturePreview.size / 1024).toFixed(2)} KB) */}
                             </span>
                             <button
                                 onClick={removePicture}
@@ -207,13 +250,13 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
                     <p className="text-gray-500 text-xs">
                         Drag & drop files here, or click to select
                     </p>
-                    <span className="mx-auto">
+                    <span className="w-[max-content] pt-3 block mx-auto">
                         <Upload className="text-gray-700" />
                     </span>
                 </div>
 
                 {filePreviews.length > 0 && (
-                    <ul className="mt-4 w-full text-sm text-gray-700">
+                    <ul className="w-full text-sm text-gray-700">
                         {filePreviews.map((filePreview, index) => (
                             <li
                                 key={index}

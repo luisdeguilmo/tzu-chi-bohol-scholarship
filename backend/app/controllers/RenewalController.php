@@ -11,6 +11,7 @@ require_once __DIR__ . "/../../app/models/ContactPersonModel.php";
 require_once __DIR__ . "/../../app/models/FamilyMemberModel.php";
 require_once __DIR__ . "/../../app/models/ScholarModel.php";
 require_once __DIR__ . "/../../app/models/AssistanceModel.php";
+require_once __DIR__ . "/../../app/models/CharacterReferenceModel.php";
 
 // CORS headers
 header("Access-Control-Allow-Origin: *");
@@ -27,6 +28,7 @@ use App\Models\ContactPersonModel;
 use App\Models\FamilyMemberModel;
 use App\Models\ScholarModel;
 use App\Models\AssistanceModel;
+use App\Models\CharacterReferenceModel;
 
 class RenewalController {
 
@@ -54,7 +56,7 @@ class RenewalController {
 
             // Process application data
             $application = new ApplicationModel();
-            $application_id = $application->create($data['application_info']);
+            $application_id = $application->create($data['application_info'], $data['other_information']);
 
             if (!$application_id) {
                 throw new \Exception("Failed to create application");
@@ -136,6 +138,15 @@ class RenewalController {
             foreach ($data['other_assistance'] as $assistanceData) {
                 if (!$assistance->create($assistanceData, $application_id)) {
                     throw new \Exception("Failed to save assistance");
+                }
+            }
+        }
+
+        if (isset($data['character_reference']) && is_array($data['character_reference'])) {
+            $character = new CharacterReferenceModel($this->pdo);
+            foreach ($data['character_reference'] as $characterData) {
+                if (!$character->create($characterData, $application_id)) {
+                    throw new \Exception("Failed to save character");
                 }
             }
         }

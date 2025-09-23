@@ -1,9 +1,12 @@
-import { CalendarCog, X } from "lucide-react";
+import { CalendarCog, Check, Mail, Pencil, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useSchedule } from "../../../hooks/useSchedule";
+import { manageApplication } from "../../../services/emailService";
+import SendEmailButton from "./SendEmailButtton";
 
 export default function SetScheduleForm({
+    applications,
     isOpen,
     setIsOpen,
     batches,
@@ -12,8 +15,12 @@ export default function SetScheduleForm({
 }) {
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
+    const [venue, setVenue] = useState("");
     const [editing, setEditing] = useState(false);
+    const [isEmailSent, setIsEmailSent] = useState(false);
+    const [isInputChanged, setIsInputChanged] = useState(false);
     const { createSchedule } = useSchedule();
+    const { isLoading, sendSchedule } = manageApplication();
 
     // Use useEffect to set the initial schedule value when component mounts or selectedBatch changes
     useEffect(() => {
@@ -44,12 +51,25 @@ export default function SetScheduleForm({
         await createSchedule(
             date,
             time,
+            venue,
             setDate,
             setTime,
             batchToSet,
             onSuccess,
             setIsOpen
         );
+    };
+
+    const handleSendSchedule = async () => {
+        const success = await sendSchedule(
+            applications,
+            batches,
+            selectedBatch
+        );
+
+        if (success) {
+            setIsEmailSent(true);
+        }
     };
 
     const handleCancel = (e) => {
@@ -71,9 +91,9 @@ export default function SetScheduleForm({
             <button
                 onClick={() => setIsOpen(true)}
                 title={hasSchedule() ? "Edit Schedule" : "Set Schedule"}
-                className="text-green-600 text-xs rounded-lg hover:underline transition-colors flex items-center"
+                className="p-2 bg-blue-600 text-xs rounded-lg hover:bg-blue-700 transition-colors flex items-center text-white"
             >
-                <CalendarCog className="w-4 h-4 mr-1" />
+                <Pencil className="w-4 h-4 mr-1" />
                 {hasSchedule() ? "Edit Schedule" : "Set Schedule"}
             </button>
 
@@ -98,7 +118,11 @@ export default function SetScheduleForm({
                         </h2>
                         <button
                             type="button"
-                            onClick={() => setIsOpen(false)}
+                            onClick={() => {
+                                setIsOpen(false);
+                                setIsEmailSent(false);
+                                setIsInputChanged(false);
+                            }}
                             className="absolute top-3 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-100 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
                             aria-label="Close modal"
                         >
@@ -110,7 +134,7 @@ export default function SetScheduleForm({
                     <form onSubmit={handleSubmit} className="p-6 space-y-4">
                         {/* Start Date Input */}
                         <div>
-                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm">
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                                 Batch
                                 <input
                                     readOnly
@@ -119,26 +143,52 @@ export default function SetScheduleForm({
                                     className="w-full border border-gray-300 rounded-md p-2 focus:outline-none"
                                 />
                             </label>
-                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm">
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                                 Date
                                 <input
                                     required
                                     type="date"
                                     value={date}
-                                    onChange={(e) => setDate(e.target.value)}
+                                    onChange={(e) => {
+                                        setDate(e.target.value);
+                                        setIsInputChanged(true);
+                                    }}
                                     className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                                 />
                             </label>
-                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-sm">
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                                 Time
                                 <input
                                     required
                                     type="time"
                                     value={time}
-                                    onChange={(e) => setTime(e.target.value)}
+                                    onChange={(e) => {
+                                        setTime(e.target.value);
+                                        setIsInputChanged(true);
+                                    }}
                                     className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                                 />
                             </label>
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                                Venue
+                                <input
+                                    required
+                                    type="text"
+                                    placeholder="Enter venue"
+                                    value={venue}
+                                    onChange={(e) => {
+                                        setVenue(e.target.value);
+                                        setIsInputChanged(true);
+                                    }}
+                                    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </label>
+                            <SendEmailButton
+                                isFullWidth={true}
+                                isEmailSent={isEmailSent}
+                                isLoading={isLoading}
+                                onSendSchedule={handleSendSchedule}
+                            />
                         </div>
 
                         {/* Action Buttons */}
@@ -152,9 +202,16 @@ export default function SetScheduleForm({
                             </button>
                             <button
                                 type="submit"
-                                className={`w-full py-2 px-4 rounded-lg shadow-sm focus:outline-none bg-green-600 text-white hover:bg-green-700`}
+                                className={`w-full py-2 px-4 rounded-lg shadow-sm focus:outline-none text-white ${
+                                    editing && isInputChanged
+                                        ? "bg-green-600 hover:bg-green-700"
+                                        : editing && !isInputChanged
+                                        ? "bg-green-400"
+                                        : "bg-green-600 hover:bg-green-700"
+                                }`}
+                                disabled={editing && !isInputChanged}
                             >
-                                {editing ? "Update" : "Set"}
+                                {editing ? "Save Changes" : "Save"}
                             </button>
                         </div>
                     </form>

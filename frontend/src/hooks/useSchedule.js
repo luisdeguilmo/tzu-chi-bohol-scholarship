@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import BASE_URL from "../config";
 
 export const useSchedule = () => {
     // const [schedule, setSchedule] = useState("");
@@ -7,6 +8,7 @@ export const useSchedule = () => {
     const createSchedule = async (
         date,
         time,
+        venue,
         setDate,
         setTime,
         batchToSet,
@@ -14,12 +16,13 @@ export const useSchedule = () => {
         setIsOpen
     ) => {
         const data = {
-            schedule: date + ' ' + time,
+            schedule: date + " " + time,
+            venue: venue,
         };
 
         try {
             const response = await fetch(
-                `http://localhost:8000/app/views/schedule.php?id=${batchToSet.batch_name}`,
+                `${BASE_URL}app/views/schedule.php?id=${batchToSet.batch_name}`,
                 {
                     method: "POST",
                     headers: {

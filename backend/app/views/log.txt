@@ -759,3 +759,39 @@ null
 {"applicantIds":[8979061],"batch":"Batch 2"}
 {"applicantIds":[8979061],"batch":"Unassigned"}
 {"applicantIds":[8979061],"batch":"Batch 1"}
+{"applicantIds":[8979061],"batch":"Unassigned"}
+{"applicantIds":[8979061],"batch":"Batch 1"}
+{"applicantIds":[2237260],"batch":"Unassigned"}
+{"applicantIds":[2237260],"batch":"Batch 1"}
+{"applicantIds":[8979061],"batch":"Unassigned"}
+{"applicantIds":[8979061],"batch":"Batch 2"}
+{"applicantIds":[8979061],"batch":"Unassigned"}
+{"applicantIds":[8979061],"batch":"Batch 2"}
+{"applicantIds":[8979061],"batch":"Unassigned"}
+{"applicantIds":[8979061],"batch":"Batch 1"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 3"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 3"}
+{"batch_name":"Batch 2"}
+{"applicantIds":[2237260,8979061],"batch":"Unassigned"}
+{"applicantIds":[8979061],"batch":"Batch 2"}
+{"applicantIds":[2237260],"batch":"Batch 1"}
+{"applicantIds":[2237260,8979061],"batch":"Unassigned"}
+{"applicantIds":[8979061],"batch":"Batch 1"}
+{"applicantIds":[2237260],"batch":"Batch 2"}
+{"strand":{"strand":"HUMM *","description":"Humanities & Social Sciences"}}
+{"strand":{"strand":"STEM * ","description":"Science, Technology, Engineering & Mathematics"}}
+{"strand":{"strand":"d","description":"s"}}
+{"strand":{"strand":"GAS ","description":"General Academic Strand"}}
+{"strand":{"strand":"ABM * ","description":"Accountancy, Business & Management"}}
+{"strand":{"strand":"d","description":"d"}}
+{"strand":{"strand":"d","description":"d"}}
+{"strand":{"strand":"TVL","description":"Technical - Vocational - Livelihood\nSpecialization: choose your own specialization related to the course you want to take in college."}}
+{"applicantIds":[2237260,8979061],"batch":"Unassigned"}
+{"applicantIds":[8979061],"batch":"Batch 1"}
+{"applicantIds":[2237260],"batch":"Batch 1"}
+{"applicantIds":[2237260],"batch":"Unassigned"}
+{"applicantIds":[2237260],"batch":"Batch 2"}
+{"batch_name":"Batch 1"}
+{"applicantIds":[4355295],"batch":"Batch 1"}

@@ -60,6 +60,23 @@ class CertificateOfAppearanceModel {
         
         return $stmt->execute();
     }
+
+    public function updateCOABatchId($id, $batch_id) {
+        $query = "UPDATE " . $this->table_name . " 
+                   SET batch_id = :batch_id 
+                   WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":batch_id", $batch_id);
+        return $stmt->execute(); 
+    }
+
+    public function deleteCOA($id) {
+        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
+    }
     
     public function getDocumentsByApplicationId($application_id) {
         $query = "SELECT * FROM " . $this->table_name . " 

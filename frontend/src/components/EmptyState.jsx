@@ -1,8 +1,8 @@
 const EmptyState = ({ message = "No items found." }) => {
     return (
-        <div className="text-center py-10">
+        <div className="text-center pt-6">
             <svg
-                className="mx-auto h-12 w-12 text-gray-400"
+                className="mx-auto w-12 text-gray-400"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"

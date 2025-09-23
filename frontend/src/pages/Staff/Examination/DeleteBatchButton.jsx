@@ -8,7 +8,7 @@ export default function DeleteBatchButton({
         <button
             onClick={handleDeleteBatch}
             title="Delete Schedule"
-            className="text-red-600 text-xs p-3 text-center rounded-lg hover:underline transition-colors flex items-center"
+            className="p-2 bg-red-600 text-xs rounded-lg hover:bg-red-700 transition-colors flex items-center text-white"
         >
             <Trash2 className="w-4 h-4 mr-1" />
             Delete Batch

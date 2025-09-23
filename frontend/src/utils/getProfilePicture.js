@@ -1,38 +1,33 @@
 import axios from "axios";
+import BASE_URL from "../config";
+import { useEffect, useState } from "react";
 
-export const getProfilePicture = async (applicationId) => {
-    try {
-        console.log(
-            "Getting profile picture for application ID:",
-            applicationId
-        );
+export const getProfilePicture = (userId) => {
+    const [imageUrl, setImageUrl] = useState(null);
+    // const userId = user?.user_id;
 
-        // Use your existing profile picture endpoint
-        const response = await axios.get(
-            `http://localhost:8000/backend/api/applications/${applicationId}/2x2-picture`
-        );
+    if (!userId) {
+        return { imageUrl: null };
+    }
 
-        console.log("Profile picture endpoint response:", response.data);
+    const fetchProfilePicture = async () => {
+        try {
+            const response = await axios.get(
+                `${BASE_URL}backend/api/applications/${userId}/profile-picture`
+            );
 
-        // Assuming your endpoint returns the base64 data
-        // Adjust this based on your actual response structure
-        if (response.data && response.data.profile_picture_base64) {
-            return response.data.profile_picture_base64;
-        } else if (response.data && response.data.base64) {
-            return response.data.base64;
-        } else {
-            console.warn("Unexpected response format:", response.data);
+            if (response.data.success) {
+                setImageUrl(response.data.profile_picture_url);
+            }
+        } catch (error) {
+            console.error("Error fetching profile picture:", error);
             return null;
         }
-    } catch (error) {
-        console.error("Error getting profile picture:", error);
+    };
 
-        // Log more details for debugging
-        if (error.response) {
-            console.error("Response data:", error.response.data);
-            console.error("Response status:", error.response.status);
-        }
+    useEffect(() => {
+        fetchProfilePicture();
+    }, [userId]);
 
-        return null;
-    }
+    return { imageUrl };
 };

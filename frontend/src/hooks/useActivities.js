@@ -28,7 +28,7 @@ export const useActivities = (tab, userId) => {
 
     useEffect(() => {
         fetchActivities(tab, userId);
-    }, []);
+    }, [tab, userId]);
 
     return { activities, fetchActivities };
 };

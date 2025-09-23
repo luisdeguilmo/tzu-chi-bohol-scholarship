@@ -18,12 +18,12 @@ class ApplicationModel {
         $this->pdo = $db->getConnection();
     }
 
-    public function create($data) {
+    public function create($data, $other) {
         // Generate a unique random application_id`
         $application_id = $this->generateUniqueApplicationId();
     
         $query = "INSERT INTO " . $this->table_name . " 
-                  SET application_id = :application_id, school_year = :school_year, type = :status, scholar_id = :scholar_id, created_at = NOW()";
+                  SET application_id = :application_id, school_year = :school_year, type = :status, scholar_id = :scholar_id,expectation = :expectation, created_at = NOW()";
     
         $stmt = $this->pdo->prepare($query);
     
@@ -31,11 +31,13 @@ class ApplicationModel {
         $school_year = htmlspecialchars(strip_tags($data['school_year']));
         $status = htmlspecialchars(strip_tags($data['status']));
         $scholar_id = htmlspecialchars(strip_tags($data['scholar_id']));
+        $expectation = htmlspecialchars(strip_tags($other['expectation']));
     
         $stmt->bindParam(":application_id", $application_id);
         $stmt->bindParam(":scholar_id", $scholar_id);
         $stmt->bindParam(":school_year", $school_year);
         $stmt->bindParam(":status", $status);
+        $stmt->bindParam(":expectation", $expectation);
     
         if ($stmt->execute()) {
             return $application_id;

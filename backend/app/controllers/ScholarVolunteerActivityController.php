@@ -104,14 +104,18 @@ class ScholarVolunteerActivityController {
             $tab = $_GET['tab'] ?? null; 
             $year = $_GET['year'] ?? null; 
             $month = $_GET['month'] ?? null; 
+            $status = $_GET['status'] ?? null; 
+            $sort = $_GET['sort'] ?? null; 
 
             $activities = [];
 
-            if ($tab === 'pending') {
-                $activities = $activity->getActivitiesByTab($tab, $year, $month);
-            } else if ($tab === 'recorded') {
-                $activities = $activity->getActivitiesByTab($tab, $year, $month);
-            }
+            // if ($tab === 'pending') {
+            //     $activities = $activity->getActivitiesByTab($tab, $year, $month);
+            // } else if ($tab === 'recorded') {
+            //     $activities = $activity->getActivitiesByTab($tab, $year, $month);
+            // }
+
+            $activities = $activity->getActivitiesByTab($year, $month, $status, $sort);
 
             $result = $activity->getAllScholarsWithFiles($activities, $activity);
 

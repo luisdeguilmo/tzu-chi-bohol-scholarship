@@ -18,51 +18,6 @@ class ScholarAccountModel {
         $this->pdo = $db->getConnection();
     }
 
-    public function getCreatedAccounts() {
-        $query = "SELECT * FROM " . $this->scholar_table . " s JOIN users u ON s.account_id = u.account_id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    
-    public function getPendingScholars() {
-        try {
-            $query = "SELECT * FROM " . $this->table_name . " ai 
-                     JOIN personal_information pi ON ai.application_id = pi.application_id 
-                     WHERE status = 'Pending'";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute();
-            
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            throw new \Exception("Database error: " . $e->getMessage());
-        }
-    }
-
-    public function getPendingScholarById($application_id) {
-        $query = "SELECT pi.first_name, pi.last_name, pi.email, ai.application_id 
-                  FROM " . $this->table_name . " ai 
-                  JOIN personal_information pi ON ai.application_id = pi.application_id 
-                  WHERE ai.application_id = :application_id";
-                  
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(":application_id", $application_id, \PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
-    
-    public function updateApplicationStatusToScholar($application_id) {
-        $query = "UPDATE application_info SET application_status = :application_status 
-                 WHERE application_id = :application_id";
-        $stmt = $this->pdo->prepare($query);
-        $status = 'Scholar';
-        $stmt->bindParam(':application_status', $status);
-        $stmt->bindParam(':application_id', $application_id);
-        return $stmt->execute();
-    }
-
     public function createScholar($data, $today) {
         $query = "INSERT INTO scholars (account_id, first_name, last_name, created_at) VALUES (:account_id, :first_name, :last_name, :created_at)";
 
@@ -97,8 +52,8 @@ class ScholarAccountModel {
             throw new \Exception("Failed to create scholar");
         }
 
-        $query = "INSERT INTO users (email, password, created_at, account_id) 
-                 VALUES (:email, :password, :created_at, :application_id)";
+        $query = "INSERT INTO users (email, password, created_at, account_id, type) 
+                 VALUES (:email, :password, :created_at, :application_id, 'scholar')";
         $stmt = $this->pdo->prepare($query);
         
         // Use email from the query result
@@ -118,6 +73,58 @@ class ScholarAccountModel {
         $stmt->bindParam(":application_id", $sanitized_application_id);
         // $stmt->bindParam(":type", 'Scholar');
         
+        return $stmt->execute();
+    }
+
+    public function getCreatedAccounts() {
+        $query = "SELECT * FROM " . $this->scholar_table . " s JOIN users u ON s.account_id = u.account_id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    public function getPendingScholars() {
+        try {
+            $query = "SELECT ai.*, pi.* FROM " . $this->table_name . " ai 
+                     JOIN personal_information pi ON ai.application_id = pi.application_id WHERE is_application_approved = '1' AND is_examination_passed = '1' AND is_initial_interview_passed = '1'
+                     AND is_home_visitation_qualified = '1' AND is_final_interview_passed = '1' AND ai.status != 'scholar'";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Database error: " . $e->getMessage());
+        }
+    }
+
+    public function getPendingScholarById($application_id) {
+        $query = "SELECT pi.first_name, pi.last_name, pi.email, ai.application_id 
+                  FROM " . $this->table_name . " ai 
+                  JOIN personal_information pi ON ai.application_id = pi.application_id WHERE ai.application_id = :application_id";
+                  
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":application_id", $application_id, \PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+    
+    // public function updateApplicationStatusToScholar($application_id) {
+    //     $query = "UPDATE users SET status = :status 
+    //              WHERE application_id = :application_id";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $status = 'scholar';
+    //     $stmt->bindParam(':application_status', $status);
+    //     $stmt->bindParam(':application_id', $application_id);
+    //     return $stmt->execute();
+    // }
+
+    public function updateAccountStatus($scholar_id, $status) {
+        $query = "UPDATE users SET status = :status WHERE account_id = :scholar_id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':scholar_id', $scholar_id);
         return $stmt->execute();
     }
 }

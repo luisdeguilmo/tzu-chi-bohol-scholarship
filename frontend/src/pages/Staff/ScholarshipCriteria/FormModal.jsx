@@ -1,11 +1,12 @@
 import useScholarshipCriteriaSubmit from "../../../hooks/useScholarshipCriteriaSubmit";
 import InputModal from "../../../components/InputModal";
 import { useCriteria } from "../../../context/CriteriaContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function FormModal({
     isOpen,
     isEditing,
+    setIsEditing,
     setIsOpen,
     onSuccess,
     onEdit,
@@ -43,6 +44,8 @@ function FormModal({
         isLoading,
     } = useScholarshipCriteriaSubmit(onSuccess);
 
+    const [isValueChanged, setIsValueChanged] = useState(false);
+
     const handleCreate = () => {
         switch (label) {
             case "Strand":
@@ -73,6 +76,7 @@ function FormModal({
                 console.error("Unknown label type:", label);
         }
 
+        onSuccess();
         setIsOpen(false);
         resetFields();
     };
@@ -84,7 +88,7 @@ function FormModal({
             data.strand = text;
             data.description = description;
         } else if (endpoint === "requirement") {
-            data.quantity = text;
+            data.quantity = quantity;
             data.description = description;
             data.submit = submit;
         } else {
@@ -92,7 +96,7 @@ function FormModal({
         }
 
         const success = await updateItem(id, endpoint, data);
-
+        console.log(data);
         if (success) data = null;
     };
 
@@ -100,6 +104,8 @@ function FormModal({
         e.preventDefault();
         if (isEditing) handleEdit();
         else handleCreate();
+        setIsValueChanged(false);
+        setIsEditing(false);
         setIsOpen(false);
     };
 
@@ -109,6 +115,8 @@ function FormModal({
         setQuantity("");
         setDescription("");
         setSubmit("");
+        setIsValueChanged(false);
+        setIsEditing(false);
     };
 
     const handleCancel = (e) => {
@@ -160,6 +168,7 @@ function FormModal({
                                         } else {
                                             setText(e.target.value);
                                         }
+                                        setIsValueChanged(true);
                                     }}
                                     className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 />
@@ -174,11 +183,12 @@ function FormModal({
                                     name=""
                                     id=""
                                     rows={4}
-                                    value={description}
+                                    value={description || text}
                                     required
-                                    onChange={(e) =>
-                                        setDescription(e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                        setDescription(e.target.value);
+                                        setIsValueChanged(true);
+                                    }}
                                     placeholder={field.placeholder}
                                     className="w-full resize-none border border-gray-300 rounded-md p-1 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 ></textarea>
@@ -201,7 +211,16 @@ function FormModal({
                         className={`w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none bg-green-600 text-white hover:bg-green-700`}
                     >
                         {/* Add {label} */}{" "}
-                        {isLoading ? "Submitting" : `Add ${label}`}
+                        {/* {isLoading ? "Submitting" : `Add ${label}`} */}
+                        {isEditing
+                            ? isLoading
+                                ? "Saving..."
+                                : isValueChanged
+                                ? "Save Changes"
+                                : `Edit ${label}`
+                            : isLoading
+                            ? "Submitting..."
+                            : `Add ${label}`}
                     </button>
                 </div>
             </form>

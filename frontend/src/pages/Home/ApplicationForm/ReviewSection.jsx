@@ -5,6 +5,8 @@ import ReviewPage from "./ReviewPage";
 const ReviewSection = ({ formData, prevStep, handleSubmit }) => {
     const [isConsent, setIsConsent] = useState(false);
 
+    console.log("Review Section");
+
     const handleConsent = () => {
         setIsConsent(!isConsent);
     };

@@ -15,6 +15,11 @@ const FamilyListForm = ({ formData, updateFormData }) => {
         formData.other_assistance || []
     );
 
+    const [isTzuChiSiblingsApplicable, setIsTzuChiSiblingsApplicable] =
+        useState(null);
+    const [isOtherAssistanceApplicable, setIsOtherAssistanceApplicable] =
+        useState(null);
+
     const [newMember, setNewMember] = useState({
         name: "",
         relationship: "",
@@ -144,8 +149,8 @@ const FamilyListForm = ({ formData, updateFormData }) => {
             {/* Family Members Input Form */}
             <div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
-                    {familyMembersInputFields.map((input) => (
-                        <div>
+                    {familyMembersInputFields.map((input, index) => (
+                        <div key={index}>
                             <label className="block mb-1 text-gray-600 text-xs">
                                 {input.label}
                             </label>
@@ -211,7 +216,10 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                     "Income",
                                     "Action",
                                 ].map((header) => (
-                                    <th key={header} className="py-4 font-semibold text-xs">
+                                    <th
+                                        key={header}
+                                        className="py-4 font-semibold text-xs"
+                                    >
                                         {header}
                                     </th>
                                 ))}
@@ -219,17 +227,16 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         </thead>
                         <tbody>
                             {sortedFamily.map((member, index) => (
-                                <tr key={index} className="text-center text-xs border-y border-gray-200 text-gray-500">
-                                    <td className="py-5">
-                                        {member.name}
-                                    </td>
+                                <tr
+                                    key={index}
+                                    className="text-center text-xs border-y border-gray-200 text-gray-500"
+                                >
+                                    <td className="py-5">{member.name}</td>
                                     <td className="py-2">
                                         {member.relationship}
                                     </td>
                                     <td className="py-2">{member.age}</td>
-                                    <td className="py-2">
-                                        {member.gender}
-                                    </td>
+                                    <td className="py-2">{member.gender}</td>
                                     <td className="py-2">
                                         {member.civil_status}
                                     </td>
@@ -263,11 +270,60 @@ const FamilyListForm = ({ formData, updateFormData }) => {
             <h2 className="pt-12 pb-6 font-bold mb-4">
                 Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
             </h2>
+            <div className="mb-12">
+                <div>
+                    <input
+                        id="tzu_chi_siblings_applicable"
+                        name="tzu_chi_siblings"
+                        type="radio"
+                        value={"applicable"}
+                        checked={isTzuChiSiblingsApplicable === "applicable"}
+                        onChange={(e) =>
+                            setIsTzuChiSiblingsApplicable(e.target.value)
+                        }
+                    />
+                    <label
+                        htmlFor="tzu_chi_siblings_applicable"
+                        className="ml-2 text-sm text-gray-700"
+                    >
+                        Yes, I have siblings who received Tzu Chi Educational
+                        Assistance
+                    </label>
+                </div>
+                <div>
+                    <input
+                        id="tzu_chi_siblings_not_applicable"
+                        name="tzu_chi_siblings"
+                        type="radio"
+                        value={"not_applicable"}
+                        checked={
+                            isTzuChiSiblingsApplicable === "not_applicable"
+                        }
+                        onChange={(e) =>
+                            setIsTzuChiSiblingsApplicable(e.target.value)
+                        }
+                    />
+                    <label
+                        htmlFor="tzu_chi_siblings_not_applicable"
+                        className="ml-2 text-sm text-gray-700"
+                    >
+                        No / Not applicable
+                    </label>
+                </div>
+            </div>
             <div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
                     {scholarsInputFields.map((input) => (
                         <div>
-                            <label className="block mb-1 text-gray-600 text-xs">
+                            <label
+                                className={`block mb-1 text-xs ${
+                                    isTzuChiSiblingsApplicable === null ||
+                                    isTzuChiSiblingsApplicable ===
+                                        "not_applicable"
+                                        ? "text-gray-400"
+                                        : "text-gray-600"
+                                }`}
+                            >
                                 {input.label}
                             </label>
                             <input
@@ -276,7 +332,18 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                 value={newScholar[input.name]}
                                 onChange={handleScholarChange}
                                 placeholder={input.placeholder}
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className={`${
+                                    isTzuChiSiblingsApplicable === null ||
+                                    isTzuChiSiblingsApplicable ===
+                                        "not_applicable"
+                                        ? "text-gray-400"
+                                        : "text-gray-600"
+                                } w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500`}
+                                disabled={
+                                    isTzuChiSiblingsApplicable === null ||
+                                    isTzuChiSiblingsApplicable ===
+                                        "not_applicable"
+                                }
                             />
                         </div>
                     ))}
@@ -284,7 +351,16 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                 <button
                     type="button"
                     onClick={addScholar}
-                    className="col-span-3 my-7 shadow-lg bg-green-600 text-sm rounded-md text-white p-2"
+                    className={`col-span-3 my-7 shadow-lg text-sm rounded-md text-white p-2 ${
+                        isTzuChiSiblingsApplicable === null ||
+                        isTzuChiSiblingsApplicable === "not_applicable"
+                            ? "bg-green-300"
+                            : "bg-green-600 hover:bg-green-700"
+                    }`}
+                    disabled={
+                        isTzuChiSiblingsApplicable === null ||
+                        isTzuChiSiblingsApplicable === "not_applicable"
+                    }
                 >
                     Add Scholar
                 </button>
@@ -304,7 +380,10 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                     "School Year",
                                     "Action",
                                 ].map((header) => (
-                                    <th key={header} className="py-4 font-semibold text-xs">
+                                    <th
+                                        key={header}
+                                        className="py-4 font-semibold text-xs"
+                                    >
                                         {header}
                                     </th>
                                 ))}
@@ -312,19 +391,16 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         </thead>
                         <tbody>
                             {tzu_chi_siblings.map((scholar, index) => (
-                                <tr key={index} className="text-center text-xs border-y border-gray-200 text-gray-500">
-                                    <td className="py-5">
-                                        {scholar.name}
-                                    </td>
+                                <tr
+                                    key={index}
+                                    className="text-center text-xs border-y border-gray-200 text-gray-500"
+                                >
+                                    <td className="py-5">{scholar.name}</td>
                                     <td className="p-2">
                                         {scholar.year_level}
                                     </td>
-                                    <td className="p-2">
-                                        {scholar.school}
-                                    </td>
-                                    <td className="p-2">
-                                        {scholar.course}
-                                    </td>
+                                    <td className="p-2">{scholar.school}</td>
+                                    <td className="p-2">{scholar.course}</td>
                                     <td className="p-2">
                                         {scholar.school_year}
                                     </td>
@@ -348,11 +424,59 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                 Assistance from Other Association, Organization, School
                 Discount, etc.
             </h2>
+            <div className="mb-12">
+                <div>
+                    <input
+                        id="other_assistance_applicable"
+                        name="other_assistance"
+                        type="radio"
+                        value={"applicable"}
+                        checked={isOtherAssistanceApplicable === "applicable"}
+                        onChange={(e) =>
+                            setIsOtherAssistanceApplicable(e.target.value)
+                        }
+                    />
+                    <label
+                        htmlFor="other_assistance_applicable"
+                        className="ml-2 text-sm text-gray-700"
+                    >
+                        Yes, I have received assistance from other sources
+                    </label>
+                </div>
+                <div>
+                    <input
+                        id="other_assistance_not_applicable"
+                        name="other_assistance"
+                        type="radio"
+                        value={"not_applicable"}
+                        checked={
+                            isOtherAssistanceApplicable === "not_applicable"
+                        }
+                        onChange={(e) =>
+                            setIsOtherAssistanceApplicable(e.target.value)
+                        }
+                    />
+                    <label
+                        htmlFor="other_assistance_not_applicable"
+                        className="ml-2 text-sm text-gray-700"
+                    >
+                        No / Not applicable
+                    </label>
+                </div>
+            </div>
             <div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
                     {assistanceInputFields.map((input) => (
                         <div>
-                            <label className="block mb-1 text-gray-600 text-xs">
+                            <label
+                                className={`block mb-1 ${
+                                    isOtherAssistanceApplicable === null ||
+                                    isOtherAssistanceApplicable ===
+                                        "not_applicable"
+                                        ? "text-gray-400"
+                                        : "text-gray-600"
+                                } text-xs`}
+                            >
                                 {input.label}
                             </label>
                             <input
@@ -361,7 +485,18 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                 value={newAssistance[input.name]}
                                 onChange={handleAssistanceChange}
                                 placeholder={input.placeholder}
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className={`w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500 ${
+                                    isOtherAssistanceApplicable === null ||
+                                    isOtherAssistanceApplicable ===
+                                        "not_applicable"
+                                        ? "text-gray-400"
+                                        : "text-gray-600"
+                                }`}
+                                disabled={
+                                    isOtherAssistanceApplicable === null ||
+                                    isOtherAssistanceApplicable ===
+                                        "not_applicable"
+                                }
                             />
                         </div>
                     ))}
@@ -369,7 +504,16 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                 <button
                     type="button"
                     onClick={addAssistance}
-                    className="col-span-3 my-7 shadow-lg bg-green-600 text-sm rounded-md text-white p-2"
+                    className={`col-span-3 my-7 shadow-lg text-sm rounded-md text-white p-2 ${
+                        isOtherAssistanceApplicable === null ||
+                        isOtherAssistanceApplicable === "not_applicable"
+                            ? "bg-green-300"
+                            : "bg-green-600 hover:bg-green-700"
+                    }`}
+                    disabled={
+                        isOtherAssistanceApplicable === null ||
+                        isOtherAssistanceApplicable === "not_applicable"
+                    }
                 >
                     Add Assistance
                 </button>
@@ -387,7 +531,10 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                     "Amount",
                                     "Action",
                                 ].map((header) => (
-                                    <th key={header} className="py-4 font-semibold text-xs">
+                                    <th
+                                        key={header}
+                                        className="py-4 font-semibold text-xs"
+                                    >
                                         {header}
                                     </th>
                                 ))}
@@ -395,7 +542,10 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         </thead>
                         <tbody>
                             {other_assistance.map((assistance, index) => (
-                                <tr key={index} className="text-center text-xs border-y border-gray-200 text-gray-500">
+                                <tr
+                                    key={index}
+                                    className="text-center text-xs border-y border-gray-200 text-gray-500"
+                                >
                                     <td className="py-5">
                                         {assistance.organization_name}
                                     </td>

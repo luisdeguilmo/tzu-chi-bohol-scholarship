@@ -21,12 +21,13 @@ export default function EventsPage() {
     const [isOpenEventDetailsModal, setIsOpenEventDetailsModal] =
         useState(false);
     const [year, setYear] = useState("2025");
+    const [status, setStatus] = useState("all");
 
-    const { events, fetchEvents } = useEventsOnStaff(year);
+    const { events, fetchEvents } = useEventsOnStaff(year, status, sortBy);
 
     useEffect(() => {
-        fetchEvents(year);
-    }, [year]);
+        fetchEvents();
+    }, [year, status, sortBy]);
 
     // Filter data based on search term
     const filteredEvents = events.filter((event) =>
@@ -68,7 +69,7 @@ export default function EventsPage() {
     };
 
     const handleRefresh = () => {
-        fetchApplications(activeTab);
+        fetchEvents();
         setSelectedItems([]);
     };
 
@@ -94,10 +95,26 @@ export default function EventsPage() {
                     addButton={true}
                 >
                     <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-600">
+                            Filtered by status:
+                        </span>
+                        <select
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value="all">All</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="ended">Ended</option>
+                        </select>
+                    </div>
+                    <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-600">Year:</span>
                         <select
                             value={year}
-                            onChange={(e) => handleChangeYear(Number(e.target.value))}
+                            onChange={(e) =>
+                                handleChangeYear(Number(e.target.value))
+                            }
                             className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value={2025}>2025</option>
@@ -114,20 +131,22 @@ export default function EventsPage() {
                                 key={event.id}
                                 className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
                             >
-                                <td className="py-5 whitespace-nowrap text-gray-700 font-bold">
-                                    {event.event_name}
+                                <td className="py-3 pl-6 whitespace-nowrap text-gray-700">
+                                    <p className="text-left">
+                                        {event.event_name}
+                                    </p>
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-xs text-gray-700">
+                                <td className="py-3 text-left pr-16 whitespace-nowrap text-xs text-gray-700">
                                     {event.event_location}
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                <td className="py-3 text-left whitespace-nowrap text-gray-500">
                                     {formatDate(event.date)}
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                <td className="py-3 text-left whitespace-nowrap text-gray-500">
                                     {formatTime(event.start_time)} -{" "}
                                     {formatTime(event.end_time)}
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                <td className="py-3 text-left whitespace-nowrap text-gray-500">
                                     <span
                                         className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium
                                             ${
@@ -145,7 +164,7 @@ export default function EventsPage() {
                                             : "Ended"}
                                     </span>
                                 </td>
-                                <td className="py-3 whitespace-nowrap font-medium">
+                                <td className="py-3 text-center whitespace-nowrap font-medium">
                                     <button
                                         onClick={() =>
                                             handleOpenDetailsModal(event)
@@ -207,6 +226,7 @@ export default function EventsPage() {
                 isOpen={isOpenFormModal}
                 onClose={setIsOpenFormModal}
                 onSuccess={fetchEvents}
+                onRefresh={fetchEvents}
             />
 
             <EventDetailsModal

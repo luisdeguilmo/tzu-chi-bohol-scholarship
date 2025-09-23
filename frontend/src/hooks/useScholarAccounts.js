@@ -26,7 +26,7 @@ export const useScholarAccounts = (tab) => {
 
     const createScholarAccount = async (
         selectedScholars,
-        setSelectedScholars
+        setSelectedScholars = null
     ) => {
         if (selectedScholars.length === 0) {
             toast.error("Please select at least one scholar");
@@ -52,7 +52,9 @@ export const useScholarAccounts = (tab) => {
                 await fetchScholars(tab);
 
                 // Clear selections
-                setSelectedScholars([]);
+                if (setSelectedScholars) {
+                    setSelectedScholars([]);
+                }
 
                 // Show success notification
                 toast.success(
@@ -73,9 +75,41 @@ export const useScholarAccounts = (tab) => {
         }
     };
 
+    const updateScholarAccountStatus = async (scholarId, action) => {
+        try {
+            setLoading(true);
+
+            const response = await axios.put(
+                `${BASE_URL}app/views/scholar-accounts.php?action=${action}`,
+                {
+                    scholarId: scholarId,
+                }
+            );
+
+            if (response.data.success) {
+                // Refresh the data after account creation
+                await fetchScholars(tab);
+            } else {
+                toast.error("Error: " + response.data.message);
+            }
+
+            setLoading(false);
+            return true;
+        } catch (err) {
+            console.error("Error updating scholar status:", err);
+            return false;
+        }
+    };
+
     useEffect(() => {
         fetchScholars(tab);
     }, [tab]);
 
-    return { loading, scholars, createScholarAccount, fetchScholars };
+    return {
+        loading,
+        scholars,
+        createScholarAccount,
+        updateScholarAccountStatus,
+        fetchScholars,
+    };
 };

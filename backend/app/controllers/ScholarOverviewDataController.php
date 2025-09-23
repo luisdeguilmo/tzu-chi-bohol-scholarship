@@ -66,20 +66,28 @@ class ScholarOverviewDataController {
             if ($section === 'volunteer_activities') {
                 $pendingActivities = $overviewModel->getNumberOfPendingActivities($id); 
                 $recordedActivities = $overviewModel->getNumberOfRecordedActivities($id);
+                $notRecordedActivities = $overviewModel->getNumberOfNotRecordedActivities($id);
                 $numberOfActivities = $overviewModel->getNumberOfActivities($id);
-                $totalHours = $overviewModel->getTotalHours($id);
+                $totalHours = $overviewModel->getCommunityServiceRenderedHours($id);
 
                 $data = [
                     'pendingActivities' => $pendingActivities,
                     'recordedActivities' => $recordedActivities,
+                    'notRecordedActivities' => $notRecordedActivities,
                     'numberOfActivities' => $numberOfActivities,
                     'totalHours' => $totalHours
                 ];
             } else if ($section === 'events') {
                 $numberOfEvents = $overviewModel->getNumberOfEvents($id);
+                $attendedEvents = $overviewModel->getNumberOfAttendedEvents($id);
+                $upcomingEvents = $overviewModel->getNumberOfUpcomingEvents($id);
+                $totalHours = $overviewModel->getEventRenderedHours($id);
 
                 $data = [
-                    'numberOfEvents' => $numberOfEvents
+                    'numberOfEvents' => $numberOfEvents,
+                    'upcomingEvents' => $upcomingEvents,
+                    'attendedEvents' => $attendedEvents,
+                    'totalHours' => $totalHours
                 ];
             }
 

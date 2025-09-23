@@ -1,157 +1,399 @@
+import axios from "axios";
+import { toast } from "react-toastify";
+import {
+    sendApplicationApprovalEmail,
+    sendApplicationRejectionEmail,
+} from "./emailServiceCopy";
+import BASE_URL from "../config";
 import { getSchedule } from "../utils/getSchedule";
-const BREVO_API_KEY = import.meta.env.VITE_BREVO_API_KEY;
-const BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
-const ORGANIZATION_NAME = "Tzu Chi Foundation Philippines - Bohol Office";
-const CONTACT_INFO = "tzuchibohol2014@gmail.com | 0998 885 5342";
-const ORGANIZATION_ADDRESS =
-    "3rd Floor of FCB Building, CPG North Avenue, Cogon District, Tagbilaran City, Philippines";
-const EMAIL = "tzuchibohol2014@gmail.com";
+import { getVenue } from "../utils/getVenue";
+import { useState } from "react";
 
-const sendEmail = async (to, subject, htmlContent) => {
-    try {
-        const requestBody = {
-            sender: {
-                name: ORGANIZATION_NAME,
-                email: "de0@gmail.com",
-            },
-            to: [{ email: to }],
-            subject,
-            htmlContent,
-        };
+export const manageApplication = () => {
+    const [isLoading, setIsLoading] = useState(false);
 
-        const response = await fetch(BREVO_API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "api-key": BREVO_API_KEY,
-            },
-            body: JSON.stringify(requestBody),
-        });
+    const approveApplication = async (applicant) => {
+        try {
+            // Only update status if email was sent successfully
+            setIsLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=approve`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    school_year: applicant.school_year,
+                    is_application_approved: 1,
+                }
+            );
 
-        const responseText = await response.text();
-        console.log("Response body:", responseText);
+            if (response.data.success) {
+                toast.success(
+                    "Application approved and notification email sent successfully!"
+                );
+                setIsLoading(false);
+                return true;
+            }
 
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status} - ${responseText}`);
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error approving application:", err);
+            toast.error("Error approving application.");
+            return false;
+            setIsLoading(false);
         }
+    };
 
-        console.log("Email successfully sent!");
-        return true;
-    } catch (error) {
-        console.error("Failed to send email:", error);
-        return false;
-    }
-};
+    const rejectApplication = async (applicant, feedback) => {
+        try {
+            setIsLoading(true);
+            // Only update status if email was sent successfully
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=reject`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    school_year: applicant.school_year,
+                    is_application_rejected: 1,
+                    feedback: feedback,
+                }
+            );
 
-export const sendApplicationApprovalEmail = async (studentInfo) => {
-    const fullName = `${studentInfo.first_name} ${studentInfo.last_name}`;
-    const subject = "Scholarship Application Approved";
-    const htmlContent = `
-    <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
-        <p style="margin-bottom: 16px;">Dear <strong>${fullName}</strong>,</p>
-        <p style="margin-bottom: 16px;">
-            Congratulations! We are pleased to inform you that your application for the
-            <strong>Tzu Chi Scholarship Program</strong> for Academic Year 
-            <strong>${studentInfo.school_year}</strong> has been 
-            <span style="font-weight: bold;">approved</span>.
-        </p>
-        <p style="padding-bottom: 32px;">We look forward to supporting your academic journey.</p> 
-        <p style="line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;">${ORGANIZATION_NAME}</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0;">${ORGANIZATION_ADDRESS}</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0;">Contact: ${CONTACT_INFO}</p>
-    </div>
-`;
+            if (response.data.success) {
+                toast.success(
+                    "Application rejected and notification email sent successfully!"
+                );
+                setIsLoading(false);
+                return true;
+            }
 
-    return sendEmail(studentInfo.email, subject, htmlContent);
-};
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error rejecting application:", err);
+            toast.error("Error rejecting application.");
+            setIsLoading(false);
+            return false;
+        }
+    };
 
-export const sendApplicationRejectionEmail = async (studentInfo) => {
-    const fullName = `${studentInfo.first_name} ${
-        studentInfo.middle_name ? studentInfo.middle_name + " " : ""
-    }${studentInfo.last_name}`;
-    const subject = "Scholarship Application Update";
-    const htmlContent = `
-        <p>Dear ${fullName},</p>
-        <p>We regret to inform you that your scholarship application for SY ${studentInfo.school_year} was not approved.</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;">${ORGANIZATION_NAME}</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0;">${ORGANIZATION_ADDRESS}</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0;">Contact: ${CONTACT_INFO}</p>
-    `;
-    return sendEmail(studentInfo.email, subject, htmlContent);
-};
+    const sendSchedule = async (
+        applicants,
+        batches,
+        selectedBatchInBatches
+    ) => {
+        try {
+            setIsLoading(true);
+            const result = getSchedule(batches, selectedBatchInBatches);
+            const value = getVenue(batches, selectedBatchInBatches);
 
-export const sendExaminationPassedEmail = async (studentInfo) => {
-    const fullName = `${studentInfo.first_name} ${studentInfo.last_name}`;
-    const subject = "Scholarship Application Approved";
-    const htmlContent = `
-    <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
-        <p style="margin-bottom: 16px;">Dear <strong>${fullName}</strong>,</p>
-        <p style="margin-bottom: 16px;">
-            Congratulations! We are pleased to inform you that your application for the
-            <strong>Tzu Chi Scholarship Program</strong> for Academic Year 
-            <strong>${studentInfo.school_year}</strong> has been 
-            <span style="font-weight: bold;">approved</span>.
-        </p>
-        <p style="padding-bottom: 32px;">We look forward to supporting your academic journey.</p> 
-        <p style="line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;">${ORGANIZATION_NAME}</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0;">${ORGANIZATION_ADDRESS}</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0;">Contact: ${CONTACT_INFO}</p>
-    </div>
-`;
+            const { date, time } = result;
+            const { venue } = value;
 
-    return sendEmail(studentInfo.email, subject, htmlContent);
-};
+            // Only update status if email was sent successfully
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=send_schedule`,
+                {
+                    applicants: applicants,
+                    date: date,
+                    time: time,
+                    batch: selectedBatchInBatches,
+                    venue: venue,
+                }
+            );
 
-export const sendExaminationFailedEmail = async (studentInfo) => {
-    const fullName = `${studentInfo.first_name} ${
-        studentInfo.middle_name ? studentInfo.middle_name + " " : ""
-    }${studentInfo.last_name}`;
-    const subject = "Scholarship Application Update";
-    const htmlContent = `
-        <p>Dear ${fullName},</p>
-        <p>We regret to inform you that your scholarship application for SY ${studentInfo.school_year} was not approved.</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;">${ORGANIZATION_NAME}</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0;">${ORGANIZATION_ADDRESS}</p>
-        <p style="line-height: 1.5; font-size: 12px; margin: 0;">Contact: ${CONTACT_INFO}</p>
-    `;
-    return sendEmail(studentInfo.email, subject, htmlContent);
-};
+            if (response.data.success) {
+                toast.success("Email sent successfully!");
+                setIsLoading(false);
+                return true;
+            }
 
-export const sendExaminationScheduleEmail = async (
-    applicant,
-    batches,
-    selectedBatchInBatches
-) => {
-    try {
-        const result = getSchedule(batches, selectedBatchInBatches);
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Failed to send email:", err);
+            toast.error("Failed to send email.");
+            setIsLoading(false);
+            return false;
+        }
+    };
 
-        const { date, time } = result;
+    const sendExaminationPassed = async (applicants) => {
+        try {
+            setIsLoading(true);
 
-        const fullName = `${applicant.first_name} ${applicant.last_name}`;
-        const subject = "Scholarship Examination Schedule";
-        const htmlContent = `
-            <p>Dear ${fullName},</p>
-            <p style="margin-bottom: 16px;">
-                We are pleased to inform you that you are scheduled to take the entrance examination for the
-                <strong>Tzu Chi Scholarship Program</strong> for Academic Year 
-                <strong>${applicant.school_year}</strong>.
-            </p>
-            <p style="margin-bottom: 16px;">
-                📅 <strong>Date:</strong> ${date}<br>
-                🕒 <strong>Time:</strong> ${time}<br>
-                📍 <strong>Venue:</strong> Room 1
-            </p>
-            <p style="margin-bottom: 16px;">
-                Please arrive 15 minutes early and bring your valid ID and necessary documents. If you have any questions, feel free to contact us.
-            </p>
+            // const { date, time } = result;
+            // Only update status if email was sent successfully
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=examination_passed`,
+                {
+                    applicants: applicants,
+                }
+            );
 
-            <p style="line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;">${ORGANIZATION_NAME}</p>
-            <p style="line-height: 1.5; font-size: 12px; margin: 0;">${ORGANIZATION_ADDRESS}</p>
-            <p style="line-height: 1.5; font-size: 12px; margin: 0;">Contact: ${CONTACT_INFO}</p>
-        `;
-        return sendEmail(applicant.email, subject, htmlContent);
-    } catch (error) {
-        console.error("Error in sendExaminationScheduleEmail:", error);
-        return false;
-    }
+            if (response.data.success) {
+                toast.success("Email sent successfully!");
+                setIsLoading(false);
+                return true;
+            }
+
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Failed to send email:", err);
+            toast.error("Failed to send email.");
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    const sendExaminationFailed = async (applicants) => {
+        try {
+            setIsLoading(true);
+
+            // const { date, time } = result;
+            // Only update status if email was sent successfully
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=examination_failed`,
+                {
+                    applicants: applicants,
+                }
+            );
+
+            if (response.data.success) {
+                toast.success("Email sent successfully!");
+                setIsLoading(false);
+                return true;
+            }
+
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Failed to send email:", err);
+            toast.error("Failed to send email.");
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    const updateStatusToInterviewPassed = async (applicant) => {
+        try {
+            // Only update status if email was sent successfully
+            setIsLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=interview_passed`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    is_initial_interview_passed: 1,
+                }
+            );
+
+            if (response.data.success) {
+                toast.success(
+                    "Interview marked as passed. Notification email sent to applicant."
+                );
+                setIsLoading(false);
+                return true;
+            }
+
+            toast.error("Failed to update interview status.");
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error updating interview status:", err);
+            toast.error("An error occurred while updating interview status.");
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    const updateStatusToInterviewFailed = async (applicant) => {
+        try {
+            // Only update status if email was sent successfully
+            setIsLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=interview_failed`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    is_initial_interview_failed: 1,
+                }
+            );
+            if (response.data.success) {
+                toast.success(
+                    "Interview marked as failed. Notification email sent to applicant."
+                );
+                setIsLoading(false);
+                return true;
+            }
+            toast.error("Failed to update interview status.");
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error updating interview status:", err);
+            toast.error("An error occurred while updating interview status.");
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    const updateStatusToHomeVisitationPassed = async (applicant) => {
+        try {
+            // Only update status if email was sent successfully
+            setIsLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=home_visitation_passed`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    is_home_visitation_passed: 1,
+                }
+            );
+
+            if (response.data.success) {
+                toast.success(
+                    "Home Visitation marked as passed. Notification email sent to applicant."
+                );
+                setIsLoading(false);
+                return true;
+            }
+
+            toast.error("Failed to update home visitation status.");
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error updating home visitation status:", err);
+            toast.error(
+                "An error occurred while updating home visitation status."
+            );
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    const updateStatusToHomeVisitationFailed = async (applicant) => {
+        try {
+            // Only update status if email was sent successfully
+            setIsLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=home_visitation_failed`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    is_home_visitation_failed: 1,
+                }
+            );
+            if (response.data.success) {
+                toast.success(
+                    "Home Visitation marked as failed. Notification email sent to applicant."
+                );
+                setIsLoading(false);
+                return true;
+            }
+            toast.error("Failed to update interview status.");
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error updating home visitation status:", err);
+            toast.error(
+                "An error occurred while updating home visitation status."
+            );
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    const updateStatusToFinalInterviewPassed = async (applicant) => {
+        try {
+            // Only update status if email was sent successfully
+            setIsLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=final_interview_passed`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    is_final_interview_passed: 1,
+                }
+            );
+
+            if (response.data.success) {
+                toast.success(
+                    "Interview marked as passed. Notification email sent to applicant."
+                );
+                setIsLoading(false);
+                return true;
+            }
+
+            toast.error("Failed to update interview status.");
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error updating interview status:", err);
+            toast.error("An error occurred while updating interview status.");
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    const updateStatusToFinalInterviewFailed = async (applicant) => {
+        try {
+            // Only update status if email was sent successfully
+            setIsLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=final_interview_failed`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    is_final_interview_failed: 1,
+                }
+            );
+            if (response.data.success) {
+                toast.success(
+                    "Interview marked as failed. Notification email sent to applicant."
+                );
+                setIsLoading(false);
+                return true;
+            }
+            toast.error("Failed to update interview status.");
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error updating interview status:", err);
+            toast.error("An error occurred while updating interview status.");
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    return {
+        isLoading,
+        approveApplication,
+        rejectApplication,
+        sendSchedule,
+        sendExaminationPassed,
+        sendExaminationFailed,
+        updateStatusToInterviewPassed,
+        updateStatusToInterviewFailed,
+        updateStatusToHomeVisitationPassed,
+        updateStatusToHomeVisitationFailed,
+        updateStatusToFinalInterviewPassed,
+        updateStatusToFinalInterviewFailed,
+    };
 };

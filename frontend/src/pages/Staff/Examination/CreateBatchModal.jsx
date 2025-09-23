@@ -66,10 +66,18 @@ const CreateBatchModal = ({ isOpen, batchName, onClose, onRefresh }) => {
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
-                    <p className="mb-6 text-slate-700 text-sm">
-                        Batch: {batchName}
-                    </p>
+                <div className="pt-2 pb-6 px-6">
+                    <label className="py-3 flex flex-col gap-[1px] text-gray-600 text-xs">
+                        Batch
+                        <input
+                            type="text"
+                            placeholder={"Enter passing score"}
+                            value={batchName}
+                            disabled
+                            required
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        />
+                    </label>
                     <button
                         onClick={handleCreateBatch}
                         type="button"

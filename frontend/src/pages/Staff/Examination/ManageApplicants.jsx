@@ -1,4 +1,4 @@
-import { UserMinus, UserPlus } from "lucide-react";
+import { Minus, Plus, UserMinus, UserPlus } from "lucide-react";
 import { useBatch } from "../../../context/BatchContext";
 import { useAssignBatch } from "../../../hooks/useAssignBatch";
 
@@ -32,7 +32,7 @@ const ManageApplicants = ({
     return (
         <div>
             <div className="flex items-center gap-2">
-                <p className="italic text-xs text-slate-500">With Selected: </p>
+                <p className="italic text-xs text-slate-500 mr-4">With Selected: </p>
                 {tab === "Applicants" ? (
                     <>
                         <select
@@ -50,9 +50,9 @@ const ManageApplicants = ({
                             onClick={handleAssign}
                             title="Assign Selected Student/s"
                             disabled={selectedApplicants.length === 0}
-                            className={`px-4 py-2 rounded-md flex cursor-pointer hover:underline text-xs text-green-800`}
+                            className={`${selectedApplicants.length === 0 ? 'bg-green-400' : 'bg-green-600 hover:bg-green-700'} p-2 text-xs rounded-lg transition-colors flex items-center text-white`}
                         >
-                            <UserPlus className="w-4 h-4 mr-2" />
+                            <Plus className="w-4 h-4 mr-2" />
                             Assign
                         </button>
                     </>
@@ -62,9 +62,9 @@ const ManageApplicants = ({
                             onClick={handleUnassign}
                             title="Unassign Selected Student/s"
                             disabled={selectedApplicants.length === 0}
-                            className={`px-4 py-2 flex rounded-md cursor-pointer hover:underline text-xs text-red-800`}
+                            className={`${selectedApplicants.length === 0 ? 'bg-red-400' : 'bg-red-600 hover:bg-red-700'} p-2 text-xs rounded-lg transition-colors flex items-center text-white`}
                         >
-                            <UserMinus className="w-4 h-4 mr-1" />
+                            <Minus className="w-3 h-4 mr-1" />
                             Unassign
                         </button>
                     </>

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { convertTo24HourFormat } from "../utils/convertTo24HourFormat";
 import { useRecordHours } from "../hooks/useRecordHours";
+import BASE_URL from "../config";
 
 const CommunityServiceDetailsModal = React.memo(
     ({
@@ -19,14 +20,20 @@ const CommunityServiceDetailsModal = React.memo(
         activity,
         isStaff = false,
         onRefresh,
-        activeTab,
+        status,
         year,
         month,
+        sort,
     }) => {
-        const URL = "http://localhost:8000/public/";
+        const URL = `${BASE_URL}public/`;
         const [filePreviews, setFilePreviews] = useState([]);
+        const [feedback, setFeedback] = useState("");
+        const [isFeedbackRequired, setIsFeedbackRequired] = useState(false);
+        const [isRevoked, setIsRevoked] = useState(false);
+        const [action, setAction] = useState("");
 
-        const { recordCommunityServiceHours } = useRecordHours();
+        const { recordCommunityServiceHours, markAsNotRecorded } =
+            useRecordHours();
 
         useEffect(() => {
             // Reset file previews when scholar data changes
@@ -35,7 +42,9 @@ const CommunityServiceDetailsModal = React.memo(
             }
         }, [activity]);
 
-        const handleRecord = async () => {
+        console.log(activity?.activity_status);
+
+        const handleApprove = async () => {
             const startTime = convertTo24HourFormat(activity?.start_time).split(
                 ":"
             );
@@ -44,18 +53,39 @@ const CommunityServiceDetailsModal = React.memo(
             );
             const renderedHours = endTime[0] - startTime[0];
 
-            console.log(renderedHours);
-
             await recordCommunityServiceHours(
-                activity?.id,
-                activity?.application_id,
+                activity,
                 renderedHours,
                 onRefresh,
-                activeTab,
                 year,
-                month
+                month,
+                status,
+                sort
             );
             await onClose(false);
+        };
+
+        const handleReject = async () => {
+            await markAsNotRecorded(
+                activity?.id,
+                activity?.application_id,
+                feedback,
+                year,
+                month,
+                status,
+                sort
+            );
+            await onClose(false);
+        };
+
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            if (action === "approve") {
+                handleApprove();
+            } else if (action === "reject") {
+                handleReject();
+            }
+            setAction("");
         };
 
         const [selectedPdf, setSelectedPdf] = useState(null);
@@ -98,7 +128,10 @@ const CommunityServiceDetailsModal = React.memo(
                                 </h2>
                                 <button
                                     type="button"
-                                    onClick={() => onClose(false)}
+                                    onClick={() => {
+                                        setIsRevoked(false);
+                                        onClose(false);
+                                    }}
                                     className="absolute top-3 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-100 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
                                     aria-label="Close modal"
                                 >
@@ -107,7 +140,10 @@ const CommunityServiceDetailsModal = React.memo(
                             </div>
 
                             {/* Content */}
-                            <div className="max-h-[400px] overflow-y-auto scroll-smooth p-6 space-y-6">
+                            <form
+                                onSubmit={handleSubmit}
+                                className="max-h-[400px] overflow-y-auto scroll-smooth p-6 space-y-6"
+                            >
                                 {/* Event Details Grid */}
                                 <div className="grid grid-cols-2 sm:gap-4 gap-6 text-xs">
                                     <div className="space-y-3">
@@ -141,13 +177,15 @@ const CommunityServiceDetailsModal = React.memo(
                                         </div>
 
                                         <div className="flex items-center text-slate-600">
-                                            {activity?.status === "Pending" ? (
+                                            {activity?.activity_status ===
+                                            "Pending" ? (
                                                 <CircleAlert className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
                                             ) : (
                                                 <CheckCircle className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
                                             )}
                                             <span>
-                                                {activity?.status === "Pending"
+                                                {activity?.activity_status ===
+                                                "Pending"
                                                     ? "Pending"
                                                     : "Recorded"}
                                             </span>
@@ -299,26 +337,134 @@ const CommunityServiceDetailsModal = React.memo(
                                     </ul>
                                 )}
 
+                                <div
+                                    className={`${
+                                        (isStaff && isRevoked) ||
+                                        (activity?.status === "Pending" &&
+                                            !isRevoked)
+                                            ? "block"
+                                            : "hidden"
+                                    } mb-2 relative`}
+                                >
+                                    <label className="block mb-1 text-gray-600 text-xs">
+                                        Feedback (Optional for approval,
+                                        required for rejection)
+                                    </label>
+                                    <textarea
+                                        rows={5}
+                                        placeholder="Enter feedback"
+                                        value={feedback}
+                                        onChange={(e) =>
+                                            setFeedback(e.target.value)
+                                        }
+                                        className="w-full resize-none border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        required={isFeedbackRequired}
+                                    ></textarea>
+                                </div>
+
                                 {/* Action Buttons */}
                                 <div className="flex flex-col sm:flex-row gap-3">
                                     <button
-                                        onClick={() => onClose(false)}
+                                        onClick={() => {
+                                            onClose(false);
+                                            setAction("");
+                                        }}
                                         type="button"
                                         className="flex-1 text-sm bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-200 transition-colors duration-200"
                                     >
                                         Close
                                     </button>
+                                    {(activity?.status === "Recorded" ||
+                                        activity?.status === "Not Recorded") &&
+                                    isRevoked ? (
+                                        <>
+                                            <button
+                                                onClick={() =>
+                                                    setAction("approve")
+                                                }
+                                                type="submit"
+                                                className={`flex-1 text-sm bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200 ${
+                                                    isStaff ? "block" : "hidden"
+                                                }`}
+                                            >
+                                                Approve
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setIsFeedbackRequired(true);
+                                                    setAction("reject");
+                                                }}
+                                                type="submit"
+                                                className={`flex-1 text-sm bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors duration-200 ${
+                                                    isStaff ? "block" : "hidden"
+                                                }`}
+                                            >
+                                                Reject
+                                            </button>
+                                        </>
+                                    ) : activity?.status === "Pending" &&
+                                      !isRevoked ? (
+                                        <>
+                                            <button
+                                                onClick={() =>
+                                                    setAction("approve")
+                                                }
+                                                type="submit"
+                                                className={`flex-1 text-sm bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200 ${
+                                                    isStaff ? "block" : "hidden"
+                                                }`}
+                                            >
+                                                Approve
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setIsFeedbackRequired(true);
+                                                    setAction("reject");
+                                                }}
+                                                type="submit"
+                                                className={`flex-1 text-sm bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors duration-200 ${
+                                                    isStaff ? "block" : "hidden"
+                                                }`}
+                                            >
+                                                Reject
+                                            </button>
+                                        </>
+                                    ) : null}
+
                                     <button
-                                        onClick={handleRecord}
-                                        type="button"
-                                        className={`flex-1 text-sm bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200 ${
-                                            isStaff ? "block" : "hidden"
+                                        onClick={() => {
+                                            setIsRevoked(true);
+                                        }}
+                                        type="submit"
+                                        className={`flex-1 text-sm bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors duration-200 ${
+                                            isStaff &&
+                                            activity?.status === "Recorded" &&
+                                            !isRevoked
+                                                ? "block"
+                                                : "hidden"
                                         }`}
                                     >
-                                        Record
+                                        Revoke Approval
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            setIsRevoked(true);
+                                        }}
+                                        type="submit"
+                                        className={`flex-1 text-sm bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors duration-200 ${
+                                            isStaff &&
+                                            activity?.status ===
+                                                "Not Recorded" &&
+                                            !isRevoked
+                                                ? "block"
+                                                : "hidden"
+                                        }`}
+                                    >
+                                        Revoke Rejection
                                     </button>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 )}

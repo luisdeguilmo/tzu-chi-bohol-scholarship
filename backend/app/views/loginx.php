@@ -6,7 +6,6 @@ require_once __DIR__ . "/../cors.php";
 // header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 // header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 
-
 require_once __DIR__ . "/../../vendor/autoload.php";
 require_once __DIR__ . '/../../config/Database.php';
 
@@ -16,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -73,7 +71,7 @@ logAuthAttempt("LOGIN ATTEMPT", $email, $userType);
 
 try {
     // Validate user
-    $stmt = $pdo->prepare("SELECT account_id, email, password, type FROM users WHERE email = ? AND type = ?");
+    $stmt = $pdo->prepare("SELECT account_id, email, status, password, type FROM users WHERE email = ? AND type = ?");
     $stmt->execute([$email, $userType]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
@@ -93,6 +91,14 @@ try {
         echo json_encode([
             'success' => false,
             'message' => 'Invalid credentials'
+        ]);
+        exit;
+    }
+
+    if ($user['status'] === 'deactivated') {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Your account has been deactivated. Please contact the administrator.'
         ]);
         exit;
     }

@@ -13,10 +13,17 @@ const FormFields = ({
             ? FORM_SECTIONS.CONTACT_PERSON
             : section;
 
+    console.log(fields, section, inputSection);
+
     return (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4">
             {fields.map((field) => (
-                <div key={field.name}>
+                <div
+                    key={field.name}
+                    className={`${
+                        field.type === "textarea" ? "col-span-3" : ""
+                    }`}
+                >
                     {field.type === "select" ? (
                         <div className="block w-full relative">
                             <label className="block mb-1 text-gray-600 text-xs">
@@ -51,6 +58,31 @@ const FormFields = ({
                                 </p>
                             )}
                         </div>
+                    ) : field.type === "textarea" ? (
+                        <div className="relative">
+                            <label className="block mb-1 text-gray-600 text-xs">
+                                {field.label}
+                            </label>
+                            <textarea
+                                rows={5}
+                                name={field.name}
+                                value={formData[inputSection][field.name]}
+                                onChange={(e) =>
+                                    handleInputChange(inputSection, e)
+                                }
+                                placeholder={`${field.label}${
+                                    field.required ? "*" : ""
+                                }`}
+                                className="w-full resize-none border text-sm text-slate-700 border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                required={field.required}
+                            ></textarea>
+
+                            {errors && errors[field.name] && (
+                                <p className="text-red-500 text-xs mt-1">
+                                    {errors[field.name]}
+                                </p>
+                            )}
+                        </div>
                     ) : (
                         <div className="relative">
                             <label className="block mb-1 text-gray-600 text-xs">
@@ -72,7 +104,7 @@ const FormFields = ({
                                 //         : "border-gray-400"
                                 // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
                                 className="w-full border text-sm text-slate-700 border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
-                                required={field.required}
+                                required
                             />
                             {errors && errors[field.name] && (
                                 <p className="text-red-500 text-xs mt-1">

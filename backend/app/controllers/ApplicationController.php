@@ -19,6 +19,7 @@ use App\Models\ContactPersonModel;
 use App\Models\FamilyMemberModel;
 use App\Models\ScholarModel;
 use App\Models\AssistanceModel;
+use App\Models\CharacterReferenceModel;
 use App\Models\RequirementModel;
 use App\Models\ProfilePictureModel; // Add this new model
 use App\Models\RequirementsModel;
@@ -49,7 +50,7 @@ class ApplicationController {
 
             // Process application data
             $application = new ApplicationModel();
-            $application_id = $application->create($data['application_info']);
+            $application_id = $application->create($data['application_info'], $data['other_information']);
 
             if (!$application_id) {
                 throw new \Exception("Failed to create application");
@@ -153,6 +154,15 @@ class ApplicationController {
                 }
             }
         }
+
+        if (isset($data['character_reference']) && is_array($data['character_reference'])) {
+            $character = new CharacterReferenceModel($this->pdo);
+            foreach ($data['character_reference'] as $characterData) {
+                if (!$character->create($characterData, $application_id)) {
+                    throw new \Exception("Failed to save character");
+                }
+            }
+        }
     }
 
     public function getProfilePicture($application_id) {
@@ -176,7 +186,7 @@ class ApplicationController {
             http_response_code(500);
             echo json_encode([
                 "success" => false,
-                "message" => $e->getMessage()
+                "message" => $e->getMessage() . "sjdbusbds"
             ]);
         }
     }

@@ -21,7 +21,7 @@ const UnassignedTableRow = ({
                     selectedItems={selectedApplicants}
                     id={info.application_id}
                 >
-                    <td className="py-3 whitespace-nowrap text-gray-500">
+                    <td className="py-2 pl-3 text-left whitespace-nowrap text-gray-500">
                         <input
                             type="checkbox"
                             className="h-3.5 w-3.5 accent-green-600 text-green-600 focus:ring-green-500 border-gray-300 rounded"
@@ -33,19 +33,19 @@ const UnassignedTableRow = ({
                             }
                         />
                     </td>
-                    <td className="py-3 whitespace-nowrap text-gray-500">
+                    <td className="py-2 whitespace-nowrap text-gray-500">
                         {info.application_id}
                     </td>
-                    <td className="py-3 flex whitespace-nowrap text-sm text-gray-700">
+                    <td className="py-2 flex whitespace-nowrap text-sm text-gray-700">
                         <div className="w-[25%]"></div>
-                        <div className="w-[max-content] flex text-left gap-2">
+                        <div className="w-[max-content] flex items-center text-left gap-2">
                             <img
                                 src={profilePics[info.application_id]}
                                 alt="Profile"
                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                             />
                             <div>
-                                <p className="font-bold">
+                                <p className="font-bold text-xs">
                                     {info.first_name + " " + info.last_name}
                                 </p>
                                 <p className="text-xs text-gray-500">
@@ -54,16 +54,16 @@ const UnassignedTableRow = ({
                             </div>
                         </div>
                     </td>
-                    <td className="py-3 whitespace-nowrap text-gray-500">
+                    <td className="py-2 whitespace-nowrap text-gray-500">
                         {info.batch || "Unassigned"}
                     </td>
-                    <td className="py-3 whitespace-nowrap text-gray-500">
+                    <td className="py-2 whitespace-nowrap text-gray-500">
                         {formatDateTime(info.created_at)}
                     </td>
-                    <td className="py-3 whitespace-nowrap text-gray-500">
+                    <td className="py-2 whitespace-nowrap text-gray-500">
                         {formatDateTime(info.approved_at)}
                     </td>
-                    <td className="py-3 whitespace-nowrap font-medium">
+                    <td className="py-2 whitespace-nowrap font-medium">
                         <button
                             onClick={() => viewPdf(info.application_id)}
                             className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"

@@ -31,12 +31,12 @@ export const scholarSidebarItems = [
         icon: <Calendar className="w-5 h-5 text-slate-600" />,
         navigate: "/scholar/events",
     },
-    {
-        itemName: "hours_log",
-        text: "Rendered Hours",
-        icon: <FileClock className="w-5 h-5 text-slate-600" />,
-        navigate: "/scholar/rendered-hours",
-    },
+    // {
+    //     itemName: "hours_log",
+    //     text: "Rendered Hours",
+    //     icon: <FileClock className="w-5 h-5 text-slate-600" />,
+    //     navigate: "/scholar/rendered-hours",
+    // },
     {
         itemName: "archive",
         text: "Archived Activities",
@@ -105,7 +105,7 @@ export const staffSidebarItems = [
             },
             { text: "Initial Interview", navigate: "/staff/initial-interview" },
             { text: "Home Visitation", navigate: "/staff/home-visitation" },
-            { text: "Final Interview", navigate: "" },
+            { text: "Final Interview", navigate: "/staff/final-interview" },
         ],
     },
     {
@@ -113,7 +113,7 @@ export const staffSidebarItems = [
         itemName: "events_duty",
         icon: <Calendar className="w-5 h-5 text-slate-600" />,
         subItems: [
-            { text: "Set Events", navigate: "/staff/set-events" },
+            { text: "Events", navigate: "/staff/set-events" },
             {
                 text: "Community Services",
                 navigate: "/staff/community-services",

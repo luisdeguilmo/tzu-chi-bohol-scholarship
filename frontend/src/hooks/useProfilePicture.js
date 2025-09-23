@@ -21,8 +21,19 @@ export const useProfilePicture = (applications) => {
     const fetchAllPics = async () => {
         const pics = {};
         for (const app of applications) {
-            const url = await getProfilePicture(app.application_id || app.account_id);
-            pics[app.application_id || app.account_id] = url;
+            // const url = await getProfilePicture(app.application_id || app.account_id);
+            // pics[app.application_id || app.account_id] = url;
+
+            let url = null;
+            if (app.type === "Old") {
+                url = await getProfilePicture(app.scholar_id || app.account_id);
+                pics[app.scholar_id || app.account_id] = url;
+            } else {
+                url = await getProfilePicture(
+                    app.application_id || app.account_id
+                );
+                pics[app.application_id || app.account_id] = url;
+            }
         }
         setProfilePics(pics);
     };
@@ -31,5 +42,5 @@ export const useProfilePicture = (applications) => {
         fetchAllPics();
     }, [applications]);
 
-    return { profilePics, fetchAllPics };
-}; 
+    return { profilePics, fetchAllPics, getProfilePicture };
+};

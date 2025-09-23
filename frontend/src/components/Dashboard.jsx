@@ -1,62 +1,97 @@
 import { date } from "../utils/getDateAndTime";
 import { formatDate } from "../utils/formatDate";
 import { useAuth } from "../context/AuthContext";
-import { useStaffDashboardOverviewData } from "../hooks/useStaffDashboardOverviewData";
-import { staffDashboard } from "../config/staffDashboardItems";
+import { useDashboardOverviewData } from "../hooks/useDashboardOverviewData";
+import { dashboardOverviewData } from "../config/dashboardOverviewData";
+import UpcomingEvents from "./UpcomingEvents";
+import { useEvents } from "../hooks/useEvents";
+import RecentActivities from "./RecentActivities";
+import { useRecentActivities } from "../hooks/useRecentActivities";
+import RecentEvents from "./RecentEvents";
 
 function QuickOverview() {
     const { user } = useAuth();
-    const { dashboardData, fetchStaffDashboardData } =
-        useStaffDashboardOverviewData(user.user_id, user.type);
-
-    const { staffOverviewData } = staffDashboard(dashboardData);
-
-    console.log(user);
-    console.log(dashboardData);
+    const { dashboardData } = useDashboardOverviewData(user.user_id, user.type);
+    const { scholarOverviewData, staffOverviewData, adminOverviewData } =
+        dashboardOverviewData(dashboardData);
+    const { events } = useEvents("upcoming", user.user_id);
+    const { events: recentEvents } = useEvents("recent", user.user_id);
+    const { recentActivities, fetchRecentActivities } = useRecentActivities(
+        user.user_id
+    );
 
     return (
         <div className="w-full p-6">
             {/* <h2 className="text-xl font-bold text-slate-600 mb-4">Dashboard</h2> */}
-            <div className="p-6 mb-6 bg-green-500 rounded-lg">
-                <h2 className="text-xl font-bold text-white mb-1">
-                    Welcome back, {dashboardData.userName}!
+            <div className="p-6 mb-6 shadow-lg bg-gradient-to-r from-green-600 to-green-700 rounded-lg">
+                <h2 className="text-2xl font-bold text-white mb-1">
+                    Welcome back,{" "}
+                    {user.type === "admin" ? "Admin" : dashboardData.userName}!
                 </h2>
                 <p className="text-xs text-white">
                     Today is {date.getCurrentDay()},{" "}
                     {formatDate(date.getCurrentDateAndTime())}
                 </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
-                {staffOverviewData.map((item, index) => (
-                    <div
-                        key={index}
-                        className={`flex p-6 rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,.1)] relative bg-white`}
-                    >
-                        <div className="flex flex-col">
-                            <h2 className="text-xs text-slate-500">
-                                {item.title}
-                            </h2>
-                            <p className="mt-3 text-xl text-slate-600 font-bold">
-                                {item.status}
-                            </p>
-                        </div>
-                        <div className="flex items-center space-x-3 absolute top-3.5 right-3.5">
-                            <span
-                                className={`text-2xl ${item.iconColor} ${item.iconBackground} px-3 py-2 rounded-full`}
-                            >
-                                {item.icon}
-                            </span>
-                        </div>
-                    </div>
-                ))}
+            <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+                <OverviewDataCard
+                    overviewData={
+                        user.type === "staff"
+                            ? staffOverviewData
+                            : user.type === "admin"
+                            ? adminOverviewData
+                            : scholarOverviewData
+                    }
+                />
             </div>
-
-            {/* {dashboard === "staff" && (
-                <div className="mt-[-10] px-3 w-full flex justify-start">
-                    <NewApplications />
+            {user.type === "scholar" && (
+                <div>
+                    <UpcomingEvents events={events} />
+                    <RecentActivities
+                        activities={recentActivities}
+                        initialDisplayCount={3}
+                    />
                 </div>
-            )} */}
+            )}
+
+            {user.type === "staff" && (
+                <div>
+                    <UpcomingEvents events={events} />
+                    <RecentEvents events={recentEvents} />
+                </div>
+            )}
         </div>
+    );
+}
+
+function OverviewDataCard({ overviewData }) {
+    return (
+        <>
+            {overviewData?.map((item, index) => (
+                <div
+                    key={index}
+                    className={`flex p-6 rounded-lg shadow-sm border relative bg-white`}
+                >
+                    <div className="flex flex-col">
+                        <h2 className="text-xs text-slate-500">{item.title}</h2>
+                        <p className="mt-3 text-xl text-slate-600 font-bold">
+                            {item.status}
+                            {item.title === "Rendered Hours" &&
+                                (item.status > 1
+                                    ? "hrs / 20hrs required"
+                                    : "hr / 20hrs required")}
+                        </p>
+                    </div>
+                    <div className="flex items-center space-x-3 absolute top-3.5 right-3.5">
+                        <span
+                            className={`text-2xl ${item.iconColor} ${item.iconBackground} px-3 py-2 rounded-full`}
+                        >
+                            {item.icon}
+                        </span>
+                    </div>
+                </div>
+            ))}
+        </>
     );
 }
 

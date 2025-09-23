@@ -59,6 +59,8 @@ class ApplicationsModel {
         // Fetch other assistance
         $data["otherAssistance"] = $this->fetchMultiple("SELECT * FROM other_assistance WHERE application_id = ?", [$studentId]);
 
+        $data["characterReference"] = $this->fetchMultiple("SELECT * FROM character_reference WHERE application_id = ?", [$studentId]);
+
         $data["requirements"] = $this->fetchMultiple("SELECT * FROM application_requirements WHERE application_id = ?", [$studentId]);
 
         if (!empty($data["requirements"])) {

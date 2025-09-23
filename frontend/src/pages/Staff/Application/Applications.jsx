@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { formatDateTime } from "../../../utils/formatDateTime";
-import { manageApplication } from "../../../services/applicationService";
+import { manageApplication } from "../../../services/emailService";
 import { useApplications } from "../../../hooks/useApplications";
 import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
@@ -17,6 +17,7 @@ import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { CheckCircle, DownloadIcon, Eye, XCircle } from "lucide-react";
 import FormModal from "./FormModal";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 export default function Applications() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -30,16 +31,34 @@ export default function Applications() {
 
     const { loading, error, applications, fetchApplications } =
         useApplications(activeTab);
-    const { approveApplication, rejectApplication } = manageApplication();
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(applications);
+    const { profilePics } = useProfilePicture(applications);
     const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
+
+    const { isLoading, approveApplication, rejectApplication } =
+        manageApplication();
 
     useEffect(() => {
         fetchApplications();
-        fetchAllPics();
-        setIsRefresh(false);
-    }, [activeTab, isRefresh]);
+    }, [activeTab]);
+
+    const handleApproveApplication = async () => {
+        const success = await approveApplication(selectedApplicant);
+
+        if (success) {
+            await fetchApplications();
+            setIsFormModalOpen(false);
+        }
+    };
+
+    const handleRejectApplication = async () => {
+        const success = await rejectApplication(selectedApplicant, feedback);
+
+        if (success) {
+            await fetchApplicantData();
+            setIsFormModalOpen(false);
+        }
+    };
 
     // Filter data based on search term
     const filteredApplications = applications.filter(
@@ -79,6 +98,7 @@ export default function Applications() {
         indexOfLastItem,
         goToPreviousPage,
         goToNextPage,
+        numberOfItemsPerPage,
     } = usePagination(sortedApplications, itemsPerPage);
 
     const handleChangeTab = (tab) => {
@@ -98,9 +118,11 @@ export default function Applications() {
         setAction("reject");
     };
 
-    const handleRefresh = () => {
-        setIsRefresh(true);
+    const handleRefresh = async () => {
+        await fetchApplications();
     };
+
+    console.log(profilePics);
 
     return (
         <div className="lg:p-6">
@@ -108,7 +130,7 @@ export default function Applications() {
                 {/* Header */}
                 <TableToolbar
                     items={applications}
-                    label={"Applications"}
+                    label={"Applications Submitted"}
                     placeholder={"applications"}
                     tab={activeTab}
                     buttons={applicationButtons}
@@ -127,37 +149,47 @@ export default function Applications() {
 
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table
+                        hasNumberColumn={true}
                         tableHeaders={
                             activeTab === "new"
                                 ? applicationTableHeaders
                                 : renewalTableHeaders
                         }
                     >
-                        {currentItems.map((info) => (
+                        {currentItems.map((info, index) => (
                             <tr
                                 key={info.application_id}
                                 className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50 `}
                             >
-                                <td className="py-3 whitespace-nowrap text-gray-900 font-bold">
+                                <td className="text-gray-500">{`${
+                                    numberOfItemsPerPage + index + 1
+                                }.`}</td>
+                                <td className="py-2 whitespace-nowrap text-gray-600 font-bold">
                                     {info.application_id}
                                 </td>
                                 {activeTab === "old" && (
-                                    <td className="py-3 whitespace-nowrap text-gray-900 font-bold">
+                                    <td className="py-2 whitespace-nowrap text-gray-600 font-bold">
                                         {info.scholar_id}
                                     </td>
                                 )}
-                                <td className="py-3 flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                <td className="py-2 flex justify-start whitespace-nowrap text-sm text-gray-700">
                                     <div className="w-[30%]"></div>
-                                    <div className="w-[max-content] flex text-left gap-2">
+                                    <div className="w-[max-content] flex items-center text-left gap-2">
                                         <img
                                             src={
-                                                profilePics[info.application_id]
+                                                info.type === "Old"
+                                                    ? profilePics[
+                                                          info.scholar_id
+                                                      ]
+                                                    : profilePics[
+                                                          info.application_id
+                                                      ]
                                             }
                                             alt="Profile"
                                             className="w-10 h-10 object-cover rounded-full mx-auto"
                                         />
                                         <div>
-                                            <p className="font-bold">
+                                            <p className="font-bold text-xs">
                                                 {info.first_name +
                                                     " " +
                                                     info.last_name}
@@ -168,10 +200,10 @@ export default function Applications() {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                <td className="py-2 whitespace-nowrap text-gray-500">
                                     {formatDateTime(info.created_at)}
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-right font-medium">
+                                <td className="py-2 whitespace-nowrap text-right font-medium">
                                     <div className="flex items-center justify-center">
                                         <button
                                             onClick={() =>
@@ -239,7 +271,7 @@ export default function Applications() {
                     </div>
                 )}
 
-                <FormModal
+                {/* <FormModal
                     isOpen={isFormModalOpen}
                     onClose={setIsFormModalOpen}
                     action={action}
@@ -247,6 +279,23 @@ export default function Applications() {
                     applicant={selectedApplicant}
                     setAction={setAction}
                     onSuccess={fetchApplications}
+                /> */}
+
+                <ConfirmationModal
+                    isOpen={isFormModalOpen}
+                    onClose={setIsFormModalOpen}
+                    isLoading={isLoading}
+                    label={"Confirmation"}
+                    message={
+                        action === "approve"
+                            ? "Are you sure you want to approve this application? This action cannot be undone."
+                            : "Are you sure you want to reject this application? This action cannot be undone."
+                    }
+                    onClick={
+                        action === "approve"
+                            ? handleApproveApplication
+                            : handleRejectApplication
+                    }
                 />
             </div>
         </div>

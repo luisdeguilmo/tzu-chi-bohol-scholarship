@@ -1,9 +1,18 @@
 import { toast } from "react-toastify";
 import InputModal from "../../../components/InputModal";
 import { useState } from "react";
-import { manageApplication } from "../../../services/applicationService";
+import { manageApplication } from "../../../services/emailService";
+import { User } from "lucide-react";
 
-function FormModal({ isOpen, onClose, label, action, setAction, applicant, onSuccess }) {
+function FormModal({
+    isOpen,
+    onClose,
+    label,
+    action,
+    setAction,
+    applicant,
+    onSuccess,
+}) {
     const [applicantId, setApplicantId] = useState("");
     const [feedback, setFeedback] = useState("");
 
@@ -40,7 +49,7 @@ function FormModal({ isOpen, onClose, label, action, setAction, applicant, onSuc
             return;
         }
 
-        const success = await rejectApplication(applicant);
+        const success = await rejectApplication(applicant, feedback);
 
         if (success) {
             onClose(false);
@@ -68,16 +77,17 @@ function FormModal({ isOpen, onClose, label, action, setAction, applicant, onSuc
             <form onSubmit={handleSubmit} className="pt-4 pb-6 px-6">
                 {/* Form Inputs */}
                 <div>
-                    <p className="text-sm py-2 text-gray-600">
-                        Applicant Name:{" "}
-                        <span className="ml-2">
-                            {applicant?.first_name + " " + applicant?.last_name}
-                        </span>
+                    <p className="text-xs py-2 text-gray-600">
+                        Applicant Name
+                    </p>
+                    <p className="px-2 py-2.5 -mt-1.5 border bg-gray-100 text-gray-600 text-xs rounded-md flex items-center">
+                        <User className="w-4 h-4 mr-2 text-gray-500" />
+                        {applicant?.first_name + " " + applicant?.last_name}
                     </p>
                 </div>
                 <div>
-                    <label className="py-2 flex flex-col gap-[1px] text-gray-600 text-xs">
-                        Application ID
+                    <label className="mt-2 py-2 flex flex-col gap-[1px] text-gray-600 text-xs">
+                        Application ID *
                         <input
                             type="number"
                             value={applicantId}

@@ -163,15 +163,17 @@ class BatchExaminationController {
             // Get ID parameter if it exists
             $id = isset($_GET['batch']) ? $_GET['batch'] : null;
             $hasScore = isset($_GET['score']) ? $_GET['score'] : null;
+            $status = $_GET['status'] ?? null;
+            $sort = $_GET['sort'] ?? null;
 
             $result = [];
 
             if ($id == 'all') {
-                $result = $criteria->getBatches();
+                $result = $criteria->getBatches($status, $sort);
             } else if ($hasScore && $id.str_contains($id, "Batch")) {
-                $result = $criteria->getApplicantsByBatch($id);
+                $result = $criteria->getApplicantsByBatch($status, $sort, $id);
             } else if (!$hasScore && $id.str_contains($id, "Batch")) {
-                $result = $criteria->getApplicantsByBatch($id);
+                $result = $criteria->getApplicantsByBatch($status, $sort,$id);
             } 
                 
             if ($result) {

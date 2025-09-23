@@ -28,7 +28,7 @@ const formConfig = {
             name: "suffix",
             label: "Suffix",
             type: "select",
-            options: ["", "Jr", "Sr", "I", "II", "III", "IV"],
+            options: ["", "None", "Jr", "Sr", "I", "II", "III", "IV"],
             defaultValue: "",
             required: false,
         },
@@ -40,11 +40,11 @@ const formConfig = {
             defaultValue: "",
             required: true,
         },
-        { name: "age", label: "Age", type: "text", required: true },
+        { name: "age", label: "Age", type: "number", required: true },
         {
             name: "birthdate",
-            label: "Birthdate (mm/dd/yyyy)",
-            type: "text",
+            label: "Birthdate",
+            type: "date",
             required: true,
         },
         {
@@ -167,7 +167,7 @@ const formConfig = {
             type: "text",
             required: true,
         },
-        { name: "father_age", label: "Age", type: "text", required: true },
+        { name: "father_age", label: "Age", type: "number", required: true },
         {
             name: "father_education",
             label: "Educational Attainment",
@@ -183,7 +183,7 @@ const formConfig = {
         {
             name: "father_income",
             label: "Monthly Income",
-            type: "text",
+            type: "number",
             required: true,
         },
         {
@@ -200,7 +200,7 @@ const formConfig = {
             type: "text",
             required: true,
         },
-        { name: "mother_age", label: "Age", type: "text", required: true },
+        { name: "mother_age", label: "Age", type: "number", required: true },
         {
             name: "mother_education",
             label: "Educational Attainment",
@@ -216,7 +216,7 @@ const formConfig = {
         {
             name: "mother_income",
             label: "Monthly Income",
-            type: "text",
+            type: "number",
             required: true,
         },
         {
@@ -282,6 +282,14 @@ const formConfig = {
             name: "emergency_contact_number",
             label: "Contact Number",
             type: "text",
+            required: true,
+        },
+    ],
+    [FORM_SECTIONS.OTHER_INFORMATION]: [
+        {
+            name: "expectation",
+            label: "What is your expectation from Tzu Chi Foundation?",
+            type: "textarea",
             required: true,
         },
     ],

@@ -1,54 +1,99 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "../services/axiosConfig";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
+import { EyeClosed, EyeIcon } from "lucide-react";
 
-const LoginForm = () => {
+const LoginForm = ({ role }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, login, isAuthenticated } = useAuth();
 
+    const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // const userType = location.state;
-    // Get user type from location state or URL params
-    let userType = location.state?.type || "scholar";
+    // Get the intended destination from location state, or use default based on role
+    const from =
+        location.state?.from?.pathname || getDefaultDestination(role, user);
 
-    // ||
-    // new URLSearchParams(location.search).get("type") ||
-    // "User";
+    // Function to get default destination based on role and user type
+    function getDefaultDestination(loginRole, currentUser) {
+        if (currentUser && currentUser.type) {
+            // If user is already logged in, redirect to their dashboard
+            switch (currentUser.type) {
+                case "scholar":
+                    return "/scholar/dashboard";
+                case "staff":
+                    return "/staff/dashboard";
+                case "admin":
+                    return "/admin/dashboard";
+                default:
+                    return "/";
+            }
+        }
 
-    // Get the intended destination after login
-    // const from = location.state?.from?.pathname || "/scholar/dashboard";
-    // const from = location.state?.from?.pathname || "/scholar/dashboard";
-
-    // console.log('Check from variable: ', typeof from);
-
-    let from = null;
-
-    if (location.state?.from?.pathname) {
-        const path = location.state?.from?.pathname;
-        from = path
-            .substring(path.indexOf("/"), path.lastIndexOf("/"))
-            .concat("/dashboard");
-    } else if (userType === "scholar") {
-        from = "/scholar/dashboard";
-    } else if (userType === "staff") {
-        from = "/staff/dashboard";
-    } else if (userType === "admin") {
-        from = "/admin/dashboard";
+        // If no user, use the login role to determine default destination
+        switch (loginRole) {
+            case "scholar":
+                return "/scholar/dashboard";
+            case "staff":
+                return "/staff/dashboard";
+            case "admin":
+                return "/admin/dashboard";
+            default:
+                return "/";
+        }
     }
 
-    console.log("User Type:", userType);
-    console.log("Intended Destination:", from);
+    // Redirect if already authenticated and user type matches the login role
+    useEffect(() => {
+        if (isAuthenticated && user) {
+            // Check if user is trying to login with a different role than their account type
+            if (user.type !== role) {
+                toast.warning(
+                    `You are already logged in as ${user.type}. Please logout first to switch roles.`
+                );
+                return;
+            }
 
-    // Redirect if already authenticated
-    if (isAuthenticated) {
+            // If user type matches the login role, redirect to appropriate dashboard
+            navigate(from, { replace: true });
+        }
+    }, [isAuthenticated, user, role, from, navigate]);
+
+    // If already authenticated with matching role, redirect immediately
+    if (isAuthenticated && user && user.type === role) {
         return <Navigate to={from} replace />;
+    }
+
+    // If authenticated but with different role, show warning
+    if (isAuthenticated && user && user.type !== role) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+                <div className="bg-white p-10 rounded-xl shadow-lg w-[90%] sm:max-w-[450px] border border-gray-200">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                            Already Logged In
+                        </h2>
+                        <p className="text-gray-600 mb-6">
+                            You are currently logged in as{" "}
+                            <strong>{user.type}</strong>. Please logout first to
+                            access the {role} login.
+                        </p>
+                        <button
+                            onClick={() => navigate(`/${user.type}/dashboard`)}
+                            className="w-full p-3 text-white text-sm rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition duration-200 font-medium mr-2"
+                        >
+                            Go to {user.type} Dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     const handleLogin = async (e) => {
@@ -64,7 +109,7 @@ const LoginForm = () => {
             setLoading(true);
 
             const data = {
-                type: userType,
+                type: role,
                 email: email.trim(),
                 password: password,
             };
@@ -86,23 +131,22 @@ const LoginForm = () => {
             console.log("Login response:", result);
 
             if (result.success && result.token) {
+                // Verify that the user type matches the login role
+                if (result.user.type !== role) {
+                    setError(
+                        `This account is registered as ${result.user.type}, not ${role}. Please use the correct login page.`
+                    );
+                    return;
+                }
+
                 // Use the auth context login method
                 login(result.token, result.user);
 
                 toast.success("Login successful!");
 
-                // Navigate based on user type or intended destination
+                // Navigate to the intended destination or default dashboard
                 const destination =
-                    from !== "/dashboard"
-                        ? from
-                        : result.user.type === "scholar"
-                        ? "/scholar/dashboard"
-                        : result.user.type === "staff"
-                        ? "/staff/dashboard"
-                        : result.user.type === "admin"
-                        ? "/admin/dashboard"
-                        : "/";
-
+                    from || getDefaultDestination(role, result.user);
                 navigate(destination, { replace: true });
                 console.log("Navigating to:", destination);
             } else {
@@ -130,11 +174,11 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-            <div className="bg-white p-10 rounded-xl shadow-lg w-[90%] sm:max-w-[450px] border border-gray-200">
+        <div className="flex items-center justify-center min-h-screen">
+            <div className="bg-white p-10 rounded-xl shadow-lg absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-100%] w-[80%] sm:max-w-[400px] border border-gray-200">
                 <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold text-gray-800">
-                        {userType} Login
+                        {role.charAt(0).toUpperCase() + role.slice(1)} Login
                     </h2>
                     <p className="text-gray-600 text-sm">
                         Please sign in to your account
@@ -151,7 +195,7 @@ const LoginForm = () => {
                     <div>
                         <label
                             htmlFor="email"
-                            className="block text-sm font-medium text-gray-700 mb-2"
+                            className="block text-sm font-medium text-gray-700"
                         >
                             Email Address
                         </label>
@@ -169,19 +213,31 @@ const LoginForm = () => {
                     <div>
                         <label
                             htmlFor="password"
-                            className="block text-sm font-medium text-gray-700 mb-2"
+                            className="block text-sm font-medium text-gray-700"
                         >
                             Password
                         </label>
-                        <input
-                            id="password"
-                            type="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="w-full p-3 outline-none border border-gray-300 text-sm rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
-                        />
+                        <div className="relative">
+                            <input
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="w-full p-3 outline-none border border-gray-300 text-sm rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
+                            />
+                            <span
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="p-1 rounded-full cursor-pointer absolute top-[50%] right-2 translate-y-[-50%] hover:bg-gray-100"
+                            >
+                                {showPassword ? (
+                                    <EyeIcon className="w-4 h-4  text-gray-700" />
+                                ) : (
+                                    <EyeClosed className="w-4 h-4  text-gray-700" />
+                                )}
+                            </span>
+                        </div>
                     </div>
 
                     <button

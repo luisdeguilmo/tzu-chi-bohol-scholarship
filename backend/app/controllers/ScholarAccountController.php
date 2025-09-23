@@ -39,7 +39,7 @@ class ScholarAccountController {
                 $this->handlePost();
                 break;
             case "PUT":
-                // $this->handlePut();
+                $this->handlePut();
                 break;
             case "DELETE":
                 // $this->handleDelete();
@@ -86,16 +86,16 @@ class ScholarAccountController {
             foreach ($data['applicationIds'] as $applicationId) {
                 try {
                     // First update status
-                    if ($scholarAccount->updateApplicationStatusToScholar($applicationId)) {
-                        // Then create account
+                    // if ($scholarAccount->updateApplicationStatusToScholar($applicationId)) {
+                    //     // Then create account
                         if ($scholarAccount->createAccount($applicationId, $today)) {
                             $successCount++;
                         } else {
                             $errors[] = "Failed to create account for application ID: $applicationId";
                         }
-                    } else {
-                        $errors[] = "Failed to update status for application ID: $applicationId";
-                    }
+                    // } else {
+                    //     $errors[] = "Failed to update status for application ID: $applicationId";
+                    // }
                 } catch (\Exception $e) {
                     $errors[] = "Error processing application ID $applicationId: " . $e->getMessage();
                 }
@@ -170,6 +170,45 @@ class ScholarAccountController {
             ));
         }
     } 
+
+    private function handlePut() {
+        try {
+            $this->pdo->beginTransaction();
+            
+            $data = json_decode(file_get_contents("php://input"), true);
+            $action = $_GET['action'] ?? null;
+
+            if (!$data || !isset($data['scholarId'])) {
+                throw new \Exception("Missing required field: scholar_id");
+            }
+
+            $model = new ScholarAccountModel();
+
+            if ($action === 'activate') {
+                if (!$model->updateAccountStatus($data['scholarId'], 'active')) {
+                    throw new \Exception("Failed to activate account");
+                }
+            } else if ($action === 'deactivate') {
+                if (!$model->updateAccountStatus($data['scholarId'], 'deactivated')) {
+                    throw new \Exception("Failed to deactivate account");
+                }
+            } 
+
+            $this->pdo->commit();
+
+            http_response_code(200);
+            echo json_encode(array(
+                "success" => true,
+                "message" => "Account status updated successfully"
+            ));
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode(array(
+                "success" => false,
+                "message" => $e->getMessage()
+            ));
+        }
+    }
 }
 
 $controller = new ScholarAccountController();

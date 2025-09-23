@@ -10,7 +10,9 @@ require_once __DIR__ . "/../../vendor/autoload.php";
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/BatchModel.php';
 
+use App\Models\ApplicantModel;
 use App\Models\ScoreModel;
+use App\Models\SettingsModel;
 use Config\Database;
 
 class ScoreController {
@@ -34,10 +36,10 @@ class ScoreController {
                 // $this->handleGet();
                 break;
             case "POST":
-                $this->handlePost();
+                // $this->handlePost();
                 break;
             case "PUT":
-                // $this->handlePut();
+                $this->handlePut();
                 break;
             case "DELETE":
                 // $this->handleDelete();
@@ -49,7 +51,7 @@ class ScoreController {
         }
     }
 
-   private function handlePost() {
+   private function handlePut() {
     try {
         // Clear any previous output
         ob_clean();
@@ -71,9 +73,23 @@ class ScoreController {
         }
         
         $criteria = new ScoreModel();
+        $applicant = new ApplicantModel();
+        $settings = new SettingsModel();
         
         if (!$criteria->createScore($data, $id)) {
             throw new \Exception("Failed to save score information");
+        }
+
+        $passingScore = $settings->getPassingScore();
+
+        if ($data['score'] >= $passingScore) {
+            if (!$applicant->updateStatusToExamPassed($id)) {
+                throw new \Exception("Failed to update status");
+            }
+        } else {
+            if (!$applicant->updateStatusToExamFailed($id)) {
+                throw new \Exception("Failed to update status");
+            }
         }
         
         $this->pdo->commit();

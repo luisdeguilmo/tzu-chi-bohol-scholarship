@@ -22,8 +22,13 @@ const ScholarAccounts = () => {
     const [activeTab, setActiveTab] = useState("pending");
     const [headers, setHeaders] = useState(pendingScholarHeaders);
 
-    const { loading, scholars, createScholarAccount, fetchScholars } =
-        useScholarAccounts(activeTab);
+    const {
+        loading,
+        scholars,
+        createScholarAccount,
+        updateScholarAccountStatus,
+        fetchScholars,
+    } = useScholarAccounts(activeTab);
     const { profilePics, fetchAllPics } = useProfilePicture(scholars);
 
     useEffect(() => {
@@ -42,6 +47,7 @@ const ScholarAccounts = () => {
                 return [...prev, scholarId];
             }
         });
+        console.log("Selected Scholars:", selectedScholars);
     };
 
     // Select all visible scholars
@@ -121,6 +127,7 @@ const ScholarAccounts = () => {
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table
                         tableHeaders={headers}
+                        applications={scholars}
                         currentItems={currentItems}
                         selectedItems={selectedScholars}
                         selectAllVisible={selectAllVisible}
@@ -132,6 +139,7 @@ const ScholarAccounts = () => {
                                 selectedScholars={selectedScholars}
                                 toggleScholarSelection={toggleScholarSelection}
                                 profilePics={profilePics}
+                                onCreateAccount={createScholarAccount}
                             />
                         ) : (
                             <ScholarAccountsRow
@@ -139,41 +147,46 @@ const ScholarAccounts = () => {
                                 selectedAccounts={selectedScholars}
                                 toggleAccountSelection={toggleScholarSelection}
                                 profilePics={profilePics}
+                                onUpdateAccountStatus={
+                                    updateScholarAccountStatus
+                                }
                             />
                         )}
                     </Table>
 
                     {/* Empty state */}
                     {currentItems.length === 0 && (
-                        <EmptyState message="No applications found." />
+                        <EmptyState message="No pending scholars found." />
                     )}
                 </div>
 
                 {/* Pagination */}
                 {filteredScholars.length > 0 && (
                     <div className="flex justify-between items-center mt-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <button
-                                onClick={() =>
-                                    createScholarAccount(
-                                        selectedScholars,
-                                        setSelectedScholars
-                                    )
-                                }
-                                disabled={
-                                    selectedScholars.length === 0 || loading
-                                }
-                                className={`px-4 py-2 rounded-md ${
-                                    selectedScholars.length === 0 || loading
-                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                        : "bg-green-500 text-white hover:bg-green-600 transition-all"
-                                }`}
-                            >
-                                {loading
-                                    ? "Processing..."
-                                    : "Create Selected Accounts"}
-                            </button>
-                        </div>
+                        {activeTab === "pending" && (
+                            <div className="flex justify-between items-center mb-4">
+                                <button
+                                    onClick={() =>
+                                        createScholarAccount(
+                                            selectedScholars,
+                                            setSelectedScholars
+                                        )
+                                    }
+                                    disabled={
+                                        selectedScholars.length === 0 || loading
+                                    }
+                                    className={`px-4 py-3 rounded-md text-xs whitespace-nowrap ${
+                                        selectedScholars.length === 0 || loading
+                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                            : "bg-green-500 text-white hover:bg-green-600 transition-all"
+                                    }`}
+                                >
+                                    {loading
+                                        ? "Processing..."
+                                        : "Create Selected Accounts"}
+                                </button>
+                            </div>
+                        )}
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}

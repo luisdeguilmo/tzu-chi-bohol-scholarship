@@ -1,6 +1,13 @@
-import { Calendar } from "lucide-react";
+import { Archive, Calendar, HandHeart } from "lucide-react";
 
-const EmptyState = ({ searchTerm, activeTab, setSearchTerm }) => {
+const EmptyState = ({
+    section,
+    searchTerm,
+    activeTab,
+    setSearchTerm,
+    header,
+    subHeader,
+}) => {
     return (
         <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-24 h-24 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl flex items-center justify-center mb-6 border border-green-100">
@@ -18,24 +25,18 @@ const EmptyState = ({ searchTerm, activeTab, setSearchTerm }) => {
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                         />
                     </svg>
-                ) : (
+                ) : section === "events" ? (
                     <Calendar className="w-12 h-12 text-green-400" />
+                ) : section === "community_services" ? (
+                    <HandHeart className="w-12 h-12 text-green-400" />
+                ) : (
+                    <Archive className="w-12 h-12 text-green-400" />
                 )}
             </div>
             <h3 className="text-xl font-semibold text-slate-700 mb-2">
-                {searchTerm
-                    ? "No Results Found"
-                    : activeTab === "this_month"
-                    ? "No Activities This Month"
-                    : "No Activities Available"}
+                {header}
             </h3>
-            <p className="text-slate-500 max-w-md mb-4">
-                {searchTerm
-                    ? `No activities match your search for "${searchTerm}"`
-                    : activeTab === "this_month"
-                    ? "Check back soon for new volunteer opportunities this month!"
-                    : "New volunteer activities will appear here when available."}
-            </p>
+            <p className="text-slate-500 max-w-md mb-4">{subHeader}</p>
             {searchTerm && (
                 <button
                     onClick={() => setSearchTerm("")}

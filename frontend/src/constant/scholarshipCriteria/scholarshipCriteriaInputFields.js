@@ -23,7 +23,7 @@ const scholarshipCriteriaInputFields = {
     ],
 
     instructionInputFields: [
-        { name: "Instruction", type: "text", placeholder: "Enter instruction name" },
+        { name: "Instruction", type: "textarea", placeholder: "Enter instruction name" },
     ],
 }
 

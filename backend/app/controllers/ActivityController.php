@@ -10,7 +10,7 @@ require_once __DIR__ . "/../models/CertificateOfAppearanceModel.php";
 
 // CORS headers
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Methods: PUT, POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Content-Type: application/json");
 
@@ -45,7 +45,7 @@ class ActivityController {
                 $this->createActivity();
                 break;
             case "PUT":
-                // $this->handlePut();
+                $this->updateActivity();
                 break;
             case "DELETE":
                 // $this->handleDelete();
@@ -95,6 +95,47 @@ class ActivityController {
             ]);
         }
     }
+
+    public function updateActivity() {
+        $this->pdo->beginTransaction();
+        
+        try {
+            // Parse input data
+            $data = $this->parseInputData();
+            
+            if (!$data || !isset($data['activity'])) {
+                throw new \Exception("No activity data provided");
+            }
+            
+            // Extract files
+            $files = $_FILES['files'] ?? null;
+            $base64Files = $data['uploaded_files'] ?? null;
+            
+            // Create activity with files
+            $activityId = $this->activityService->updateActivityWithFiles(
+                $data['activity'], 
+                $data['existing_files'],
+                $data['existing_files_removed'],
+                $files, 
+                $base64Files
+            );
+            
+            $this->pdo->commit();
+            
+            $this->sendResponse(201, [
+                "success" => true,
+                "message" => "Activity created successfully",
+                "activity_id" => $activityId
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->pdo->rollBack();
+            $this->sendResponse(400, [
+                "success" => false,
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
     
     private function parseInputData() {
         if (isset($_POST['activityData'])) {
@@ -122,6 +163,8 @@ class ActivityController {
             if ($tab === 'all') {
                 $activities = $activityModel->getAllVolunteerActivitiesByScholarId($id, $tab);
             } else if ($tab === 'this_month') {
+                $activities = $activityModel->getAllVolunteerActivitiesByScholarId($id, $tab);
+            } else if ($tab === 'past') {
                 $activities = $activityModel->getAllVolunteerActivitiesByScholarId($id, $tab);
             }
 

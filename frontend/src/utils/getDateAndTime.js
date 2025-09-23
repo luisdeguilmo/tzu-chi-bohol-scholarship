@@ -6,6 +6,24 @@ export const date = {
     getCurrentTime: function () {
         return this.today.toTimeString().split(" ")[0];
     },
+    getCurrentMonth: function () {
+        const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+
+        return months[this.today.getMonth()];
+    },
     getCurrentDay: function () {
         const days = [
             "Sunday",

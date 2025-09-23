@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Pen, Plus } from "lucide-react";
 import SearchInput from "./SearchInput";
 
 const TableToolbar = ({
@@ -20,6 +20,7 @@ const TableToolbar = ({
     firstIndex,
     lastIndex,
     addButton = false,
+    addCreateBatchButton = false,
     children,
 }) => {
     return (
@@ -55,6 +56,23 @@ const TableToolbar = ({
                             Add New {label.slice(0, -1)}
                         </button>
                     )}
+                    {addCreateBatchButton && tab === "Batches" ? (
+                        <button
+                            onClick={() => onOpen(true)}
+                            className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                        >
+                            <Plus className="w-4 h-4 text-white" />
+                            Create New Batch
+                        </button>
+                    ) : addCreateBatchButton && tab === "Result" ? (
+                        <button
+                            onClick={() => onOpen(true)}
+                            className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                        >
+                            <Pen className="w-3.5 h-4 text-white" />
+                            Set Passing Score
+                        </button>
+                    ) : null}
                 </div>
             </div>
 
@@ -111,7 +129,7 @@ const TableToolbar = ({
                     {/* Left side - Selection info and actions */}
                     <div className="flex items-center gap-3">
                         <p className="text-xs text-slate-700">
-                            Total {label}: {items.length}
+                            Total {placeholder}: {items.length}
                         </p>
                     </div>
 

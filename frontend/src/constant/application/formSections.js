@@ -5,6 +5,7 @@ const FORM_SECTIONS = {
     FAMILY: "parents_guardian",
     CONTACT_PERSON: "contact_person",
     REQUIREMENTS: "requirements",
+    OTHER_INFORMATION: "other_information"
 };
 
 export default FORM_SECTIONS;

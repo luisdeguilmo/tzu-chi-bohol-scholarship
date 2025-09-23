@@ -22,6 +22,23 @@ class ScholarModel {
         $this->pdo = $db->getConnection();
     }
 
+    public function getAllScholars() {
+        $query = "SELECT s.*, u.status, u.email FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE u.status = 'active'";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getScholarById($id) {
+        $query = "SELECT s.*, u.status, u.email FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE s.account_id = :account_id AND u.status = 'active'";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":account_id", $id);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
     public function create($scholar, $application_id) {
         $query = "INSERT INTO " . $this->table_name . " 
                   SET application_id = :application_id,

@@ -11,7 +11,7 @@ const FamilySection = ({
     handleInputChange,
     prevStep,
     nextStep,
-    handleRenewSubmit,
+    // handleRenewSubmit,
     isLast,
 }) => {
     const [errors, setErrors] = useState({});
@@ -65,7 +65,8 @@ const FamilySection = ({
                 nextStep={nextStep}
                 formData={formData}
                 formConfig={formConfig}
-                handleRenewSubmit={handleRenewSubmit}
+                section={'Family'}
+                // handleRenewSubmit={handleRenewSubmit}
                 sections={[FORM_SECTIONS.FAMILY, FORM_SECTIONS.CONTACT_PERSON]}
             />
         </form>

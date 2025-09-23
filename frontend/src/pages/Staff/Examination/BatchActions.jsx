@@ -6,9 +6,10 @@ import SetScheduleForm from "./SetScheduleForm";
 import { Send } from "lucide-react";
 
 export default function BatchActions({
+    applications,
     isModalOpen,
     setIsModalOpen,
-    handleSendSchedule,
+    // handleSendSchedule,
     selectedBatchInBatches,
     setIsOpen,
     onSuccess,
@@ -76,24 +77,18 @@ export default function BatchActions({
                 selectedBatchInBatches === "all" ? "hidden" : "block"
             }`}
         >
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2">
                 {batches[batches.length - 1]?.batch_name ===
                 selectedBatchInBatches ? (
                     <>
                         <SetScheduleForm
+                            applications={applications}
                             isOpen={isModalOpen}
                             setIsOpen={setIsModalOpen}
                             batches={batches}
                             selectedBatch={selectedBatchInBatches}
                             onSuccess={onSuccess}
                         />
-                        <button
-                            onClick={handleSendSchedule}
-                            className="text-blue-600 text-xs rounded-lg hover:underline transition-colors flex items-center"
-                        >
-                            <Send className="w-4 h-4 mr-1" />
-                            Send Email
-                        </button>
 
                         <DeleteBatchButton
                             handleDeleteBatch={handleDeleteBatch}
@@ -103,19 +98,13 @@ export default function BatchActions({
                 ) : (
                     <>
                         <SetScheduleForm
+                            applications={applications}
                             isOpen={isModalOpen}
                             setIsOpen={setIsModalOpen}
                             batches={batches}
                             selectedBatch={selectedBatchInBatches}
                             onSuccess={onSuccess}
                         />
-                        <button
-                            onClick={handleSendSchedule}
-                            className="text-blue-600 text-xs rounded-lg hover:underline transition-colors flex items-center"
-                        >
-                            <Send className="w-4 h-4 mr-1" />
-                            Send Email
-                        </button>
                     </>
                 )}
             </div>

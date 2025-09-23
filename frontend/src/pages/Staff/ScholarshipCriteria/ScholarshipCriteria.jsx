@@ -11,7 +11,7 @@ import {
     instructionsTableConfig,
 } from "../../../constant/scholarshipCriteria/scholarshipCriteriaTableConfig";
 import scholarshipCriteriaInputFields from "../../../constant/scholarshipCriteria/scholarshipCriteriaInputFields";
-import ScholarshipCriteriaTable from "./Table";
+import ScholarshipCriteriaTable from "./ScholarshipCriteriaTable";
 import { scholarshipCriteriaButtons } from "../../../constant/tableToolbarButtons";
 
 const ScholarshipCriteria = () => {
@@ -164,6 +164,7 @@ const ScholarshipCriteria = () => {
             onRefresh={fetchItems}
             tableConfig={tableConfig}
             editItem={updateItem}
+            deleteItem={handleDelete}
             formFields={inputFields}
             paginationState={paginationState}
             sortBy={sortBy}

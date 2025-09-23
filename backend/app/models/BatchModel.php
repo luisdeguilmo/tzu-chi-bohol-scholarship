@@ -64,7 +64,7 @@ class BatchModel {
 
     public function createSchedule($data, $id) {
     try {
-        $query = "UPDATE " . $this->table_name . " SET schedule = :schedule WHERE batch_name = :batch_name";
+        $query = "UPDATE " . $this->table_name . " SET schedule = :schedule, venue = :venue WHERE batch_name = :batch_name";
         $stmt = $this->pdo->prepare($query);
         
         if (!isset($data['schedule'])) {
@@ -72,8 +72,10 @@ class BatchModel {
         }
         
         $schedule = htmlspecialchars(strip_tags($data['schedule']));
+        $venue = htmlspecialchars(strip_tags($data['venue']));
         
         $stmt->bindParam(":schedule", $schedule);
+        $stmt->bindParam(":venue", $venue);
         $stmt->bindParam(":batch_name",  $id);
         
         return $stmt->execute();

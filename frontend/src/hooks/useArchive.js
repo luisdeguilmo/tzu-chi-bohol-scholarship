@@ -8,7 +8,7 @@ export const useArchive = (tab, userId) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchArchivedActivities = async (tab, userId) => {
+    const fetchArchivedActivities = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
@@ -86,7 +86,9 @@ export const useArchive = (tab, userId) => {
     };
 
     useEffect(() => {
-        fetchArchivedActivities(tab, userId);
+        if (tab && userId) {
+            fetchArchivedActivities(tab, userId);
+        }
     }, [tab, userId]);
 
     return {

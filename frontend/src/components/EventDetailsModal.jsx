@@ -3,9 +3,9 @@ import { formatDate } from "../utils/formatDate";
 import { formatTime } from "../utils/formatTime";
 import { date } from "../utils/getDateAndTime";
 import React, { useEffect, useMemo, useState } from "react";
-import EventButton from "../pages/Scholar/EventButton";
 import { convertTo24HourFormat } from "../utils/convertTo24HourFormat";
-import ConfirmationModal from "./ConfirmationModal";
+import EventButton from "../pages/Scholar/Events/EventButton";
+import ConfirmationModal from "../pages/Staff/Event/ConfirmationModal";
 
 const EventDetailsModal = React.memo(
     ({
@@ -20,49 +20,6 @@ const EventDetailsModal = React.memo(
         activeTab,
         isScholar = false,
     }) => {
-        const participants = [
-            "Alice Johnson",
-            "Bob Smith",
-            "Charlie Brown",
-            "Diana Prince",
-            "Ethan Hunt",
-            "Fiona Gallagher",
-            "George Costanza",
-            "Hannah Montana",
-            "Ian Malcolm",
-            "Jane Doe",
-            "Kevin Hart",
-            "Laura Croft",
-            "Michael Scott",
-            "Nina Simone",
-            "Oliver Twist",
-            "Paula Patton",
-            "Quentin Tarantino",
-            "Rachel Green",
-            "Sam Winchester",
-            "Tina Fey",
-            "Ursula K. Le Guin",
-            "Victor Frankenstein",
-            "Winston Churchill",
-            "Xena Warrior Princess",
-            "Kevin Hart",
-            "Laura Croft",
-            "Michael Scott",
-            "Nina Simone",
-            "Oliver Twist",
-            "Paula Patton",
-            "Quentin Tarantino",
-            "Rachel Green",
-            "Sam Winchester",
-            "Tina Fey",
-            "Ursula K. Le Guin",
-            "Victor Frankenstein",
-            "Winston Churchill",
-            "Xena Warrior Princess",
-        ];
-
-        console.log(event?.participants);
-
         const [isOpenSelectedScholarModal, setIsOpenSelectedScholarModal] =
             useState(false);
         const [method, setMethod] = useState("");
@@ -93,6 +50,8 @@ const EventDetailsModal = React.memo(
                 setRenderedHours("");
             }
         }, [method]);
+
+        console.log(event);
 
         return (
             <div
@@ -127,7 +86,7 @@ const EventDetailsModal = React.memo(
                     {/* Content */}
                     <div className="max-h-[400px] overflow-y-auto scroll-smooth p-6 space-y-6">
                         {/* Event Details Grid */}
-                        <div className="grid grid-cols-2 sm:gap-4 gap-6 text-xs">
+                        <div className="grid grid-cols-2 sm:gap-12 gap-14 text-xs">
                             <div className="space-y-3">
                                 <div className="flex items-center text-slate-600">
                                     <Calendar className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
@@ -174,7 +133,13 @@ const EventDetailsModal = React.memo(
                         </div>
 
                         <div>
-                            <h3 className="text-xs text-gray-700 font-bold">
+                            <h3
+                                className={`${
+                                    event?.participants?.length > 0
+                                        ? "block"
+                                        : "hidden"
+                                } text-xs text-gray-700 font-bold`}
+                            >
                                 {event?.date + " " + event?.end_time >
                                 date.getCurrentDateAndTime()
                                     ? "Scholars Who Will Participate:"
@@ -236,64 +201,66 @@ const EventDetailsModal = React.memo(
                         </div>
 
                         {event?.date + " " + event?.end_time <
-                            date.getCurrentDateAndTime() && isStaff && (
-                            <div>
-                                <h3 className="text-xs text-gray-700 font-bold">
-                                    Rendered Hours:
-                                </h3>
-                                <form className="mt-4">
-                                    <div className="block mb-4 relative">
-                                        <label className="mb-1 text-xs text-slate-600 flex gap-1 items-center">
-                                            <input
-                                                value={method}
-                                                onChange={() =>
-                                                    setMethod("automatic")
-                                                }
-                                                name="rendered"
-                                                type="radio"
-                                                className="accent-green-600"
-                                            />
-                                            Based on the event's start and end
-                                            time
-                                        </label>
-                                        <label className="text-xs text-slate-600 flex gap-1 items-center">
-                                            <input
-                                                value={method}
-                                                onChange={() =>
-                                                    setMethod("manual")
-                                                }
-                                                name="rendered"
-                                                type="radio"
-                                                className="accent-green-600"
-                                            />
-                                            Enter number of hour(s) manually
-                                        </label>
-                                    </div>
-
-                                    {method === "manual" && (
-                                        <div className="block mb-2 relative">
-                                            <label className="block mb-1 text-gray-600 text-xs">
-                                                Rendered Hours
+                            date.getCurrentDateAndTime() &&
+                            isStaff && (
+                                <div>
+                                    <h3 className="text-xs text-gray-700 font-bold">
+                                        Rendered Hours:
+                                    </h3>
+                                    <form className="mt-4">
+                                        <div className="block mb-4 relative">
+                                            <label className="mb-1 text-xs text-slate-600 flex gap-1 items-center">
+                                                <input
+                                                    value={method}
+                                                    onChange={() =>
+                                                        setMethod("automatic")
+                                                    }
+                                                    name="rendered"
+                                                    type="radio"
+                                                    className="accent-green-600"
+                                                />
+                                                Based on the event's start and
+                                                end time
                                             </label>
-                                            <input
-                                                type="number"
-                                                min={1}
-                                                value={renderedHours}
-                                                onChange={(e) =>
-                                                    setRenderedHours(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                required
-                                                placeholder="Enter number of hours"
-                                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
-                                            />
+                                            <label className="text-xs text-slate-600 flex gap-1 items-center">
+                                                <input
+                                                    value={method}
+                                                    onChange={() =>
+                                                        setMethod("manual")
+                                                    }
+                                                    name="rendered"
+                                                    type="radio"
+                                                    className="accent-green-600"
+                                                />
+                                                Enter number of hour(s) manually
+                                            </label>
                                         </div>
-                                    )}
-                                </form>
-                            </div>
-                        )}
+
+                                        {method === "manual" && (
+                                            <div className="block mb-2 relative">
+                                                <label className="block mb-1 text-gray-600 text-xs">
+                                                    Rendered Hours
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    min={1}
+                                                    value={renderedHours}
+                                                    onChange={(e) =>
+                                                        setRenderedHours(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    required
+                                                    placeholder="Enter number of hours"
+                                                    className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                                />
+                                            </div>
+                                        )}
+                                    </form>
+                                </div>
+                            )}
                     </div>
+
                     <div className="p-4 flex flex-col sm:flex-row gap-3 border-t border-slate-200">
                         <button
                             onClick={() => onClose(false)}
@@ -306,6 +273,9 @@ const EventDetailsModal = React.memo(
                             event?.date + " " + event?.end_time >
                                 date.getCurrentDateAndTime() && (
                                 <EventButton
+                                    hasJoinButton={
+                                        event?.event_type === "optional"
+                                    }
                                     setIsOpen={onClose}
                                     joinEvent={joinEvent}
                                     cancelEvent={cancelEvent}
@@ -319,12 +289,12 @@ const EventDetailsModal = React.memo(
                             event?.date + " " + event?.end_time <
                                 date.getCurrentDateAndTime() && (
                                 <button
-                                    onClick={() =>
-                                        setIsOpenSelectedScholarModal(true)
-                                    }
+                                    onClick={() => {
+                                        console.log("Clicked");
+                                        setIsOpenSelectedScholarModal(true);
+                                    }}
                                     type="submit"
                                     className="flex-1 text-sm bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200"
-                                    disabled
                                 >
                                     Record
                                 </button>
@@ -335,6 +305,7 @@ const EventDetailsModal = React.memo(
                 <ConfirmationModal
                     isOpen={isOpenSelectedScholarModal}
                     onClose={setIsOpenSelectedScholarModal}
+                    event={event}
                     participants={event?.participants}
                     eventId={event?.id}
                     selectedScholars={selectedScholars}

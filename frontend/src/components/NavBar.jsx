@@ -5,9 +5,9 @@ import { useState } from "react";
 function NavLinks({ isMobile = false, onLinkClick }) {
     const navigate = useNavigate();
 
-    const staff = { type: "Staff" };
-    const admin = { type: "Admin" };
-    const scholar = { type: "Scholar" };
+    const staff = { type: "staff" };
+    const admin = { type: "admin" };
+    const scholar = { type: "scholar" };
 
     const handleNavigation = (path, state) => {
         navigate(path, { state });
@@ -24,7 +24,9 @@ function NavLinks({ isMobile = false, onLinkClick }) {
         >
             <ul
                 className={`${
-                    isMobile ? " last:flex flex-col gap-4" : "flex gap-8 items-center"
+                    isMobile
+                        ? " last:flex flex-col gap-4"
+                        : "flex gap-8 items-center"
                 } text-sm font-medium`}
             >
                 <li>
@@ -49,7 +51,7 @@ function NavLinks({ isMobile = false, onLinkClick }) {
                 </li>
                 <li>
                     <button
-                        onClick={() => handleNavigation("/login", staff)}
+                        onClick={() => handleNavigation("/login/staff")}
                         className="hover:text-green-600 transition-colors duration-200 relative group"
                     >
                         Staff
@@ -58,7 +60,7 @@ function NavLinks({ isMobile = false, onLinkClick }) {
                 </li>
                 <li>
                     <button
-                        onClick={() => handleNavigation("/login", admin)}
+                        onClick={() => handleNavigation("/login/admin")}
                         className="hover:text-green-600 transition-colors duration-200 relative group"
                     >
                         Admin
@@ -91,25 +93,27 @@ function NavBar({ isScrolled }) {
                 {!isScrolled && (
                     <div className="w-[90%] mx-auto border-b border-gray-200">
                         <div className="max-w-7xl mx-auto px-6 py-2">
-                            <div className="flex justify-end items-center gap-4">
-                                <p className="mr-auto text-slate-500 text-xs md:text-sm">Bohol, Philippines</p>
+                            <div className="flex justify-end items-center gap-3">
+                                <p className="mr-auto text-slate-500 text-xs md:text-sm">
+                                    Bohol, Philippines
+                                </p>
                                 <a
                                     href="#"
                                     className="text-gray-400 hover:text-green-600 transition-colors duration-200"
                                 >
-                                    <i className="fa-brands fa-facebook text-lg"></i>
+                                    <i className="fa-brands fa-facebook text-sm"></i>
                                 </a>
                                 <a
                                     href="#"
                                     className="text-gray-400 hover:text-green-600 transition-colors duration-200"
                                 >
-                                    <i className="fa-brands fa-instagram text-lg"></i>
+                                    <i className="fa-brands fa-instagram text-sm"></i>
                                 </a>
                                 <a
                                     href="#"
                                     className="text-gray-400 hover:text-green-600 transition-colors duration-200"
                                 >
-                                    <i className="fa-brands fa-youtube text-lg"></i>
+                                    <i className="fa-brands fa-youtube text-sm"></i>
                                 </a>
                             </div>
                         </div>
@@ -188,7 +192,11 @@ function NavBar({ isScrolled }) {
                         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
                         onClick={toggleMobileMenu}
                     ></div>
-                    <div className="fixed top-32 left-[50%] translate-x-[-50%] h-[max-content] w-[80%] bg-white shadow-2xl transform transition-transform duration-300">
+                    <div
+                        className={`fixed ${
+                            isScrolled ? "top-[77px]" : "top-[120px]"
+                        } left-[50%] translate-x-[-50%] h-[max-content] w-[80%] bg-white shadow-2xl transform transition-transform duration-300`}
+                    >
                         <div className="py-6 px-10">
                             <nav className="mb-8 text-center">
                                 <NavLinks
@@ -201,7 +209,7 @@ function NavBar({ isScrolled }) {
                                     navigate("/application");
                                     toggleMobileMenu();
                                 }}
-                                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md"
+                                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-md"
                             >
                                 Apply Now
                             </button>

@@ -123,10 +123,10 @@ const ReviewedApplications = () => {
                             key={info.application_id}
                             className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
                         >
-                            <td className="py-3 whitespace-nowrap text-gray-900 font-bold">
+                            <td className="py-2 whitespace-nowrap text-gray-600 font-bold">
                                 {info.application_id}
                             </td>
-                            <td className="py-3 flex justify-start whitespace-nowrap text-sm text-gray-700">
+                            <td className="py-2 flex justify-start whitespace-nowrap text-sm text-gray-700">
                                 <div className="w-[30%]"></div>
                                 <div className="w-[max-content] flex text-left gap-2">
                                     <img
@@ -135,7 +135,7 @@ const ReviewedApplications = () => {
                                         className="w-10 h-10 object-cover rounded-full mx-auto"
                                     />
                                     <div>
-                                        <p className="font-bold">
+                                        <p className="font-bold text-xs">
                                             {info.first_name +
                                                 " " +
                                                 info.last_name}
@@ -146,15 +146,7 @@ const ReviewedApplications = () => {
                                     </div>
                                 </div>
                             </td>
-                            <td className="py-3 whitespace-nowrap text-gray-500">
-                                {formatDateTime(info.created_at)}
-                            </td>
-                            <td className="py-3 whitespace-nowrap text-gray-500">
-                                {info.approved_at
-                                    ? formatDateTime(info.approved_at)
-                                    : "--"}
-                            </td>
-                            <td className="py-3 whitespace-nowrap text-gray-500">
+                            <td className="py-2 whitespace-nowrap text-gray-500">
                                 <span
                                     className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium ${
                                         info.is_application_approved
@@ -169,7 +161,15 @@ const ReviewedApplications = () => {
                                         : "--"}
                                 </span>
                             </td>
-                            <td className="py-3 whitespace-nowrap font-medium">
+                            <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
+                                {formatDateTime(info.created_at)}
+                            </td>
+                            <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
+                                {info.approved_at
+                                    ? formatDateTime(info.approved_at)
+                                    : "--"}
+                            </td>
+                            <td className="py-2 whitespace-nowrap font-medium">
                                 <button
                                     onClick={() => viewPdf(info.application_id)}
                                     className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"

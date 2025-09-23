@@ -32,7 +32,9 @@ const RequirementsSection = ({
                 isLast={false}
                 prevStep={prevStep}
                 nextStep={nextStep}
+                formData={formData}
                 sections={null}
+                section={"Requirements"}
             />
         </div>
     );

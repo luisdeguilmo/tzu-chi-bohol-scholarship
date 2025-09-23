@@ -170,23 +170,23 @@ function Accordion() {
             title: "SHS Track Legend & College Courses",
             content: (
                 <>
-                    <h3 className="font-bold text-center">
+                    <h3 className="font-bold text-center text-gray-800">
                         Senior High School Track Legend
                     </h3>
                     <ul className="my-6 list-none list-inside columns-2 text-sm space-y-2">
                         {strands.map((strand, index) => (
-                            <li key={index}>
-                                <span className="font-bold">
+                            <li key={index} className="text-xs">
+                                <span className="font-bold text-gray-800">
                                     {strand.strand}
                                 </span>{" "}
                                 -{" "}
-                                <span className="text-gray-800">
+                                <span className="text-gray-700">
                                     {strand.description}
                                 </span>
                             </li>
                         ))}
                     </ul>
-                    <h3 className="font-bold text-center">
+                    <h3 className="font-bold text-center text-gray-800">
                         List of Courses Accepted for College
                     </h3>
                     <ul
@@ -236,7 +236,7 @@ function Accordion() {
                     <tbody className="text-sm">
                         {requirements.map((requirement, index) => (
                             <tr key={index} className={tableStyle}>
-                                <td className={tableStyle}>
+                                <td className={`${tableStyle} text-center`}>
                                     {requirement.quantity}
                                 </td>
                                 <td className={tableStyle}>
@@ -308,7 +308,7 @@ function Accordion() {
                         )}
                     </button>
                     <div
-                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        className={`overflow-hidden transition-all duration-300 ${
                             openAccordionIndex === index
                                 ? "max-h-full"
                                 : "max-h-0"

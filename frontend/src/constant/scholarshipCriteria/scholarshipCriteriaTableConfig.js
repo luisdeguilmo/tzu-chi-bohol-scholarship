@@ -3,7 +3,7 @@ export const strandsTableConfig = {
     headers: [
         { name: 'strand', label: 'Strand' },
         { name: 'description', label: 'Description' },
-        { name: 'actions', label: 'Actions' }
+        { name: 'action', label: 'Actions' }
     ],
     fields: [
         {
@@ -30,7 +30,7 @@ export const strandsTableConfig = {
 export const coursesTableConfig = {
     headers: [
         { name: "course", label: "Course" },
-        { name: "actions", label: "Action" },
+        { name: "action", label: "Action" },
     ],
     fields: [
         {
@@ -48,7 +48,7 @@ export const coursesTableConfig = {
 export const qualificationsTableConfig = {
     headers: [
         { name: "qualification", label: "Qualifications" },
-        { name: "actions", label: "Action" },
+        { name: "action", label: "Action" },
     ],
     fields: [
         {
@@ -69,7 +69,7 @@ export const requirementsTableConfig = {
         { name: 'quantity', label: 'Quantity' },
         { name: 'description', label: 'Description' },
         { name: 'submit', label: 'Submit During' },
-        { name: "actions", label: "Action" },
+        { name: "action", label: "Action" },
     ],
     fields: [
         {
@@ -77,7 +77,7 @@ export const requirementsTableConfig = {
             type: 'text',
             placeholder: 'Enter quantity',
             required: true,
-            className: 'py-3 text-left whitespace-nowrap text-gray-500'
+            className: 'py-3 pl-6 text-left whitespace-nowrap text-gray-500'
         },
         {
             name: 'description',
@@ -103,7 +103,7 @@ export const requirementsTableConfig = {
 export const proceduresTableConfig = {
     headers: [
         { name: "procedure", label: "Procedures" },
-        { name: "actions", label: "Action" },
+        { name: "action", label: "Action" },
     ],
     fields: [
         {
@@ -121,12 +121,12 @@ export const proceduresTableConfig = {
 export const instructionsTableConfig = {
     headers: [
         { name: "instruction", label: "Instructions" },
-        { name: "actions", label: "Action" },
+        { name: "action", label: "Action" },
     ],
     fields: [
         {
             name: "instruction",
-            type: "text",
+            type: "textarea",
             placeholder: "Enter instruction",
             required: true,
             className: "py-3 text-left whitespace-nowrap text-gray-500",

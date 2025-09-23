@@ -1,5 +1,5 @@
 import { convertImageToBase64 } from "./convertImageToBase64";
-import { getProfilePicture } from "./getProfilePicture";
+import { getProfilePicture } from "./getPdfProfilePicture";
 import { getRequirements } from "./getRequirements";
 import FormLogo from "/src/assets/form_logo.png";
 
@@ -8,6 +8,8 @@ export const generatePDF = async (action, applicationId, applicantData) => {
         alert("No student data available");
         return;
     }
+
+    console.log(applicantData);
 
     try {
         console.log("Starting PDF generation...");
@@ -67,6 +69,7 @@ export const generatePDF = async (action, applicationId, applicantData) => {
             educationalBackground,
             familyInfo,
             otherAssistance,
+            characterReference
         } = applicantData;
 
         const content = [
@@ -967,7 +970,113 @@ export const generatePDF = async (action, applicationId, applicantData) => {
                 },
             },
             {
-                pageBreak: "before", 
+                pageBreak: "before",
+                stack: [
+                    {
+                        image: logoBase64, // dynamic Base64 from import
+                        width: 300,
+                        alignment: "center",
+                        absolutePosition: { y: 10 },
+                    },
+                    {
+                        text: "What is your expectation from Tzu Chi Foundation?",
+                        fontSize: 12,
+                        bold: true,
+                        alignment: "left",
+                        margin: [0, 40, 0, 0],
+                    },
+                    {
+                        text: applicationInfo.expectation,
+                        fontSize: 10,
+                        alignment: "left",
+                        margin: [10, 10, 10, 10],
+                    },
+
+                    {
+                        text: "CHARACTER REFERENCE",
+                        fontSize: 12,
+                        bold: true,
+                        margin: [0, 10, 0, 5],
+                    },
+
+                    // Tzu Chi Siblings Table
+                    {
+                        table: {
+                            headerRows: 1,
+                            widths: ["*", "*", "*", "*", "*"],
+                            body: [
+                                [
+                                    {
+                                        text: "NAME",
+                                        bold: true,
+                                        alignment: "center",
+                                        fontSize: 7,
+                                        fillColor: "#f0f0f0",
+                                    },
+                                    {
+                                        text: "ADDRESS",
+                                        bold: true,
+                                        alignment: "center",
+                                        fontSize: 7,
+                                        fillColor: "#f0f0f0",
+                                    },
+                                    {
+                                        text: "COMPANY",
+                                        bold: true,
+                                        alignment: "center",
+                                        fontSize: 7,
+                                        fillColor: "#f0f0f0",
+                                    },
+                                    {
+                                        text: "POSITION",
+                                        bold: true,
+                                        alignment: "center",
+                                        fontSize: 7,
+                                        fillColor: "#f0f0f0",
+                                    },
+                                    {
+                                        text: "CONTACT #",
+                                        bold: true,
+                                        alignment: "center",
+                                        fontSize: 7,
+                                        fillColor: "#f0f0f0",
+                                    },
+                                ],
+                                // Dynamically generate rows for tzu chi siblings
+                                ...(characterReference?.map((character) => [
+                                    {
+                                        text:
+                                            character.name || "",
+                                        fontSize: 10,
+                                    },
+                                    {
+                                        text: character.address || "",
+                                        fontSize: 10,
+                                    },
+                                    {
+                                        text: character.company || "",
+                                        fontSize: 10,
+                                    },
+                                    {
+                                        text: character.position || "",
+                                        fontSize: 10,
+                                    },
+                                    {
+                                        text: character.contact_number || "",
+                                        fontSize: 10,
+                                    },
+                                ]) || [
+                                    ["", "", "", "", ""],
+                                    ["", "", "", "", ""],
+                                    ["", "", "", "", ""],
+                                ]),
+                            ],
+                        },
+                    },
+                ],
+            },
+            {
+                pageBreak: "before",
                 stack: [
                     {
                         text: "Requirements",

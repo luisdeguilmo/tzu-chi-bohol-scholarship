@@ -73,7 +73,6 @@ class ApplicationManagementController {
             $_ENV['ORG_CONTACT']
         );
 
-
         try {
             $this->pdo->beginTransaction();
             
@@ -84,32 +83,97 @@ class ApplicationManagementController {
                 throw new \Exception("No data provided");
             }
 
-            if (empty($data['application_id'])) {
-                throw new \Exception('Application ID is required');
-            }
+            // if (empty($data['application_id'])) {
+            //     throw new \Exception('Application ID is required');
+            // }
 
-            if (!in_array($action, ['approve', 'reject'])) {
-                throw new \Exception('Invalid action. Must be either "approve" or "reject"');
+            if (!in_array($action, ['approve', 'reject', 'send_schedule', 'examination_passed', 'examination_failed', 'interview_passed', 'interview_failed', 'home_visitation_passed', 'home_visitation_failed', 'final_interview_passed', 'final_interview_failed'])) {
+                throw new \Exception('Invalid action. Must be either "approve", "reject", "send_schedule", "examination_passed", or "examination_failed", "interview_passed", "interview_failed"');
             }
             
             $applicant = new ApplicantModel();
 
             if ($action === 'approve') {
-                if (!$applicant->approveApplication($data)) {
-                    throw new \Exception("Failed to approve application");
-                }
-                
                 if (!$emailService->sendApplicationApprovalEmail($data)) {
                     throw new \Exception("Application approved but failed to send approval email");
                 }
-                
+
+                if (!$applicant->approveApplication($data)) {
+                    throw new \Exception("Failed to approve application");
+                }
             } else if ($action === 'reject') {
+                if (!$emailService->sendApplicationRejectionEmail($data)) {
+                    throw new \Exception("Application rejected but failed to send rejection email");
+                }
+                
                 if (!$applicant->rejectApplication($data)) {
                     throw new \Exception("Failed to reject application");
                 }
-                
-                if (!$emailService->sendApplicationRejectionEmail($data)) {
-                    throw new \Exception("Application rejected but failed to send rejection email");
+            } else if ($action === 'send_schedule') {
+                foreach ($data['applicants'] as $applicant) {
+                    if (!$emailService->sendExaminationScheduleEmail($applicant, $data['batch'], $data['date'], $data['time'], $data['venue'])) {
+                        throw new \Exception("Failed to send examination schedule email");
+                    }
+                }
+            } else if ($action === 'examination_passed') {
+                foreach ($data['applicants'] as $applicant) {
+                    if (!$emailService->sendExaminationPassedEmail($applicant)) {
+                        throw new \Exception("Failed to send email");
+                    }
+                }
+            } else if ($action === 'examination_failed') {
+                foreach ($data['applicants'] as $applicant) {
+                    if (!$emailService->sendExaminationFailedEmail($applicant)) {
+                        throw new \Exception("Failed to send email");
+                    }
+                }
+            } else if ($action === 'interview_passed') {
+                if (!$emailService->sendInitialInterviewPassedEmail($data)) {
+                    throw new \Exception("Failed to send email");
+                }
+
+                if (!$applicant->updateStatusToInitialInterviewPassed($data['application_id'])) {
+                    throw new \Exception("Failed to update status");
+                } 
+            } else if ($action === 'interview_failed') {
+                if (!$emailService->sendInitialInterviewFailedEmail($data)) {
+                    throw new \Exception("Failed to send email");
+                }
+
+                if (!$applicant->updateStatusToInitialInterviewFailed($data['application_id'])) {
+                    throw new \Exception("Failed to update status");
+                }
+            } else if ($action === 'home_visitation_passed') {
+                if (!$emailService->sendHomeVisitationPassedEmail($data)) {
+                    throw new \Exception("Failed to send email");
+                }
+
+                if (!$applicant->updateStatusToHomeVisitationPassed($data['application_id'])) {
+                    throw new \Exception("Failed to update status");
+                } 
+            } else if ($action === 'home_visitation_failed') {
+                if (!$emailService->sendHomeVisitationFailedEmail($data)) {
+                    throw new \Exception("Failed to send email");
+                }
+
+                if (!$applicant->updateStatusToHomeVisitationFailed($data['application_id'])) {
+                    throw new \Exception("Failed to update status");
+                }
+            } else if ($action === 'final_interview_passed') {
+                if (!$emailService->sendFinalInterviewPassedEmail($data)) {
+                    throw new \Exception("Failed to send email");
+                }
+
+                if (!$applicant->updateStatusToFinalInterviewPassed($data['application_id'])) {
+                    throw new \Exception("Failed to update status");
+                } 
+            } else if ($action === 'final_interview_failed') {
+                if (!$emailService->sendFinalInterviewFailedEmail($data)) {
+                    throw new \Exception("Failed to send email");
+                }
+
+                if (!$applicant->updateStatusToFinalInterviewPassed($data['application_id'])) {
+                    throw new \Exception("Failed to update status");
                 }
             }
             

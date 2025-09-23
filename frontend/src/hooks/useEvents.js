@@ -8,11 +8,11 @@ export const useEvents = (tab, userId) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchEvents = async (tab, scholarId) => {
+    const fetchEvents = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/events.php?tab=${tab}&id=${scholarId}&is_scholar=true`
+                `${BASE_URL}app/views/events.php?tab=${tab}&id=${userId}&is_scholar=true`
             );
             // Set application periods data
             setEvents(response.data.data || []);
@@ -92,7 +92,9 @@ export const useEvents = (tab, userId) => {
     };
 
     useEffect(() => {
-        fetchEvents(tab, userId);
+        if (tab && userId) {
+            fetchEvents();
+        }
     }, [tab, userId]);
 
     return {
@@ -100,6 +102,6 @@ export const useEvents = (tab, userId) => {
         joinEvent,
         cancelEvent,
         events,
-        fetchEvents
+        fetchEvents,
     };
 };

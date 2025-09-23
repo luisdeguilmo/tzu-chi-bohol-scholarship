@@ -32,34 +32,49 @@ class EventsModel {
     }
     
     public function createEvent($data) {
-        // Check if there's already an active application period
-        
-        // Calculate status based on dates
-        // $status = $data['status'];
-        
         $query = "INSERT INTO " . $this->table_name . " 
-                  SET event_name = :event_name,
-                  date= :event_date,
-                  start_time= :start_time,
-                  end_time= :end_time,
-                  event_location = :event_location,
-                  created_at = NOW()";
-                  
+                SET event_name = :event_name,
+                    event_type = :event_type,
+                    `date` = :event_date,
+                    start_time = :start_time,
+                    end_time = :end_time,
+                    event_location = :event_location,
+                    created_at = NOW()";
+
         $stmt = $this->pdo->prepare($query);
-        
-        $event_name = strip_tags($data['event_name']);
-        $event_date = strip_tags($data['event_date']);
-        $start_time = strip_tags($data['start_time']);
-        $end_time = strip_tags($data['end_time']);
-        $event_location = strip_tags($data['event_location']);
-        
+
+        $event_name = trim(strip_tags($data['event_name']));
+        $event_type = trim(strip_tags($data['event_type']));
+        $event_date = trim(strip_tags($data['event_date']));
+        $start_time = trim(strip_tags($data['start_time']));
+        $end_time = trim(strip_tags($data['end_time']));
+        $event_location = trim(strip_tags($data['event_location']));
+
         $stmt->bindParam(":event_name", $event_name);
+        $stmt->bindParam(":event_type", $event_type);
         $stmt->bindParam(":event_date", $event_date);
         $stmt->bindParam(":start_time", $start_time);
         $stmt->bindParam(":end_time", $end_time);
         $stmt->bindParam(":event_location", $event_location);
-        
-        return $stmt->execute();
+
+        if ($stmt->execute()) {
+            return $this->pdo->lastInsertId();
+        } else {
+            return null;
+        }
+    }
+
+    public function makeAllScholarsAsParticipants($eventId) {
+        $query = "INSERT INTO event_participants (account_id, event_id) SELECT account_id, :event_id FROM scholars";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":event_id", $eventId);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public function updateEvent($id, $data) {
@@ -150,6 +165,18 @@ class EventsModel {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function getRecentEvents() {
+         $query = "SELECT * FROM " . $this->table_name . " 
+                WHERE date >= :start_of_month AND date < :current_date AND date < :start_of_next_month
+                ORDER BY date DESC, start_time DESC";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":start_of_month", $this->startOfMonth);
+        $stmt->bindParam(":current_date", $this->currentDate);
+        $stmt->bindParam(":start_of_next_month", $this->startOfNextMonth);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
     
     public function getAllEventsByScholarId($scholarId, $tab) {
         $archivedEvents = $this->getEvents($scholarId);
@@ -222,6 +249,7 @@ class EventsModel {
     }
 
     public function getEventParticipants($events, $joinedScholars) {
+
         foreach ($events as &$event) {
             $event['numberOfParticipants'] = $joinedScholars->getNumberOfJoinedScholars($event['id']);
             
@@ -242,6 +270,34 @@ class EventsModel {
         }
 
         return $events;
+    }
+
+    public function getEventsOnStaff($year, $status, $sort, $joinedScholars) {
+        $query = "SELECT * FROM " . $this->table_name . " 
+                WHERE YEAR(date) = :year";
+
+        if ($status === 'all') {
+            $query .= " AND (CONCAT(date, ' ', start_time) > :current_datetime OR CONCAT(date, ' ', start_time) < :current_datetime)";
+        } else if ($status === 'upcoming') {
+            $query .= " AND CONCAT(date, ' ', start_time) > :current_datetime";
+        } else if ($status === 'ended') {
+            $query .= " AND CONCAT(date, ' ', start_time) < :current_datetime";  
+        }
+
+        if ($sort === 'newest') {
+            $query .= " ORDER BY created_at DESC";
+        } else if ($sort === 'oldest') {
+            $query .= " ORDER BY created_at ASC";
+        } else if ($sort === 'name') {
+            $query .= " ORDER BY event_name ASC";
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":year", $year);
+        $stmt->bindParam(":current_datetime", $this->currentDateTime);
+        $stmt->execute();
+        $events = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getEventParticipants($events, $joinedScholars);
     }
 
     public function getEventsByYearAndMonth($year, $joinedScholars) {

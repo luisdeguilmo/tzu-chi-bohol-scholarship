@@ -1,14 +1,16 @@
 import { X } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import BASE_URL from "../../../config";
 
 const AddEventFormModal = React.memo(
-    ({ isOpen, onClose, onSuccess, disabled }) => {
+    ({ isOpen, onClose, onSuccess, onRefresh, disabled }) => {
         const [eventDate, setEventDate] = useState("");
         const [startTime, setStartTime] = useState("");
         const [endTime, setEndTime] = useState("");
         const [eventName, setEventName] = useState("");
         const [eventLocation, setEventLocation] = useState("");
+        const [eventType, setEventType] = useState("");
         const [announcementMessage, setAnnouncementMessage] = useState("");
         const [enabled, setEnabled] = useState(true);
 
@@ -22,14 +24,14 @@ const AddEventFormModal = React.memo(
                     start_time: startTime,
                     end_time: endTime,
                     event_name: eventName,
-                    event_location: eventLocation, // Default status for new application periods
-                    // announcementMessage: announcementMessage,
+                    event_type: eventType,
+                    event_location: eventLocation,
                 },
             };
 
             try {
                 const response = await fetch(
-                    "http://localhost:8000/app/views/events.php",
+                    `${BASE_URL}app/views/events.php`,
                     {
                         method: "POST",
                         headers: {
@@ -48,14 +50,17 @@ const AddEventFormModal = React.memo(
                     setEndTime("");
                     setEventName("");
                     setEventLocation("");
+                    onRefresh();
                     onClose(false);
+                    return true;
                 } else {
                     alert("Error: " + result.message);
+                    return false
                 }
-                if (onSuccess) onSuccess();
             } catch (error) {
                 console.error("Submission error:", error);
                 alert("Failed to submit the form. Please try again.");
+                return false;
             }
         };
 
@@ -184,6 +189,50 @@ const AddEventFormModal = React.memo(
                                 required
                                 disabled={disabled}
                             />
+                        </div>
+
+                        <div className="block mb-2">
+                            <label className="text-gray-600 text-xs block mt-[-2px] mb-1">
+                                Event Type
+                            </label>
+                            <div className="flex space-x-4">
+                                <div className="flex items-center">
+                                    <input
+                                        type="radio"
+                                        id="optional"
+                                        name="event_type"
+                                        value="optional"
+                                        required
+                                        checked={eventType === "optional"}
+                                        onChange={() => setEventType("optional")}
+                                        className="h-4 w-4 accent-green-600 focus:ring-green-500 border-gray-300"
+                                    />
+                                    <label
+                                        htmlFor="optional"
+                                        className="ml-2 block text-xs text-gray-700"
+                                    >
+                                        Optional
+                                    </label>
+                                </div>
+                                <div className="flex items-center">
+                                    <input
+                                        type="radio"
+                                        id="mandatory"
+                                        name="event_type"
+                                        value="mandatory"
+                                        required
+                                        checked={eventType === "mandatory"}
+                                        onChange={() => setEventType("mandatory")}
+                                        className="h-4 w-4 accent-green-600 focus:ring-green-500 border-gray-300"
+                                    />
+                                    <label
+                                        htmlFor="mandatory"
+                                        className="ml-2 block text-xs text-gray-700"
+                                    >
+                                        Mandatory
+                                    </label>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Action Buttons */}

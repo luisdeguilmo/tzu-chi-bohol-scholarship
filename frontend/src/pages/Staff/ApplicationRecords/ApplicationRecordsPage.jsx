@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { formatDateTime } from "../../../utils/formatDateTime";
-import { manageApplication } from "../../../services/applicationService";
 import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
@@ -33,9 +32,10 @@ export default function ApplicationRecordsPage() {
     const { profilePics, fetchAllPics } = useProfilePicture(applications);
     const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
 
+    // console.log("Current Profile Pic: ", profilePics[applications[0]?.scholar_id]);
+
     useEffect(() => {
         fetchApplications();
-        fetchAllPics();
     }, [activeTab, status, schoolYear, sortBy]);
 
     // Filter data based on search term
@@ -64,6 +64,7 @@ export default function ApplicationRecordsPage() {
     const handleChangeTab = (tab) => {
         setActiveTab(tab);
         setCurrentPage(1);
+        console.log("PROFILE PICTURE", profilePics);
     };
 
     const handleRefresh = () => {
@@ -125,15 +126,6 @@ export default function ApplicationRecordsPage() {
                         <option value="2025-2026">2025-2026</option>
                         <option value="2024-2025">2024-2025</option>
                     </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg
-                            className="fill-current h-4 w-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                        >
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                        </svg>
-                    </div>
                 </div>
             </TableToolbar>
 
@@ -141,19 +133,25 @@ export default function ApplicationRecordsPage() {
                 <Table tableHeaders={approvedApplicationTableHeaders}>
                     {currentItems.map((info) => (
                         <TableRow key={info.application_id}>
-                            <td className="py-3 whitespace-nowrap">
+                            <td className="py-2 whitespace-nowrap">
                                 {info.application_id}
                             </td>
-                            <td className="py-3 flex justify-start whitespace-nowrap">
-                                <div className="w-[30%]"></div>
+                            <td className="py-2 flex justify-start whitespace-nowrap">
+                                <div className="w-[20%]"></div>
                                 <div className="w-[max-content] flex items-center text-left gap-2">
                                     <img
-                                        src={profilePics[info.application_id]}
+                                        src={
+                                            info.type === "Old"
+                                                ? profilePics[info.scholar_id]
+                                                : profilePics[
+                                                      info.application_id
+                                                  ]
+                                        }
                                         alt="Profile"
                                         className="w-10 h-10 object-cover rounded-full mx-auto"
                                     />
                                     <div>
-                                        <p className="text-xs font-bold text-gray-600">
+                                        <p className="text-xs font-bold text-gray-700">
                                             {info.first_name +
                                                 " " +
                                                 info.last_name}
@@ -164,34 +162,50 @@ export default function ApplicationRecordsPage() {
                                     </div>
                                 </div>
                             </td>
-                            <td className="py-3 whitespace-nowrap text-xs">
-                                {formatDateTime(info.created_at)}
-                            </td>
-                            <td className="py-3 whitespace-nowrap">
-                                {formatDateTime(info.approved_at)}
-                            </td>
-                            <td className="py-3 whitespace-nowrap ">
+                            <td className="py-2 whitespace-nowrap ">
                                 <span
                                     className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
-                                        info.is_application_approved
+                                        info.is_final_interview_passed
                                             ? "bg-green-100 text-green-800"
+                                            : info.is_home_visitation_not_qualified
+                                            ? "bg-red-100 text-red-800"
+                                            : info.is_interview_failed
+                                            ? "bg-red-100 text-red-800"
+                                            : info.is_examination_failed
+                                            ? "bg-red-100 text-red-800"
                                             : info.is_application_rejected
                                             ? "bg-red-100 text-red-800"
                                             : "bg-yellow-100 text-yellow-800"
                                     }`}
                                 >
-                                    {info.is_application_approved
-                                        ? "Approved"
+                                    {info.is_final_interview_passed
+                                        ? "Fully Qualified"
+                                        : info.is_home_visitation_not_qualified
+                                        ? "Home Visitation Not Qualified"
+                                        : info.is_interview_failed
+                                        ? "Initial Interview Failed"
+                                        : info.is_examination_failed
+                                        ? "Exam Failed"
                                         : info.is_application_rejected
-                                        ? "Rejected"
+                                        ? "Application Rejected"
                                         : "Pending"}
                                 </span>
                             </td>
-                            <td className="py-3 text-left whitespace-nowrap font-medium">
+                            <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
+                                {info.created_at}
+                            </td>
+                            <td className="py-2 whitespace-nowrap">
+                                {info.approved_at ?? "--"}
+                            </td>
+
+                            <td className="py-2 text-left whitespace-nowrap font-medium">
                                 <div className="flex items-center justify-center">
                                     <button
                                         onClick={() =>
-                                            viewPdf(info.application_id)
+                                            viewPdf(
+                                                info.application_id ||
+                                                    info.scholar_id
+                                            )
                                         }
                                         className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                                         title="View PDF"

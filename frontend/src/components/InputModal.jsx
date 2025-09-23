@@ -10,12 +10,16 @@ const InputModal = React.memo(
         onEdit,
         resetFields,
         children,
+        expandable = false,
     }) => {
         const handleClose = () => {
             if (isEditing) {
                 onEdit(false);
             }
-            resetFields();
+
+            if (resetFields) {
+                resetFields();
+            }
             onClose(false);
         };
 
@@ -30,7 +34,13 @@ const InputModal = React.memo(
                 aria-modal="true"
                 aria-labelledby="modal-title"
             >
-                <div className="relative w-full sm:w-[60%] md:[45%] lg:w-[40%] xl:w-[30%] bg-white rounded-xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200">
+                <div
+                    className={`relative w-[90%] ${
+                        expandable
+                            ? "sm:w-[70%] md:w-[80%] lg:w-[60%]"
+                            : "sm:w-[60%] md:[45%] lg:w-[40%] xl:w-[30%]"
+                    } bg-white rounded-xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200`}
+                >
                     {/* Header */}
                     <div className="relative px-6 py-4 border-b border-slate-200">
                         <h2

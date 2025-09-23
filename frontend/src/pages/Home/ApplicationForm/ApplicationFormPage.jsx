@@ -13,12 +13,14 @@ import formConfig from "../../../constant/application/formConfig";
 import FORM_SECTIONS from "../../../constant/application/formSections";
 import ReviewSection from "./ReviewSection";
 import BASE_URL from "../../../config";
+import OtherInformationSection from "./OtherInformationSection";
+import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 
 const generateInitialState = (fieldsConfig) => {
     const initialState = {};
     fieldsConfig.forEach((field) => {
         initialState[field.name] =
-            field.type === "select" ? field.defaultValue || "" : "";
+            field.type === "select" ? field.defaultValue || "s" : "s";
     });
     return initialState;
 };
@@ -31,7 +33,6 @@ function ApplicationForm({ includeRequirements = true, userId }) {
 
     // Define steps based on whether requirements are included
     const steps = [
-        { label: "Application", section: FORM_SECTIONS.APPLICATION },
         { label: "Personal", section: FORM_SECTIONS.PERSONAL },
         { label: "Education", section: FORM_SECTIONS.EDUCATION },
         { label: "Family", section: FORM_SECTIONS.FAMILY },
@@ -46,11 +47,19 @@ function ApplicationForm({ includeRequirements = true, userId }) {
     }
 
     steps.push({
+        label: "Other Info",
+        section: FORM_SECTIONS.OTHER_INFORMATION,
+    });
+
+    steps.push({
         label: "Review",
     });
 
     // Total number of steps in the form
     const totalSteps = steps.length;
+
+    console.log("Steps: ", steps);
+    console.log("Current Step: ", currentStep);
 
     // Consolidated form state
     const [formData, setFormData] = useState({
@@ -69,10 +78,14 @@ function ApplicationForm({ includeRequirements = true, userId }) {
         contact_person: generateInitialState(
             formConfig[FORM_SECTIONS.CONTACT_PERSON]
         ),
+        other_information: generateInitialState(
+            formConfig[FORM_SECTIONS.OTHER_INFORMATION]
+        ),
         // Initialize the family-related data
         family_members: [],
         tzu_chi_siblings: [],
         other_assistance: [],
+        character_reference: [],
         // Initialize the files-related data
         uploaded_files: [],
     });
@@ -92,16 +105,27 @@ function ApplicationForm({ includeRequirements = true, userId }) {
     // Navigation functions
     const nextStep = (e) => {
         e.preventDefault();
-        setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
+
+        if (!includeRequirements && currentStep === 4) {
+            setCurrentStep((prev) => Math.min(prev + 2, totalSteps + 1));
+        } else {
+            setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
+        }
     };
 
     const prevStep = (e) => {
         e.preventDefault();
-        setCurrentStep((prev) => Math.max(prev - 1, 1));
+
+        if (!includeRequirements && currentStep === 6) {
+            setCurrentStep((prev) => Math.max(prev - 1, 1) - 1);
+        } else {
+            setCurrentStep((prev) => Math.max(prev - 1, 1));
+        }
     };
 
     const handleRenewSubmit = async (e) => {
         e.preventDefault();
+        formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.status = "Old";
         formData.application_info.scholar_id = 8979061;
 
@@ -143,6 +167,7 @@ function ApplicationForm({ includeRequirements = true, userId }) {
     // Handle final form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+        formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.status = "New";
         console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
 
@@ -228,15 +253,15 @@ function ApplicationForm({ includeRequirements = true, userId }) {
     // Render form step components
     const renderStep = () => {
         switch (currentStep) {
+            // case 1:
+            //     return (
+            //         <ApplicationSection
+            //             formData={formData}
+            //             handleInputChange={handleInputChange}
+            //             nextStep={nextStep}
+            //         />
+            //     );
             case 1:
-                return (
-                    <ApplicationSection
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                        nextStep={nextStep}
-                    />
-                );
-            case 2:
                 return (
                     <PersonalSection
                         formData={formData}
@@ -245,7 +270,7 @@ function ApplicationForm({ includeRequirements = true, userId }) {
                         nextStep={nextStep}
                     />
                 );
-            case 3:
+            case 2:
                 return (
                     <EducationSection
                         formData={formData}
@@ -254,31 +279,17 @@ function ApplicationForm({ includeRequirements = true, userId }) {
                         nextStep={nextStep}
                     />
                 );
+            case 3:
+                return (
+                    <FamilySection
+                        formData={formData}
+                        setFormData={setFormData}
+                        handleInputChange={handleInputChange}
+                        prevStep={prevStep}
+                        nextStep={nextStep}
+                    />
+                );
             case 4:
-                if (includeRequirements) {
-                    return (
-                        <FamilySection
-                            formData={formData}
-                            setFormData={setFormData}
-                            handleInputChange={handleInputChange}
-                            prevStep={prevStep}
-                            nextStep={nextStep}
-                        />
-                    );
-                } else {
-                    return (
-                        <FamilySection
-                            formData={formData}
-                            setFormData={setFormData}
-                            handleInputChange={handleInputChange}
-                            prevStep={prevStep}
-                            nextStep={nextStep}
-                            // handleRenewSubmit={handleRenewSubmit}
-                            // isLast={true}
-                        />
-                    );
-                }
-            case 5:
                 // Only render if requirements are included
                 if (includeRequirements) {
                     return (
@@ -287,10 +298,19 @@ function ApplicationForm({ includeRequirements = true, userId }) {
                             setFormData={setFormData}
                             prevStep={prevStep}
                             nextStep={nextStep}
-                            // handleSubmit={handleSubmit}
                         />
                     );
                 }
+            case 5:
+                return (
+                    <OtherInformationSection
+                        formData={formData}
+                        setFormData={setFormData}
+                        handleInputChange={handleInputChange}
+                        prevStep={prevStep}
+                        nextStep={nextStep}
+                    />
+                );
             case 6:
                 return (
                     <ReviewSection

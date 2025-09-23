@@ -16,6 +16,21 @@ export const examinationTableButtons = [
     { name: "Result", tabName: "Result" },
 ];
 
+export const initialInterviewTableButtons = [
+    { name: "Applicants", tabName: "Applicants" },
+    { name: "Result", tabName: "Result" },
+];
+
+export const homeVisitationTableButtons = [
+    { name: "Applicants", tabName: "Applicants" },
+    { name: "Result", tabName: "Result" },
+];
+
+export const finalInitialInterviewTableButtons = [
+    { name: "Applicants", tabName: "Applicants" },
+    { name: "Result", tabName: "Result" },
+];
+
 export const volunteerActivitiesButtons = [
     { name: "Pending", tabName: "pending" },
     { name: "Recorded", tabName: "recorded" },
@@ -33,5 +48,5 @@ export const scholarshipCriteriaButtons = [
 // Admin
 export const scholarAccountButtons = [
     { name: "Pending", tabName: "pending" },
-    { name: "Created", tabName: "created" },
+    { name: "All Accounts", tabName: "created" },
 ];

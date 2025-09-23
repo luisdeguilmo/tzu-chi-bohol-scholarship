@@ -7,7 +7,10 @@ const validateSection = (section, formData, formConfig) => {
     // const [section1, section2] = sections;
 
     formConfig[section].forEach((field) => {
-        if (field.required && !formData[section][field.name]?.trim()) {
+        if (
+            field.required &&
+            !formData[section][field.name]?.toString().trim()
+        ) {
             errors[field.name] = `${field.label} is required`;
             hasErrors = true;
         }
@@ -27,6 +30,7 @@ const NavigationButtons = ({
     formData,
     formConfig,
     sections,
+    section,
 }) => {
     const checkAndProceed = (e) => {
         e.preventDefault();
@@ -70,6 +74,31 @@ const NavigationButtons = ({
             }
         }
 
+        if (section === "Family") {
+            if (formData.family_members.length === 0) {
+                toast.error("Please fill in all required fields");
+
+                // You could also highlight the fields with errors here if needed
+                return;
+            }
+        }
+
+        if (!sections && section === "Requirements") {
+            if (formData.picture_file === null || formData.uploaded_files.length === 0) {
+                toast.error("Please fill in all required fields");
+
+                // You could also highlight the fields with errors here if needed
+                return;
+            }
+        }
+
+        if (section === "Other Information") {
+            if (formData.character_reference.length === 0) {
+                toast.error("Please fill in all required fields");
+                return;
+            }
+        }
+
         // If validation passes, proceed to next step
         if (!isLast) {
             nextStep(e);
@@ -102,7 +131,11 @@ const NavigationButtons = ({
                 </button>
             ) : (
                 <button
-                    className={`px-5 py-[6px] ${disabled ? "bg-green-400" : "bg-green-600 hover:bg-green-700"} text-white text-sm rounded-md shadow-lg`}
+                    className={`px-5 py-[6px] ${
+                        disabled
+                            ? "bg-green-400"
+                            : "bg-green-600 hover:bg-green-700"
+                    } text-white text-sm rounded-md shadow-lg`}
                     onClick={checkAndProceed}
                     disabled={disabled}
                 >

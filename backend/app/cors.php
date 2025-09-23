@@ -5,7 +5,7 @@ function handleCORS() {
     $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
     
     if (in_array($origin, $allowedOrigins)) {
-        header("Access-Control-Allow-Origin: $origin");
+        header("Access-Control-Allow-Origin: *");
     }
     
         // header("Access-Control-Allow-Origin: https://c0mkgnv7-5173.asse.devtunnels.ms");

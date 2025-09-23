@@ -9,14 +9,18 @@ import { scholarTableHeaders } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { Eye } from "lucide-react";
+import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
+import ScholarProfileModal from "./ScholarProfileModal";
 
 export default function Scholars() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedItems, setSelectedItems] = useState([]);
+    const [selectedScholar, setSelectedScholar] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("all");
     const [status, setStatus] = useState("all");
-    const [schoolYear, setSchoolYear] = useState("all_years");
+    const [schoolYear, setSchoolYear] = useState(getCurrentSchoolYear());
     const [sortBy, setSortBy] = useState("newest");
 
     const { scholars, fetchScholars } = useScholars(
@@ -25,11 +29,10 @@ export default function Scholars() {
         schoolYear,
         sortBy
     );
-    const { profilePics, fetchAllPics } = useProfilePicture(scholars);
+    const { profilePics } = useProfilePicture(scholars);
 
     useEffect(() => {
         fetchScholars();
-        fetchAllPics();
     }, [activeTab, status, schoolYear, sortBy]);
 
     // Filter data based on search term
@@ -43,24 +46,6 @@ export default function Scholars() {
                 .includes(searchTerm.toLowerCase()) ||
             applicant.created_at.includes(searchTerm)
     );
-
-    // Sort applications
-    // const sortedScholars = [...filteredScholars].sort((a, b) => {
-    //     switch (sortBy) {
-    //         case "newest":
-    //             return new Date(b.created_at) - new Date(a.created_at);
-    //         case "oldest":
-    //             return new Date(a.created_at) - new Date(b.created_at);
-    //         case "name":
-    //             return a.first_name.localeCompare(b.first_name);
-    //         case "rendered_asc":
-    //             return a.rendered_hours - b.rendered_hours;
-    //         case "rendered_desc":
-    //             return b.rendered_hours - a.rendered_hours;
-    //         default:
-    //             return 0;
-    //     }
-    // });
 
     const {
         currentItems,
@@ -77,6 +62,8 @@ export default function Scholars() {
         setActiveTab(tab);
         setCurrentPage(1);
         setSelectedItems([]);
+        console.log("Tab changed to:", tab);
+        console.log("Active tab:", activeTab);
     };
 
     const handleRefresh = () => {
@@ -122,15 +109,6 @@ export default function Scholars() {
                                 <option value="not_renewed">Not Renewed</option>
                             )}
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg
-                                className="fill-current h-4 w-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                            >
-                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                            </svg>
-                        </div>
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-600">
@@ -145,15 +123,6 @@ export default function Scholars() {
                             <option value="2025-2026">2025-2026</option>
                             <option value="2024-2025">2024-2025</option>
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg
-                                className="fill-current h-4 w-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                            >
-                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                            </svg>
-                        </div>
                     </div>
                 </TableToolbar>
 
@@ -168,10 +137,10 @@ export default function Scholars() {
                                         : ""
                                 }`}
                             >
-                                <td className="py-3 whitespace-nowrap text-center text-gray-900 font-bold">
+                                <td className="py-2 whitespace-nowrap text-center text-gray-900 font-bold">
                                     {scholar.account_id}
                                 </td>
-                                <td className="py-3 text-center flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                <td className="py-2 text-center flex justify-start whitespace-nowrap text-sm text-gray-700">
                                     <div className="w-[30%]"></div>
                                     <div className="w-[max-content] flex text-left gap-2">
                                         <img
@@ -181,8 +150,8 @@ export default function Scholars() {
                                             alt="Profile"
                                             className="w-10 h-10 object-cover rounded-full mx-auto"
                                         />
-                                        <div>
-                                            <p className="font-bold">
+                                        <div className="flex justify-center flex-col">
+                                            <p className="font-bold text-xs">
                                                 {scholar.first_name +
                                                     " " +
                                                     scholar.last_name}
@@ -193,7 +162,7 @@ export default function Scholars() {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                <td className="py-2 whitespace-nowrap text-gray-500">
                                     <span
                                         className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium ${
                                             scholar.status === "active"
@@ -211,16 +180,19 @@ export default function Scholars() {
                                             : "Not Renewed"}
                                     </span>
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-slate-600 text-center font-medium">
+                                <td className="py-2 whitespace-nowrap text-slate-600 text-center font-medium">
                                     {scholar.rendered_hours} hour
                                     {scholar.rendered_hours > 1 ? "s" : ""}
                                 </td>
-                                <td className="py-3 whitespace-nowrap font-medium">
+                                <td className="py-2 whitespace-nowrap font-medium">
                                     <div className="flex items-center justify-center">
                                         <button
-                                            // onClick={() =>
-                                            //     viewPdf(info.application_id)
-                                            // }
+                                            onClick={() => {
+                                                setIsModalOpen(true);
+                                                setSelectedScholar(
+                                                    scholar.account_id
+                                                );
+                                            }}
                                             className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                                             title="View PDF"
                                         >
@@ -253,6 +225,12 @@ export default function Scholars() {
                         />
                     </div>
                 )}
+
+                <ScholarProfileModal
+                    scholarId={selectedScholar}
+                    isOpen={isModalOpen}
+                    setIsOpen={setIsModalOpen}
+                />
             </div>
         </div>
     );

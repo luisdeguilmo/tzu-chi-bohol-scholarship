@@ -10,6 +10,7 @@ class ActivityModel {
     
     public $id;
     public $account_id;
+    public $activity_id;
     public $activity_name;
     public $activity_location;
     public $activity_date;
@@ -20,6 +21,7 @@ class ActivityModel {
     public $uploaded_at;
     public $startOfMonth;
     public $startOfNextMonth;
+    public $currentDateTime;
     public $status;
     
     private $pdo;
@@ -32,6 +34,7 @@ class ActivityModel {
             $this->pdo = $db->getConnection();   
             $this->startOfMonth = date('Y-m-01'); 
             $this->startOfNextMonth = date('Y-m-01', strtotime('first day of next month'));
+            $this->currentDateTime = date('Y-m-d H:i:s');
         }
     }
 
@@ -82,8 +85,8 @@ class ActivityModel {
     public function createActivity($activity_data, $batch_id) {
         $query = "INSERT INTO " . $this->table_name . " 
             SET account_id = :account_id,
-                    activity_name = :activity_name,
-                    activity_location = :activity_location,
+                activity_name = :activity_name,
+                activity_location = :activity_location,
                 activity_date = :activity_date,
                 start_time = :start_time,
                 end_time = :end_time,
@@ -108,6 +111,54 @@ class ActivityModel {
         
         // Bind values
         $stmt->bindParam(":account_id", $this->account_id);
+        $stmt->bindParam(":activity_name", $this->activity_name);
+        $stmt->bindParam(":activity_location", $this->activity_location);
+        $stmt->bindParam(":activity_date", $this->activity_date);
+        $stmt->bindParam(":start_time", $this->start_time);
+        $stmt->bindParam(":end_time", $this->end_time);
+        $stmt->bindParam(":activity_status", $this->activity_status);
+        $stmt->bindParam(":batch_id", $batch_id);
+        $stmt->bindParam(":uploaded_at", $this->uploaded_at);
+        $stmt->bindParam(":updated_at", $this->updated_at);
+        
+        if ($stmt->execute()) {
+            return $this->account_id;
+        }
+        
+        return false;
+    }
+
+    public function updateActivity($activity_data, $batch_id) {
+        $query = "UPDATE " . $this->table_name . " 
+            SET account_id = :account_id,
+                    activity_name = :activity_name,
+                    activity_location = :activity_location,
+                activity_date = :activity_date,
+                start_time = :start_time,
+                end_time = :end_time,
+                activity_status = :activity_status,
+                batch_id = :batch_id,
+                uploaded_at = :uploaded_at,
+                updated_at = :updated_at WHERE id = :id";
+        
+        $stmt = $this->pdo->prepare($query);
+        
+        // Sanitize inputs
+        $this->account_id = htmlspecialchars(strip_tags($activity_data['application_id']));
+        $this->activity_id = htmlspecialchars(strip_tags($activity_data['activity_id']));
+        $this->activity_name = htmlspecialchars(strip_tags($activity_data['activity_name']));
+        $this->activity_location = htmlspecialchars(strip_tags($activity_data['activity_location']));
+        $this->activity_date = htmlspecialchars(strip_tags($activity_data['activity_date']));
+        $this->start_time = htmlspecialchars(strip_tags($activity_data['start_time']));
+        $this->end_time = htmlspecialchars(strip_tags($activity_data['end_time']));
+        $this->activity_status = htmlspecialchars(strip_tags($activity_data['activity_status']));
+        $batch_id = $batch_id;
+        $this->uploaded_at = date('Y-m-d H:i:s');
+        $this->updated_at = date('Y-m-d H:i:s');
+        
+        // Bind values
+        $stmt->bindParam(":account_id", $this->account_id);
+        $stmt->bindParam(":id", $this->activity_id);
         $stmt->bindParam(":activity_name", $this->activity_name);
         $stmt->bindParam(":activity_location", $this->activity_location);
         $stmt->bindParam(":activity_date", $this->activity_date);
@@ -163,15 +214,28 @@ class ActivityModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function getPastSubmissions($scholarId) {
+        $query = "SELECT * FROM volunteer_activities 
+                    WHERE CONCAT(activity_date, ' ', start_time) < :current_datetime AND account_id = :account_id
+                    ORDER BY activity_date  DESC, start_time DESC";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':account_id', $scholarId);
+        $stmt->bindParam(':current_datetime', $this->currentDateTime);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getAllVolunteerActivitiesByScholarId($scholarId, $tab) {
         $archivedVolunteerActivities = $this->getVolunteerActivities($scholarId);
         
         $volunteerActivities  = [];
         
-        if ($tab == "all") {
+        if ($tab === "all") {
             $volunteerActivities = $this->getAllVolunteerActivities($scholarId);
         } else if ($tab === "this_month") {
             $volunteerActivities = $this->getVolunteerActivitiesThisMonth($scholarId);
+        } else if ($tab === "past") {
+            $volunteerActivities = $this->getPastSubmissions($scholarId);
         } 
 
         $volunteerActivityIds = array_map(function($activity) {
@@ -205,8 +269,10 @@ class ActivityModel {
                                 'application_id' => $file['application_id'],  
                                 'file_name' => $file['file_name'],
                                 'file_path' => $file['file_path'], 
+                                'file_size' => $file['file_size'], 
                                 'file_type' => $file['file_type'],
                                 'uploaded_at' => $file['uploaded_at'],
+                                'batch_id' => $file['batch_id'],
                                 ];
             }
 
@@ -218,7 +284,9 @@ class ActivityModel {
                 'activity_location' => $activity['activity_location'],
                 'start_time' => $activity['start_time'],
                 'end_time' => $activity['end_time'],
+                'feedback' => $activity['feedback'],
                 'date_submitted' => $activity['uploaded_at'],
+                'batch_id' => $activity['batch_id'],
                 'files' => $filesList
             ];
         }
@@ -240,6 +308,7 @@ class ActivityModel {
                                 'application_id' => $file['application_id'],  
                                 'file_name' => $file['file_name'],
                                 'file_path' => $file['file_path'], 
+                                'file_size' => $file['file_size'], 
                                 'file_type' => $file['file_type'],
                                 'uploaded_at' => $file['uploaded_at'],
                                 ];
@@ -265,19 +334,35 @@ class ActivityModel {
     }
 
     /* Staff */
-    public function getActivitiesByTab($tab, $year, $month) {
-        if ($tab === 'pending') $this->status = "Pending";
-        else if ($tab === 'recorded') $this->status = "Recorded";
+    public function getActivitiesByTab($year, $month, $status, $sort) {
+        // if ($tab === 'pending') $this->status = "Pending";
+        // else if ($tab === 'recorded') $this->status = "Recorded";
 
         $query = "SELECT pi.application_id, pi.first_name, pi.last_name, pi.email, va.*
                 FROM personal_information pi 
                 JOIN volunteer_activities va ON pi.application_id = va.account_id 
-                WHERE va.activity_status = :tab 
-                AND YEAR(va.uploaded_at) = :year AND MONTH(va.uploaded_at) = :month
+                WHERE YEAR(va.uploaded_at) = :year AND MONTH(va.uploaded_at) = :month
                 AND va.batch_id IS NOT NULL";
 
+        if ($status === 'all') {
+            $query .= " AND (va.activity_status = 'Pending' OR va.activity_status = 'Recorded' OR va.activity_status = 'Not Recorded')";
+        } else if ($status === 'pending') {
+            $query .= " AND va.activity_status = 'Pending'";
+        } else if ($status === 'recorded') {
+            $query .= " AND va.activity_status = 'Recorded'";
+        } else if ($status === 'not_recorded') {
+            $query .= " AND va.activity_status = 'Not Recorded'";
+        }
+
+        if ($sort === 'newest') {
+            $query .= " ORDER BY va.uploaded_at DESC";
+        } else if ($sort === 'oldest') {
+            $query .= " ORDER BY va.uploaded_at ASC";
+        } else if ($sort === 'name') {
+            $query .= " ORDER BY pi.first_name ASC";
+        }
+
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':tab', $this->status);
         $stmt->bindParam(':year', $year);
         $stmt->bindParam(':month', $month);
         $stmt->execute();
@@ -481,30 +566,18 @@ class ActivityModel {
         
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-    
-    public function updateActivity($id, $activity_data) {
-        $query = "UPDATE " . $this->table_name . " 
-                   SET activity_name = :activity_name,
-                       activity_date = :activity_date,
-                       activity_time = :activity_time,
-                       updated_at = :updated_at
-                   WHERE id = :id";
-        
+
+    public function markAsNotRecordedWithFeedback($data) {
+        $query = "UPDATE " . $this->table_name . " SET activity_status = 'Not Recorded', feedback = :feedback WHERE id = :id";
+
         $stmt = $this->pdo->prepare($query);
-        
-        // Sanitize inputs
-        $this->activity_name = htmlspecialchars(strip_tags($activity_data['activity_name']));
-        $this->activity_date = htmlspecialchars(strip_tags($activity_data['activity_date']));
-        $this->start_time = htmlspecialchars(strip_tags($activity_data['activity_time']));
-        $this->updated_at = date('Y-m-d H:i:s');
-        
-        // Bind values
-        $stmt->bindParam(":activity_name", $this->activity_name);
-        $stmt->bindParam(":activity_date", $this->activity_date);
-        $stmt->bindParam(":activity_time", $this->start_time);
-        $stmt->bindParam(":updated_at", $this->updated_at);
-        $stmt->bindParam(":id", $id);
-        
+
+        $feedback = htmlspecialchars(strip_tags($data['feedback']));
+        $id = htmlspecialchars(strip_tags($data['id']));
+
+        $stmt->bindParam(':feedback', $feedback);
+        $stmt->bindParam(':id', $id);
+
         return $stmt->execute();
     }
 

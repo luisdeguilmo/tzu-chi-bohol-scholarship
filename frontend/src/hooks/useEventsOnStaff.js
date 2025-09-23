@@ -2,16 +2,16 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-export const useEventsOnStaff = (year) => {
+export const useEventsOnStaff = (year, status, sortBy) => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchEvents = async (year) => {
+    const fetchEvents = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/events.php?is_staff=true&year=${year}`
+                `${BASE_URL}app/views/events.php?is_staff=true&year=${year}&status=${status}&sort_by=${sortBy}`
             );
             // Set application periods data
             setEvents(response.data.data || []);
@@ -27,8 +27,10 @@ export const useEventsOnStaff = (year) => {
     };
 
     useEffect(() => {
-        fetchEvents(year);
-    }, [year]);
+        if (year && status && sortBy) {
+            fetchEvents();
+        }
+    }, [year, status, sortBy]);
 
     return { events, fetchEvents };
 };

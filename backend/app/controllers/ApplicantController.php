@@ -20,6 +20,7 @@ try {
     $application_status = $_GET['application_status'] ?? null;
     $status = $_GET['status'] ?? null;
     $batch = $_GET['batch'] ?? null;
+    $tab = $_GET['tab'] ?? null;
 
     $approved = $_GET['approved'] ?? null;
     $entrance_examination = $_GET['entrance_examination'] ?? null;
@@ -43,6 +44,40 @@ try {
             echo json_encode(array("data" => $data));
             return;
         } 
+    } else if ($application_status === "initial_interview") {
+        if ($tab === 'applicants') {
+            $data = $applicant->getApplicantsForInitialInterview();
+            echo json_encode(array("data" => $data));
+            return;
+        } else if ($tab === 'result') {
+            $data = $applicant->getResultForInitialInterview();
+            echo json_encode(array("data" => $data));
+            return;
+        }
+    } else if ($application_status === "home_visitation") {
+        if ($tab === 'applicants') {
+            $data = $applicant->getApplicantsForHomeVisitation();
+            echo json_encode(array("data" => $data));
+            return;
+        } else if ($tab === 'result') {
+            $data = $applicant->getResultForHomeVisitation();
+            echo json_encode(array("data" => $data));
+            return;
+        }
+    } else if ($application_status === "final_interview") {
+        if ($tab === 'applicants') {
+            $data = $applicant->getApplicantsForFinalInterview();
+            echo json_encode(array("data" => $data));
+            return;
+        } else if ($tab === 'result') {
+            $data = $applicant->getResultForFinalInterview();
+            echo json_encode(array("data" => $data));
+            return;
+        }
+    } else if ($application_status === 'examination' && $batch === 'Unassigned') {
+        $data = $applicant->getUnassignedApplicants();
+        echo json_encode(["data" => $data]);
+        return;
     }
 
     // if ($application_status === null && $status === null) {
@@ -59,27 +94,28 @@ try {
     //         $data = $applicant->getAllApplicants();
     //     }
     // }
-      if ($approved === '1' && $entrance_examination === null && $initial_interview === null) {
-        if ($status === 'New') {
-            $data = $applicant->getAllReviewedApplicants($status);
-            echo json_encode(array("data" => $data));
-            return;
-        } else if ($status === 'Old') {
-            $data = $applicant->getAllReviewedApplicants($status);
-            echo json_encode(array("data" => $data));
-            return;
-        } 
-    } else if ($entrance_examination === '1' && $batch === 'Unassigned' && $approved === null && $initial_interview === null) {
-        $data = $applicant->getUnassignedApplicants();
-        echo json_encode(array("data" => $data));
-        return;
-    } else if ($initial_interview === '1' && $approved === null && $entrance_examination === null) {
-        $data = $applicant->getApplicantsToInitialInterview();
-        echo json_encode(array("data" => $data));
-        return;
-    }
+    //   if ($approved === '1' && $entrance_examination === null && $initial_interview === null) {
+    //     if ($status === 'New') {
+    //         $data = $applicant->getAllReviewedApplicants($status);
+    //         echo json_encode(array("data" => $data));
+    //         return;
+    //     } else if ($status === 'Old') {
+    //         $data = $applicant->getAllReviewedApplicants($status);
+    //         echo json_encode(array("data" => $data));
+    //         return;
+    //     } 
+    // } else if ($entrance_examination === '1' && $batch === 'Unassigned' && $approved === null && $initial_interview === null) {
+    //     $data = $applicant->getUnassignedApplicants();
+    //     echo json_encode(array("data" => $data));
+    //     return;
+    // } else if ($initial_interview === '1' && $approved === null && $entrance_examination === null) {
+    //     $data = $applicant->getApplicantsToInitialInterview();
+    //     echo json_encode(array("data" => $data));
+    //     return;
+    // }
     
     // Determine which method to call based on parameters
+
     // if ($application_status === null) {
     //     if ($status === 'New') {
     //         $data = $applicant->getAllNewApplicants();
