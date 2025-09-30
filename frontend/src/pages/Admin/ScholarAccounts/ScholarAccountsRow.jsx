@@ -1,14 +1,34 @@
 import { RotateCcw, UserCheck, UserX } from "lucide-react";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import { toast } from "react-toastify";
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import { useState } from "react";
 
 const ScholarAccountsRow = ({
     currentItems,
     selectedAccounts,
     toggleAccountSelection,
     profilePics,
+    isLoading,
     onUpdateAccountStatus,
 }) => {
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+        useState(false);
+    const [selectedScholar, setSelectedScholar] = useState(null);
+    const [accountStatus, setAccountStatus] = useState("");
+    const [action, setAction] = useState("");
+
+    const handleOpenConfirmationModal = (
+        accountId,
+        accountStatus,
+        actionType
+    ) => {
+        setAction(actionType);
+        setAccountStatus(accountStatus);
+        setSelectedScholar(accountId);
+        setIsConfirmationModalOpen(true);
+    };
+
     const handleAccountStatusChange = async (
         accountId,
         accountStatus,
@@ -32,6 +52,7 @@ const ScholarAccountsRow = ({
                         action === "activate" ? "activated" : "deactivated"
                     } successfully.`
                 );
+                setIsConfirmationModalOpen(false);
             }
         } catch (error) {
             console.error("Error updating account status:", error);
@@ -91,15 +112,15 @@ const ScholarAccountsRow = ({
                                 account.status === "active"
                                     ? "text-green-800 bg-green-100"
                                     : account.status === "deactivated"
-                                    ? "text-red-800 bg-red-100"
-                                    : "text-yellow-800 bg-yellow-100"
+                                      ? "text-red-800 bg-red-100"
+                                      : "text-yellow-800 bg-yellow-100"
                             }`}
                         >
                             {account.status === "active"
                                 ? "Active"
                                 : account.status === "deactivated"
-                                ? "Deactivated"
-                                : "Not Renewed"}
+                                  ? "Deactivated"
+                                  : "Not Renewed"}
                         </span>
                     </td>
                     <td className="py-2 whitespace-nowrap text-gray-500">
@@ -114,7 +135,7 @@ const ScholarAccountsRow = ({
                             </button>
                             <button
                                 onClick={() =>
-                                    handleAccountStatusChange(
+                                    handleOpenConfirmationModal(
                                         account.account_id,
                                         account.status,
                                         "activate"
@@ -126,7 +147,7 @@ const ScholarAccountsRow = ({
                             </button>
                             <button
                                 onClick={() =>
-                                    handleAccountStatusChange(
+                                    handleOpenConfirmationModal(
                                         account.account_id,
                                         account.status,
                                         "deactivate"
@@ -140,6 +161,25 @@ const ScholarAccountsRow = ({
                     </td>
                 </tr>
             ))}
+
+            <ConfirmationModal
+                isOpen={isConfirmationModalOpen}
+                onClose={setIsConfirmationModalOpen}
+                isLoading={isLoading}
+                label={"Confirmation"}
+                message={
+                    action === "activate"
+                        ? "Are you sure you want to activate this account?"
+                        : "Are you sure you want to deactivate this account?"
+                }
+                onClick={() =>
+                    handleAccountStatusChange(
+                        selectedScholar,
+                        accountStatus,
+                        action
+                    )
+                }
+            />
         </>
     );
 };

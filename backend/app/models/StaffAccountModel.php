@@ -1,10 +1,11 @@
-<?php 
+<?php
 namespace App\Models;
 
 use Config\Database;
 
-class StaffAccountModel {
-    private $table_name = "staff";
+class StaffAccountModel
+{
+    private $table_name = 'staff';
 
     private $pdo;
 
@@ -18,54 +19,59 @@ class StaffAccountModel {
     public $strand;
     public $instruction;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
     }
 
     // public function createStaff($data) {
-    //     $query = "INSERT INTO " . $this->table_name . " 
+    //     $query = "INSERT INTO " . $this->table_name . "
     //               SET name = :name,
     //               email = :email,
     //               password = :password";
-        
+
     //     $stmt = $this->pdo->prepare($query);
-        
+
     //     $name = htmlspecialchars(strip_tags($data['name']));
     //     $email = htmlspecialchars(strip_tags($data['email']));
     //     $password = htmlspecialchars(strip_tags($data['password']));
-        
+
     //     $stmt->bindParam(":name", $name);
     //     $stmt->bindParam(":email", $email);
     //     $stmt->bindParam(":password", $password);
-        
+
     //     return $stmt->execute();
     // }
 
-    private function generateUniqueAccountId($length = 7) {
+    private function generateUniqueAccountId($length = 7)
+    {
         do {
             // Generate a random number (7-digit)
             $randomId = mt_rand(pow(10, $length - 1), pow(10, $length) - 1);
 
             // Check if it already exists in this table
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM application_info WHERE application_id = :id");
-            $stmt->bindParam(":id", $randomId);
+            $stmt = $this->pdo->prepare(
+                'SELECT COUNT(*) FROM application_info WHERE application_id = :id',
+            );
+            $stmt->bindParam(':id', $randomId);
             $stmt->execute();
             $count = $stmt->fetchColumn();
 
             // Check if it exists in staff table
-            $stmtStaff = $this->pdo->prepare("SELECT COUNT(*) FROM staff WHERE account_id = :id");
-            $stmtStaff->bindParam(":id", $randomId);
+            $stmtStaff = $this->pdo->prepare('SELECT COUNT(*) FROM staff WHERE account_id = :id');
+            $stmtStaff->bindParam(':id', $randomId);
             $stmtStaff->execute();
             $countStaff = $stmtStaff->fetchColumn();
-
         } while ($count > 0 || $countStaff > 0); // Retry if duplicate found in either table
 
         return $randomId;
     }
 
-    public function createStaff($data, $account_id, $today) {
-        $query = "INSERT INTO staff (account_id, first_name, last_name, created_at) VALUES (:account_id, :first_name, :last_name, :created_at)";
+    public function createStaff($data, $account_id, $today)
+    {
+        $query =
+            'INSERT INTO staff (account_id, first_name, last_name, created_at) VALUES (:account_id, :first_name, :last_name, :created_at)';
 
         $stmt = $this->pdo->prepare($query);
 
@@ -85,8 +91,9 @@ class StaffAccountModel {
 
         return false;
     }
-    
-    public function createAccount($data, $today) {
+
+    public function createAccount($data, $today)
+    {
         // // Get scholar data first
         // $scholarData = $this->getPendingScholarById($application_id);
         // if (!$scholarData) {
@@ -97,75 +104,98 @@ class StaffAccountModel {
 
         $isSuccess = $this->createStaff($data, $account_id, $today);
         if (!$isSuccess) {
-            throw new \Exception("Failed to create scholar");
+            throw new \Exception('Failed to create scholar');
         }
 
         $query = "INSERT INTO users (email, password, created_at, account_id) 
                  VALUES (:email, :password, :created_at, :account_id)";
         $stmt = $this->pdo->prepare($query);
-       
+
         // Create a secure password hash - using application_id as initial password
         $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
-        
+
         // Sanitize application_id
         $sanitized_email = htmlspecialchars(strip_tags($data['email']));
         $sanitized_account_id = htmlspecialchars(strip_tags($account_id));
         $sanitized_created_at = htmlspecialchars(strip_tags($today));
-        
+
         // Bind values
-        $stmt->bindParam(":email", $sanitized_email);
-        $stmt->bindParam(":password", $hashedPassword);
-        $stmt->bindParam(":created_at", $sanitized_created_at);
-        $stmt->bindParam(":account_id", $sanitized_account_id);
+        $stmt->bindParam(':email', $sanitized_email);
+        $stmt->bindParam(':password', $hashedPassword);
+        $stmt->bindParam(':created_at', $sanitized_created_at);
+        $stmt->bindParam(':account_id', $sanitized_account_id);
         // $stmt->bindParam(":type", 'Scholar');
-        
+
         return $stmt->execute();
     }
-    
-    public function getAllStaffs() {
-        $query = "SELECT s.*, u.email FROM " . $this->table_name . " s JOIN users u ON s.account_id = u.account_id";
+
+    public function getAllStaffs()
+    {
+        $query =
+            'SELECT s.*, u.email FROM ' .
+            $this->table_name .
+            ' s JOIN users u ON s.account_id = u.account_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
-    
-    public function getStaffById($id) {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
+
+    public function getStaffInfoById($account_id)
+    {
+        $query =
+            'SELECT s.*, u.email FROM ' .
+            $this->table_name .
+            ' s JOIN users u ON s.account_id = u.account_id WHERE s.account_id = :account_id';
         $stmt = $this->pdo->prepare($query);
-        
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(':account_id', $account_id);
         $stmt->execute();
-        
+
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
- 
-    public function updateStaff($id, $data) {
-        $query = "UPDATE " . $this->table_name . " 
+
+    public function getStaffById($id)
+    {
+        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE id = :id';
+        $stmt = $this->pdo->prepare($query);
+
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function updateStaff($id, $data)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            " 
                   SET name = :name,
                   email = :email
                   WHERE id = :id";
-        
+
         $stmt = $this->pdo->prepare($query);
-        
+
         $name = htmlspecialchars(strip_tags($data['name']));
         $email = htmlspecialchars(strip_tags($data['email']));
         // $password = htmlspecialchars(strip_tags($data['password']));
-        
-        $stmt->bindParam(":name", $name);
-        $stmt->bindParam(":email", $email);
+
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':email', $email);
         // $stmt->bindParam(":password", $password);
-        $stmt->bindParam(":id", $id);
-        
+        $stmt->bindParam(':id', $id);
+
         return $stmt->execute();
     }
-    
-    public function deleteStaff($id) {
-        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+
+    public function deleteStaff($id)
+    {
+        $query = 'DELETE FROM ' . $this->table_name . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
-        
-        $stmt->bindParam(":id", $id);
-        
+
+        $stmt->bindParam(':id', $id);
+
         return $stmt->execute();
     }
 }

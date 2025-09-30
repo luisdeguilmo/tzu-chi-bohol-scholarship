@@ -15,8 +15,14 @@ export const useScholarAccounts = (tab) => {
             const response = await axios.get(
                 `${BASE_URL}app/views/scholar-accounts.php?application_status=${tab}`
             );
-            setScholars(response.data.data || []);
-            setLoading(false);
+
+            if (response.data.success) {
+                setScholars(response.data.data || []);
+                setLoading(false);
+            } else {
+                setScholars([]);
+                setLoading(false);
+            }
         } catch (err) {
             console.error("Error fetching accounts data:", err);
             setError("Failed to load accounts data. Please try again.");
@@ -97,6 +103,7 @@ export const useScholarAccounts = (tab) => {
             return true;
         } catch (err) {
             console.error("Error updating scholar status:", err);
+            setLoading(false);
             return false;
         }
     };

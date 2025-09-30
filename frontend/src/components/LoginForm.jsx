@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "../services/axiosConfig";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
-import { EyeClosed, EyeIcon } from "lucide-react";
+import { ArrowLeft, EyeClosed, EyeIcon } from "lucide-react";
+import BASE_URL from "../config";
 
 const LoginForm = ({ role }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, login, isAuthenticated } = useAuth();
 
+    const [isEmailSent, setIsEmailSent] = useState(false);
+    const [isResetPassword, setIsResetPassword] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -117,7 +120,7 @@ const LoginForm = ({ role }) => {
             console.log(data);
 
             const response = await axios.post(
-                "http://localhost:8000/app/views/loginx.php",
+                `${BASE_URL}app/views/loginx.php`,
                 data,
                 {
                     headers: {
@@ -173,15 +176,57 @@ const LoginForm = ({ role }) => {
         }
     };
 
+    const handleSendResetLink = async (e) => {
+        console.log(email);
+        e.preventDefault();
+        try {
+            setLoading(true);
+
+            const data = {
+                email: email.trim(),
+            };
+
+            const response = await axios.post(
+                `${BASE_URL}app/views/password-reset.php?action=request_reset`,
+                data,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            const result = response.data;
+
+            if (result.success) {
+                toast.success(result.message);
+                setIsEmailSent(true);
+                // setIsResetPassword(false);
+            } else {
+                console.log(result);
+                setError(result.message || "Failed to send reset link.");
+            }
+
+            setLoading(false);
+        } catch (err) {
+            console.error("Error sending reset link:", err);
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="bg-white p-10 rounded-xl shadow-lg absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-100%] w-[80%] sm:max-w-[400px] border border-gray-200">
-                <div className="text-center mb-8">
+                <div className="text-center mb-4">
                     <h2 className="text-2xl font-bold text-gray-800">
-                        {role.charAt(0).toUpperCase() + role.slice(1)} Login
+                        {isResetPassword
+                            ? "Forgot Password"
+                            : `${role.charAt(0).toUpperCase() + role.slice(1)} Login`}
                     </h2>
-                    <p className="text-gray-600 text-sm">
-                        Please sign in to your account
+                    <p className="mt-2 text-gray-600 text-sm">
+                        {isResetPassword
+                            ? "Enter your email to receive a password reset link."
+                            : "Please sign in to your account"}
                     </p>
                 </div>
 
@@ -191,58 +236,91 @@ const LoginForm = ({ role }) => {
                     </div>
                 )}
 
-                <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Email Address
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="w-full p-3 outline-none border border-gray-300 text-sm rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                            htmlFor="password"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Password
-                        </label>
-                        <div className="relative">
+                <form
+                    onSubmit={
+                        isResetPassword ? handleSendResetLink : handleLogin
+                    }
+                    className="space-y-4"
+                >
+                    {isEmailSent && isResetPassword ? (
+                        <p className="mt-4 p-4 text-green-700 bg-green-100 border border-green-300 rounded-md text-sm flex items-start gap-2">
+                            <svg
+                                className="w-5 h-5 mt-0.5 text-green-600 flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                />
+                            </svg>
+                            <span>
+                                If an account with that email exists, a password
+                                reset link has been sent.
+                            </span>
+                        </p>
+                    ) : (
+                        <div>
+                            <label
+                                htmlFor="email"
+                                className="block mb-1 text-sm font-medium text-gray-700"
+                            >
+                                Email Address
+                            </label>
                             <input
-                                id="password"
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Enter your password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                id="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 required
                                 className="w-full p-3 outline-none border border-gray-300 text-sm rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
                             />
-                            <span
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="p-1 rounded-full cursor-pointer absolute top-[50%] right-2 translate-y-[-50%] hover:bg-gray-100"
-                            >
-                                {showPassword ? (
-                                    <EyeIcon className="w-4 h-4  text-gray-700" />
-                                ) : (
-                                    <EyeClosed className="w-4 h-4  text-gray-700" />
-                                )}
-                            </span>
                         </div>
-                    </div>
+                    )}
+
+                    {!isResetPassword && (
+                        <div>
+                            <label
+                                htmlFor="password"
+                                className="block mb-1 text-sm font-medium text-gray-700"
+                            >
+                                Password
+                            </label>
+                            <div className="relative">
+                                <input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
+                                    required
+                                    className="w-full p-3 outline-none border border-gray-300 text-sm rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
+                                />
+                                <span
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                    className="p-1 rounded-full cursor-pointer absolute top-[50%] right-2 translate-y-[-50%] hover:bg-gray-100"
+                                >
+                                    {showPassword ? (
+                                        <EyeIcon className="w-4 h-4  text-gray-700" />
+                                    ) : (
+                                        <EyeClosed className="w-4 h-4  text-gray-700" />
+                                    )}
+                                </span>
+                            </div>
+                        </div>
+                    )}
 
                     <button
                         type="submit"
-                        className="w-full p-3 text-white text-sm rounded-lg bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        className={`${isEmailSent ? "hidden" : "block"} w-full p-3 text-white text-sm rounded-lg bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
                         disabled={loading}
                     >
                         {loading ? (
@@ -267,25 +345,36 @@ const LoginForm = ({ role }) => {
                                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                                     ></path>
                                 </svg>
-                                Signing in...
+                                {isResetPassword
+                                    ? "Sending..."
+                                    : "Signing In..."}
                             </span>
+                        ) : isResetPassword ? (
+                            "Send Reset Link"
                         ) : (
                             "Sign In"
                         )}
                     </button>
                 </form>
 
-                <div className="mt-6 text-center">
-                    <p className="text-sm text-gray-600">
-                        Forgot your password?{" "}
+                <div className="mt-3 text-center">
+                    <p className="text-xs text-gray-600">
                         <button
                             type="button"
-                            className="text-blue-600 hover:text-blue-800 font-medium"
-                            onClick={() =>
-                                toast.info("Please contact your administrator")
-                            }
+                            className="text-blue-600 hover:text-blue-800  hover:underline font-medium"
+                            onClick={() => {
+                                setIsResetPassword(!isResetPassword);
+                                setIsEmailSent(false);
+                                setEmail("");
+                                setError("");
+                            }}
                         >
-                            Contact Admin
+                            <ArrowLeft
+                                className={`inline w-4 h-4 mr-1 ${isResetPassword ? "block" : "hidden"}`}
+                            />
+                            {isResetPassword
+                                ? "Back to Login"
+                                : "Forgot Password?"}
                         </button>
                     </p>
                 </div>

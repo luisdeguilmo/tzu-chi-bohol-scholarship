@@ -1,4 +1,4 @@
-import { CirclePlus, Plus } from "lucide-react";
+import { CirclePlus, Plus, User } from "lucide-react";
 
 const PendingScholarsRow = ({
     currentItems,
@@ -68,7 +68,7 @@ const PendingScholarsRow = ({
                             title="Create Account"
                             className="p-2 rounded-xl hover:bg-green-50"
                         >
-                            <Plus className="w-4 h-4 text-green-600 hover:text-green-700" />
+                            <User className="w-4 h-4 text-green-600 hover:text-green-700" />
                         </button>
                     </td>
                 </tr>

@@ -88,7 +88,7 @@ class ScholarAccountModel {
         try {
             $query = "SELECT ai.*, pi.* FROM " . $this->table_name . " ai 
                      JOIN personal_information pi ON ai.application_id = pi.application_id WHERE is_application_approved = '1' AND is_examination_passed = '1' AND is_initial_interview_passed = '1'
-                     AND is_home_visitation_qualified = '1' AND is_final_interview_passed = '1' AND ai.status != 'scholar'";
+                     AND is_home_visitation_qualified = '1' AND is_final_interview_passed = '1' AND status = 'final_interview_passed'";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute();
             
@@ -122,6 +122,14 @@ class ScholarAccountModel {
 
     public function updateAccountStatus($scholar_id, $status) {
         $query = "UPDATE users SET status = :status WHERE account_id = :scholar_id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':scholar_id', $scholar_id);
+        return $stmt->execute();
+    }
+
+    public function updateApplicationStatus($scholar_id, $status) {
+        $query = "UPDATE application_info SET status = :status WHERE application_id = :scholar_id";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':scholar_id', $scholar_id);

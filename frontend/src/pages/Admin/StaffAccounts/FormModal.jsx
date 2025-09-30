@@ -46,7 +46,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
     };
 
     return (
-        <InputModal label={"staff"} isOpen={isOpen} onClose={onClose}>
+        <InputModal label={"New Staff Account"} isOpen={isOpen} onClose={onClose}>
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -137,7 +137,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="submit"
                         className={`w-full py-2 px-4 rounded-lg shadow-sm focus:outline-none bg-green-600 text-white hover:bg-green-700 transition-all`}
                     >
-                        Add Staff
+                        Create Staff
                     </button>
                 </div>
             </form>

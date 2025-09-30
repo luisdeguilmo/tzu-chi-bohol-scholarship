@@ -795,3 +795,4 @@ null
 {"applicantIds":[2237260],"batch":"Batch 2"}
 {"batch_name":"Batch 1"}
 {"applicantIds":[4355295],"batch":"Batch 1"}
+{"applicantIds":[9453192],"batch":"Batch 1"}

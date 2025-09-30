@@ -992,9 +992,8 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                             });
                         }
 
-                        const base64Data = await convertFileToBase64(
-                            processedFile
-                        );
+                        const base64Data =
+                            await convertFileToBase64(processedFile);
                         uploadedFiles.push({
                             filename: processedFile.name,
                             base64_data: base64Data,
@@ -1225,11 +1224,11 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                                             .status === "error"
                                                             ? "text-red-500"
                                                             : conversionStatus[
-                                                                  index
-                                                              ].status ===
-                                                              "completed"
-                                                            ? "text-green-500"
-                                                            : "text-blue-500"
+                                                                    index
+                                                                ].status ===
+                                                                "completed"
+                                                              ? "text-green-500"
+                                                              : "text-blue-500"
                                                     }`}
                                                 >
                                                     {

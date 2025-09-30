@@ -482,6 +482,7 @@ import CommunityServices from "./pages/Scholar/CommunityServices/CommunityServic
 import Events from "./pages/Scholar/Events/Events";
 import InitialInterview from "./pages/Staff/InitialInterview/InitialInterview";
 import FinalInterview from "./pages/Staff/FinalInterview/FinalInterview";
+import ResetPasswordForm from "./components/ResetPasswordForm";
 
 // Component for role-specific login forms
 const RoleSpecificLoginForm = ({ role }) => {
@@ -639,6 +640,10 @@ export function App() {
                     <Route
                         path="/login/admin"
                         element={<LoginForm role="admin" />}
+                    />
+                    <Route
+                        path="/reset-password"
+                        element={<ResetPasswordForm />}
                     />
 
                     <Route

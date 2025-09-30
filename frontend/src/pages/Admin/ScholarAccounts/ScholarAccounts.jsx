@@ -31,6 +31,9 @@ const ScholarAccounts = () => {
     } = useScholarAccounts(activeTab);
     const { profilePics, fetchAllPics } = useProfilePicture(scholars);
 
+    console.log(scholars);
+    console.log(activeTab);
+
     useEffect(() => {
         fetchScholars(activeTab);
         fetchAllPics();
@@ -147,6 +150,7 @@ const ScholarAccounts = () => {
                                 selectedAccounts={selectedScholars}
                                 toggleAccountSelection={toggleScholarSelection}
                                 profilePics={profilePics}
+                                isLoading={loading}
                                 onUpdateAccountStatus={
                                     updateScholarAccountStatus
                                 }
