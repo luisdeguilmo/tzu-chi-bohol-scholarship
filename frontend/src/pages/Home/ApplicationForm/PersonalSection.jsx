@@ -14,7 +14,7 @@ const PersonalSection = ({
 
     return (
         <form className="w-[85%] sm:w-[80%] xl:w-[70%] mx-auto">
-            <h2 className="pb-6 font-bold">Personal Information</h2>
+            <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">Personal Information</h2>
             <FormFields
                 fields={formConfig[FORM_SECTIONS.PERSONAL]}
                 section={FORM_SECTIONS.PERSONAL}
@@ -29,6 +29,7 @@ const PersonalSection = ({
                 nextStep={nextStep}
                 formData={formData}
                 formConfig={formConfig}
+                section={'Personal'}
                 sections={[FORM_SECTIONS.PERSONAL]}
             />
         </form>

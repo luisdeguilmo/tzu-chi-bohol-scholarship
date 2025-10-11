@@ -131,15 +131,53 @@ try {
 
     $secret_key = 'your-super-secret-jwt-key-change-this-in-production';
 
+    // $payload = [];
+    // $user = [];
+
     $payload = [
         'user_id' => $user['account_id'],
-        'first_name' => $userName['first_name'],
-        'last_name' => $userName['last_name'],
+        'first_name' => $userName['first_name'] ?? null,
+        'last_name' => $userName['last_name'] ?? null, 
         'email' => $user['email'],
         'type' => $user['type'],
         'iat' => time(),
         'exp' => time() + 24 * 60 * 60, // 24 hours
     ];
+
+    // if ($userType === 'scholar' || $userType === 'staff') {
+    //     $payload = [
+    //         'user_id' => $user['account_id'],
+    //         'first_name' => $userName['first_name'],
+    //         'last_name' => $userName['last_name'],
+    //         'email' => $user['email'],
+    //         'type' => $user['type'],
+    //         'iat' => time(),
+    //         'exp' => time() + 24 * 60 * 60, // 24 hours
+    //     ];
+
+    //     $user = [
+    //         'user_id' => $user['account_id'],
+    //         'email' => $user['email'],
+    //         'email' => $user['email'],
+    //         'type' => $user['type'],
+    //     ];
+    // } else {
+    //     $payload = [
+    //         'user_id' => $user['account_id'],
+    //         'email' => $user['email'],
+    //         'type' => $user['type'],
+    //         'iat' => time(),
+    //         'exp' => time() + 24 * 60 * 60, // 24 hours
+    //     ];
+
+    //     $user = [
+    //         'user_id' => $user['account_id'],
+    //         'first_name' => $userName['first_name'],
+    //         'last_name' => $userName['last_name'],
+    //         'email' => $user['email'],
+    //         'type' => $user['type'],
+    //     ];
+    // }
 
     $jwt = JWT::encode($payload, $secret_key, 'HS256');
 
@@ -148,9 +186,8 @@ try {
         'token' => $jwt,
         'user' => [
             'user_id' => $user['account_id'],
-            'first_name' => $userName['first_name'],
-            'last_name' => $userName['last_name'],
-            'email' => $user['email'],
+            'first_name' => $userName['first_name'] ?? null,
+            'last_name' => $userName['last_name'] ?? null,
             'email' => $user['email'],
             'type' => $user['type'],
         ],

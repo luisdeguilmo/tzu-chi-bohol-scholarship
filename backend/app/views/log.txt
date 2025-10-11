@@ -796,3 +796,155 @@ null
 {"batch_name":"Batch 1"}
 {"applicantIds":[4355295],"batch":"Batch 1"}
 {"applicantIds":[9453192],"batch":"Batch 1"}
+{"applicantIds":[2137096],"batch":"Batch 1"}
+{"strand":{"strand":"dsdsd","description":""}}
+{"applicantIds":[2137096,9453192,4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 2"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 2"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 1"}
+{"batch_name":"Batch 2"}
+{"purpose":"entrance_examination","batch_name":"Batch 3"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"purpose":"entrance_examination","batch_name":"Batch 2"}
+{"purpose":"orientation","batch_name":"Batch 2"}
+{"purpose":"orientation","batch_name":"Batch 3"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"account_id":"attended","is_attended_orientation":1}
+{"account_id":"pending","is_attended_orientation":1}
+{"account_id":"pending","is_attended_orientation":1}
+{"account_id":"attended","is_attended_orientation":1}
+{"account_id":"attended","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"attended","action":"status_change","is_attended_orientation":1}
+{"account_id":"","action":"status_change","is_attended_orientation":1}
+{"account_id":"","action":"status_change","is_attended_orientation":1}
+{"account_id":"","action":"status_change","is_attended_orientation":1}
+{"account_id":"","action":"status_change","is_attended_orientation":1}
+{"account_id":4355295,"status":""}
+{"account_id":4355295,"status":""}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"account_id":4355295,"status":"attended"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"applicantIds":[4355295],"batch":"Unassigned"}
+{"applicantIds":[4355295],"batch":"Batch 1"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"attended"}
+{"account_id":4355295,"status":"not_attended"}
+{"account_id":4355295,"status":"pending"}
+{"account_id":4355295,"status":"attended"}
+{"applicantIds":[7999452],"batch":"Batch 1"}
+{"applicantIds":[7999452],"batch":"Batch 1"}
+{"account_id":7999452,"status":"attended"}

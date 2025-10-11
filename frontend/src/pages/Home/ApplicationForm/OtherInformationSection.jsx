@@ -30,7 +30,9 @@ const OtherInformationSection = ({
 
     return (
         <form className="w-[85%] sm:w-[80%] xl:w-[70%] mx-auto">
-            <h2 className="pb-6 font-bold">Other Information</h2>
+            <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">
+                Other Information
+            </h2>
             <FormFields
                 fields={formConfig[FORM_SECTIONS.OTHER_INFORMATION]}
                 section={FORM_SECTIONS.OTHER_INFORMATION}

@@ -23,7 +23,7 @@ const ProgressIndicator = ({ steps, currentStep }) => {
             </div>
 
             {/* Step labels */}
-            <div className="flex justify-between mt-2 text-[10px] md:text-sm text-gray-500">
+            <div className="flex justify-between mt-2 md:text-xs text-[10px] text-gray-500">
                 {steps.map((step, index) => (
                     <div key={index}>{step.label}</div>
                 ))}

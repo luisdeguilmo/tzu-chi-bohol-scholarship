@@ -21,7 +21,9 @@ export const useRecentActivities = (id) => {
     };
 
     useEffect(() => {
-        fetchRecentActivities();
+        if (id) {
+            fetchRecentActivities();
+        }
     }, [id]);
 
     return { recentActivities, fetchRecentActivities };

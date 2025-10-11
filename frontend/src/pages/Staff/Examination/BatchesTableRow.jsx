@@ -3,6 +3,7 @@ import { formatDateTime } from "../../../utils/formatDateTime";
 import axios from "axios";
 import { toast } from "react-toastify";
 import BASE_URL from "../../../config";
+import { Check, PencilLine, X } from "lucide-react";
 
 const BatchesTableRow = ({
     tab,
@@ -147,82 +148,58 @@ const BatchesTableRow = ({
                     </td>
 
                     <td className="py-2 whitespace-nowrap font-medium">
-                        <button
-                            onClick={() => {
-                                if (edit && editingId === info.application_id) {
-                                    handleAddScore(info.application_id);
-                                } else {
-                                    handleButtonState(
-                                        info.application_id,
-                                        info.score || ""
-                                    );
+                        <div className="flex justify-center items-center gap-2">
+                            <button
+                                onClick={() => {
+                                    if (
+                                        edit &&
+                                        editingId === info.application_id
+                                    ) {
+                                        handleAddScore(info.application_id);
+                                    } else {
+                                        handleButtonState(
+                                            info.application_id,
+                                            info.score || ""
+                                        );
+                                    }
+                                }}
+                                title={
+                                    edit && editingId === info.application_id
+                                        ? "Save Changes"
+                                        : info.score != null
+                                          ? "Edit Score"
+                                          : "Add Score"
                                 }
-                            }}
-                            title={
-                                edit && editingId === info.application_id
-                                    ? "Save Changes"
-                                    : info.score != null
-                                    ? "Edit Score"
-                                    : "Add Score"
-                            }
-                            className={`inline-flex items-center ${
-                                info.score != null
-                                    ? "text-blue-600 hover:text-blue-900"
-                                    : "text-green-600 hover:text-green-900"
-                            }`}
-                        >
-                            {(edit && editingId) === info.application_id ? (
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="w-5 h-5 text-green-500"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
+                                className={`inline-flex items-center ${
+                                    (edit && editingId) === info.application_id
+                                        ? "text-green-600 hover:text-green-900"
+                                        : info.score != null
+                                          ? "text-blue-600 hover:text-blue-900"
+                                          : "text-green-600 hover:text-green-900"
+                                }`}
+                            >
+                                {(edit && editingId) === info.application_id ? (
+                                    <Check className="w-4 h-4 mr-1" />
+                                ) : info.score != null ? (
+                                    <PencilLine className="w-4 h-4 mr-1" />
+                                ) : (
+                                    <PencilLine className="w-4 h-4 mr-1" />
+                                )}
+                            </button>
+
+                            {edit && editingId === info.application_id && (
+                                <button
+                                    onClick={() => {
+                                        setEdit(false);
+                                        setEditingId(null);
+                                    }}
+                                    title={"Cancel"}
+                                    className={`inline-flex items-center text-red-600 hover:text-red-900`}
                                 >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M9 12l2 2 4-4M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"
-                                    />
-                                </svg>
-                            ) : info.score != null ? (
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-4 w-4 mr-1"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                    />
-                                </svg>
-                            ) : (
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-4 w-4 mr-1"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H7v-3.414a2 2 0 01.586-1.414z"
-                                    />
-                                </svg>
+                                    <X className="w-4 h-4 mr-1" />
+                                </button>
                             )}
-                            {/* {edit && editingId === info.application_id
-                                ? "Save"
-                                : info.score != null
-                                ? "Edit Score"
-                                : "Add Score"} */}
-                        </button>
+                        </div>
                     </td>
                 </tr>
             ))}

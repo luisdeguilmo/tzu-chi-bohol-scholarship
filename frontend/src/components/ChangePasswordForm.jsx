@@ -63,7 +63,7 @@ const ChangePasswordForm = ({ userId }) => {
                 <label className="block mb-1 text-gray-600 text-xs">
                     Current Password
                 </label>
-                <div className="w-full sm:w-[50%] relative">
+                <div className="w-full sm:w-[50%] lg:w-[40%] relative">
                     <input
                         type={
                             isPasswordShowed.current_password
@@ -73,7 +73,7 @@ const ChangePasswordForm = ({ userId }) => {
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                         placeholder="Current Password"
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                         // disabled={disabled}
                     />
@@ -87,9 +87,9 @@ const ChangePasswordForm = ({ userId }) => {
                         className="p-1 rounded-full cursor-pointer absolute top-[50%] right-2 translate-y-[-50%] hover:bg-gray-100"
                     >
                         {isPasswordShowed.current_password ? (
-                            <EyeIcon className="w-4 h-4  text-gray-700" />
+                            <EyeIcon className="w-4 h-4  text-gray-600" />
                         ) : (
-                            <EyeClosed className="w-4 h-4  text-gray-700" />
+                            <EyeClosed className="w-4 h-4  text-gray-600" />
                         )}
                     </span>
                 </div>
@@ -99,7 +99,7 @@ const ChangePasswordForm = ({ userId }) => {
                 <label className="block mb-1 text-gray-600 text-xs">
                     New Password
                 </label>
-                <div className="w-full sm:w-[50%] relative">
+                <div className="w-full sm:w-[50%] lg:w-[40%] relative">
                     <input
                         type={
                             isPasswordShowed.new_password ? "text" : "password"
@@ -107,7 +107,7 @@ const ChangePasswordForm = ({ userId }) => {
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="New Password"
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                         // disabled={disabled}
                     />
@@ -121,9 +121,9 @@ const ChangePasswordForm = ({ userId }) => {
                         className="p-1 rounded-full cursor-pointer absolute top-[50%] right-2 translate-y-[-50%] hover:bg-gray-100"
                     >
                         {isPasswordShowed.new_password ? (
-                            <EyeIcon className="w-4 h-4  text-gray-700" />
+                            <EyeIcon className="w-4 h-4  text-gray-600" />
                         ) : (
-                            <EyeClosed className="w-4 h-4  text-gray-700" />
+                            <EyeClosed className="w-4 h-4  text-gray-600" />
                         )}
                     </span>
                 </div>
@@ -133,7 +133,7 @@ const ChangePasswordForm = ({ userId }) => {
                 <label className="block mb-1 text-gray-600 text-xs">
                     Confirm New Password
                 </label>
-                <div className="w-full sm:w-[50%] relative">
+                <div className="w-full sm:w-[50%] lg:w-[40%] relative">
                     <input
                         type={
                             isPasswordShowed.confirm_password
@@ -143,7 +143,7 @@ const ChangePasswordForm = ({ userId }) => {
                         value={confirmNewPassword}
                         onChange={(e) => setConfirmNewPassword(e.target.value)}
                         placeholder="Confirm New Password"
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                         // disabled={disabled}
                     />
@@ -157,9 +157,9 @@ const ChangePasswordForm = ({ userId }) => {
                         className="p-1 rounded-full cursor-pointer absolute top-[50%] right-2 translate-y-[-50%] hover:bg-gray-100"
                     >
                         {isPasswordShowed.confirm_password ? (
-                            <EyeIcon className="w-4 h-4  text-gray-700" />
+                            <EyeIcon className="w-4 h-4  text-gray-600" />
                         ) : (
-                            <EyeClosed className="w-4 h-4  text-gray-700" />
+                            <EyeClosed className="w-4 h-4  text-gray-600" />
                         )}
                     </span>
                 </div>

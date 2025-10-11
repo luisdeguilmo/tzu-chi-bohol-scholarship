@@ -24,15 +24,20 @@ import {
 import { manageApplication } from "../../../services/emailService";
 import SendEmailButton from "./SendEmailButtton";
 import PassingScoreModal from "./PassingScoreModal";
+import DocumentFormModal from "./DocumentFormModal";
 
 export default function Examination() {
     const [isEmailSent, setIsEmailSent] = useState(false);
     const [isRefresh, setIsRefresh] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeTab, setActiveTab] = useState(examinationTableButtons[0].name);
-    const { batches, setBatches, deleteBatch, fetchBatches } = useBatches();
+    const { batches, setBatches, deleteBatch, fetchBatches } = useBatches(
+        "entrance_examination"
+    );
     const [isOpen, setIsOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDocumentFormModalOpen, setIsDocumentFormModalOpen] =
+        useState(false);
     const [sortBy, setSortBy] = useState("newest");
     const [status, setStatus] = useState("all");
     const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -359,8 +364,8 @@ export default function Examination() {
                         activeTab === "Applicants"
                             ? unassignedTableHeaders
                             : activeTab === "Batches"
-                            ? batchesTableHeaders
-                            : resultTableHeaders
+                              ? batchesTableHeaders
+                              : resultTableHeaders
                     }
                     hasCheckbox={
                         activeTab === "Applicants" || activeTab === "Batches"
@@ -402,6 +407,7 @@ export default function Examination() {
                                     <ResultTableRow
                                         currentItems={currentItems}
                                         profilePics={profilePics}
+                                        onOpenModal={setIsDocumentFormModalOpen}
                                     />
                                 );
                         }
@@ -489,6 +495,12 @@ export default function Examination() {
                 isOpen={isPassingScoreModalOpen}
                 onClose={setIsPassingScoreModalOpen}
                 onRefresh={fetchApplicationsOnResultTab}
+            />
+
+            <DocumentFormModal
+                isOpen={isDocumentFormModalOpen}
+                setIsOpen={setIsDocumentFormModalOpen}
+                onSuccess={fetchApplicationsOnResultTab}
             />
         </PageContent>
     );

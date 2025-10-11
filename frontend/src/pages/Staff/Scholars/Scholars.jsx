@@ -8,12 +8,16 @@ import { useScholars } from "../../../hooks/useScholars";
 import { scholarTableHeaders } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import { Eye } from "lucide-react";
+import { Eye, PenLine } from "lucide-react";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import ScholarProfileModal from "./ScholarProfileModal";
+import ChangeStatusModal from "./ChangeStatusModal";
 
 export default function Scholars() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] =
+        useState(false);
+    const [scholarId, setScholarId] = useState(null);
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedScholar, setSelectedScholar] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,12 +27,13 @@ export default function Scholars() {
     const [schoolYear, setSchoolYear] = useState(getCurrentSchoolYear());
     const [sortBy, setSortBy] = useState("newest");
 
-    const { scholars, fetchScholars } = useScholars(
+    const { scholars, fetchScholars, updateAllowanceStatus } = useScholars(
         activeTab,
         status,
         schoolYear,
         sortBy
     );
+
     const { profilePics } = useProfilePicture(scholars);
 
     useEffect(() => {
@@ -67,7 +72,7 @@ export default function Scholars() {
     };
 
     const handleRefresh = () => {
-        fetchScholars();
+        fetchScholars(activeTab, status, schoolYear, sortBy);
         setSelectedItems([]);
     };
 
@@ -137,7 +142,7 @@ export default function Scholars() {
                                         : ""
                                 }`}
                             >
-                                <td className="py-2 whitespace-nowrap text-center text-gray-900 font-bold">
+                                <td className="py-2 text-xs whitespace-nowrap text-center text-gray-600 font-bold">
                                     {scholar.account_id}
                                 </td>
                                 <td className="py-2 text-center flex justify-start whitespace-nowrap text-sm text-gray-700">
@@ -151,38 +156,58 @@ export default function Scholars() {
                                             className="w-10 h-10 object-cover rounded-full mx-auto"
                                         />
                                         <div className="flex justify-center flex-col">
-                                            <p className="font-bold text-xs">
+                                            <p className="font-bold text-gray-700 text-xs">
                                                 {scholar.first_name +
                                                     " " +
                                                     scholar.last_name}
                                             </p>
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-[11px] text-gray-500/90">
                                                 {scholar.email}
                                             </p>
                                         </div>
                                     </div>
                                 </td>
-                                <td className="py-2 whitespace-nowrap text-gray-500">
+                                <td className="py-2 text-center whitespace-nowrap text-gray-500">
                                     <span
                                         className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium ${
                                             scholar.status === "active"
                                                 ? "bg-green-100 text-green-800"
                                                 : scholar.status ===
-                                                  "deactivated"
-                                                ? "bg-red-100 text-red-800"
-                                                : "bg-yellow-100 text-yellow-800"
+                                                    "deactivated"
+                                                  ? "bg-red-100 text-red-800"
+                                                  : "bg-yellow-100 text-yellow-800"
                                         }`}
                                     >
                                         {scholar.status === "active"
                                             ? "Active"
                                             : scholar.status === "deactivated"
-                                            ? "Deactivated"
-                                            : "Not Renewed"}
+                                              ? "Deactivated"
+                                              : "Not Renewed"}
                                     </span>
                                 </td>
                                 <td className="py-2 whitespace-nowrap text-slate-600 text-center font-medium">
                                     {scholar.rendered_hours} hour
                                     {scholar.rendered_hours > 1 ? "s" : ""}
+                                </td>
+                                <td className="py-2 whitespace-nowrap text-gray-500">
+                                    <span
+                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium ${
+                                            scholar.allowance_status ===
+                                            "received"
+                                                ? "bg-green-100 text-green-800"
+                                                : scholar.allowance_status ===
+                                                    "not_received"
+                                                  ? "bg-red-100 text-red-800"
+                                                  : "bg-yellow-100 text-yellow-800"
+                                        }`}
+                                    >
+                                        {scholar.allowance_status === "received"
+                                            ? "Received"
+                                            : scholar.allowance_status ===
+                                                "not_received"
+                                              ? "Not Received"
+                                              : "Pending"}
+                                    </span>
                                 </td>
                                 <td className="py-2 whitespace-nowrap font-medium">
                                     <div className="flex items-center justify-center">
@@ -197,6 +222,26 @@ export default function Scholars() {
                                             title="View PDF"
                                         >
                                             <Eye className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            // onClick={() => {
+                                            //     setIsModalOpen(true);
+                                            //     setSelectedScholar(
+                                            //         scholar.account_id
+                                            //     );
+                                            // }}
+                                            onClick={() => {
+                                                setIsChangeStatusModalOpen(
+                                                    true
+                                                );
+                                                setScholarId(
+                                                    scholar.account_id
+                                                );
+                                            }}
+                                            className="p-2 text-green-600 hover:text-green-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                                            title="Change Status"
+                                        >
+                                            <PenLine className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </td>
@@ -230,6 +275,15 @@ export default function Scholars() {
                     scholarId={selectedScholar}
                     isOpen={isModalOpen}
                     setIsOpen={setIsModalOpen}
+                />
+
+                <ChangeStatusModal
+                    isOpen={isChangeStatusModalOpen}
+                    onClose={setIsChangeStatusModalOpen}
+                    label={"Change Allowance Status"}
+                    scholarId={scholarId}
+                    onUpdate={updateAllowanceStatus}
+                    onRefresh={handleRefresh}
                 />
             </div>
         </div>

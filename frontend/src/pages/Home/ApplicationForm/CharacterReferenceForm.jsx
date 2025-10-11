@@ -59,7 +59,7 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
 
     return (
         <div>
-            <h2 className="pt-12 pb-6 font-bold mb-4">
+            <h2 className="pt-12 pb-6 font-bold mb-4 text-gray-700 md:text-lg text-sm">
                 Character Reference{" "}
                 <span className="text-sm font-normal">
                     (Name 3 Person not related to your family who can vouch
@@ -80,7 +80,7 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
                                 value={newCharacter[input.name]}
                                 onChange={handleChange}
                                 placeholder={input.placeholder}
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs text-gray-700 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                             />
                         </div>
@@ -92,7 +92,7 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
                     className={`col-span-3 my-7 shadow-lg text-sm rounded-md text-white p-2 ${
                         character_reference.length > 2
                             ? "bg-green-400"
-                            : "bg-green-600"
+                            : "bg-green-600 hover:bg-green-700"
                     } `}
                     disabled={character_reference.length > 2}
                 >

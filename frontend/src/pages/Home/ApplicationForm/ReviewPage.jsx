@@ -5,14 +5,16 @@ import formConfig from "../../../constant/application/formConfig";
 const PersonalInformation = ({ personal }) => {
     return (
         <>
-            <h3 className="text-gray-700 py-8 text-xl font-bold">
+            <h3 className="text-gray-700 py-8 font-bold md:text-lg text-sm">
                 Personal Information
             </h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-4">
                 {formConfig[FORM_SECTIONS.PERSONAL].map((item, index) => (
                     <div key={index}>
-                        <p className="text-xs text-gray-700">{item.label}</p>
-                        <p className="text-sm font-bold text-gray-800">
+                        <p className="text-xs text-gray-500 mb-1.5">
+                            {item.label}
+                        </p>
+                        <p className="text-xs font-medium text-gray-800">
                             {personal[item.name]}
                         </p>
                     </div>
@@ -26,14 +28,16 @@ const EducationalBackground = ({ education }) => {
     console.log(education);
     return (
         <>
-            <h3 className="text-gray-700 py-8 text-xl font-bold">
+            <h3 className="text-gray-700 py-8 font-bold md:text-lg text-sm">
                 Educational Background
             </h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-4">
                 {formConfig[FORM_SECTIONS.EDUCATION].map((item, index) => (
                     <div key={index}>
-                        <p className="text-xs text-gray-700">{item.label}</p>
-                        <p className="text-sm font-bold text-gray-800">
+                        <p className="text-xs text-gray-500 mb-1.5">
+                            {item.label}
+                        </p>
+                        <p className="text-xs font-medium text-gray-800">
                             {education[item.name]}
                         </p>
                     </div>
@@ -53,46 +57,50 @@ const FamilyInformation = ({
 
     return (
         <>
-            <h3 className="text-gray-700 py-10 text-xl font-bold">
+            <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
                 Family Information
             </h3>
 
-            <h4 className="text-gray-700 text-lg font-bold pb-10">
-                A. 1. Parent/Guardian
+            <h4 className="text-gray-700 font-bold pb-10  md:text-sm text-xs">
+                Parent/Guardian
             </h4>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-4">
                 {formConfig[FORM_SECTIONS.FAMILY].map((item, index) => (
                     <div key={index}>
-                        <p className="text-xs text-gray-700">{item.label}</p>
-                        <p className="text-sm font-bold text-gray-800">
+                        <p className="text-xs text-gray-500 mb-1.5">
+                            {item.label}
+                        </p>
+                        <p className="text-xs font-medium text-gray-800">
                             {parents_guardian[item.name]}
                         </p>
                     </div>
                 ))}
             </div>
 
-            <h4 className="text-gray-700 text-lg font-bold py-10">
-                A. 2. Contact Person In Case Of Emergency
+            <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
+                Contact Person In Case Of Emergency
             </h4>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                 {formConfig[FORM_SECTIONS.CONTACT_PERSON].map((item, index) => (
                     <div key={index}>
-                        <p className="text-xs text-gray-700">{item.label}</p>
-                        <p className="text-sm font-bold text-gray-800">
+                        <p className="text-xs text-gray-500 mb-1.5">
+                            {item.label}
+                        </p>
+                        <p className="text-xs font-medium text-gray-800">
                             {contact_person[item.name]}
                         </p>
                     </div>
                 ))}
             </div>
 
-            <h4 className="text-lg text-gray-700 font-bold py-10">
-                B. Family Member
+            <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
+                Family Member
             </h4>
             <div className="overflow-y-auto">
                 {sortedFamily.length > 0 && (
                     <table className="w-full lg:w-[100%] min-w-[1000px]">
                         <thead>
-                            <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
+                            <tr className="p-2 bg-gray-50 text-xs font-light text-slate-700">
                                 {[
                                     "Name",
                                     "Relationship",
@@ -145,8 +153,8 @@ const FamilyInformation = ({
 
             {scholars.length > 0 && (
                 <>
-                    <h4 className="text-lg text-gray-700 font-bold py-10">
-                        C. Siblings Enjoying/Enjoyed Tzu Chi Educational
+                    <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
+                        Siblings Enjoying/Enjoyed Tzu Chi Educational
                         Assistance
                     </h4>
                     <div className="overflow-y-auto">
@@ -204,7 +212,7 @@ const Assistance = ({ assistance }) => {
         <>
             {assistance.length > 0 && (
                 <>
-                    <h3 className="text-gray-700 py-10 font-bold">
+                    <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
                         Assistance from Other Association, Organization, School
                         Discount, etc.
                     </h3>
@@ -255,7 +263,7 @@ const Assistance = ({ assistance }) => {
 const OtherInformation = ({ expectation, character_reference }) => {
     return (
         <>
-            <h3 className="text-gray-700 py-10 text-xl font-bold">
+            <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
                 Other Information
             </h3>
             <div>
@@ -263,7 +271,7 @@ const OtherInformation = ({ expectation, character_reference }) => {
                 <p className="text-sm font-bold text-gray-800">{expectation}</p>
             </div>
 
-            <h4 className="text-lg text-gray-700 font-bold py-10">
+            <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
                 Character Reference
             </h4>
 
@@ -346,7 +354,7 @@ const ReviewPage = ({ formData, isConsent, onSetConsent }) => {
                             onChange={onSetConsent}
                             className="accent-green-600 mr-2"
                         />
-                        <span className="text-xs text-justify">
+                        <span className="text-xs text-justify text-gray-800">
                             I hereby attest that the information I have provided
                             is true and correct. I also consents Tzu Chi
                             Foundation to obtain and retain my personal

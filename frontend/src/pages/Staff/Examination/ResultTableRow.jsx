@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { formatDateTime } from "../../../utils/formatDateTime";
+import { Upload } from "lucide-react";
 
-const ResultTableRow = ({ currentItems, profilePics }) => {
+const ResultTableRow = ({ currentItems, profilePics, onOpenModal }) => {
     const [edit, setEdit] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [score, setScore] = useState(0);
@@ -65,11 +66,13 @@ const ResultTableRow = ({ currentItems, profilePics }) => {
                     <td className="py-2 whitespace-nowrap font-medium">
                         <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium
-                     ${info.is_examination_passed
-                                ? "bg-green-100 text-green-800"
-                                : info.is_examination_failed
-                                ? "bg-red-100 text-red-800"
-                                : "bg-yellow-100 text-yellow-800"}`}
+                     ${
+                         info.is_examination_passed
+                             ? "bg-green-100 text-green-800"
+                             : info.is_examination_failed
+                               ? "bg-red-100 text-red-800"
+                               : "bg-yellow-100 text-yellow-800"
+                     }`}
                         >
                             {/* {info.score >= 50 && info.score !== null
                                 ? "Passed"
@@ -79,9 +82,18 @@ const ResultTableRow = ({ currentItems, profilePics }) => {
                             {info.is_examination_passed
                                 ? "Passed"
                                 : info.is_examination_failed
-                                ? "Failed"
-                                : "Pending"}
+                                  ? "Failed"
+                                  : "Pending"}
                         </span>
+                    </td>
+                    <td className="py-3 text-center whitespace-nowrap font-medium">
+                        <button
+                            title="Upload Document"
+                            onClick={() => onOpenModal(true)}
+                            className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
+                        >
+                            <Upload className="w-4 h-4" />
+                        </button>
                     </td>
                 </tr>
             ))}

@@ -16,6 +16,7 @@ export const useSchedule = () => {
         setIsOpen
     ) => {
         const data = {
+            purpose: 'entrance_examination',
             schedule: date + " " + time,
             venue: venue,
         };

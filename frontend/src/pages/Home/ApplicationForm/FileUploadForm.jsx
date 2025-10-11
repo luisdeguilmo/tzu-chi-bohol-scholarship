@@ -85,7 +85,10 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
                 // Create preview
                 const preview = URL.createObjectURL(file);
                 setPicturePreview({
-                    name: file.name.replaceAll(" ", "_"),
+                    name: file.name
+                        .replaceAll("(", "")
+                        .replaceAll(")", "")
+                        .replaceAll(" ", "_"),
                     size: file.size,
                     type: file.type,
                     preview: preview,
@@ -99,11 +102,15 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
         getRootProps: getOtherRootProps,
         getInputProps: getOtherInputProps,
     } = useDropzone({
-        accept: "image/*, .pdf, .doc, .docx",
+        // accept: "image/*, .pdf, .doc, .docx",
+        accept: "image/*",
         onDrop: (acceptedFiles) => {
             // Format the files with just the filename property
             const formattedFiles = acceptedFiles.map((file) => ({
-                filename: file.name,
+                filename: file.name
+                    .replaceAll("(", "")
+                    .replaceAll(")", "")
+                    .replaceAll(" ", "_"),
                 // Keep the original file object for upload
                 fileObj: file,
             }));
@@ -113,7 +120,10 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
 
             // Create previews for display purposes
             const newPreviews = acceptedFiles.map((file) => ({
-                name: file.name,
+                name: file.name
+                    .replaceAll("(", "")
+                    .replaceAll(")", "")
+                    .replaceAll(" ", "_"),
                 size: file.size,
                 type: file.type,
                 preview: URL.createObjectURL(file),
@@ -178,25 +188,30 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
 
     return (
         <>
-            <h2 className="font-bold text-sm text-gray-700 mb-4">
-                1x1 Picture
+            <h2 className="font-bold text-sm text-gray-700 mt-6 mb-4">
+                1x1 ID Photo with White Background{" "}
+                <span className="text-xs font-normal text-gray-600">
+                    (Cropped to show your full face and shoulders, with your
+                    face clearly visible and centered.)
+                </span>
             </h2>
+
             <div className="flex flex-col items-center border-2 border-dashed rounded-lg w-full">
                 <div
                     {...getPictureRootProps()}
-                    className="w-full p-2 text-center rounded-lg cursor-pointer bg-white hover:bg-gray-50"
+                    className="w-full p-4 text-center rounded-lg cursor-pointer bg-white hover:bg-gray-50"
                 >
                     <input
                         {...getPictureInputProps()}
                         disabled={formData.picture_file}
                     />
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-gray-500/90 text-xs">
                         {pictureFile
                             ? "Click to replace image"
-                            : "Drag & drop your 2x2 picture here, or click to select"}
+                            : "Drag & drop your 1x1 picture here, or click to select"}
                     </p>
                     <span className="w-[max-content] pt-3 block mx-auto">
-                        <Upload className="text-gray-700" />
+                        <Upload className="text-gray-500" />
                     </span>
                 </div>
 
@@ -239,19 +254,22 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
             </div>
 
             <h2 className="font-bold text-sm text-gray-700 mt-14 mb-4">
-                Other Requirements
+                Other Requirements{" "}
+                <span className="text-xs font-normal text-gray-600">
+                    (Make sure text is readable and not blurry or cut off.)
+                </span>
             </h2>
             <div className="flex flex-col items-center border-2 border-dashed rounded-lg w-full">
                 <div
                     {...getOtherRootProps()}
-                    className="w-full p-2 text-center rounded-lg cursor-pointer bg-white hover:bg-gray-50"
+                    className="w-full p-4 text-center rounded-lg cursor-pointer bg-white hover:bg-gray-50"
                 >
                     <input {...getOtherInputProps()} />
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-gray-500/90 text-xs">
                         Drag & drop files here, or click to select
                     </p>
                     <span className="w-[max-content] pt-3 block mx-auto">
-                        <Upload className="text-gray-700" />
+                        <Upload className="text-gray-500" />
                     </span>
                 </div>
 
@@ -270,9 +288,10 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
                                             className="w-12 h-12 object-cover rounded mr-2"
                                         />
                                     )}
-                                <span>
-                                    {filePreview.name} (
-                                    {(filePreview.size / 1024).toFixed(2)} KB)
+                                <span className="text-xs text-gray-700">
+                                    {filePreview.name}
+                                    {/* (
+                                    {(filePreview.size / 1024).toFixed(2)} KB) */}
                                 </span>
                                 <button
                                     onClick={() => removeFile(index)}

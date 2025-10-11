@@ -13,7 +13,7 @@ const ReviewSection = ({ formData, prevStep, handleSubmit }) => {
 
     return (
         <div className="w-[85%] lg:w-[65%] mx-auto">
-            <h2 className="pb-6 font-bold">Review Information</h2>
+            <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">Review Information</h2>
             <ReviewPage
                 formData={formData}
                 isConsent={isConsent}
@@ -25,6 +25,7 @@ const ReviewSection = ({ formData, prevStep, handleSubmit }) => {
                 prevStep={prevStep}
                 disabled={!isConsent}
                 handleSubmit={handleSubmit}
+                section={'Review'}
                 sections={null}
             />
         </div>

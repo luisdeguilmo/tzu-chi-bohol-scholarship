@@ -14,7 +14,7 @@ const EducationSection = ({
 
     return (
         <form className="w-[85%] sm:w-[80%] xl:w-[70%] mx-auto">
-            <h2 className="pb-6 font-bold">Educational Background</h2>
+            <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">Educational Background</h2>
             <FormFields
                 fields={formConfig[FORM_SECTIONS.EDUCATION]}
                 section={FORM_SECTIONS.EDUCATION}
@@ -30,6 +30,7 @@ const EducationSection = ({
                 formData={formData}
                 formConfig={formConfig}
                 sections={[FORM_SECTIONS.EDUCATION]}
+                section={'Education'}
             />
         </form>
     );

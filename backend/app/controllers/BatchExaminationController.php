@@ -163,6 +163,7 @@ class BatchExaminationController {
             // Get ID parameter if it exists
             $id = isset($_GET['batch']) ? $_GET['batch'] : null;
             $hasScore = isset($_GET['score']) ? $_GET['score'] : null;
+            $purpose = isset($_GET['purpose']) ? $_GET['purpose'] : null;
             $status = $_GET['status'] ?? null;
             $sort = $_GET['sort'] ?? null;
 

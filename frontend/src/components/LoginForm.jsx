@@ -223,7 +223,7 @@ const LoginForm = ({ role }) => {
                             ? "Forgot Password"
                             : `${role.charAt(0).toUpperCase() + role.slice(1)} Login`}
                     </h2>
-                    <p className="mt-2 text-gray-600 text-sm">
+                    <p className="mt-2 text-gray-500/90 text-sm">
                         {isResetPassword
                             ? "Enter your email to receive a password reset link."
                             : "Please sign in to your account"}
@@ -266,7 +266,7 @@ const LoginForm = ({ role }) => {
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block mb-1 text-sm font-medium text-gray-700"
+                                className="block mb-1 text-xs font-medium text-gray-700"
                             >
                                 Email Address
                             </label>
@@ -277,7 +277,7 @@ const LoginForm = ({ role }) => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full p-3 outline-none border border-gray-300 text-sm rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
+                                className="w-full p-3 outline-none border border-gray-300 text-[13px] text-gray-700 rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
                             />
                         </div>
                     )}
@@ -286,7 +286,7 @@ const LoginForm = ({ role }) => {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block mb-1 text-sm font-medium text-gray-700"
+                                className="block mb-1 text-xs font-medium text-gray-700"
                             >
                                 Password
                             </label>
@@ -300,7 +300,7 @@ const LoginForm = ({ role }) => {
                                         setPassword(e.target.value)
                                     }
                                     required
-                                    className="w-full p-3 outline-none border border-gray-300 text-sm rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
+                                    className="w-full p-3 outline-none border border-gray-300 text-[13px] text-gray-700 rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                 />
                                 <span
                                     onClick={() =>
@@ -320,7 +320,7 @@ const LoginForm = ({ role }) => {
 
                     <button
                         type="submit"
-                        className={`${isEmailSent ? "hidden" : "block"} w-full p-3 text-white text-sm rounded-lg bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
+                        className={`${isEmailSent ? "hidden" : "block"} w-full p-3 text-white text-xs rounded-lg bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
                         disabled={loading}
                     >
                         {loading ? (

@@ -82,8 +82,8 @@ function SideBar({ items }) {
             )}
 
             <nav
-                className={`group lg:h-[91.5vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[320px] lg:hover:items-stretch z-20 overflow-hidden transition-all duration-200 ${
-                    isOpen ? "lg:w-[320px] w-[300px]" : "w-[0] lg:w-[70px]"
+                className={`group lg:h-[91.5vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[370px] lg:hover:items-stretch z-20 overflow-hidden transition-all duration-200 ${
+                    isOpen ? "lg:w-[400px] w-[300px]" : "w-[0] lg:w-[70px]"
                 } ${!isOpen && "items-center"}`}
             >
                 {isOpen && (
@@ -112,14 +112,14 @@ function SideBar({ items }) {
                                             toggleDropdown(index, item.itemName)
                                         }
                                     >
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-3 ">
                                             {item.icon}
                                             {isOpen ? (
-                                                <p className="lg:block group-hover:block">
+                                                <p className="lg:block group-hover:block text-sm">
                                                     {item.text}
                                                 </p>
                                             ) : (
-                                                <p className="hidden lg:group-hover:block">
+                                                <p className="hidden lg:group-hover:block text-sm">
                                                     {item.text}
                                                 </p>
                                             )}
@@ -155,7 +155,7 @@ function SideBar({ items }) {
                                                                 item.itemName
                                                             )
                                                         }
-                                                        className={`cursor-pointer hover:bg-gray-100 whitespace-nowrap w-full px-3 py-2 rounded-lg ${
+                                                        className={`cursor-pointer hover:bg-gray-100 whitespace-nowrap text-xs w-full px-3 py-2.5 rounded-lg ${
                                                             isOpen
                                                                 ? "block"
                                                                 : "hidden"

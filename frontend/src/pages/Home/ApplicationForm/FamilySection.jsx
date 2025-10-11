@@ -15,7 +15,8 @@ const FamilySection = ({
     isLast,
 }) => {
     const [errors, setErrors] = useState({});
-
+    const [isFirstFormApplicable, setIsFirstFormApplicable] = useState(false);
+    const [isSecondFormApplicable, setIsSecondFormApplicable] = useState(false);
     // Function to update the family-related data in the main form state
     // Use useCallback to prevent this from being recreated on every render
     const updateFamilyData = useCallback(
@@ -30,7 +31,9 @@ const FamilySection = ({
 
     return (
         <form className="w-[85%] sm:w-[80%] xl:w-[70%] mx-auto">
-            <h2 className="pb-6 font-bold">Family Information</h2>
+            <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">
+                Family Information
+            </h2>
             <FormFields
                 fields={formConfig[FORM_SECTIONS.FAMILY]}
                 section={FORM_SECTIONS.FAMILY}
@@ -39,7 +42,7 @@ const FamilySection = ({
                 errors={errors}
             />
 
-            <h2 className="py-10 font-bold">
+            <h2 className="py-10 font-bold text-gray-700 md:text-lg text-sm">
                 Contact Person In Case of Emergency
             </h2>
             <FormFields
@@ -55,6 +58,8 @@ const FamilySection = ({
                 <FamilyListForm
                     formData={formData}
                     updateFormData={updateFamilyData}
+                    setIsFirstFormApplicable={setIsFirstFormApplicable}
+                    setIsSecondFormApplicable={setIsSecondFormApplicable}
                 />
             </div>
 
@@ -65,7 +70,9 @@ const FamilySection = ({
                 nextStep={nextStep}
                 formData={formData}
                 formConfig={formConfig}
-                section={'Family'}
+                section={"Family"}
+                isFirstFormApplicable={isFirstFormApplicable}
+                isSecondFormApplicable={isSecondFormApplicable}
                 // handleRenewSubmit={handleRenewSubmit}
                 sections={[FORM_SECTIONS.FAMILY, FORM_SECTIONS.CONTACT_PERSON]}
             />

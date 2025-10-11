@@ -11,7 +11,8 @@ const ManageApplicants = ({
     onRefresh,
 }) => {
     const { setSelectedApplicants } = useBatch();
-    const { assignStudents, unassignStudents } = useAssignBatch();
+    const { assignStudents, unassignStudents } =
+        useAssignBatch("batch-examination");
 
     const handleAssign = async () => {
         const success = assignStudents(selectedApplicants, selectedBatch);
@@ -32,7 +33,9 @@ const ManageApplicants = ({
     return (
         <div>
             <div className="flex items-center gap-2">
-                <p className="italic text-xs text-slate-500 mr-4">With Selected: </p>
+                <p className="italic text-xs text-slate-500 mr-4">
+                    With Selected:{" "}
+                </p>
                 {tab === "Applicants" ? (
                     <>
                         <select
@@ -50,7 +53,7 @@ const ManageApplicants = ({
                             onClick={handleAssign}
                             title="Assign Selected Student/s"
                             disabled={selectedApplicants.length === 0}
-                            className={`${selectedApplicants.length === 0 ? 'bg-green-400' : 'bg-green-600 hover:bg-green-700'} p-2 text-xs rounded-lg transition-colors flex items-center text-white`}
+                            className={`${selectedApplicants.length === 0 ? "bg-green-400" : "bg-green-600 hover:bg-green-700"} p-2 text-xs rounded-lg transition-colors flex items-center text-white`}
                         >
                             <Plus className="w-4 h-4 mr-2" />
                             Assign
@@ -62,7 +65,7 @@ const ManageApplicants = ({
                             onClick={handleUnassign}
                             title="Unassign Selected Student/s"
                             disabled={selectedApplicants.length === 0}
-                            className={`${selectedApplicants.length === 0 ? 'bg-red-400' : 'bg-red-600 hover:bg-red-700'} p-2 text-xs rounded-lg transition-colors flex items-center text-white`}
+                            className={`${selectedApplicants.length === 0 ? "bg-red-400" : "bg-red-600 hover:bg-red-700"} p-2 text-xs rounded-lg transition-colors flex items-center text-white`}
                         >
                             <Minus className="w-3 h-4 mr-1" />
                             Unassign

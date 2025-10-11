@@ -26,6 +26,8 @@
 
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export const useScholars = (tab, status, scholarYear, sortBy) => {
     const [scholars, setScholars] = useState([]);
@@ -56,6 +58,37 @@ export const useScholars = (tab, status, scholarYear, sortBy) => {
         }
     };
 
+    const updateAllowanceStatus = async (status, accountId) => {
+        try {
+            console.log(accountId, status);
+            const response = await axios.put(
+                `${BASE_URL}app/views/scholar.php`,
+                {
+                    account_id: accountId,
+                    allowance_status: status,
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            const data = response.data;
+
+            if (data.success) {
+                toast.success("Allowance Status Updated Successfully");
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.log("Error: ", error);
+            alert("Failed: ", error);
+            return false;
+        }
+    };
+
     useEffect(() => {
         if (tab && status && scholarYear && sortBy) {
             fetchScholars();
@@ -67,6 +100,7 @@ export const useScholars = (tab, status, scholarYear, sortBy) => {
         loading,
         error,
         fetchScholars,
+        updateAllowanceStatus,
         refetch: fetchScholars,
     };
 };

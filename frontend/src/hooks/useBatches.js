@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-export const useBatches = () => {
+export const useBatches = (purpose) => {
     const [batches, setBatches] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ export const useBatches = () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/batches.php`
+                `${BASE_URL}app/views/batches.php?purpose=${purpose}`
             );
             setBatches(response.data.data || []);
             setLoading(false);
@@ -32,6 +32,8 @@ export const useBatches = () => {
                 },
                 body: JSON.stringify(data),
             });
+
+            console.log(data);
 
             const result = await response.json();
 
@@ -58,7 +60,7 @@ export const useBatches = () => {
         try {
             // Make the API call to delete
             await axios.delete(
-                `${BASE_URL}app/views/batches.php?id=${batchToDelete.batch_name}`
+                `${BASE_URL}app/views/batches.php?id=${batchToDelete.batch_name}&purpose=${purpose}`
             );
 
             // Update local state after successful deletion

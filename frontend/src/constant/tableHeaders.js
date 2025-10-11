@@ -12,6 +12,7 @@ export const scholarTableHeaders = [
     { name: "Scholar", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Rendered Hours", style: "text-center" },
+    { name: "Allowance Status", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
 
@@ -64,6 +65,23 @@ export const resultTableHeaders = [
     { name: "Exam Schedule", style: "text-center" },
     { name: "Score", style: "text-center" },
     { name: "Status", style: "text-center" },
+    { name: "Action", style: "text-center" },
+];
+
+export const orientationTableHeaders = [
+    { name: "Application ID", style: "text-center" },
+    { name: "Applicant", style: "text-center" },
+    { name: "Batch", style: "text-center" },
+    { name: "Status", style: "text-center" },
+    { name: "Schedule", style: "text-center" },
+    { name: "Action", style: "text-center" },
+];
+
+export const awardingTableHeaders = [
+    { name: "Application ID", style: "text-center" },
+    { name: "Applicant", style: "text-center" },
+    { name: "Status", style: "text-center" },
+    { name: "Action", style: "text-center" },
 ];
 
 export const interviewApplicationsTableHeaders = [
@@ -122,6 +140,11 @@ export const eventTableHeaders = [
     { name: "Date", style: "text-left" },
     { name: "Time", style: "text-left" },
     { name: "Status", style: "text-left" },
+    { name: "Action", style: "text-center" },
+];
+
+export const collegesUniversitiesTableHeaders = [
+    { name: "College/University", style: "text-left pl-24" },
     { name: "Action", style: "text-center" },
 ];
 

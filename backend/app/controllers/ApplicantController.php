@@ -78,6 +78,10 @@ try {
         $data = $applicant->getUnassignedApplicants();
         echo json_encode(["data" => $data]);
         return;
+    } else if ($application_status === 'orientation' && $batch === 'Unassigned') {
+        $data = $applicant->getUnassignedApplicantsForOrientation();
+        echo json_encode(["data" => $data]);
+        return;
     }
 
     // if ($application_status === null && $status === null) {

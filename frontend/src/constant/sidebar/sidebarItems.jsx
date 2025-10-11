@@ -71,6 +71,10 @@ export const staffSidebarItems = [
         icon: <GraduationCap className="w-5 h-5 text-slate-600" />,
         subItems: [
             {
+                text: "College & University Management",
+                navigate: "/staff/college-university",
+            },
+            {
                 text: "Scholarship Criteria",
                 navigate: "/staff/scholarship-criteria",
             },
@@ -106,6 +110,7 @@ export const staffSidebarItems = [
             { text: "Initial Interview", navigate: "/staff/initial-interview" },
             { text: "Home Visitation", navigate: "/staff/home-visitation" },
             { text: "Final Interview", navigate: "/staff/final-interview" },
+            { text: "Orientation & Awarding Attendance", navigate: "/staff/orientation-awarding-attendance" },
         ],
     },
     {

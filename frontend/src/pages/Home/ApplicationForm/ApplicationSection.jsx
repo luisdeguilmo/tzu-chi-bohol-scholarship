@@ -24,6 +24,7 @@ const ApplicationSection = ({ formData, handleInputChange, nextStep }) => {
                 nextStep={nextStep}
                 formData={formData}
                 formConfig={formConfig}
+                section={'Application'}
                 sections={[FORM_SECTIONS.APPLICATION]}
             />
         </form>

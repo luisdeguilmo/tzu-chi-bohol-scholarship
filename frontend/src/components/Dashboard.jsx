@@ -17,7 +17,7 @@ function QuickOverview() {
     const { events } = useEvents("upcoming", user.user_id);
     const { events: recentEvents } = useEvents("recent", user.user_id);
     const { recentActivities, fetchRecentActivities } = useRecentActivities(
-        user.user_id
+        user.type === "scholar" ? user.user_id : null
     );
 
     return (
@@ -39,8 +39,8 @@ function QuickOverview() {
                         user.type === "staff"
                             ? staffOverviewData
                             : user.type === "admin"
-                            ? adminOverviewData
-                            : scholarOverviewData
+                              ? adminOverviewData
+                              : scholarOverviewData
                     }
                 />
             </div>

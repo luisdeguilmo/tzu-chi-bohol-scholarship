@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import BASE_URL from "../config";
 import { useExamination } from "./useExamination";
 
-export const useAssignBatch = () => {
+export const useAssignBatch = (endpoint) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     // const { fetchApplications } = useExamination(tab);
@@ -23,7 +23,7 @@ export const useAssignBatch = () => {
         try {
             setLoading(true);
             const response = await axios.post(
-                `${BASE_URL}app/views/batch-examination.php`,
+                `${BASE_URL}app/views/${endpoint}.php`,
                 {
                     applicantIds: selectedApplicants,
                     batch: selectedBatch,
@@ -71,10 +71,10 @@ export const useAssignBatch = () => {
         try {
             setLoading(true);
             const response = await axios.post(
-                `${BASE_URL}app/views/batch-examination.php`,
+                `${BASE_URL}app/views/${endpoint}.php`,
                 {
                     applicantIds: selectedApplicants,
-                    batch: 'Unassigned',
+                    batch: "Unassigned",
                 },
                 {
                     headers: {

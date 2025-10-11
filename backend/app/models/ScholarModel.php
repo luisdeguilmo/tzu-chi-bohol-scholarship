@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Config\Database;
 
-class ScholarModel {
-    private $table_name = "tzu_chi_siblings";
+class ScholarModel
+{
+    private $table_name = 'tzu_chi_siblings';
 
     public $id;
     public $application_id;
@@ -17,30 +18,39 @@ class ScholarModel {
 
     private $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
     }
 
-    public function getAllScholars() {
-        $query = "SELECT s.*, u.status, u.email FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE u.status = 'active'";
+    public function getAllScholars()
+    {
+        $query =
+            "SELECT s.*, u.status, u.email FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE u.status = 'active'";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getScholarById($id) {
-        $query = "SELECT s.*, u.status, u.email FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE s.account_id = :account_id AND u.status = 'active'";
+    public function getScholarById($id)
+    {
+        $query =
+            "SELECT s.*, u.status, u.email FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE s.account_id = :account_id AND u.status = 'active'";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(":account_id", $id);
+        $stmt->bindParam(':account_id', $id);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function create($scholar, $application_id) {
-        $query = "INSERT INTO " . $this->table_name . " 
+    public function create($scholar, $application_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
                   SET application_id = :application_id,
                       name = :name,
                       year_level = :year_level,
@@ -59,13 +69,23 @@ class ScholarModel {
         $this->school_year = htmlspecialchars(strip_tags($scholar['school_year']));
 
         // Bind values
-        $stmt->bindParam(":application_id", $this->application_id);
-        $stmt->bindParam(":name", $this->name);
-        $stmt->bindParam(":year_level", $this->year_level);
-        $stmt->bindParam(":school", $this->school);
-        $stmt->bindParam(":course", $this->course);
-        $stmt->bindParam(":school_year", $this->school_year);
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':year_level', $this->year_level);
+        $stmt->bindParam(':school', $this->school);
+        $stmt->bindParam(':course', $this->course);
+        $stmt->bindParam(':school_year', $this->school_year);
 
+        return $stmt->execute();
+    }
+
+    public function updateAllowanceStatus($data)
+    {
+        $query =
+            'UPDATE scholars SET allowance_status = :allowance_status WHERE account_id = :account_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':account_id', $data['account_id'], \PDO::PARAM_INT);
+        $stmt->bindParam(':allowance_status', $data['allowance_status']);
         return $stmt->execute();
     }
 }

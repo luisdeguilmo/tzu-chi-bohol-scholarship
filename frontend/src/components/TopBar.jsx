@@ -128,9 +128,15 @@ function TopBar() {
                                     </p>
                                 </>
                             ) : (
-                                <div className="w-8 h-8 mr-1 rounded-full text-white text-sm bg-black flex justify-center items-center">
-                                    {user.first_name[0]} {user.last_name[0]}
-                                </div>
+                                <>
+                                    {user.type === "scholar" ||
+                                        (user.type === "staff" && (
+                                            <div className="w-8 h-8 mr-1 rounded-full text-white text-sm bg-black flex justify-center items-center">
+                                                {user.first_name[0]}{" "}
+                                                {user.last_name[0]}
+                                            </div>
+                                        ))}
+                                </>
                             )}
                             <ChevronDown
                                 className={`w-4 h-4 -ml-1 sm:m-0 text-gray-400`}

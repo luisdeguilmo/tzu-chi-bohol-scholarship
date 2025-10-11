@@ -31,6 +31,12 @@ export const finalInitialInterviewTableButtons = [
     { name: "Result", tabName: "Result" },
 ];
 
+export const orientationAndAwardingTableButtons = [
+    { name: "Applicants", tabName: "Applicants" },
+    { name: "Orientation", tabName: "Orientation" },
+    { name: "Awarding", tabName: "Awarding" },
+];
+
 export const volunteerActivitiesButtons = [
     { name: "Pending", tabName: "pending" },
     { name: "Recorded", tabName: "recorded" },

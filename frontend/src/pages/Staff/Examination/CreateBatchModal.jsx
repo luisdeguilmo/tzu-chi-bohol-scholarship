@@ -30,7 +30,10 @@ const CreateBatchModal = ({ isOpen, batchName, onClose, onRefresh }) => {
     console.log(batches);
 
     const handleCreateBatch = async () => {
-        await createBatch({ batch_name: batchName });
+        await createBatch({
+            purpose: "entrance_examination",
+            batch_name: batchName,
+        });
         await onRefresh();
         onClose(false);
     };

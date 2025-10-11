@@ -1,4 +1,6 @@
+import { use, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useCheckEmail } from "../../../hooks/useCheckEmail";
 
 const validateSection = (section, formData, formConfig) => {
     const errors = {};
@@ -31,7 +33,17 @@ const NavigationButtons = ({
     formConfig,
     sections,
     section,
+    isFirstFormApplicable = false,
+    isSecondFormApplicable = false,
 }) => {
+    const { isEmailExist } = useCheckEmail(
+        formData?.personal_information.email
+    );
+
+    // useEffect(() => {
+    //     console.log("Email exists:", isEmailExist);
+    // }, [isEmailExist]);
+
     const checkAndProceed = (e) => {
         e.preventDefault();
 
@@ -74,6 +86,15 @@ const NavigationButtons = ({
             }
         }
 
+        if (section === "Personal") {
+            if (isEmailExist) {
+                toast.error("An application with this email already exists");
+
+                // You could also highlight the fields with errors here if needed
+                return;
+            }
+        }
+
         if (section === "Family") {
             if (formData.family_members.length === 0) {
                 toast.error("Please fill in all required fields");
@@ -83,8 +104,31 @@ const NavigationButtons = ({
             }
         }
 
+        if (section === "Family") {
+            if (
+                isFirstFormApplicable &&
+                formData.tzu_chi_siblings.length === 0
+            ) {
+                toast.error("Please fill in all required fields");
+                return;
+            }
+        }
+
+        if (section === "Family") {
+            if (
+                isSecondFormApplicable &&
+                formData.other_assistance.length === 0
+            ) {
+                toast.error("Please fill in all required fields");
+                return;
+            }
+        }
+
         if (!sections && section === "Requirements") {
-            if (formData.picture_file === null || formData.uploaded_files.length === 0) {
+            if (
+                formData.picture_file === null ||
+                formData.uploaded_files.length === 0
+            ) {
                 toast.error("Please fill in all required fields");
 
                 // You could also highlight the fields with errors here if needed

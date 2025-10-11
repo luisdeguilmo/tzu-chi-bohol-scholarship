@@ -483,6 +483,8 @@ import Events from "./pages/Scholar/Events/Events";
 import InitialInterview from "./pages/Staff/InitialInterview/InitialInterview";
 import FinalInterview from "./pages/Staff/FinalInterview/FinalInterview";
 import ResetPasswordForm from "./components/ResetPasswordForm";
+import CollegeUniversityManagement from "./pages/Staff/SchoolCampusManagement/CollegeUniversityManagement";
+import OrientationAndAwarding from "./pages/Staff/OrientationAndAwarding/OrientationAndAwarding";
 
 // Component for role-specific login forms
 const RoleSpecificLoginForm = ({ role }) => {
@@ -712,6 +714,10 @@ export function App() {
                         path="/staff/scholarship-criteria"
                         element={<ScholarshipCriteria />}
                     />
+                    <Route
+                        path="/staff/college-university"
+                        element={<CollegeUniversityManagement />}
+                    />
                     <Route path="/staff/scholars" element={<Scholars />} />
                     <Route
                         path="/staff/application-records"
@@ -744,6 +750,10 @@ export function App() {
                     <Route
                         path="/staff/final-interview"
                         element={<FinalInterview />}
+                    />
+                    <Route
+                        path="/staff/orientation-awarding-attendance"
+                        element={<OrientationAndAwarding />}
                     />
                     <Route path="/staff/set-events" element={<EventsPage />} />
                     <Route
@@ -778,7 +788,7 @@ export function App() {
                 <Route path="*" element={<NotFound />} />
             </Routes>
 
-            <ToastContainer position="top-center" autoClose={3000} />
+            <ToastContainer toastClassName={'md:text-sm text-xs text-gray-700 text-center'} position="top-center" autoClose={3000} />
         </Router>
     );
 }

@@ -3,7 +3,12 @@ import familyMembersInputFields from "../../../constant/application/familyMember
 import scholarsInputFields from "../../../constant/application/scholarsInputFields";
 import assistanceInputFields from "../../../constant/application/assistanceInputFields";
 
-const FamilyListForm = ({ formData, updateFormData }) => {
+const FamilyListForm = ({
+    formData,
+    updateFormData,
+    setIsFirstFormApplicable,
+    setIsSecondFormApplicable,
+}) => {
     // Initialize state from formData or use empty arrays if not present
     const [family_members, setFamilyMembers] = useState(
         formData.family_members || []
@@ -142,36 +147,64 @@ const FamilyListForm = ({ formData, updateFormData }) => {
 
     return (
         <div>
-            <h2 className="pt-12 pb-6 font-bold mb-4">
+            <h2 className="pt-12 pb-6 font-bold mb-4 text-gray-700 md:text-lg text-sm">
                 Siblings (Eldest to Youngest) including Family Member
             </h2>
 
             {/* Family Members Input Form */}
             <div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
-                    {familyMembersInputFields.map((input, index) => (
-                        <div key={index}>
-                            <label className="block mb-1 text-gray-600 text-xs">
-                                {input.label}
-                            </label>
-                            <input
-                                type={input.type}
-                                name={input.name}
-                                value={newMember[input.name]}
-                                onChange={handleChange}
-                                placeholder={input.placeholder}
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
-                            />
-                        </div>
-                    ))}
+                    {familyMembersInputFields.map((input, index) =>
+                        input.type === "select" ? (
+                            <div key={index}>
+                                <label className="block mb-1 text-gray-500 text-xs">
+                                    {input.label}
+                                </label>
+                                <select
+                                    name={input.name}
+                                    value={newMember[input.name]}
+                                    onChange={handleChange}
+                                    // className={`w-full outline-none border-b-[2px] ${
+                                    //     errors && errors[field.name]
+                                    //         ? "border-red-500"
+                                    //         : "border-gray-400"
+                                    // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
+                                    className="w-full border text-gray-800 text-xs border-gray-300 rounded-md py-2 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    // required={field.required}
+                                >
+                                    {input.options.map((option) => (
+                                        <option
+                                            key={option}
+                                            value={option}
+                                            disabled={option === ""}
+                                            className="text-gray-800 disabled:text-gray-400"
+                                        >
+                                            {option === ""
+                                                ? "-- Select --"
+                                                : option}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        ) : (
+                            <div key={index}>
+                                <label className="block mb-1 text-gray-500 text-xs">
+                                    {input.label}
+                                </label>
+                                <input
+                                    type={input.type}
+                                    name={input.name}
+                                    value={newMember[input.name]}
+                                    onChange={handleChange}
+                                    placeholder={input.placeholder}
+                                    className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                />
+                            </div>
+                        )
+                    )}
 
-                    <div className="block relative">
-                        {/* <label
-                            htmlFor="living"
-                            className="absolute top-[-10px] text-gray-600 text-sm"
-                        >
-                            Status
-                        </label> */}
+                    {/* <div className="block relative">
+                        
                         <label className="block mb-1 text-gray-600 text-xs">
                             Living w/ Family or Not?
                         </label>
@@ -188,12 +221,12 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                             <option value="Yes">Living with Family</option>
                             <option value="No">Not Living with Family</option>
                         </select>
-                    </div>
+                    </div> */}
                 </div>
                 <button
                     type="button"
                     onClick={addFamilyMember}
-                    className="col-span-3 my-7 shadow-lg bg-green-600 text-sm rounded-md text-white p-2"
+                    className="col-span-3 my-7 shadow-lg bg-green-600 hover:bg-green-700 text-sm rounded-md text-white p-2"
                 >
                     Add Member
                 </button>
@@ -267,10 +300,17 @@ const FamilyListForm = ({ formData, updateFormData }) => {
             </div>
 
             {/* Tzu Chi Scholars Section */}
-            <h2 className="pt-12 pb-6 font-bold mb-4">
+            <h2 className="pt-12 pb-6 font-bold mb-4 text-gray-800 md:text-lg text-sm">
                 Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
             </h2>
-            <div className="mb-12">
+            <div
+                className={`${
+                    isTzuChiSiblingsApplicable === null ||
+                    isTzuChiSiblingsApplicable === "not_applicable"
+                        ? "mb-0"
+                        : "mb-12"
+                } p-4 border rounded-lg bg-gray-50/50 border-gray-200`}
+            >
                 <div>
                     <input
                         id="tzu_chi_siblings_applicable"
@@ -278,13 +318,15 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         type="radio"
                         value={"applicable"}
                         checked={isTzuChiSiblingsApplicable === "applicable"}
-                        onChange={(e) =>
-                            setIsTzuChiSiblingsApplicable(e.target.value)
-                        }
+                        onChange={(e) => {
+                            setIsTzuChiSiblingsApplicable(e.target.value);
+                            setIsFirstFormApplicable(true);
+                        }}
+                        className="accent-green-600"
                     />
                     <label
                         htmlFor="tzu_chi_siblings_applicable"
-                        className="ml-2 text-sm text-gray-700"
+                        className="ml-2 text-xs text-gray-700"
                     >
                         Yes, I have siblings who received Tzu Chi Educational
                         Assistance
@@ -299,13 +341,15 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         checked={
                             isTzuChiSiblingsApplicable === "not_applicable"
                         }
-                        onChange={(e) =>
-                            setIsTzuChiSiblingsApplicable(e.target.value)
-                        }
+                        onChange={(e) => {
+                            setIsTzuChiSiblingsApplicable(e.target.value);
+                            setIsFirstFormApplicable(false);
+                        }}
+                        className="accent-green-600"
                     />
                     <label
                         htmlFor="tzu_chi_siblings_not_applicable"
-                        className="ml-2 text-sm text-gray-700"
+                        className="ml-2 text-xs text-gray-700"
                     >
                         No / Not applicable
                     </label>
@@ -320,8 +364,8 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                     isTzuChiSiblingsApplicable === null ||
                                     isTzuChiSiblingsApplicable ===
                                         "not_applicable"
-                                        ? "text-gray-400"
-                                        : "text-gray-600"
+                                        ? "text-gray-400 hidden"
+                                        : "text-gray-600 block"
                                 }`}
                             >
                                 {input.label}
@@ -336,9 +380,9 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                     isTzuChiSiblingsApplicable === null ||
                                     isTzuChiSiblingsApplicable ===
                                         "not_applicable"
-                                        ? "text-gray-400"
-                                        : "text-gray-600"
-                                } w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500`}
+                                        ? "text-gray-400 hidden"
+                                        : "text-gray-600 block"
+                                } w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500`}
                                 disabled={
                                     isTzuChiSiblingsApplicable === null ||
                                     isTzuChiSiblingsApplicable ===
@@ -354,8 +398,8 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                     className={`col-span-3 my-7 shadow-lg text-sm rounded-md text-white p-2 ${
                         isTzuChiSiblingsApplicable === null ||
                         isTzuChiSiblingsApplicable === "not_applicable"
-                            ? "bg-green-300"
-                            : "bg-green-600 hover:bg-green-700"
+                            ? "bg-green-300 hidden"
+                            : "bg-green-600 hover:bg-green-700 block"
                     }`}
                     disabled={
                         isTzuChiSiblingsApplicable === null ||
@@ -420,11 +464,25 @@ const FamilyListForm = ({ formData, updateFormData }) => {
             </div>
 
             {/* Assistance from Other Organizations */}
-            <h2 className="pt-12 pb-6 font-bold">
+            <h2
+                className={`${
+                    isTzuChiSiblingsApplicable === null ||
+                    isTzuChiSiblingsApplicable === "not_applicable"
+                        ? "pt-0 md:pt-4"
+                        : "pt-8"
+                } pb-6 font-bold sm:mt-0 -mt-5  mb-4 text-gray-700 md:text-lg text-sm`}
+            >
                 Assistance from Other Association, Organization, School
                 Discount, etc.
             </h2>
-            <div className="mb-12">
+            <div
+                className={`${
+                    isOtherAssistanceApplicable === null ||
+                    isOtherAssistanceApplicable === "not_applicable"
+                        ? "mb-0"
+                        : "mb-12"
+                } p-4 border rounded-lg bg-gray-50/50 border-gray-200`}
+            >
                 <div>
                     <input
                         id="other_assistance_applicable"
@@ -432,13 +490,15 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         type="radio"
                         value={"applicable"}
                         checked={isOtherAssistanceApplicable === "applicable"}
-                        onChange={(e) =>
-                            setIsOtherAssistanceApplicable(e.target.value)
-                        }
+                        onChange={(e) => {
+                            setIsOtherAssistanceApplicable(e.target.value);
+                            setIsSecondFormApplicable(true);
+                        }}
+                        className="accent-green-600"
                     />
                     <label
                         htmlFor="other_assistance_applicable"
-                        className="ml-2 text-sm text-gray-700"
+                        className="ml-2 text-xs text-gray-700"
                     >
                         Yes, I have received assistance from other sources
                     </label>
@@ -452,13 +512,15 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                         checked={
                             isOtherAssistanceApplicable === "not_applicable"
                         }
-                        onChange={(e) =>
-                            setIsOtherAssistanceApplicable(e.target.value)
-                        }
+                        onChange={(e) => {
+                            setIsOtherAssistanceApplicable(e.target.value);
+                            setIsSecondFormApplicable(false);
+                        }}
+                        className="accent-green-600"
                     />
                     <label
                         htmlFor="other_assistance_not_applicable"
-                        className="ml-2 text-sm text-gray-700"
+                        className="ml-2 text-xs text-gray-700"
                     >
                         No / Not applicable
                     </label>
@@ -473,8 +535,8 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                     isOtherAssistanceApplicable === null ||
                                     isOtherAssistanceApplicable ===
                                         "not_applicable"
-                                        ? "text-gray-400"
-                                        : "text-gray-600"
+                                        ? "text-gray-400 hidden"
+                                        : "text-gray-600 block"
                                 } text-xs`}
                             >
                                 {input.label}
@@ -485,12 +547,12 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                                 value={newAssistance[input.name]}
                                 onChange={handleAssistanceChange}
                                 placeholder={input.placeholder}
-                                className={`w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500 ${
+                                className={`w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500 ${
                                     isOtherAssistanceApplicable === null ||
                                     isOtherAssistanceApplicable ===
                                         "not_applicable"
-                                        ? "text-gray-400"
-                                        : "text-gray-600"
+                                        ? "text-gray-400 hidden"
+                                        : "text-gray-600 block"
                                 }`}
                                 disabled={
                                     isOtherAssistanceApplicable === null ||
@@ -507,8 +569,8 @@ const FamilyListForm = ({ formData, updateFormData }) => {
                     className={`col-span-3 my-7 shadow-lg text-sm rounded-md text-white p-2 ${
                         isOtherAssistanceApplicable === null ||
                         isOtherAssistanceApplicable === "not_applicable"
-                            ? "bg-green-300"
-                            : "bg-green-600 hover:bg-green-700"
+                            ? "bg-green-300 hidden"
+                            : "bg-green-600 hover:bg-green-700 block"
                     }`}
                     disabled={
                         isOtherAssistanceApplicable === null ||

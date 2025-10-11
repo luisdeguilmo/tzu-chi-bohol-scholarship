@@ -1066,7 +1066,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
 
     return (
         <InputModal
-            label={"Add Activity"}
+            label={"Submit Community Service"}
             isOpen={isOpen}
             onClose={setIsOpen}
             resetFields={null}
