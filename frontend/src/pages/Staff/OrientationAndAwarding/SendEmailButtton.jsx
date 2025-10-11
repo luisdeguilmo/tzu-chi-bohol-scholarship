@@ -1,10 +1,15 @@
 import { Check, Mail } from "lucide-react";
 
-const SendEmailButton = ({ isFullWidth = false, isEmailSent, isLoading, onSendSchedule }) => {
+const SendEmailButton = ({
+    isFullWidth = false,
+    isEmailSent,
+    isLoading,
+    onSendSchedule,
+}) => {
     return (
         <button
-            onClick={onSendSchedule}
             type="button"
+            onClick={onSendSchedule}
             className={`${isFullWidth ? "w-full" : "w-[max-content]"} mt-2 py-2.5 px-2 rounded-lg text-white flex justify-center items-center gap-1 ${
                 isEmailSent ? "bg-gray-400" : "bg-gray-400 hover:bg-gray-500"
             }`}

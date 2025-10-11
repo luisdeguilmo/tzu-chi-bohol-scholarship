@@ -948,3 +948,5 @@ null
 {"applicantIds":[7999452],"batch":"Batch 1"}
 {"applicantIds":[7999452],"batch":"Batch 1"}
 {"account_id":7999452,"status":"attended"}
+{"account_id":7999452,"status":"not_attended"}
+{"applicantIds":[2137096],"batch":"Batch 1"}

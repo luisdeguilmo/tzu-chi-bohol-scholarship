@@ -82,22 +82,21 @@ export const manageApplication = () => {
     };
 
     const sendSchedule = async (
+        batchId,
         applicants,
-        batches,
+        date,
+        time,
+        venue,
         selectedBatchInBatches
     ) => {
         try {
             setIsLoading(true);
-            const result = getSchedule(batches, selectedBatchInBatches);
-            const value = getVenue(batches, selectedBatchInBatches);
-
-            const { date, time } = result;
-            const { venue } = value;
 
             // Only update status if email was sent successfully
             const response = await axios.put(
                 `${BASE_URL}app/views/application-management.php?action=send_schedule`,
                 {
+                    batch_id: batchId,
                     applicants: applicants,
                     date: date,
                     time: time,
@@ -121,6 +120,47 @@ export const manageApplication = () => {
             return false;
         }
     };
+
+    // const sendSchedule = async (
+    //     applicants,
+    //     batches,
+    //     selectedBatchInBatches
+    // ) => {
+    //     try {
+    //         setIsLoading(true);
+    //         const result = getSchedule(batches, selectedBatchInBatches);
+    //         const value = getVenue(batches, selectedBatchInBatches);
+
+    //         const { date, time } = result;
+    //         const { venue } = value;
+
+    //         // Only update status if email was sent successfully
+    //         const response = await axios.put(
+    //             `${BASE_URL}app/views/application-management.php?action=send_schedule`,
+    //             {
+    //                 applicants: applicants,
+    //                 date: date,
+    //                 time: time,
+    //                 batch: selectedBatchInBatches,
+    //                 venue: venue,
+    //             }
+    //         );
+
+    //         if (response.data.success) {
+    //             toast.success("Email sent successfully!");
+    //             setIsLoading(false);
+    //             return true;
+    //         }
+
+    //         setIsLoading(false);
+    //         return false;
+    //     } catch (err) {
+    //         console.error("Failed to send email:", err);
+    //         toast.error("Failed to send email.");
+    //         setIsLoading(false);
+    //         return false;
+    //     }
+    // };
 
     const sendExaminationPassed = async (applicants) => {
         try {

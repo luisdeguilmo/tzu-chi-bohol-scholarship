@@ -24,6 +24,7 @@ import { useOrientationAndAwarding } from "../../../hooks/useOrientationAndAward
 import OrientationTableRow from "./OrientationTableRow";
 import ChangeStatusModal from "./ChangeStatusModal";
 import AwardingTableRow from "./AwardingTableRow";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 export default function OrientationAndAwarding() {
     const [isEmailSent, setIsEmailSent] = useState(false);
@@ -182,19 +183,19 @@ export default function OrientationAndAwarding() {
         setCurrentPage(1);
     };
 
-    const handleSendEmail = async () => {
-        let success = null;
+    // const handleSendEmail = async () => {
+    //     let success = null;
 
-        if (status === "passed") {
-            success = sendExaminationPassed(applications);
-        } else if (status === "failed") {
-            success = sendExaminationFailed(applications);
-        }
+    //     if (status === "passed") {
+    //         success = sendExaminationPassed(applications);
+    //     } else if (status === "failed") {
+    //         success = sendExaminationFailed(applications);
+    //     }
 
-        if (success) {
-            setIsEmailSent(true);
-        }
-    };
+    //     if (success) {
+    //         setIsEmailSent(true);
+    //     }
+    // };
 
     const handleRefresh = async () => {
         setIsRefresh(true);
@@ -380,15 +381,6 @@ export default function OrientationAndAwarding() {
                         onRefresh={handleRefresh}
                     />
                 )}
-
-                {activeTab === "Awarding" &&
-                    (status === "passed" || status === "failed") && (
-                        <SendEmailButton
-                            isEmailSent={isEmailSent}
-                            isLoading={isLoading}
-                            onSendSchedule={handleSendEmail}
-                        />
-                    )}
 
                 {filteredApplications.length > 0 &&
                     activeTab !== "Awarding" && (

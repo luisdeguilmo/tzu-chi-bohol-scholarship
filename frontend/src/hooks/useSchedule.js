@@ -6,17 +6,16 @@ export const useSchedule = () => {
     // const [schedule, setSchedule] = useState("");
 
     const createSchedule = async (
+        purpose,
         date,
         time,
         venue,
-        setDate,
-        setTime,
         batchToSet,
         onSuccess,
         setIsOpen
     ) => {
         const data = {
-            purpose: 'entrance_examination',
+            purpose: purpose,
             schedule: date + " " + time,
             venue: venue,
         };
@@ -37,16 +36,19 @@ export const useSchedule = () => {
 
             if (result.success) {
                 toast.success(result.message + ".");
-                setDate("");
-                setTime("");
                 setIsOpen(false);
+                onSuccess();
+                return true;
             } else {
                 alert("Error: " + result.message);
             }
-            if (onSuccess) onSuccess();
+
+            return false;
         } catch (error) {
             console.error("Submission error:", error);
             alert("Failed to submit the form. Please try again.");
+
+            return false;
         }
     };
 

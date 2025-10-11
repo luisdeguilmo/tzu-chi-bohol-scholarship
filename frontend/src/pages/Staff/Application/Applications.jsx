@@ -271,16 +271,6 @@ export default function Applications() {
                     </div>
                 )}
 
-                {/* <FormModal
-                    isOpen={isFormModalOpen}
-                    onClose={setIsFormModalOpen}
-                    action={action}
-                    label={"Confirmation"}
-                    applicant={selectedApplicant}
-                    setAction={setAction}
-                    onSuccess={fetchApplications}
-                /> */}
-
                 <ConfirmationModal
                     isOpen={isFormModalOpen}
                     onClose={setIsFormModalOpen}

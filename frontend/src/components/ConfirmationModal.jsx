@@ -11,6 +11,7 @@ function ConfirmationModal({
     applicant,
     action = "",
     onClick,
+    removeBackground = false,
     onSuccess,
 }) {
     const [feedback, setFeedback] = useState("");
@@ -30,10 +31,13 @@ function ConfirmationModal({
             isOpen={isOpen}
             resetFields={resetFields}
             onClose={onClose}
+            removeBackground={removeBackground}
         >
-            <div className="pt-4 pb-6 px-6">
+            <div className={`pt-4 pb-6 px-6 `}>
                 <div>
-                    <p className="py-2.5 text-justify text-sm text-gray-600">{message}</p>
+                    <p className="py-2.5 text-justify text-sm text-gray-600">
+                        {message}
+                    </p>
                     {action === "reject" && (
                         <label className="py-2 flex flex-col gap-[1px] text-gray-600 text-xs">
                             Feedback

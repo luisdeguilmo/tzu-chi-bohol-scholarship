@@ -11,6 +11,7 @@ const InputModal = React.memo(
         resetFields,
         children,
         expandable = false,
+        removeBackground = false,
     }) => {
         const handleClose = () => {
             if (isEditing) {
@@ -25,7 +26,7 @@ const InputModal = React.memo(
 
         return (
             <div
-                className={`fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-60 p-4 animate-in fade-in duration-200 ${
+                className={`fixed z-50 inset-0 shadow-[0_0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center bg-black ${removeBackground ? "bg-opacity-0" : "bg-opacity-60"} p-4 animate-in fade-in duration-200 ${
                     isOpen ? "block" : "hidden"
                 }`}
                 // onKeyDown={handleKeyDown}
@@ -39,7 +40,7 @@ const InputModal = React.memo(
                         expandable
                             ? "sm:w-[70%] md:w-[80%] lg:w-[60%]"
                             : "sm:w-[60%] md:[45%] lg:w-[40%] xl:w-[30%]"
-                    } bg-white rounded-xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200`}
+                    } ${removeBackground ? "shadow-[0_0_10px_2px_rgba(0,0,0,0.4)]" : ""} bg-white rounded-xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200`}
                 >
                     {/* Header */}
                     <div className="relative px-6 py-4 border-b border-slate-200">

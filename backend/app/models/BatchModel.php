@@ -104,35 +104,17 @@ class BatchModel
         }
     }
 
-    // public function delete($id) {
-    //     // First, get the file path to delete the actual file
-    //     $query = "SELECT file_path FROM " . $this->table_name . " WHERE id = ?";
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->bindParam(1, $id);
-    //     $stmt->execute();
+    public function updateBatch($id)
+    {
+        $query = 'UPDATE ' . $this->table_name . " SET is_schedule_sent = '1' WHERE id = :id";
 
-    //     $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->prepare($query);
 
-    //     if ($row) {
-    //         // Get absolute path by appending document root
-    //         $file_path = $_SERVER['DOCUMENT_ROOT'] . $row['file_path'];
+        // Extract batch_name from the data array
 
-    //         // Delete the physical file if it exists
-    //         if (file_exists($file_path)) {
-    //             unlink($file_path);
-    //         }
+        $stmt->bindParam(':id', $id);
 
-    //         // Now delete the database record
-    //         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
-    //         $stmt = $this->pdo->prepare($query);
-    //         $stmt->bindParam(1, $id);
-
-    //         if($stmt->execute()) {
-    //             return true;
-    //         }
-    //     }
-
-    //     return false;
-    // }
+        return $stmt->execute();
+    }
 }
 ?>
