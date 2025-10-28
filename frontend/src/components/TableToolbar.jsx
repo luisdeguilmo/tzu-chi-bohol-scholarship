@@ -1,7 +1,16 @@
-import { Pen, Plus } from "lucide-react";
+import {
+    CheckCircle,
+    Download,
+    Pen,
+    PenLine,
+    Plus,
+    Upload,
+} from "lucide-react";
 import SearchInput from "./SearchInput";
+import { date } from "../utils/getDateAndTime";
 
 const TableToolbar = ({
+    isProcessed = false,
     items,
     label,
     buttonLabel = false,
@@ -21,6 +30,8 @@ const TableToolbar = ({
     firstIndex,
     lastIndex,
     addButton = false,
+    buttonExport = false,
+    onExport,
     addCreateBatchButton = false,
     children,
 }) => {
@@ -48,16 +59,66 @@ const TableToolbar = ({
                         </svg>
                         Refresh
                     </button>
-                    {addButton && (
+                    {addButton &&
+                        (!buttonLabel ||
+                            buttonLabel === "College or University") && (
+                            <button
+                                onClick={() => onOpen(true)}
+                                className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                            >
+                                <Plus className="w-4 h-4 text-white" />
+                                Add New{" "}
+                                {buttonLabel === false
+                                    ? label.slice(0, -1)
+                                    : buttonLabel}
+                            </button>
+                        )}
+                    {addButton && buttonLabel === "Set Message" && (
                         <button
                             onClick={() => onOpen(true)}
                             className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
                         >
-                            <Plus className="w-4 h-4 text-white" />
-                            Add New{" "}
-                            {buttonLabel === false
-                                ? label.slice(0, -1)
-                                : buttonLabel}
+                            <PenLine className="w-4 h-4 text-white" />
+                            {buttonLabel}
+                        </button>
+                    )}
+                    {addButton && buttonLabel === "Process Allowance" && (
+                        <>
+                            {isProcessed ? (
+                                <button
+                                    disabled={isProcessed} // boolean flag
+                                    className={`px-3 py-2 text-sm rounded-lg flex items-center gap-2 transition-colors duration-200 
+                                ${
+                                    isProcessed
+                                        ? "bg-gray-400 text-gray-200 cursor-not-allowed" // Disabled styling
+                                        : "bg-green-600 hover:bg-green-700 text-white" // Enabled styling
+                                }`}
+                                >
+                                    <CheckCircle
+                                        className={`w-4 h-4 ${isProcessed ? "text-gray-200" : "text-white"}`}
+                                    />
+                                    Processed
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => onOpen(true)}
+                                    className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                                >
+                                    <CheckCircle className="w-4 h-4 text-white" />
+                                    {buttonLabel} {" for "}{" "}
+                                    {date.getCurrentMonth()}
+                                </button>
+                            )}
+                        </>
+                    )}
+                    {buttonExport && (
+                        <button
+                            onClick={onExport}
+                            className="px-3 py-2 text-sm rounded-lg flex items-center gap-2 transition-colors duration-200 
+             text-gray-700 bg-white border border-gray-300 hover:bg-gray-100"
+                        >
+                            <Download className="w-4 h-4 text-gray-700" />{" "}
+                            Export
                         </button>
                     )}
                     {addCreateBatchButton && tab === "Batches" ? (

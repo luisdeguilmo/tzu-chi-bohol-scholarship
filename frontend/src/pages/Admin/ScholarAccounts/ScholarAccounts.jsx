@@ -29,6 +29,7 @@ const ScholarAccounts = () => {
         updateScholarAccountStatus,
         fetchScholars,
     } = useScholarAccounts(activeTab);
+
     const { profilePics, fetchAllPics } = useProfilePicture(scholars);
 
     console.log(scholars);
@@ -191,6 +192,7 @@ const ScholarAccounts = () => {
                                 </button>
                             </div>
                         )}
+
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}

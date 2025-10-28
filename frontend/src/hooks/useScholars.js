@@ -1,29 +1,3 @@
-// import { useEffect, useState } from "react";
-// import BASE_URL from "../config";
-
-// export const useScholars = (tab, status, scholarYear) => {
-//     const [scholars, setScholars] = useState([]);
-
-//     const fetchScholars = async (tab) => {
-//         try {
-//             const response = await fetch(
-//                 `${BASE_URL}app/views/scholars.php?tab=${tab}&status=${status}&school_year=${scholarYear}`
-//             );
-//             const json = await response.json();
-//             setScholars(json.data || []);
-//         } catch (error) {
-//             console.log("Error: ", error);
-//             alert("Failed: ", error);
-//         }
-//     };
-
-//     useEffect(() => {
-//         fetchScholars(tab, status, scholarYear);
-//     }, [tab, status, scholarYear]);
-
-//     return { scholars, fetchScholars };
-// };
-
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import axios from "axios";
@@ -58,14 +32,54 @@ export const useScholars = (tab, status, scholarYear, sortBy) => {
         }
     };
 
-    const updateAllowanceStatus = async (status, accountId) => {
+    const processAllowance = async () => {
         try {
-            console.log(accountId, status);
+            setLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}app/views/process-allowance.php`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            const data = response.data;
+
+            if (data.success) {
+                toast.success("Allowance Processed Successfully");
+                setLoading(false);
+                return true;
+            } else {
+                toast.error(
+                    "You’ve already processed the allowance for this cycle. Please start a new cycle to proceed."
+                );
+                setLoading(false);
+                return false;
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            alert("Failed: ", error);
+            setLoading(false);
+            return false;
+        }
+    };
+
+    const updateAllowanceStatus = async (
+        status,
+        accountId,
+        transportAllowance,
+        loadAllowance
+    ) => {
+        try {
+            setLoading(true);
             const response = await axios.put(
                 `${BASE_URL}app/views/scholar.php`,
                 {
                     account_id: accountId,
                     allowance_status: status,
+                    transport_allowance: transportAllowance,
+                    load_allowance: loadAllowance,
                 },
                 {
                     headers: {
@@ -78,13 +92,16 @@ export const useScholars = (tab, status, scholarYear, sortBy) => {
 
             if (data.success) {
                 toast.success("Allowance Status Updated Successfully");
+                setLoading(false);
                 return true;
             }
 
+            setLoading(false);
             return false;
         } catch (error) {
             console.log("Error: ", error);
             alert("Failed: ", error);
+            setLoading(false);
             return false;
         }
     };
@@ -101,6 +118,7 @@ export const useScholars = (tab, status, scholarYear, sortBy) => {
         error,
         fetchScholars,
         updateAllowanceStatus,
+        processAllowance,
         refetch: fetchScholars,
     };
 };

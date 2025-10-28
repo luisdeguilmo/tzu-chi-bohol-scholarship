@@ -4,7 +4,6 @@ import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import { useApplicantData } from "../../../hooks/useApplicantData";
 import { useProfilePicture } from "../../../hooks/useProfilePicture";
-import { usePdfActions } from "../../../hooks/usePdfActions";
 import {
     interviewApplicationsTableHeaders,
     interviewResultTableHeaders,
@@ -17,6 +16,9 @@ import ApplicantsTableRow from "./ApplicantsTableRow";
 import ResultTableRow from "./ResultTableRow";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { manageApplication } from "../../../services/emailService";
+import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
+import FileUploadFormModal from "../../../components/FileUploadFormModal";
+import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 
 export default function InitialInterview() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +28,10 @@ export default function InitialInterview() {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [selectedApplicant, setSelectedApplicant] = useState(null);
     const [action, setAction] = useState("");
+    const [selectedId, setSelectedId] = useState(null);
+    const [isOpenFileUploadFormModal, setIsOpenFileUploadFormModal] =
+        useState(false);
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
 
     const { loading, error, applications, fetchApplications } =
         useInitialInterview(activeTab);
@@ -35,6 +41,13 @@ export default function InitialInterview() {
     useEffect(() => {
         fetchApplications();
     }, [activeTab]);
+
+    const { applicationFiles, fetchApplicationFiles, reUploadFiles } =
+        useApplicationFiles("initial_interview", selectedId);
+
+    useEffect(() => {
+        fetchApplicationFiles("initial_interview", selectedId);
+    }, [selectedId]);
 
     const {
         isLoading,
@@ -118,11 +131,15 @@ export default function InitialInterview() {
         setAction("reject");
     };
 
+    const handleOpenFileUploadFormModal = (applicationId) => {
+        fetchApplicationFiles("initial_interview", applicationId);
+        setIsOpenFileUploadFormModal(true);
+        setSelectedId(applicationId);
+    };
+
     const handleRefresh = async () => {
         await fetchApplications();
     };
-
-    console.log(profilePics);
 
     return (
         <div className="lg:p-6">
@@ -145,6 +162,9 @@ export default function InitialInterview() {
                     onChangeItemsPerPage={setItemsPerPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
+                    buttonLabel={"Set Message"}
+                    addButton={true}
+                    onOpen={setIsMessageModalOpen}
                 />
 
                 <div className="overflow-x-auto rounded-[4px]">
@@ -177,6 +197,9 @@ export default function InitialInterview() {
                                         <ResultTableRow
                                             currentItems={currentItems}
                                             profilePics={profilePics}
+                                            onOpenModal={
+                                                handleOpenFileUploadFormModal
+                                            }
                                         />
                                     );
                             }
@@ -205,16 +228,6 @@ export default function InitialInterview() {
                     </div>
                 )}
 
-                {/* <FormModal
-                    isOpen={isFormModalOpen}
-                    onClose={setIsFormModalOpen}
-                    action={action}
-                    label={"Confirmation"}
-                    applicant={selectedApplicant}
-                    setAction={setAction}
-                    onSuccess={fetchApplications}
-                /> */}
-
                 <ConfirmationModal
                     isOpen={isFormModalOpen}
                     onClose={setIsFormModalOpen}
@@ -230,6 +243,26 @@ export default function InitialInterview() {
                     }
                 />
             </div>
+
+            <FileUploadFormModal
+                label={"Initial Interview Files"}
+                type={"initial_interview"}
+                isOpen={isOpenFileUploadFormModal}
+                setIsOpen={setIsOpenFileUploadFormModal}
+                onSuccess={fetchApplicantData}
+                selectedId={selectedId}
+                applicationFiles={applicationFiles}
+                onReUploadFiles={reUploadFiles}
+            />
+
+            <EmailMessageFormModal
+                stage={"initial_interview"}
+                isOpen={isMessageModalOpen}
+                onClose={setIsMessageModalOpen}
+                onRefresh={fetchApplicantData}
+                firstLabel={"Initial Interview Passed Message"}
+                secondLabel={"Initial Interview Failed Message"}
+            />
         </div>
     );
 }

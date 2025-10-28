@@ -1,12 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import {
-    sendApplicationApprovalEmail,
-    sendApplicationRejectionEmail,
-} from "./emailServiceCopy";
 import BASE_URL from "../config";
-import { getSchedule } from "../utils/getSchedule";
-import { getVenue } from "../utils/getVenue";
 import { useState } from "react";
 
 export const manageApplication = () => {
@@ -46,7 +40,77 @@ export const manageApplication = () => {
         }
     };
 
+    const approveRenewApplication = async (applicant) => {
+        try {
+            // Only update status if email was sent successfully
+            setIsLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=approve_renew`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    school_year: applicant.school_year,
+                    is_application_approved: 1,
+                    status: "scholar",
+                }
+            );
+
+            if (response.data.success) {
+                toast.success(
+                    "Application approved and notification email sent successfully!"
+                );
+                setIsLoading(false);
+                return true;
+            }
+
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error approving application:", err);
+            toast.error("Error approving application.");
+            return false;
+            setIsLoading(false);
+        }
+    };
+
     const rejectApplication = async (applicant, feedback) => {
+        try {
+            setIsLoading(true);
+            // Only update status if email was sent successfully
+            const response = await axios.put(
+                `${BASE_URL}app/views/application-management.php?action=reject_renew`,
+                {
+                    application_id: applicant.application_id,
+                    first_name: applicant.first_name,
+                    last_name: applicant.last_name,
+                    email: applicant.email,
+                    school_year: applicant.school_year,
+                    is_application_rejected: 1,
+                    feedback: feedback,
+                }
+            );
+
+            if (response.data.success) {
+                toast.success(
+                    "Application rejected and notification email sent successfully!"
+                );
+                setIsLoading(false);
+                return true;
+            }
+
+            setIsLoading(false);
+            return false;
+        } catch (err) {
+            console.error("Error rejecting application:", err);
+            toast.error("Error rejecting application.");
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    const rejectRenewApplication = async (applicant, feedback) => {
         try {
             setIsLoading(true);
             // Only update status if email was sent successfully
@@ -425,7 +489,9 @@ export const manageApplication = () => {
     return {
         isLoading,
         approveApplication,
+        approveRenewApplication,
         rejectApplication,
+        rejectRenewApplication,
         sendSchedule,
         sendExaminationPassed,
         sendExaminationFailed,

@@ -682,6 +682,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     const [files, setFiles] = useState([]);
     const [filePreviews, setFilePreviews] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [conversionStatus, setConversionStatus] = useState({});
     const { user } = useAuth();
     const fileInputRef = useRef(null);
@@ -935,9 +936,9 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         setIsSubmitting(true);
+        setIsLoading(true);
 
         try {
             // Validate time inputs
@@ -1045,14 +1046,17 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                 setIsOpen(false);
 
                 if (onSuccess) onSuccess();
+                setIsLoading(false);
             } else {
                 toast.error("Error: " + result.message);
+                setIsLoading(false);
             }
         } catch (error) {
             console.error("Submission error:", error);
             toast.error("Failed to submit the form. Please try again.");
         } finally {
             setIsSubmitting(false);
+            setIsLoading(false);
         }
     };
 
@@ -1071,10 +1075,14 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
             onClose={setIsOpen}
             resetFields={null}
             expandable={true}
+            buttonLabel={"Submit"}
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
         >
-            <form onSubmit={handleSubmit} className="px-8 py-8">
+            <div className="p-6">
                 <div className="grid md:grid-cols-2 gap-2">
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                    <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                         Activity Name
                         <input
                             type="text"
@@ -1084,11 +1092,11 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                 handleChange(setActivityName, e.target.value)
                             }
                             placeholder="Enter activity name"
-                            className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         />
                     </label>
 
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                    <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                         Activity Location
                         <input
                             type="text"
@@ -1101,11 +1109,11 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                 )
                             }
                             placeholder="Enter activity location"
-                            className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         />
                     </label>
 
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                    <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                         Date
                         <input
                             type="date"
@@ -1114,12 +1122,12 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                             onChange={(e) =>
                                 handleChange(setActivityDate, e.target.value)
                             }
-                            className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         />
                     </label>
 
-                    <div className="flex gap-2">
-                        <label className="w-[50%] py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                    <div className="flex justify-between gap-1.5">
+                        <label className="w-[48%] py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                             Start Time
                             <input
                                 type="time"
@@ -1128,11 +1136,11 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                 onChange={(e) =>
                                     handleChange(setStartTime, e.target.value)
                                 }
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
 
-                        <label className="w-[50%] py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                        <label className="w-[48%] py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                             End Time
                             <input
                                 type="time"
@@ -1141,14 +1149,14 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                 onChange={(e) =>
                                     handleChange(setEndTime, e.target.value)
                                 }
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
                     </div>
                 </div>
 
                 <div className="">
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                    <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                         Certificate of Appearance
                         <input
                             type="file"
@@ -1161,12 +1169,12 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                         <button
                             type="button"
                             onClick={handleAddFileClick}
-                            className="p-2 flex justify-center gap-[1px] text-gray-600 text-sm rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
+                            className="py-2.5 px-2 flex justify-center items-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
                             disabled={isSubmitting}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5 mr-1"
+                                className="h-4 w-4 mr-1"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -1265,7 +1273,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                         </ul>
                     )}
 
-                    <div className="flex gap-2 mt-4">
+                    {/* <div className="flex gap-2 mt-4">
                         <button
                             type="button"
                             onClick={handleCancel}
@@ -1285,9 +1293,9 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                         >
                             {isSubmitting ? "Processing..." : "Submit"}
                         </button>
-                    </div>
+                    </div> */}
                 </div>
-            </form>
+            </div>
         </InputModal>
     );
 }

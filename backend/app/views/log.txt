@@ -950,3 +950,15 @@ null
 {"account_id":7999452,"status":"attended"}
 {"account_id":7999452,"status":"not_attended"}
 {"applicantIds":[2137096],"batch":"Batch 1"}
+{"strand":{"strand":"d","description":""}}
+{"strand":{"strand":"s","description":""}}
+{"strand":{"strand":"ddfd","description":"fdfd"}}
+{"strand":{"strand":"dsdsdsds","description":"dsds"}}
+{"account_id":7999452,"status":""}
+{"account_id":7999452,"status":"attended"}
+{"account_id":7999452,"status":"attended"}
+{"strand":{"strand":"ff","description":"f"}}
+{"applicantIds":[8634819],"batch":"Batch 1"}
+{"applicantIds":[8634819],"batch":"Batch 1"}
+{"account_id":8634819,"status":"attended"}
+{"account_id":4355295,"status":"not_attended"}

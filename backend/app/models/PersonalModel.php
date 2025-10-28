@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Config\Database;
 
-class PersonalModel {
-    private $table_name = "personal_information";
+class PersonalModel
+{
+    private $table_name = 'personal_information';
 
     public $id;
     public $application_id;
@@ -31,14 +32,20 @@ class PersonalModel {
 
     private $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
     }
 
-    public function create($data, $application_id) {
-        $query = "INSERT INTO " . $this->table_name . " 
+    public function create($data, $application_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
                   SET application_id = :application_id, 
+                      scholar_id = :scholar_id,
                       last_name = :last_name, 
                       first_name = :first_name, 
                       middle_name = :middle_name, 
@@ -63,6 +70,7 @@ class PersonalModel {
 
         // Sanitize inputs
         $application_id = $application_id;
+        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id'] ?? 'null'));
         $last_name = htmlspecialchars(strip_tags($data['last_name']));
         $first_name = htmlspecialchars(strip_tags($data['first_name']));
         $middle_name = htmlspecialchars(strip_tags($data['middle_name'] ?? ''));
@@ -83,27 +91,30 @@ class PersonalModel {
         $facebook = htmlspecialchars(strip_tags($data['facebook'] ?? ''));
         $email_address = htmlspecialchars(strip_tags($data['email']));
 
+        $scholarId = $scholar_id === 'null' ? null : $scholar_id;
+
         // Bind values
-        $stmt->bindParam(":application_id", $application_id);
-        $stmt->bindParam(":last_name", $last_name);
-        $stmt->bindParam(":first_name", $first_name);
-        $stmt->bindParam(":middle_name", $middle_name);
-        $stmt->bindParam(":suffix", $suffix);
-        $stmt->bindParam(":gender", $gender);
-        $stmt->bindParam(":age", $age);
-        $stmt->bindParam(":birthdate", $birthdate);
-        $stmt->bindParam(":birthplace", $birthplace);
-        $stmt->bindParam(":home_address", $home_address);
-        $stmt->bindParam(":subdivision", $subdivision_village);
-        $stmt->bindParam(":barangay", $barangay);
-        $stmt->bindParam(":city", $city_municipality);
-        $stmt->bindParam(":zip_code", $zipcode);
-        $stmt->bindParam(":contact_number", $personal_contact);
-        $stmt->bindParam(":secondary_contact", $secondary_contact);
-        $stmt->bindParam(":religion", $religion);
-        $stmt->bindParam(":civil_status", $civil_status);
-        $stmt->bindParam(":facebook", $facebook);
-        $stmt->bindParam(":email", $email_address);
+        $stmt->bindParam(':application_id', $application_id);
+        $stmt->bindParam(':scholar_id', $scholarId);
+        $stmt->bindParam(':last_name', $last_name);
+        $stmt->bindParam(':first_name', $first_name);
+        $stmt->bindParam(':middle_name', $middle_name);
+        $stmt->bindParam(':suffix', $suffix);
+        $stmt->bindParam(':gender', $gender);
+        $stmt->bindParam(':age', $age);
+        $stmt->bindParam(':birthdate', $birthdate);
+        $stmt->bindParam(':birthplace', $birthplace);
+        $stmt->bindParam(':home_address', $home_address);
+        $stmt->bindParam(':subdivision', $subdivision_village);
+        $stmt->bindParam(':barangay', $barangay);
+        $stmt->bindParam(':city', $city_municipality);
+        $stmt->bindParam(':zip_code', $zipcode);
+        $stmt->bindParam(':contact_number', $personal_contact);
+        $stmt->bindParam(':secondary_contact', $secondary_contact);
+        $stmt->bindParam(':religion', $religion);
+        $stmt->bindParam(':civil_status', $civil_status);
+        $stmt->bindParam(':facebook', $facebook);
+        $stmt->bindParam(':email', $email_address);
 
         return $stmt->execute();
     }

@@ -4,10 +4,11 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import BASE_URL from "../../config";
 
 function HeroSection() {
     const navigate = useNavigate();
-    
+
     const scholar = { type: "Scholar" };
 
     const [loading, setLoading] = useState(true);
@@ -22,7 +23,7 @@ function HeroSection() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/application-periods.php`
+                `${BASE_URL}app/views/application-periods.php`
             );
             // Set application periods data
             setApplicationPeriods(response.data.data || []);
@@ -44,7 +45,10 @@ function HeroSection() {
         fetchApplicationPeriods();
     }, []);
 
-    const announcementMessage = applicationPeriods.length > 0 ? applicationPeriods[0].announcement_message : '';
+    const announcementMessage =
+        applicationPeriods.length > 0
+            ? applicationPeriods[0].announcement_message
+            : "";
 
     console.log(applicationPeriods);
 

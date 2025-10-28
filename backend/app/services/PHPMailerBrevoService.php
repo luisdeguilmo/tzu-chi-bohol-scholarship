@@ -57,19 +57,19 @@ class PHPMailerBrevoService
         }
     }
 
-    public function sendApplicationApprovalEmail($studentInfo)
+    //  Congratulations! We are pleased to inform you that your application for the
+    //             <strong>Tzu Chi Scholarship Program</strong> for Academic Year
+    //             <strong>{$studentInfo['school_year']}</strong> has been
+    //             <span style=\"font-weight: bold;\">approved</span>.
+
+    public function sendApplicationApprovalEmail($studentInfo, $message)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $subject = 'Scholarship Application Approved';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
-            <p style=\"margin-bottom: 16px;\">
-                Congratulations! We are pleased to inform you that your application for the
-                <strong>Tzu Chi Scholarship Program</strong> for Academic Year 
-                <strong>{$studentInfo['school_year']}</strong> has been 
-                <span style=\"font-weight: bold;\">approved</span>.
-            </p>
+            <p style=\"margin-bottom: 16px;\">{$message}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -79,7 +79,7 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
-    public function sendApplicationRejectionEmail($studentInfo)
+    public function sendApplicationRejectionEmail($studentInfo, $message)
     {
         $middleName = !empty($studentInfo['middle_name']) ? $studentInfo['middle_name'] . ' ' : '';
         $fullName = $studentInfo['first_name'] . ' ' . $middleName . $studentInfo['last_name'];
@@ -87,7 +87,7 @@ class PHPMailerBrevoService
         $htmlContent = "
             <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
                 <p>Dear {$fullName},</p>
-                <p>We regret to inform you that your scholarship application for SY {$studentInfo['school_year']} was not approved.</p>
+                <p>{$message}</p>
                 <p>{$studentInfo['feedback']}</p>
                 <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
                 <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -98,16 +98,14 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
-    public function sendExaminationPassedEmail($studentInfo)
+    public function sendExaminationPassedEmail($studentInfo, $message)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $subject = 'Tzu Chi Scholarship Exam Result';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
-            <p style=\"margin-bottom: 16px;\">
-                Congratulations! We are pleased to inform you that you have successfully passed the written examination for the Tzu Chi Foundation Scholarship Program. Your efforts are truly commendable. Please stay tuned for further announcements regarding the next steps in the screening process. We appreciate your continued interest and patience. Thank you!
-            </p>
+            <p style=\"margin-bottom: 16px;\">{$message}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -117,16 +115,14 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
-    public function sendExaminationFailedEmail($studentInfo)
+    public function sendExaminationFailedEmail($studentInfo, $message)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $subject = 'Tzu Chi Scholarship Exam Result';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
-            <p style=\"margin-bottom: 16px;\">
-                Good day. Thank you for taking the time to participate in the written examination for the Tzu Chi Foundation Scholarship Program. After careful evaluation, we regret to inform you that you did not pass this stage of the screening process. We appreciate your effort and encourage you to continue striving for your goals. We wish you all the best in your future endeavors.
-            </p>
+            <p style=\"margin-bottom: 16px;\">{$message}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -136,16 +132,14 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
-    public function sendInitialInterviewPassedEmail($studentInfo)
+    public function sendInitialInterviewPassedEmail($studentInfo, $message)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $subject = 'Tzu Chi Scholarship Initial Interview Result';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
-            <p style=\"margin-bottom: 16px;\">
-                Good day! We’re happy to inform you that you have passed the initial interview for the Tzu Chi Foundation Scholarship Program. Your story and determination truly inspired us. Please wait for further updates as you move forward to the next stage of the selection process. Thank you for your continued participation!
-            </p>
+            <p style=\"margin-bottom: 16px;\">{$message}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -155,16 +149,14 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
-    public function sendInitialInterviewFailedEmail($studentInfo)
+    public function sendInitialInterviewFailedEmail($studentInfo, $message)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $subject = 'Tzu Chi Scholarship Initial Interview Result';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
-            <p style=\"margin-bottom: 16px;\">
-                Thank you for joining the initial interview for the Tzu Chi Foundation Scholarship Program. We truly value the opportunity to hear your story. However, after thorough consideration, we regret to inform you that you did not advance to the next stage. We appreciate your effort and encourage you to continue pursuing your dreams. Wishing you all the best ahead.
-            </p>
+            <p style=\"margin-bottom: 16px;\">{$message}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -174,16 +166,14 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
-    public function sendHomeVisitationPassedEmail($studentInfo)
+    public function sendHomeVisitationPassedEmail($studentInfo, $message)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $subject = 'Tzu Chi Scholarship Application Update';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
-            <p style=\"margin-bottom: 16px;\">
-                Warm greetings! We’re pleased to let you know that you have successfully passed another stage in the Tzu Chi Foundation Scholarship screening process. We appreciate your sincerity and the glimpse into your life that helped us understand your situation better. Kindly wait for further instructions regarding the final interview. Keep up the good spirit and thank you!
-            </p>
+            <p style=\"margin-bottom: 16px;\">{$message}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -193,16 +183,14 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
-    public function sendHomeVisitationFailedEmail($studentInfo)
+    public function sendHomeVisitationFailedEmail($studentInfo, $message)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $subject = 'Tzu Chi Scholarship Application Update';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
-            <p style=\"margin-bottom: 16px;\">
-                Thank you for your participation in the Tzu Chi Foundation Scholarship screening process. After a complete review, we regret to inform you that you were not selected to move forward. We truly admire your courage and openness in sharing your life with us. Please continue to aim high and believe in your potential. Wishing you success in all that you do.
-            </p>
+            <p style=\"margin-bottom: 16px;\">{$message}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -212,16 +200,14 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
-    public function sendFinalInterviewPassedEmail($studentInfo)
+    public function sendFinalInterviewPassedEmail($studentInfo, $message)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $subject = 'Tzu Chi Scholarship Final Interview Result';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
-            <p style=\"margin-bottom: 16px;\">
-                Congratulations! We are delighted to inform you that you have passed the final interview for the Tzu Chi Foundation Scholarship Program. Your perseverance and values truly reflect what it means to be part of the Tzu Chi family. We look forward to officially welcoming you as one of our new scholars. Further details about the orientation and your responsibilities as a scholar will be shared soon. Once again, congratulations and welcome!
-            </p>
+            <p style=\"margin-bottom: 16px;\">{$message}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -231,16 +217,14 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
-    public function sendFinalInterviewFailedEmail($studentInfo)
+    public function sendFinalInterviewFailedEmail($studentInfo, $message)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $subject = 'Tzu Chi Scholarship Final Interview Result';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
-            <p style=\"margin-bottom: 16px;\">
-                Thank you for reaching the final interview stage of the Tzu Chi Foundation Scholarship Program. We recognize the time and effort you’ve dedicated throughout this process. After careful deliberation, we regret to inform you that you were not selected as a scholar. This decision does not define your worth, and we hope you continue to pursue your education and goals with determination. We sincerely wish you a bright and successful future.
-            </p>
+            <p style=\"margin-bottom: 16px;\">{$message}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -345,6 +329,34 @@ class PHPMailerBrevoService
         return $this->sendEmail($applicant['email'], $subject, $htmlContent);
     }
 
+    public function sendOrientationScheduleEmail($applicant, $batch, $date, $time, $venue)
+    {
+        $fullName = $applicant['first_name'] . ' ' . $applicant['last_name'];
+        $subject = 'Orientation Schedule';
+        $htmlContent = "
+        <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
+            <p>Dear {$fullName},</p>
+            <p style=\"margin-bottom: 16px;\">
+                We are pleased to inform you that you are scheduled to attend the 
+                <strong>Orientation Program</strong> for the 
+                <strong>Tzu Chi Scholarship Program</strong> for Academic Year 
+                <strong>{$applicant['school_year']}</strong>.
+            </p>
+            <p style=\"margin-bottom: 16px;\">
+                    <strong>Batch:</strong> {$batch}<br>
+                    <strong>Date :</strong> {$date}<br>
+                    <strong>Time :</strong> {$time}<br>
+                    <strong>Venue:</strong> {$venue}
+            </p>
+            <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
+            <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
+            <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">Contact: {$this->contactInfo}</p>
+        </div>
+    ";
+
+        return $this->sendEmail($applicant['email'], $subject, $htmlContent);
+    }
+
     public function sendNewEventEmail($studentInfo, $data)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
@@ -369,7 +381,7 @@ class PHPMailerBrevoService
     public function sendActivityRecordedEmail($studentInfo, $data)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
-        $subject = 'Tzu Chi Scholarship Final Interview Result';
+        $subject = 'Activity Recorded';
         $htmlContent =
             "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
@@ -391,7 +403,7 @@ class PHPMailerBrevoService
     public function sendActivityNotRecordedEmail($studentInfo, $data)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
-        $subject = 'Tzu Chi Scholarship Final Interview Result';
+        $subject = 'Activity Not Recorded';
         $htmlContent =
             "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">

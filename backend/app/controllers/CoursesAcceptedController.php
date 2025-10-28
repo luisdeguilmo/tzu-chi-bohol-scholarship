@@ -109,9 +109,9 @@ class CoursesAcceptedController
             }
 
             // Process application data
-            $model = new CollegeUniversityManagementModel();
+            $model = new CoursesAcceptedModel();
 
-            if (!$model->create($data['college_university'])) {
+            if (!$model->create($data)) {
                 throw new \Exception('Failed to save course information');
             }
 
@@ -121,7 +121,7 @@ class CoursesAcceptedController
             http_response_code(201);
             echo json_encode([
                 'success' => true,
-                'message' => 'College/University created successfully',
+                'message' => 'Course added successfully',
             ]);
         } catch (\Exception $e) {
             // Roll back transaction on error
@@ -150,22 +150,22 @@ class CoursesAcceptedController
             }
 
             // Check if ID is provided
-            if (!isset($data['course']['id'])) {
+            if (!isset($data['id'])) {
                 throw new \Exception('ID is required for update');
             }
 
-            $id = $data['course']['id'];
+            $id = $data['id'];
 
             // Process application data
-            $criteria = new ScholarshipCriteriaModel();
+            $model = new CoursesAcceptedModel();
 
             // Check if qualification exists
-            $existingCourse = $criteria->getCourseById($id);
-            if (!$existingCourse) {
+            $existing = $model->getCourseById($id);
+            if (!$existing) {
                 throw new \Exception('Course not found');
             }
 
-            if (!$criteria->updateCourse($id, $data['course'])) {
+            if (!$model->update($data)) {
                 throw new \Exception('Failed to update course information');
             }
 
@@ -204,10 +204,10 @@ class CoursesAcceptedController
             }
 
             // Process delete
-            $model = new CollegeUniversityManagementModel();
+            $model = new CoursesAcceptedModel();
 
             // Check if qualification exists
-            $isExisted = $model->getCollegeOrUniversityById($id);
+            $isExisted = $model->getCourseById($id);
             if (!$isExisted) {
                 throw new \Exception('Course not found');
             }

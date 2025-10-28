@@ -101,7 +101,7 @@ class ScholarAccountModel
                 $this->table_name .
                 " ai 
                      JOIN personal_information pi ON ai.application_id = pi.application_id WHERE ai.is_application_approved = '1' AND ai.is_examination_passed = '1' AND ai.is_initial_interview_passed = '1'
-                     AND ai.is_home_visitation_qualified = '1' AND ai.is_final_interview_passed = '1' AND ai.is_attended_orientation = '1' AND ai.is_attended_awarding = '1'";
+                     AND ai.is_home_visitation_qualified = '1' AND ai.is_final_interview_passed = '1' AND ai.is_attended_orientation = '1' AND ai.is_attended_awarding = '1' AND ai.status = 'is_attended_awarding'";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute();
 

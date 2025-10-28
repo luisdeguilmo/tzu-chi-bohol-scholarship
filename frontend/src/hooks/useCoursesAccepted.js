@@ -30,14 +30,17 @@ export const useCoursesAccepted = (id) => {
         }
     };
 
-    const addCollegeOrUniversity = async (collegeUniversity) => {
+    const addCourse = async (selectedId, courseName) => {
         const data = {
-            college_university: collegeUniversity,
+            id: selectedId,
+            course_name: courseName,
         };
 
         try {
+            setIsLoading(true);
+
             const response = await fetch(
-                `${BASE_URL}app/views/colleges-universities.php`,
+                `${BASE_URL}app/views/courses-accepted.php`,
                 {
                     method: "POST",
                     headers: {
@@ -51,27 +54,69 @@ export const useCoursesAccepted = (id) => {
 
             if (result.success) {
                 toast.success(result.message + ".");
+                setIsLoading(false);
                 return true;
             } else {
                 alert("Error: " + result.message);
+                setIsLoading(false);
                 return false;
             }
         } catch (error) {
             console.error("Submission error:", error);
             alert("Failed to submit the form. Please try again.");
+            setIsLoading(false);
             return false;
         }
     };
 
-    const deleteCollegeOrUniversity = async (id) => {
+    const updateCourse = async (selectedId, courseName) => {
+        const data = {
+            id: selectedId,
+            course_name: courseName,
+        };
+
+        try {
+            setIsLoading(true);
+
+            const response = await fetch(
+                `${BASE_URL}app/views/courses-accepted.php`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json", // Important for JSON body
+                    },
+                    body: JSON.stringify(data),
+                }
+            );
+
+            const result = await response.json(); // Parse as JSON instead of text
+
+            if (result.success) {
+                toast.success(result.message + ".");
+                setIsLoading(false);
+                return true;
+            } else {
+                alert("Error: " + result.message);
+                setIsLoading(false);
+                return false;
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+            alert("Failed to submit the form. Please try again.");
+            setIsLoading(false);
+            return false;
+        }
+    };
+
+    const deleteCourse = async (id) => {
         try {
             setIsLoading(true);
             const response = await axios.delete(
-                `${BASE_URL}app/views/colleges-universities.php?id=${id}`
+                `${BASE_URL}app/views/courses-accepted.php?id=${id}`
             );
 
             if (response.data) {
-                toast.success("College/University deleted successfully");
+                toast.success("Course deleted successfully");
                 return true;
             }
 
@@ -93,6 +138,9 @@ export const useCoursesAccepted = (id) => {
     return {
         isLoading,
         coursesAccepted,
+        addCourse,
+        updateCourse,
+        deleteCourse,
         resetCoursesAccepted,
         fetchCoursesAccepted,
     };

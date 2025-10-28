@@ -18,16 +18,12 @@ import {
     orientationTableHeaders,
     unassignedTableHeaders,
 } from "../../../constant/tableHeaders";
-import { manageApplication } from "../../../services/emailService";
-import SendEmailButton from "./SendEmailButtton";
 import { useOrientationAndAwarding } from "../../../hooks/useOrientationAndAwarding";
 import OrientationTableRow from "./OrientationTableRow";
 import ChangeStatusModal from "./ChangeStatusModal";
 import AwardingTableRow from "./AwardingTableRow";
-import ConfirmationModal from "../../../components/ConfirmationModal";
 
 export default function OrientationAndAwarding() {
-    const [isEmailSent, setIsEmailSent] = useState(false);
     const [isRefresh, setIsRefresh] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeTab, setActiveTab] = useState(
@@ -39,6 +35,7 @@ export default function OrientationAndAwarding() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] =
         useState(false);
+    const [selectedScholar, setSelectedScholar] = useState("");
 
     const [scholarId, setScholarId] = useState(null);
     const [sortBy, setSortBy] = useState("newest");
@@ -48,7 +45,6 @@ export default function OrientationAndAwarding() {
     const [batchName, setBatchName] = useState("");
 
     const {
-        pageNum,
         setPageNum,
         selectedApplicants,
         setSelectedApplicants,
@@ -59,6 +55,7 @@ export default function OrientationAndAwarding() {
     } = useBatch();
 
     const {
+        isLoading,
         applications,
         fetchApplicationsOnApplicantsTab,
         fetchApplicationsOnOrientationTab,
@@ -73,8 +70,6 @@ export default function OrientationAndAwarding() {
     );
 
     const { profilePics, fetchAllPics } = useProfilePicture(applications);
-    const { isLoading, sendExaminationPassed, sendExaminationFailed } =
-        manageApplication();
 
     useEffect(() => {
         fetchBatches();
@@ -176,26 +171,6 @@ export default function OrientationAndAwarding() {
         setSelectedBatchInBatches(value);
         setPageNum(1);
     };
-
-    const handleApplicantsChange = (e) => {
-        const newValue = e.target.value;
-        setSelectedApplicants(newValue);
-        setCurrentPage(1);
-    };
-
-    // const handleSendEmail = async () => {
-    //     let success = null;
-
-    //     if (status === "passed") {
-    //         success = sendExaminationPassed(applications);
-    //     } else if (status === "failed") {
-    //         success = sendExaminationFailed(applications);
-    //     }
-
-    //     if (success) {
-    //         setIsEmailSent(true);
-    //     }
-    // };
 
     const handleRefresh = async () => {
         setIsRefresh(true);
@@ -338,6 +313,7 @@ export default function OrientationAndAwarding() {
                                         }
                                         onOpenModal={setIsChangeStatusModalOpen}
                                         onSelectScholarId={setScholarId}
+                                        onSelectScholar={setSelectedScholar}
                                     />
                                 );
                             default:
@@ -347,6 +323,7 @@ export default function OrientationAndAwarding() {
                                         profilePics={profilePics}
                                         onOpenModal={setIsChangeStatusModalOpen}
                                         onSelectScholarId={setScholarId}
+                                        onSelectScholar={setSelectedScholar}
                                     />
                                 );
                         }
@@ -422,6 +399,8 @@ export default function OrientationAndAwarding() {
             />
 
             <ChangeStatusModal
+                tab={activeTab}
+                scholar={selectedScholar}
                 isOpen={isChangeStatusModalOpen}
                 onClose={setIsChangeStatusModalOpen}
                 label={"Change Status"}
@@ -432,6 +411,7 @@ export default function OrientationAndAwarding() {
                         : updateStatusForAwarding
                 }
                 onRefresh={handleRefresh}
+                isLoading={isLoading}
             />
         </PageContent>
     );

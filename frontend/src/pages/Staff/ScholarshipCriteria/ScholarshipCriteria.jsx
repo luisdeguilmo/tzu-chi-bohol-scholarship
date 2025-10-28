@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
 import { usePagination } from "../../../hooks/usePagination";
 import { useTableEdit } from "../../../hooks/useTableEdit";

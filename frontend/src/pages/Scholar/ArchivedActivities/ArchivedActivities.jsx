@@ -1,4 +1,4 @@
-import React, { act, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SearchInputMobile from "../../../components/SearchInputMobile";
 import { useArchive } from "../../../hooks/useArchive";
 import TabNavigation from "../TabNavigation";
@@ -173,7 +173,7 @@ export default function ArchivedActivities() {
                 {/* Empty State */}
                 {currentItems.length === 0 && (
                     <EmptyState
-                        section={'archived_activities'}
+                        section={"archived_activities"}
                         activeTab={activeTab}
                         searchTerm={searchTerm}
                         setSearchTerm={setSearchTerm}
@@ -181,19 +181,19 @@ export default function ArchivedActivities() {
                             searchTerm
                                 ? "No Results Found"
                                 : activeTab === "all"
-                                ? "There are no archived activities yet."
-                                : activeTab === "volunteer_activities"
-                                ? "No archived community service activities found."
-                                : "No past events have been archived yet."
+                                  ? "There are no archived activities yet."
+                                  : activeTab === "volunteer_activities"
+                                    ? "No archived community service activities found."
+                                    : "No past events have been archived yet."
                         }
                         subHeader={
                             searchTerm
                                 ? `No activities match your search for "${searchTerm}"`
                                 : activeTab === "all"
-                                ? "Activities will appear here once they are manually archived"
-                                : activeTab === "volunteer_activities"
-                                ? "Volunteer activities will be listed here after you archives them"
-                                : "Events will show up here after being archived you archives them."
+                                  ? "Activities will appear here once they are manually archived"
+                                  : activeTab === "volunteer_activities"
+                                    ? "Volunteer activities will be listed here after you archives them."
+                                    : "Events will show up here after being archived you archives them."
                         }
                     />
                 )}

@@ -120,7 +120,7 @@ const LoginForm = ({ role }) => {
             console.log(data);
 
             const response = await axios.post(
-                `${BASE_URL}app/views/loginx.php`,
+                `${BASE_URL}app/views/login.php`,
                 data,
                 {
                     headers: {

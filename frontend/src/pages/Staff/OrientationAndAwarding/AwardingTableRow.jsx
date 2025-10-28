@@ -6,6 +6,7 @@ const AwardingTableRow = ({
     currentItems,
     profilePics,
     onSelectScholarId,
+    onSelectScholar,
     onOpenModal,
 }) => {
     const [edit, setEdit] = useState(false);
@@ -71,6 +72,7 @@ const AwardingTableRow = ({
                         <button
                             onClick={() => {
                                 onSelectScholarId(info.application_id);
+                                onSelectScholar(info);
                                 onOpenModal(true);
                             }}
                             title={"Change Status"}

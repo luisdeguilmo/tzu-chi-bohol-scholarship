@@ -9,6 +9,10 @@ class ScholarModel
     private $table_name = 'tzu_chi_siblings';
 
     public $id;
+    public $scholarId;
+    public $allowanceStatus;
+    public $transportAllowance;
+    public $loadAllowance;
     public $application_id;
     public $name;
     public $year_level;
@@ -82,10 +86,18 @@ class ScholarModel
     public function updateAllowanceStatus($data)
     {
         $query =
-            'UPDATE scholars SET allowance_status = :allowance_status WHERE account_id = :account_id';
+            'UPDATE scholars SET allowance_status = :allowance_status, transport_allowance = :transport_allowance, load_allowance = :load_allowance WHERE account_id = :account_id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':account_id', $data['account_id'], \PDO::PARAM_INT);
-        $stmt->bindParam(':allowance_status', $data['allowance_status']);
+
+        $this->scholarId = htmlspecialchars(strip_tags($data['account_id']));
+        $this->allowanceStatus = htmlspecialchars(strip_tags($data['allowance_status']));
+        $this->transportAllowance = htmlspecialchars(strip_tags($data['transport_allowance']));
+        $this->loadAllowance = htmlspecialchars(strip_tags($data['load_allowance']));
+
+        $stmt->bindParam(':account_id', $this->scholarId, \PDO::PARAM_INT);
+        $stmt->bindParam(':allowance_status', $this->allowanceStatus);
+        $stmt->bindParam(':transport_allowance', $this->transportAllowance);
+        $stmt->bindParam(':load_allowance', $this->loadAllowance);
         return $stmt->execute();
     }
 }

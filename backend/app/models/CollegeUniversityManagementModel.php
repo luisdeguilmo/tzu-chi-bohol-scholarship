@@ -51,7 +51,7 @@ class CollegeUniversityManagementModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function update($id, $data)
+    public function update($data)
     {
         $query =
             'UPDATE ' .
@@ -62,6 +62,7 @@ class CollegeUniversityManagementModel
 
         $stmt = $this->pdo->prepare($query);
 
+        $id = strip_tags($data['id']);
         $name = strip_tags($data['name']);
 
         $stmt->bindParam(':name', $name);

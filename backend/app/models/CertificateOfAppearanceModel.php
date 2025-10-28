@@ -3,9 +3,10 @@ namespace App\Models;
 
 use Config\Database;
 
-class CertificateOfAppearanceModel {
-    private $table_name = "certificate_of_appearance";
-    
+class CertificateOfAppearanceModel
+{
+    private $table_name = 'certificate_of_appearance';
+
     public $id;
     public $application_id;
     public $file_name;
@@ -14,10 +15,11 @@ class CertificateOfAppearanceModel {
     public $file_size;
     public $requirement_type;
     public $uploaded_at;
-    
+
     private $pdo;
-    
-    public function __construct($pdo = null) {
+
+    public function __construct($pdo = null)
+    {
         if ($pdo) {
             $this->pdo = $pdo;
         } else {
@@ -26,8 +28,12 @@ class CertificateOfAppearanceModel {
         }
     }
 
-    public function createCOA($file_data, $application_id, $batch_id) {
-        $query = "INSERT INTO " . $this->table_name . " 
+    public function createCOA($file_data, $application_id, $batch_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
                    SET application_id = :application_id,
                        file_name = :file_name,
                        file_path = :file_path, 
@@ -36,9 +42,9 @@ class CertificateOfAppearanceModel {
                        requirement_type = :requirement_type,
                        batch_id = :batch_id,
                        uploaded_at = :uploaded_at";
-        
+
         $stmt = $this->pdo->prepare($query);
-        
+
         // Sanitize inputs
         $this->application_id = $application_id;
         $this->file_name = htmlspecialchars(strip_tags($file_data['file_name']));
@@ -47,111 +53,126 @@ class CertificateOfAppearanceModel {
         $this->file_size = htmlspecialchars(strip_tags($file_data['file_size']));
         $this->requirement_type = htmlspecialchars(strip_tags($file_data['requirement_type']));
         $this->uploaded_at = date('Y-m-d H:i:s');
-        
+
         // Bind values
-        $stmt->bindParam(":application_id", $this->application_id);
-        $stmt->bindParam(":file_name", $this->file_name);
-        $stmt->bindParam(":file_path", $this->file_path);
-        $stmt->bindParam(":file_type", $this->file_type);
-        $stmt->bindParam(":file_size", $this->file_size);
-        $stmt->bindParam(":requirement_type", $this->requirement_type);
-        $stmt->bindParam(":batch_id", $batch_id);
-        $stmt->bindParam(":uploaded_at", $this->uploaded_at);
-        
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':file_name', $this->file_name);
+        $stmt->bindParam(':file_path', $this->file_path);
+        $stmt->bindParam(':file_type', $this->file_type);
+        $stmt->bindParam(':file_size', $this->file_size);
+        $stmt->bindParam(':requirement_type', $this->requirement_type);
+        $stmt->bindParam(':batch_id', $batch_id);
+        $stmt->bindParam(':uploaded_at', $this->uploaded_at);
+
         return $stmt->execute();
     }
 
-    public function updateCOABatchId($id, $batch_id) {
-        $query = "UPDATE " . $this->table_name . " 
+    public function updateCOABatchId($id, $batch_id)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            " 
                    SET batch_id = :batch_id 
                    WHERE id = :id";
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(":id", $id);
-        $stmt->bindParam(":batch_id", $batch_id);
-        return $stmt->execute(); 
-    }
-
-    public function deleteCOA($id) {
-        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':batch_id', $batch_id);
         return $stmt->execute();
     }
-    
-    public function getDocumentsByApplicationId($application_id) {
-        $query = "SELECT * FROM " . $this->table_name . " 
+
+    public function deleteCOA($id)
+    {
+        $query = 'DELETE FROM ' . $this->table_name . ' WHERE id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+    public function getDocumentsByApplicationId($application_id)
+    {
+        $query =
+            'SELECT * FROM ' .
+            $this->table_name .
+            " 
                    WHERE application_id = ?
                    ORDER BY uploaded_at DESC";
-        
+
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(1, $application_id);
         $stmt->execute();
-        
+
         return $stmt;
     }
-    
-    public function getAllDocumentsWithActivity() {
-        $query = "SELECT 
+
+    public function getAllDocumentsWithActivity()
+    {
+        $query =
+            "SELECT 
                     c.*,
                     a.activity_name,
                     a.activity_date as activity_scheduled_date,
                     a.activity_time,
                     a.created_at as activity_created_at
-                  FROM " . $this->table_name . " c
+                  FROM " .
+            $this->table_name .
+            " c
                   LEFT JOIN activities a ON c.application_id = a.id
                   ORDER BY c.uploaded_at DESC";
-        
+
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
-        
+
         return $stmt;
     }
-    
-    public function getFileUrl($id) {
-        $query = "SELECT file_path FROM " . $this->table_name . " WHERE id = ?";
-                
+
+    public function getFileUrl($id)
+    {
+        $query = 'SELECT file_path FROM ' . $this->table_name . ' WHERE id = ?';
+
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(1, $id);
         $stmt->execute();
-                
+
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                
+
         if ($row) {
             // Return the complete URL to access the file
             return $row['file_path'];
         }
-                
+
         return null;
     }
-    
-    public function delete($id) {
+
+    public function delete($id)
+    {
         // First, get the file path to delete the actual file
-        $query = "SELECT file_path FROM " . $this->table_name . " WHERE id = ?";
+        $query = 'SELECT file_path FROM ' . $this->table_name . ' WHERE id = ?';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(1, $id);
         $stmt->execute();
-                
+
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                
+
         if ($row) {
             // Get absolute path by appending document root
             $file_path = $_SERVER['DOCUMENT_ROOT'] . $row['file_path'];
-                        
+
             // Delete the physical file if it exists
             if (file_exists($file_path)) {
                 unlink($file_path);
             }
-                        
+
             // Now delete the database record
-            $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
+            $query = 'DELETE FROM ' . $this->table_name . ' WHERE id = ?';
             $stmt = $this->pdo->prepare($query);
             $stmt->bindParam(1, $id);
-                        
-            if($stmt->execute()) {
+
+            if ($stmt->execute()) {
                 return true;
             }
         }
-                
+
         return false;
     }
 }

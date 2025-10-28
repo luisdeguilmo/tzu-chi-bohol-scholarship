@@ -63,11 +63,13 @@ const EventCard = ({
             }`}
         >
             {/* Modern Accent Border - Different style for archived */}
-            <div className={`absolute left-0 top-6 bottom-6 w-1 rounded-full transition-all duration-300 ${
-                isArchived 
-                    ? "bg-gradient-to-b from-slate-400 via-slate-500 to-slate-600 opacity-0 group-hover:opacity-100"
-                    : "bg-gradient-to-b from-green-500 via-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100"
-            }`}></div>
+            <div
+                className={`absolute left-0 top-6 bottom-6 w-1 rounded-full transition-all duration-300 ${
+                    isArchived
+                        ? "bg-gradient-to-b from-slate-400 via-slate-500 to-slate-600 opacity-0 group-hover:opacity-100"
+                        : "bg-gradient-to-b from-green-500 via-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100"
+                }`}
+            ></div>
 
             {/* Archive indicator overlay - More prominent */}
             {/* {isArchived && (
@@ -78,58 +80,97 @@ const EventCard = ({
             )} */}
 
             <div className="relative">
-                <h3 className={`font-bold text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
-                    isArchived ? "italic text-slate-400 decoration-slate-400" : "text-slate-700"
-                }`}>
+                <h3
+                    className={`font-bold text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
+                        isArchived
+                            ? "italic text-slate-400 decoration-slate-400"
+                            : "text-slate-700"
+                    }`}
+                >
                     {event.event_name}
                 </h3>
 
                 <div className="space-y-3">
-                    <div className={`flex items-center text-sm ${
-                        isArchived ? "text-slate-400" : "text-slate-600"
-                    }`}>
-                        <Calendar className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                            isArchived ? "text-slate-400" : "text-emerald-500"
-                        }`} />
-                        <span className={isArchived ? "italic" : ""}>{formatDate(event.date)}</span>
+                    <div
+                        className={`flex items-center text-sm ${
+                            isArchived ? "text-slate-400" : "text-slate-600"
+                        }`}
+                    >
+                        <Calendar
+                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
+                                isArchived
+                                    ? "text-slate-400"
+                                    : "text-emerald-500"
+                            }`}
+                        />
+                        <span className={isArchived ? "italic" : ""}>
+                            {formatDate(event.date)}
+                        </span>
                     </div>
 
-                    <div className={`flex items-center text-sm ${
-                        isArchived ? "text-slate-400" : "text-slate-600"
-                    }`}>
-                        <Clock className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                            isArchived ? "text-slate-400" : "text-emerald-500"
-                        }`} />
+                    <div
+                        className={`flex items-center text-sm ${
+                            isArchived ? "text-slate-400" : "text-slate-600"
+                        }`}
+                    >
+                        <Clock
+                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
+                                isArchived
+                                    ? "text-slate-400"
+                                    : "text-emerald-500"
+                            }`}
+                        />
                         <span className={isArchived ? "italic" : ""}>
                             {formatTime(event.start_time)} -{" "}
                             {formatTime(event.end_time)}
                         </span>
                     </div>
 
-                    <div className={`flex items-center text-sm ${
-                        isArchived ? "text-slate-400" : "text-slate-600"
-                    }`}>
-                        <MapPin className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                            isArchived ? "text-slate-400" : "text-emerald-500"
-                        }`} />
-                        <span className={`truncate ${isArchived ? "italic" : ""}`}>{event.event_location}</span>
+                    <div
+                        className={`flex items-center text-sm ${
+                            isArchived ? "text-slate-400" : "text-slate-600"
+                        }`}
+                    >
+                        <MapPin
+                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
+                                isArchived
+                                    ? "text-slate-400"
+                                    : "text-emerald-500"
+                            }`}
+                        />
+                        <span
+                            className={`truncate ${isArchived ? "italic" : ""}`}
+                        >
+                            {event.event_location}
+                        </span>
                     </div>
 
-                    <div className={`flex items-center text-sm ${
-                        isArchived ? "text-slate-400" : "text-slate-600"
-                    }`}>
-                        <Users className={`w-4 h-4 mr-2 ${
-                            isArchived ? "text-slate-400" : "text-emerald-500"
-                        }`} />
-                        <span className={`font-medium ${isArchived ? "italic" : ""}`}>
-                            {event.numberOfParticipants}{" "}
+                    <div
+                        className={`flex items-center text-sm ${
+                            isArchived ? "text-slate-400" : "text-slate-600"
+                        }`}
+                    >
+                        <Users
+                            className={`w-4 h-4 mr-2 ${
+                                isArchived
+                                    ? "text-slate-400"
+                                    : "text-emerald-500"
+                            }`}
+                        />
+                        <span
+                            className={`font-medium ${isArchived ? "italic" : ""}`}
+                        >
+                            {/* {event.numberOfParticipants}{" "}
                             {event.date > dateToday &&
                             event.numberOfParticipants < 2
                                 ? "Participant"
                                 : event.date > dateToday &&
-                                  event.numberOfParticipants > 1
-                                ? "Participants"
-                                : "Participated"}
+                                    event.numberOfParticipants > 1
+                                  ? "Participants"
+                                  : "Participated"} */}
+                            {event.numberOfParticipants}
+                            {" / "}
+                            {event.participant_limit} Participants
                         </span>
                     </div>
                 </div>
@@ -137,11 +178,13 @@ const EventCard = ({
 
             {/* Upcoming badge - Different styling for archived */}
             {event.date > dateToday && (
-                <p className={`p-2 rounded-xl absolute bottom-6 text-xs right-6 ${
-                    isArchived 
-                        ? "bg-slate-300 text-slate-700 border border-slate-400"
-                        : "bg-green-200 text-green-900"
-                }`}>
+                <p
+                    className={`p-2 rounded-xl absolute bottom-6 text-xs right-6 ${
+                        isArchived
+                            ? "bg-slate-300 text-slate-700 border border-slate-400"
+                            : "bg-green-200 text-green-900"
+                    }`}
+                >
                     Upcoming
                 </p>
             )}

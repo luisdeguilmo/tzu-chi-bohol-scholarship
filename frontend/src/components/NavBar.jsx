@@ -1,6 +1,8 @@
 import Logo from "/src/assets/tzu_chi_logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useApplicationPeriods } from "../hooks/useApplicationPeriods";
+import { toast } from "react-toastify";
 
 function NavLinks({ isMobile = false, onLinkClick }) {
     const navigate = useNavigate();
@@ -75,9 +77,36 @@ function NavLinks({ isMobile = false, onLinkClick }) {
 function NavBar({ isScrolled }) {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { applicationPeriods, fetchApplicationPeriods } =
+        useApplicationPeriods();
+
+    useEffect(() => {
+        fetchApplicationPeriods();
+    }, []);
+
+    const today = new Date().toISOString().split("T")[0];
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const handleClick = () => {
+        if (
+            applicationPeriods[0].status === "Active" &&
+            today >= applicationPeriods[0].start_date &&
+            today <= applicationPeriods[0].end_date
+        ) {
+            navigate("/application");
+        } else if (
+            today > applicationPeriods[0].end_date ||
+            applicationPeriods[0].status === "Closed"
+        ) {
+            toast.error("The online application has been closed.");
+        } else {
+            toast.info(
+                "The online application is not available at the moment."
+            );
+        }
     };
 
     return (
@@ -146,7 +175,7 @@ function NavBar({ isScrolled }) {
                                 <NavLinks />
                             </nav>
                             <button
-                                onClick={() => navigate("/application")}
+                                onClick={handleClick}
                                 className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                             >
                                 Apply Now

@@ -24,12 +24,24 @@ class CoursesAcceptedModel
             'INSERT INTO ' .
             $this->table_name .
             " 
-                  SET name = :name";
+                  SET school_id = :id, course = :name";
 
         $stmt = $this->pdo->prepare($query);
-        $name = strip_tags($data);
+        $id = strip_tags($data['id']);
+        $name = strip_tags($data['course_name']);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->bindParam(':name', $name);
         return $stmt->execute();
+    }
+
+    public function getCourseById($id)
+    {
+        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function getCoursesByCollegeOrUniversityId($id)
@@ -42,21 +54,22 @@ class CoursesAcceptedModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function update($id, $data)
+    public function update($data)
     {
         $query =
             'UPDATE ' .
             $this->table_name .
             " 
-                  SET name = :name 
+                  SET course = :name 
                   WHERE id = :id";
 
         $stmt = $this->pdo->prepare($query);
 
-        $name = strip_tags($data['name']);
+        $name = strip_tags($data['course_name']);
+        $id = strip_tags($data['id']);
 
         $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 
         return $stmt->execute();
     }

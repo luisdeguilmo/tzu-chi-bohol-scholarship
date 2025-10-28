@@ -2,15 +2,28 @@
 
 namespace App\Controllers;
 
-require_once __DIR__ . "/../../config/Database.php";
+require_once __DIR__ . '/../../config/Database.php';
+require_once __DIR__ . '/../models/ApplicationModel.php';
+require_once __DIR__ . '/../models/PersonalModel.php';
+require_once __DIR__ . '/../models/EducationModel.php';
+require_once __DIR__ . '/../models/FamilyModel.php';
+require_once __DIR__ . '/../models/ContactPersonModel.php';
+require_once __DIR__ . '/../models/FamilyMemberModel.php';
+require_once __DIR__ . '/../models/ScholarModel.php';
+require_once __DIR__ . '/../models/AssistanceModel.php';
+require_once __DIR__ . '/../models/CharacterReferenceModel.php';
+require_once __DIR__ . '/../models/ExaminationFilesModel.php';
+require_once __DIR__ . '/../models/RequirementModel.php';
+require_once __DIR__ . '/../models/ProfilePictureModel.php';
+require_once __DIR__ . '/../models/RequirementsModel.php';
 
 // CORS headers
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Content-Type: application/json");
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Content-Type: application/json');
 
-use \Config\Database;
+use Config\Database;
 use App\Models\ApplicationModel;
 use App\Models\PersonalModel;
 use App\Models\EducationModel;
@@ -20,20 +33,23 @@ use App\Models\FamilyMemberModel;
 use App\Models\ScholarModel;
 use App\Models\AssistanceModel;
 use App\Models\CharacterReferenceModel;
+use App\Models\ExaminationFilesModel;
 use App\Models\RequirementModel;
 use App\Models\ProfilePictureModel; // Add this new model
 use App\Models\RequirementsModel;
 
-class ApplicationController {
-
+class ApplicationController
+{
     private $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
     }
 
-    public function createApplication() {
+    public function createApplication()
+    {
         $this->pdo->beginTransaction();
 
         try {
@@ -41,19 +57,22 @@ class ApplicationController {
             if (isset($_POST['applicationData'])) {
                 $data = json_decode($_POST['applicationData'], true);
             } else {
-                $data = json_decode(file_get_contents("php://input"), true);
+                $data = json_decode(file_get_contents('php://input'), true);
             }
-            
+
             if (!$data) {
-                throw new \Exception("No data provided");
+                throw new \Exception('No data provided');
             }
 
             // Process application data
             $application = new ApplicationModel();
-            $application_id = $application->create($data['application_info'], $data['other_information']);
+            $application_id = $application->create(
+                $data['application_info'],
+                $data['other_information'],
+            );
 
             if (!$application_id) {
-                throw new \Exception("Failed to create application");
+                throw new \Exception('Failed to create application');
             }
 
             // Process other data (personal, education, family, etc.)
@@ -79,49 +98,49 @@ class ApplicationController {
             }
 
             $this->pdo->commit();
-            
+
             http_response_code(201);
             echo json_encode([
-                "success" => true,
-                "message" => "Application created successfully",
-                "application_id" => $application_id
+                'success' => true,
+                'message' => 'Application created successfully',
+                'application_id' => $application_id,
             ]);
-
         } catch (\Exception $e) {
             $this->pdo->rollBack();
-            
+
             http_response_code(400);
             echo json_encode([
-                "success" => false,
-                "message" => $e->getMessage()
+                'success' => false,
+                'message' => $e->getMessage(),
             ]);
         }
     }
 
-    private function processApplicationData($data, $application_id) {
+    private function processApplicationData($data, $application_id)
+    {
         // Process personal information
         $personal = new PersonalModel($this->pdo);
         if (!$personal->create($data['personal_information'], $application_id)) {
-            throw new \Exception("Failed to save personal information");
-        } 
+            throw new \Exception('Failed to save personal information');
+        }
 
         // Process education information
         $education = new EducationModel($this->pdo);
         if (!$education->create($data['educational_background'], $application_id)) {
-            throw new \Exception("Failed to save education information");
+            throw new \Exception('Failed to save education information');
         }
 
         // Process family information
         $family = new FamilyModel($this->pdo);
         if (!$family->create($data['parents_guardian'], $application_id)) {
-            throw new \Exception("Failed to save family information");
+            throw new \Exception('Failed to save family information');
         }
 
         // Process contact person
         $contactPerson = new ContactPersonModel($this->pdo);
         if (isset($data['contact_person']) && !empty($data['contact_person'])) {
             if (!$contactPerson->create($data['contact_person'], $application_id)) {
-                throw new \Exception("Failed to save contact person");
+                throw new \Exception('Failed to save contact person');
             }
         }
 
@@ -130,7 +149,7 @@ class ApplicationController {
             $familyMember = new FamilyMemberModel($this->pdo);
             foreach ($data['family_members'] as $member) {
                 if (!$familyMember->create($member, $application_id)) {
-                    throw new \Exception("Failed to save family member");
+                    throw new \Exception('Failed to save family member');
                 }
             }
         }
@@ -140,7 +159,7 @@ class ApplicationController {
             $scholar = new ScholarModel($this->pdo);
             foreach ($data['tzu_chi_siblings'] as $scholarData) {
                 if (!$scholar->create($scholarData, $application_id)) {
-                    throw new \Exception("Failed to save scholar");
+                    throw new \Exception('Failed to save scholar');
                 }
             }
         }
@@ -150,7 +169,7 @@ class ApplicationController {
             $assistance = new AssistanceModel($this->pdo);
             foreach ($data['other_assistance'] as $assistanceData) {
                 if (!$assistance->create($assistanceData, $application_id)) {
-                    throw new \Exception("Failed to save assistance");
+                    throw new \Exception('Failed to save assistance');
                 }
             }
         }
@@ -159,257 +178,375 @@ class ApplicationController {
             $character = new CharacterReferenceModel($this->pdo);
             foreach ($data['character_reference'] as $characterData) {
                 if (!$character->create($characterData, $application_id)) {
-                    throw new \Exception("Failed to save character");
+                    throw new \Exception('Failed to save character');
                 }
             }
         }
     }
 
-    public function getProfilePicture($application_id) {
+    public function getProfilePicture($application_id)
+    {
         try {
             $profilePictureModel = new ProfilePictureModel();
             $profile_url = $profilePictureModel->getFileUrlByApplicationId($application_id);
-            
+
             if ($profile_url) {
                 echo json_encode([
-                    "success" => true,
-                    "profile_picture_url" => $profile_url
+                    'success' => true,
+                    'profile_picture_url' => $profile_url,
                 ]);
             } else {
                 http_response_code(404);
                 echo json_encode([
-                    "success" => false,
-                    "message" => "Profile picture not found"
+                    'success' => false,
+                    'message' => 'Profile picture not found',
                 ]);
             }
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode([
-                "success" => false,
-                "message" => $e->getMessage() . "sjdbusbds"
+                'success' => false,
+                'message' => $e->getMessage() . 'sjdbusbds',
             ]);
         }
     }
 
-    public function getProfilePicture64($application_id) {
-    try {
-        $profilePictureModel = new ProfilePictureModel();
-        $profile_url = $profilePictureModel->getFileUrlByApplicationId($application_id);
-        
-        if (!$profile_url) {
-            http_response_code(404);
-            echo json_encode([
-                "success" => false,
-                "message" => "Profile picture not found"
-            ]);
-            return;
-        }
+    public function getProfilePicture64($application_id)
+    {
+        try {
+            $profilePictureModel = new ProfilePictureModel();
+            $profile_url = $profilePictureModel->getFileUrlByApplicationId($application_id);
 
-        // Convert URL to file path
-        $parsedUrl = parse_url($profile_url);
-        $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
-        
-        // Validate file exists and is readable
-        if (!file_exists($filePath) || !is_readable($filePath)) {
-            http_response_code(404);
-            echo json_encode([
-                "success" => false,
-                "message" => "Profile picture file not accessible"
-            ]);
-            return;
-        }
+            if (!$profile_url) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Profile picture not found',
+                ]);
+                return;
+            }
 
-        // Read file and convert to base64
-        $imageData = file_get_contents($filePath);
-        if ($imageData === false) {
+            // Convert URL to file path
+            $parsedUrl = parse_url($profile_url);
+            $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
+
+            // Validate file exists and is readable
+            if (!file_exists($filePath) || !is_readable($filePath)) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Profile picture file not accessible',
+                ]);
+                return;
+            }
+
+            // Read file and convert to base64
+            $imageData = file_get_contents($filePath);
+            if ($imageData === false) {
+                http_response_code(500);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Failed to read profile picture file',
+                ]);
+                return;
+            }
+
+            // Get MIME type - using multiple methods for compatibility
+            $mimeType = null;
+
+            // Method 1: Try finfo if available
+            if (class_exists('finfo')) {
+                $finfo = new \finfo(FILEINFO_MIME_TYPE);
+                $mimeType = $finfo->buffer($imageData);
+            }
+
+            // Method 2: Fallback to getimagesizefromstring
+            if (!$mimeType) {
+                $imageInfo = getimagesizefromstring($imageData);
+                if ($imageInfo !== false) {
+                    $mimeType = $imageInfo['mime'];
+                }
+            }
+
+            // Method 3: Fallback to file extension
+            if (!$mimeType) {
+                $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                $mimeTypes = [
+                    'jpg' => 'image/jpeg',
+                    'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'gif' => 'image/gif',
+                    'webp' => 'image/webp',
+                ];
+                $mimeType = $mimeTypes[$extension] ?? 'image/jpeg'; // Default to jpeg
+            }
+
+            // Validate it's an image
+            if (!in_array($mimeType, ['image/jpeg', 'image/png', 'image/gif', 'image/webp'])) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid image file type: ' . $mimeType,
+                ]);
+                return;
+            }
+
+            // Convert to base64
+            $base64 = base64_encode($imageData);
+            $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
+
+            echo json_encode([
+                'success' => true,
+                'profile_picture_base64' => $base64Image,
+                'base64' => $base64Image, // Alternative key for compatibility
+                'mime_type' => $mimeType,
+            ]);
+        } catch (\Exception $e) {
+            error_log('Profile picture error: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
-                "success" => false,
-                "message" => "Failed to read profile picture file"
+                'success' => false,
+                'message' => 'Internal server error: ' . $e->getMessage(),
             ]);
-            return;
         }
+    }
 
-        // Get MIME type - using multiple methods for compatibility
-        $mimeType = null;
-        
-        // Method 1: Try finfo if available
-        if (class_exists('finfo')) {
-            $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $mimeType = $finfo->buffer($imageData);
-        }
-        
-        // Method 2: Fallback to getimagesizefromstring
-        if (!$mimeType) {
-            $imageInfo = getimagesizefromstring($imageData);
-            if ($imageInfo !== false) {
-                $mimeType = $imageInfo['mime'];
+    public function getRequirements64($application_id)
+    {
+        try {
+            $requirementsModel = new RequirementsModel(); // Adjust class name as needed
+            $requirements_urls = $requirementsModel->getFileUrlByApplicationId($application_id);
+
+            if (!$requirements_urls) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Requirements not found',
+                ]);
+                return;
             }
-        }
-        
-        // Method 3: Fallback to file extension
-        if (!$mimeType) {
-            $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+
+            $requirements_base64 = [];
             $mimeTypes = [
                 'jpg' => 'image/jpeg',
                 'jpeg' => 'image/jpeg',
                 'png' => 'image/png',
                 'gif' => 'image/gif',
-                'webp' => 'image/webp'
+                'webp' => 'image/webp',
             ];
-            $mimeType = $mimeTypes[$extension] ?? 'image/jpeg'; // Default to jpeg
-        }
-        
-        // Validate it's an image
-        if (!in_array($mimeType, ['image/jpeg', 'image/png', 'image/gif', 'image/webp'])) {
-            http_response_code(400);
+
+            // Process each URL in the array
+            foreach ($requirements_urls as $index => $requirement_url) {
+                try {
+                    // Convert URL to file path
+                    $parsedUrl = parse_url($requirement_url);
+                    $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
+
+                    // Validate file exists and is readable
+                    if (!file_exists($filePath) || !is_readable($filePath)) {
+                        $requirements_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Requirement file not accessible',
+                            'url' => $requirement_url,
+                        ];
+                        continue;
+                    }
+
+                    // Read file and convert to base64
+                    $imageData = file_get_contents($filePath);
+                    if ($imageData === false) {
+                        $requirements_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Failed to read requirement file',
+                            'url' => $requirement_url,
+                        ];
+                        continue;
+                    }
+
+                    // Get MIME type from file extension
+                    $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                    $mimeType = $mimeTypes[$extension] ?? null;
+
+                    // Validate it's a supported image type
+                    if (!$mimeType) {
+                        $requirements_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Unsupported file type: ' . $extension,
+                            'url' => $requirement_url,
+                        ];
+                        continue;
+                    }
+
+                    // Convert to base64
+                    $base64 = base64_encode($imageData);
+                    $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
+
+                    $requirements_base64[] = [
+                        'index' => $index,
+                        'success' => true,
+                        'requirement_base64' => $base64Image,
+                        'base64' => $base64Image, // Alternative key for compatibility
+                        'mime_type' => $mimeType,
+                        'url' => $requirement_url,
+                    ];
+                } catch (\Exception $fileException) {
+                    error_log(
+                        "Error processing requirement file {$index}: " .
+                            $fileException->getMessage(),
+                    );
+                    $requirements_base64[] = [
+                        'index' => $index,
+                        'success' => false,
+                        'message' => 'Error processing file: ' . $fileException->getMessage(),
+                        'url' => $requirement_url,
+                    ];
+                }
+            }
+
+            // Check if any files were successfully processed
+            // $successfulFiles = array_filter($requirements_base64, function($item) {
+            //     return $item['success'] === true;
+            // });
+
             echo json_encode([
-                "success" => false,
-                "message" => "Invalid image file type: " . $mimeType
+                'success' => true,
+                'total_files' => count($requirements_urls),
+                // "successful_files" => count($successfulFiles),
+                'requirements' => $requirements_base64,
             ]);
-            return;
-        }
-
-        // Convert to base64
-        $base64 = base64_encode($imageData);
-        $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
-
-        echo json_encode([
-            "success" => true,
-            "profile_picture_base64" => $base64Image,
-            "base64" => $base64Image, // Alternative key for compatibility
-            "mime_type" => $mimeType
-        ]);
-
         } catch (\Exception $e) {
-            error_log("Profile picture error: " . $e->getMessage());
+            error_log('Requirements error: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
-                "success" => false,
-                "message" => "Internal server error: " . $e->getMessage()
+                'success' => false,
+                'message' => 'Internal server error: ' . $e->getMessage(),
             ]);
         }
     }
 
-    public function getRequirements64($application_id) {
-    try {
-        $requirementsModel = new RequirementsModel(); // Adjust class name as needed
-        $requirements_urls = $requirementsModel->getFileUrlByApplicationId($application_id);
+    public function getExaminationFiles64($application_id)
+    {
+        try {
+            $requirementsModel = new ExaminationFilesModel(); // Adjust class name as needed
+            $requirements_urls = $requirementsModel->getFileUrlByApplicationId($application_id);
 
-        
-        if (!$requirements_urls) {
-            http_response_code(404);
-            echo json_encode([
-                "success" => false,
-                "message" => "Requirements not found"
-            ]);
-            return;
-        }
-        
-        $requirements_base64 = [];
-        $mimeTypes = [
-            'jpg' => 'image/jpeg',
-            'jpeg' => 'image/jpeg',
-            'png' => 'image/png',
-            'gif' => 'image/gif',
-            'webp' => 'image/webp'
-        ];
-        
-        // Process each URL in the array
-        foreach ($requirements_urls as $index => $requirement_url) {
-            try {
-                // Convert URL to file path
-                $parsedUrl = parse_url($requirement_url);
-                $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
-                
-                // Validate file exists and is readable
-                if (!file_exists($filePath) || !is_readable($filePath)) {
-                    $requirements_base64[] = [
-                        "index" => $index,
-                        "success" => false,
-                        "message" => "Requirement file not accessible",
-                        "url" => $requirement_url
-                    ];
-                    continue;
-                }
-                
-                // Read file and convert to base64
-                $imageData = file_get_contents($filePath);
-                if ($imageData === false) {
-                    $requirements_base64[] = [
-                        "index" => $index,
-                        "success" => false,
-                        "message" => "Failed to read requirement file",
-                        "url" => $requirement_url
-                    ];
-                    continue;
-                }
-                
-                // Get MIME type from file extension
-                $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-                $mimeType = $mimeTypes[$extension] ?? null;
-                
-                // Validate it's a supported image type
-                if (!$mimeType) {
-                    $requirements_base64[] = [
-                        "index" => $index,
-                        "success" => false,
-                        "message" => "Unsupported file type: " . $extension,
-                        "url" => $requirement_url
-                    ];
-                    continue;
-                }
-                
-                // Convert to base64
-                $base64 = base64_encode($imageData);
-                $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
-                
-                $requirements_base64[] = [
-                    "index" => $index,
-                    "success" => true,
-                    "requirement_base64" => $base64Image,
-                    "base64" => $base64Image, // Alternative key for compatibility
-                    "mime_type" => $mimeType,
-                    "url" => $requirement_url
-                ];
-                
-            } catch (\Exception $fileException) {
-                error_log("Error processing requirement file {$index}: " . $fileException->getMessage());
-                $requirements_base64[] = [
-                    "index" => $index,
-                    "success" => false,
-                    "message" => "Error processing file: " . $fileException->getMessage(),
-                    "url" => $requirement_url
-                ];
+            if (!$requirements_urls) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Requirements not found',
+                ]);
+                return;
             }
+
+            $requirements_base64 = [];
+            $mimeTypes = [
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'webp' => 'image/webp',
+            ];
+
+            // Process each URL in the array
+            foreach ($requirements_urls as $index => $requirement_url) {
+                try {
+                    // Convert URL to file path
+                    $parsedUrl = parse_url($requirement_url);
+                    $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
+
+                    // Validate file exists and is readable
+                    if (!file_exists($filePath) || !is_readable($filePath)) {
+                        $requirements_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Requirement file not accessible',
+                            'url' => $requirement_url,
+                        ];
+                        continue;
+                    }
+
+                    // Read file and convert to base64
+                    $imageData = file_get_contents($filePath);
+                    if ($imageData === false) {
+                        $requirements_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Failed to read requirement file',
+                            'url' => $requirement_url,
+                        ];
+                        continue;
+                    }
+
+                    // Get MIME type from file extension
+                    $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                    $mimeType = $mimeTypes[$extension] ?? null;
+
+                    // Validate it's a supported image type
+                    if (!$mimeType) {
+                        $requirements_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Unsupported file type: ' . $extension,
+                            'url' => $requirement_url,
+                        ];
+                        continue;
+                    }
+
+                    // Convert to base64
+                    $base64 = base64_encode($imageData);
+                    $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
+
+                    $requirements_base64[] = [
+                        'index' => $index,
+                        'success' => true,
+                        'requirement_base64' => $base64Image,
+                        'base64' => $base64Image, // Alternative key for compatibility
+                        'mime_type' => $mimeType,
+                        'url' => $requirement_url,
+                    ];
+                } catch (\Exception $fileException) {
+                    error_log(
+                        "Error processing requirement file {$index}: " .
+                            $fileException->getMessage(),
+                    );
+                    $requirements_base64[] = [
+                        'index' => $index,
+                        'success' => false,
+                        'message' => 'Error processing file: ' . $fileException->getMessage(),
+                        'url' => $requirement_url,
+                    ];
+                }
+            }
+
+            // Check if any files were successfully processed
+            // $successfulFiles = array_filter($requirements_base64, function($item) {
+            //     return $item['success'] === true;
+            // });
+
+            echo json_encode([
+                'success' => true,
+                'total_files' => count($requirements_urls),
+                // "successful_files" => count($successfulFiles),
+                'requirements' => $requirements_base64,
+            ]);
+        } catch (\Exception $e) {
+            error_log('Requirements error: ' . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Internal server error: ' . $e->getMessage(),
+            ]);
         }
-        
-        // Check if any files were successfully processed
-        // $successfulFiles = array_filter($requirements_base64, function($item) {
-        //     return $item['success'] === true;
-        // });
-        
-        echo json_encode([
-            "success" => true,
-            "total_files" => count($requirements_urls),
-            // "successful_files" => count($successfulFiles),
-            "requirements" => $requirements_base64
-        ]);
-        
-    } catch (\Exception $e) {
-        error_log("Requirements error: " . $e->getMessage());
-        http_response_code(500);
-        echo json_encode([
-            "success" => false,
-            "message" => "Internal server error: " . $e->getMessage()
-        ]);
     }
-}
 
-
-    private function handleProfilePictureUpload($file, $application_id) {
-        $base_upload_dir = __DIR__ . "/../../public/upload/";
-        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/profile/";
+    private function handleProfilePictureUpload($file, $application_id)
+    {
+        $base_upload_dir = __DIR__ . '/../../public/upload/';
+        $upload_dir = $base_upload_dir . 'applications/' . $application_id . '/profile/';
 
         // Create directories if they don't exist
         if (!is_dir($upload_dir)) {
@@ -429,31 +566,33 @@ class ApplicationController {
         }
 
         $file_extension = pathinfo($filename, PATHINFO_EXTENSION);
-        $unique_filename = $custom_filename ?: ('profile_' . uniqid() . '.' . $file_extension);
+        $unique_filename = $custom_filename ?: 'profile_' . uniqid() . '.' . $file_extension;
         $target_file = $upload_dir . $unique_filename;
 
         if (move_uploaded_file($tmp_name, $target_file)) {
-            $db_file_path = "/upload/applications/" . $application_id . "/profile/" . $unique_filename;
+            $db_file_path =
+                '/upload/applications/' . $application_id . '/profile/' . $unique_filename;
 
             $profilePictureModel = new ProfilePictureModel();
             $file_data = [
                 'file_name' => $filename,
                 'file_path' => $db_file_path,
                 'file_type' => $filetype,
-                'file_size' => $filesize
+                'file_size' => $filesize,
             ];
 
             if (!$profilePictureModel->create($file_data, $application_id)) {
-                throw new \Exception("Failed to save profile picture info");
+                throw new \Exception('Failed to save profile picture info');
             }
         } else {
-            throw new \Exception("Failed to upload profile picture");
+            throw new \Exception('Failed to upload profile picture');
         }
     }
 
-    private function handleRequirementFilesUpload($files, $application_id) {
-        $base_upload_dir = __DIR__ . "/../../public/upload/";
-        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/requirements/";
+    private function handleRequirementFilesUpload($files, $application_id)
+    {
+        $base_upload_dir = __DIR__ . '/../../public/upload/';
+        $upload_dir = $base_upload_dir . 'applications/' . $application_id . '/requirements/';
 
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
@@ -469,22 +608,32 @@ class ApplicationController {
                 $tmp_name = $files['tmp_name'][$i];
                 $filetype = $files['type'][$i];
                 $filesize = $files['size'][$i];
-                
+
                 // Get additional file info if available
                 $fileInfo = null;
-                if (isset($_POST['fileInfo']) && is_array($_POST['fileInfo']) && isset($_POST['fileInfo'][$i])) {
+                if (
+                    isset($_POST['fileInfo']) &&
+                    is_array($_POST['fileInfo']) &&
+                    isset($_POST['fileInfo'][$i])
+                ) {
                     $fileInfo = json_decode($_POST['fileInfo'][$i], true);
                 }
-                
-                $custom_filename = ($fileInfo && isset($fileInfo['filename'])) ? $fileInfo['filename'] : null;
-                $requirement_category = ($fileInfo && isset($fileInfo['category'])) ? $fileInfo['category'] : 'other';
-                
+
+                $custom_filename =
+                    $fileInfo && isset($fileInfo['filename']) ? $fileInfo['filename'] : null;
+                $requirement_category =
+                    $fileInfo && isset($fileInfo['category']) ? $fileInfo['category'] : 'other';
+
                 $file_extension = pathinfo($filename, PATHINFO_EXTENSION);
-                $unique_filename = $custom_filename ?: (uniqid() . '.' . $file_extension);
+                $unique_filename = $custom_filename ?: uniqid() . '.' . $file_extension;
                 $target_file = $upload_dir . $unique_filename;
 
                 if (move_uploaded_file($tmp_name, $target_file)) {
-                    $db_file_path = "/upload/applications/" . $application_id . "/requirements/" . $unique_filename;
+                    $db_file_path =
+                        '/upload/applications/' .
+                        $application_id .
+                        '/requirements/' .
+                        $unique_filename;
 
                     $file_data = [
                         'file_name' => $filename,
@@ -492,7 +641,7 @@ class ApplicationController {
                         'file_type' => $filetype,
                         'file_size' => $filesize,
                         'requirement_type' => 'general',
-                        'requirement_category' => $requirement_category
+                        'requirement_category' => $requirement_category,
                     ];
 
                     if (!$requirementModel->create($file_data, $application_id)) {
@@ -505,9 +654,10 @@ class ApplicationController {
         }
     }
 
-    private function handleRequirementFilesFromJson($uploaded_files, $application_id) {
-        $base_upload_dir = __DIR__ . "/../../public/upload/";
-        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/requirements/";
+    private function handleRequirementFilesFromJson($uploaded_files, $application_id)
+    {
+        $base_upload_dir = __DIR__ . '/../../public/upload/';
+        $upload_dir = $base_upload_dir . 'applications/' . $application_id . '/requirements/';
 
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
@@ -520,24 +670,25 @@ class ApplicationController {
                 $filename = $file['filename'] ?? uniqid() . '.pdf';
                 $category = $file['category'] ?? 'other';
                 $target_file = $upload_dir . $filename;
-                
+
                 $file_data = base64_decode($file['base64_data']);
-                
+
                 if (file_put_contents($target_file, $file_data)) {
-                    $db_file_path = "/upload/applications/" . $application_id . "/requirements/" . $filename;
-                    
-                    $mime_type = mime_content_type($target_file) ?: "application/octet-stream";
+                    $db_file_path =
+                        '/upload/applications/' . $application_id . '/requirements/' . $filename;
+
+                    $mime_type = mime_content_type($target_file) ?: 'application/octet-stream';
                     $file_size = filesize($target_file);
-                    
+
                     $file_info = [
                         'file_name' => $filename,
                         'file_path' => $db_file_path,
                         'file_type' => $mime_type,
                         'file_size' => $file_size,
                         'requirement_type' => 'general',
-                        'requirement_category' => $category
+                        'requirement_category' => $category,
                     ];
-                    
+
                     if (!$requirementModel->create($file_info, $application_id)) {
                         throw new \Exception("Failed to save requirement file info: $filename");
                     }
@@ -548,9 +699,10 @@ class ApplicationController {
         }
     }
 
-    private function handleProfilePictureFromJson($picture_file, $application_id) {
-        $base_upload_dir = __DIR__ . "/../../public/upload/";
-        $upload_dir = $base_upload_dir . "applications/" . $application_id . "/profile/";
+    private function handleProfilePictureFromJson($picture_file, $application_id)
+    {
+        $base_upload_dir = __DIR__ . '/../../public/upload/';
+        $upload_dir = $base_upload_dir . 'applications/' . $application_id . '/profile/';
 
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
@@ -559,23 +711,23 @@ class ApplicationController {
         if (isset($picture_file['base64_data'])) {
             $filename = $picture_file['filename'] ?? 'profile_' . uniqid() . '.jpg';
             $target_file = $upload_dir . $filename;
-            
+
             $file_data = base64_decode($picture_file['base64_data']);
-            
+
             if (file_put_contents($target_file, $file_data)) {
-                $db_file_path = "/upload/applications/" . $application_id . "/profile/" . $filename;
-                
-                $mime_type = mime_content_type($target_file) ?: "image/jpeg";
+                $db_file_path = '/upload/applications/' . $application_id . '/profile/' . $filename;
+
+                $mime_type = mime_content_type($target_file) ?: 'image/jpeg';
                 $file_size = filesize($target_file);
-                
+
                 $profilePictureModel = new ProfilePictureModel();
                 $file_info = [
                     'file_name' => $filename,
                     'file_path' => $db_file_path,
                     'file_type' => $mime_type,
-                    'file_size' => $file_size
+                    'file_size' => $file_size,
                 ];
-                
+
                 if (!$profilePictureModel->create($file_info, $application_id)) {
                     throw new \Exception("Failed to save profile picture info: $filename");
                 }

@@ -1,8 +1,9 @@
 // Staff
 export const scholarButtons = [
     { name: "All", tabName: "all" },
-    { name: "New", tabName: "new" },
-    { name: "Old", tabName: "old" },
+    { name: "Active", tabName: "active" },
+    { name: "Deactivated", tabName: "deactivated" },
+    { name: "Not Renewed", tabName: "not_renewed" },
 ];
 
 export const applicationButtons = [

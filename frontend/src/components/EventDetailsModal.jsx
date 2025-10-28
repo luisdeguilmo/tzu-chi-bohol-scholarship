@@ -51,8 +51,6 @@ const EventDetailsModal = React.memo(
             }
         }, [method]);
 
-        console.log(event);
-
         return (
             <div
                 className={`fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-60 p-4 animate-in fade-in duration-200 ${
@@ -117,14 +115,19 @@ const EventDetailsModal = React.memo(
                                     {event?.date + " " + event?.end_time >
                                     date.getCurrentDateAndTime() ? (
                                         <span className="text-slate-700 font-medium">
-                                            {event?.numberOfParticipants}{" "}
-                                            {event?.numberOfParticipants > 1
+                                            {event?.numberOfParticipants}
+                                            {" / "}
+                                            {event?.participant_limit}{" "}
+                                            Participants
+                                            {/* {event?.numberOfParticipants > 1
                                                 ? "Participants"
-                                                : "Participant"}
+                                                : "Participant"} */}
                                         </span>
                                     ) : (
                                         <span className="text-slate-700 font-medium">
-                                            {event?.numberOfParticipants}{" "}
+                                            {event?.numberOfParticipants}
+                                            {" / "}
+                                            {event?.participant_limit}
                                             Participated
                                         </span>
                                     )}
@@ -273,6 +276,8 @@ const EventDetailsModal = React.memo(
                             event?.date + " " + event?.end_time >
                                 date.getCurrentDateAndTime() && (
                                 <EventButton
+                                    numberOfParticipants={event?.numberOfParticipants}
+                                    participantLimit={event?.participant_limit}
                                     hasJoinButton={
                                         event?.event_type === "optional"
                                     }

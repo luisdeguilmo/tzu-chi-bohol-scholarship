@@ -17,6 +17,9 @@ import ApplicantsTableRow from "./ApplicantsTableRow";
 import ResultTableRow from "./ResultTableRow";
 import { useFinalInterview } from "../../../hooks/useFinalInterview";
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
+import FileUploadFormModal from "../../../components/FileUploadFormModal";
+import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 
 export default function FinalInterview() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +29,10 @@ export default function FinalInterview() {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [action, setAction] = useState("");
     const [selectedApplicant, setSelectedApplicant] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+    const [isOpenFileUploadFormModal, setIsOpenFileUploadFormModal] =
+        useState(false);
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
 
     const { loading, error, applications, fetchApplications } =
         useFinalInterview(activeTab);
@@ -37,6 +44,13 @@ export default function FinalInterview() {
         fetchApplications();
     }, [activeTab]);
 
+    const { applicationFiles, fetchApplicationFiles, reUploadFiles } =
+        useApplicationFiles("final_interview", selectedId);
+
+    useEffect(() => {
+        fetchApplicationFiles("final_interview", selectedId);
+    }, [selectedId]);
+
     const {
         isLoading,
         updateStatusToFinalInterviewPassed,
@@ -44,9 +58,8 @@ export default function FinalInterview() {
     } = manageApplication();
 
     const handleApprove = async () => {
-        const success = await updateStatusToFinalInterviewPassed(
-            selectedApplicant
-        );
+        const success =
+            await updateStatusToFinalInterviewPassed(selectedApplicant);
 
         if (success) {
             await fetchApplications();
@@ -55,9 +68,8 @@ export default function FinalInterview() {
     };
 
     const handleReject = async () => {
-        const success = await updateStatusToFinalInterviewFailed(
-            selectedApplicant
-        );
+        const success =
+            await updateStatusToFinalInterviewFailed(selectedApplicant);
 
         if (success) {
             await fetchApplications();
@@ -122,6 +134,12 @@ export default function FinalInterview() {
         setAction("reject");
     };
 
+    const handleOpenFileUploadFormModal = (applicationId) => {
+        fetchApplicationFiles("final_interview", applicationId);
+        setIsOpenFileUploadFormModal(true);
+        setSelectedId(applicationId);
+    };
+
     const handleRefresh = async () => {
         await fetchApplications();
     };
@@ -149,6 +167,9 @@ export default function FinalInterview() {
                     onChangeItemsPerPage={setItemsPerPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
+                    buttonLabel={"Set Message"}
+                    addButton={true}
+                    onOpen={setIsMessageModalOpen}
                 />
 
                 <div className="overflow-x-auto rounded-[4px]">
@@ -177,6 +198,9 @@ export default function FinalInterview() {
                                         <ResultTableRow
                                             currentItems={currentItems}
                                             profilePics={profilePics}
+                                            onOpenModal={
+                                                handleOpenFileUploadFormModal
+                                            }
                                         />
                                     );
                             }
@@ -205,16 +229,6 @@ export default function FinalInterview() {
                     </div>
                 )}
 
-                {/* <FormModal
-                    isOpen={isFormModalOpen}
-                    onClose={setIsFormModalOpen}
-                    action={action}
-                    label={"Confirmation"}
-                    applicant={selectedApplicant}
-                    setAction={setAction}
-                    onSuccess={fetchApplications}
-                /> */}
-
                 <ConfirmationModal
                     isOpen={isFormModalOpen}
                     onClose={setIsFormModalOpen}
@@ -228,6 +242,26 @@ export default function FinalInterview() {
                     onClick={
                         action === "approve" ? handleApprove : handleReject
                     }
+                />
+
+                <FileUploadFormModal
+                    label={"Final Interview Files"}
+                    type={"final_interview"}
+                    isOpen={isOpenFileUploadFormModal}
+                    setIsOpen={setIsOpenFileUploadFormModal}
+                    onSuccess={fetchApplicantData}
+                    selectedId={selectedId}
+                    applicationFiles={applicationFiles}
+                    onReUploadFiles={reUploadFiles}
+                />
+
+                <EmailMessageFormModal
+                    stage={"final_interview"}
+                    isOpen={isMessageModalOpen}
+                    onClose={setIsMessageModalOpen}
+                    onRefresh={fetchApplicantData}
+                    firstLabel={"Final Interview Passed Message"}
+                    secondLabel={"Final Interview Failed Message"}
                 />
             </div>
         </div>

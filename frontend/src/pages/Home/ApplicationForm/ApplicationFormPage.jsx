@@ -15,6 +15,7 @@ import ReviewSection from "./ReviewSection";
 import BASE_URL from "../../../config";
 import OtherInformationSection from "./OtherInformationSection";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
+import { useAuth } from "../../../context/AuthContext";
 
 const generateInitialState = (fieldsConfig) => {
     const initialState = {};
@@ -30,6 +31,10 @@ function ApplicationForm({ includeRequirements = true, userId }) {
     const [currentStep, setCurrentStep] = useState(1);
     const [loading, setLoading] = useState(false); // For showing a loading spinner or message
     const [error, setError] = useState(null); // For displaying error messages
+
+    const { user } = useAuth();
+
+    console.log(user);
 
     // Define steps based on whether requirements are included
     const steps = [
@@ -127,7 +132,9 @@ function ApplicationForm({ includeRequirements = true, userId }) {
         e.preventDefault();
         formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.status = "Old";
-        formData.application_info.scholar_id = 8979061;
+        formData.application_info.scholar_id = user.user_id;
+        formData.personal_information.scholar_id = user.user_id;
+        formData.educational_background.scholar_id = user.user_id;
 
         try {
             const formDataToSend = new FormData();
@@ -221,8 +228,18 @@ function ApplicationForm({ includeRequirements = true, userId }) {
                     });
                 }
 
+                // const response = await axios.post(
+                //     `${BASE_URL}backend/api/applications`,
+                //     formDataToSend,
+                //     {
+                //         headers: {
+                //             "Content-Type": "multipart/form-data",
+                //         },
+                //     }
+                // );
+
                 const response = await axios.post(
-                    `${BASE_URL}backend/api/applications`,
+                    `${BASE_URL}app/views/submit-application.php`,
                     formDataToSend,
                     {
                         headers: {

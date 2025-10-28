@@ -48,6 +48,7 @@ export const scholarSidebarItems = [
         text: "Renew",
         icon: <RotateCcw className="w-5 h-5 text-slate-600" />,
         navigate: "/scholar/renew",
+        // state: { userId: user }
     },
     {
         text: "Logout",
@@ -90,6 +91,7 @@ export const staffSidebarItems = [
         icon: <Layers className="w-5 h-5 text-slate-600" />,
         subItems: [
             { text: "Scholars", navigate: "/staff/scholars" },
+            // { text: "Test Excel", navigate: "/staff/test-excel" },
             { text: "Applications", navigate: "/staff/application-records" },
         ],
     },
@@ -110,7 +112,10 @@ export const staffSidebarItems = [
             { text: "Initial Interview", navigate: "/staff/initial-interview" },
             { text: "Home Visitation", navigate: "/staff/home-visitation" },
             { text: "Final Interview", navigate: "/staff/final-interview" },
-            { text: "Orientation & Awarding Attendance", navigate: "/staff/orientation-awarding-attendance" },
+            {
+                text: "Orientation & Awarding Attendance",
+                navigate: "/staff/orientation-awarding-attendance",
+            },
         ],
     },
     {

@@ -36,11 +36,13 @@ class ApplicationModel
         // Sanitize and bind
         $school_year = htmlspecialchars(strip_tags($data['school_year']));
         $status = htmlspecialchars(strip_tags($data['status']));
-        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id']));
+        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id'] ?? 'null'));
         $expectation = htmlspecialchars(strip_tags($other['expectation']));
 
+        $scholarId = $scholar_id === 'null' ? null : $scholar_id;
+
         $stmt->bindParam(':application_id', $application_id);
-        $stmt->bindParam(':scholar_id', $scholar_id);
+        $stmt->bindParam(':scholar_id', $scholarId);
         $stmt->bindParam(':school_year', $school_year);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':expectation', $expectation);
@@ -73,7 +75,7 @@ class ApplicationModel
 
     public function checkEmailAddress($email)
     {
-        $query = "SELECT application_id FROM personal_information WHERE email = :email";
+        $query = 'SELECT application_id FROM personal_information WHERE email = :email';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();

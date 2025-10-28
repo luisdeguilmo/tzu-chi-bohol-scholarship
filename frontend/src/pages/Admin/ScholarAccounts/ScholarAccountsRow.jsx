@@ -3,6 +3,7 @@ import { formatDateTime } from "../../../utils/formatDateTime";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useState } from "react";
+import ChangePasswordModal from "./ChangePasswordModal";
 
 const ScholarAccountsRow = ({
     currentItems,
@@ -13,6 +14,8 @@ const ScholarAccountsRow = ({
     onUpdateAccountStatus,
 }) => {
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+        useState(false);
+    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
         useState(false);
     const [selectedScholar, setSelectedScholar] = useState(null);
     const [accountStatus, setAccountStatus] = useState("");
@@ -130,7 +133,14 @@ const ScholarAccountsRow = ({
                     </td>
                     <td className="py-2 whitespace-nowrap font-medium">
                         <div className="flex gap-4 justify-center">
-                            <button title="Reset Password">
+                            <button
+                                onClick={() => {
+                                    setIsChangePasswordModalOpen(true);
+                                    setSelectedScholar(account.account_id);
+                                }
+                                }
+                                title="Change Password"
+                            >
                                 <RotateCcw className="w-4 h-4 text-green-600 hover:text-green-800 transition-colors" />
                             </button>
                             <button
@@ -179,6 +189,12 @@ const ScholarAccountsRow = ({
                         action
                     )
                 }
+            />
+
+            <ChangePasswordModal
+                isOpen={isChangePasswordModalOpen}
+                onClose={setIsChangePasswordModalOpen}
+                userId={selectedScholar}
             />
         </>
     );

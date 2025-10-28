@@ -1,12 +1,12 @@
 <?php
 namespace App\Controllers;
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Content-Type: application/json");
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Content-Type: application/json');
 
-require_once __DIR__ . "/../../vendor/autoload.php";
+require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/RenderedHoursModel.php';
 require_once __DIR__ . '/../Models/ActivityModel.php';
@@ -17,7 +17,7 @@ try {
     $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
     $dotenv->safeLoad();
 } catch (\Exception $e) {
-    error_log("Could not load .env file: " . $e->getMessage());
+    error_log('Could not load .env file: ' . $e->getMessage());
 }
 
 use App\Models\ActivityModel;
@@ -29,15 +29,18 @@ use App\Models\RenderedHoursModel;
 use App\Models\ScholarModel;
 use App\Services\PHPMailerBrevoService;
 
-class RenderedHoursController {
+class RenderedHoursController
+{
     private $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
     }
 
-    public function ProcessRequest() {
+    public function ProcessRequest()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             http_response_code(200);
             return;
@@ -51,17 +54,18 @@ class RenderedHoursController {
                 break;
 
             case 'GET':
-                $this->handleGet(); 
+                $this->handleGet();
                 break;
 
             default:
                 http_response_code(405);
-                echo json_encode(array("message" => "Method not allowed"));
+                echo json_encode(['message' => 'Method not allowed']);
                 break;
         }
     }
 
-    public function handleGet() {
+    public function handleGet()
+    {
         try {
             $this->pdo->beginTransaction();
 
@@ -74,38 +78,45 @@ class RenderedHoursController {
 
             if ($scholarId) {
                 $hours = $renderedHours->getScholarRenderedHoursById($scholarId);
-            } 
+            }
 
             $this->pdo->commit();
 
             http_response_code(200);
-            echo json_encode(array(
+            echo json_encode([
                 'success' => true,
-                'renderedHours' => $hours
-            ));
+                'renderedHours' => $hours,
+            ]);
         } catch (\Exception $e) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
 
             http_response_code(400);
-            echo json_encode(array(
+            echo json_encode([
                 'success' => false,
-                'message' => $e->getMessage()
-            ));
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
-    public function handlePut() {
-        $requiredEnvVars = ['BREVO_EMAIL', 'BREVO_SMTP_KEY', 'ORG_NAME', 'ORG_ADDRESS', 'ORG_CONTACT'];
+    public function handlePut()
+    {
+        $requiredEnvVars = [
+            'BREVO_EMAIL',
+            'BREVO_SMTP_KEY',
+            'ORG_NAME',
+            'ORG_ADDRESS',
+            'ORG_CONTACT',
+        ];
 
         foreach ($requiredEnvVars as $var) {
             if (empty($_ENV[$var])) {
                 http_response_code(500);
-                echo json_encode(array(
-                    "success" => false,
-                    "message" => "Missing required environment variable: $var"
-                ));
+                echo json_encode([
+                    'success' => false,
+                    'message' => "Missing required environment variable: $var",
+                ]);
                 return;
             }
         }
@@ -115,7 +126,7 @@ class RenderedHoursController {
             $_ENV['BREVO_SMTP_KEY'],
             $_ENV['ORG_NAME'],
             $_ENV['ORG_ADDRESS'],
-            $_ENV['ORG_CONTACT']
+            $_ENV['ORG_CONTACT'],
         );
 
         try {
@@ -138,13 +149,20 @@ class RenderedHoursController {
 
             $account_id = $data['account_id'];
 
-            if ($dutyType === "community_service") {
-                if ($action === "approve") {
-                    // if (!$renderedHours->recordHours($data['account_id'], $data['rendered_hours'])) {
-                    //     throw new \Exception('Failed to record hours');
+            if ($dutyType === 'community_service') {
+                if ($action === 'approve') {
+                    $scholarInfo = $scholarModel->getScholarById($data['account_id']);
+
+                    // if (!$emailService->sendActivityRecordedEmail($scholarInfo, $data)) {
+                    //     throw new \Exception('Failed to send email');
                     // }
 
-                    if (!$renderedHours->recordCommunityServiceRenderedHours($data['account_id'], $data['rendered_hours'])) {
+                    if (
+                        !$renderedHours->recordCommunityServiceRenderedHours(
+                            $data['account_id'],
+                            $data['rendered_hours'],
+                        )
+                    ) {
                         throw new \Exception('Failed to record hours');
                     }
 
@@ -152,31 +170,43 @@ class RenderedHoursController {
                         throw new \Exception('Failed to record hours');
                     }
 
-                    $scholarInfo = $scholarModel->getScholarById($data['account_id']);
-                    
-                    if (!$emailService->sendActivityRecordedEmail($scholarInfo, $data)) {
-                        throw new \Exception("Failed to send email");
-                    }
-
                     $activity->updateActivityStatus($data);
                     $notification->createActivityNotification($data);
                     $recentActivity->createRecentCommunityService($data);
-                } else if ($action === "reject") {
+                } elseif ($action === 'reject') {
                     $scholarInfo = $scholarModel->getScholarById($data['account_id']);
-                    
-                    if (!$emailService->sendActivityRecordedEmail($scholarInfo, $data)) {
-                        throw new \Exception("Failed to send email");
-                    }
-                    
-                    $activity->markAsNotRecordedWithFeedback($data);
-                    $notification->createActivityNotification($data);
-                }
-            } else if ($dutyType === "event") {
-                foreach ($data['selected_scholars'] as $scholarId) {
-                    if (!$renderedHours->recordEventRenderedHours($scholarId, $data['rendered_hours'])) {
+                    $activityRenderedHours = $activity->getRenderedHoursById($data['id']);
+
+                    // if (!$emailService->sendActivityRecordedEmail($scholarInfo, $data)) {
+                    //     throw new \Exception('Failed to send email');
+                    // }
+
+                    if (
+                        !$renderedHours->revokeRecordedCommunityServiceRenderedHours(
+                            $data['account_id'],
+                            $activityRenderedHours,
+                        )
+                    ) {
                         throw new \Exception('Failed to record hours');
                     }
 
+                    if (!$renderedHours->recordHours($data['account_id'])) {
+                        throw new \Exception('Failed to record hours');
+                    }
+
+                    $activity->markAsNotRecordedWithFeedback($data);
+                    $notification->createActivityNotification($data);
+                }
+            } elseif ($dutyType === 'event') {
+                foreach ($data['selected_scholars'] as $scholarId) {
+                    if (
+                        !$renderedHours->recordEventRenderedHours(
+                            $scholarId,
+                            $data['rendered_hours'],
+                        )
+                    ) {
+                        throw new \Exception('Failed to record hours');
+                    }
 
                     if (!$renderedHours->recordHours($scholarId, $data['rendered_hours'])) {
                         throw new \Exception('Failed to record hours');
@@ -192,27 +222,27 @@ class RenderedHoursController {
 
                     $recentActivity->createRecentEvent($scholarId, $data);
 
-                    $scholar->setScholarAsAttended($data["event_id"], $scholarId);
+                    $scholar->setScholarAsAttended($data['event_id'], $scholarId);
                 }
             }
 
             $this->pdo->commit();
 
             http_response_code(201);
-            echo json_encode(array(
+            echo json_encode([
                 'success' => true,
-                'message' => 'Recorded successfully'
-            ));
+                'message' => 'Recorded successfully',
+            ]);
         } catch (\Exception $e) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
 
             http_response_code(400);
-            echo json_encode(array(
+            echo json_encode([
                 'success' => false,
-                'message' => $e->getMessage()
-            ));
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 }

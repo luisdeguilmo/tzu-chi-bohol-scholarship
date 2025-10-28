@@ -1,8 +1,11 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import BASE_URL from "../config";
+import { useState } from "react";
 
 export const useRecordHours = () => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const recordCommunityServiceHours = async (
         activity,
         renderedHours,
@@ -13,6 +16,8 @@ export const useRecordHours = () => {
         sort
     ) => {
         try {
+            setIsLoading(true);
+
             const response = await axios.put(
                 `${BASE_URL}app/views/rendered-hours.php?duty_type=community_service&action=approve`,
                 {
@@ -40,14 +45,30 @@ export const useRecordHours = () => {
                 toast.success("Recorded Successfully");
                 onRefresh(year, month, currentStatus, sort);
             }
+
+            setIsLoading(false);
+            return true;
         } catch (error) {
             console.log("Error: ", error);
             alert("Failed: ", error);
+            setIsLoading(false);
+            return false;
         }
     };
 
-    const markAsNotRecorded = async (id, accountId, feedback) => {
+    const markAsNotRecorded = async (
+        id,
+        accountId,
+        feedback,
+        year,
+        month,
+        currentStatus,
+        sort,
+        onRefresh
+    ) => {
         try {
+            setIsLoading(true);
+
             const response = await axios.put(
                 `${BASE_URL}app/views/rendered-hours.php?duty_type=community_service&action=reject`,
                 {
@@ -67,21 +88,21 @@ export const useRecordHours = () => {
             if (data.success) {
                 toast.success("Marked as not recorded successfully");
                 onRefresh(year, month, currentStatus, sort);
+                setIsLoading(false);
                 return true;
             }
+
+            setIsLoading(false);
             return true;
         } catch (error) {
             console.log("Error: ", error);
             alert("Failed: ", error);
+            setIsLoading(false);
             return false;
         }
     };
 
-    const recordEventHours = async (
-        event,
-        renderedHours,
-        selectedScholars
-    ) => {
+    const recordEventHours = async (event, renderedHours, selectedScholars) => {
         try {
             const response = await axios.put(
                 `${BASE_URL}app/views/rendered-hours.php?duty_type=event`,
@@ -119,5 +140,10 @@ export const useRecordHours = () => {
         }
     };
 
-    return { recordCommunityServiceHours, markAsNotRecorded, recordEventHours };
+    return {
+        isLoading,
+        recordCommunityServiceHours,
+        markAsNotRecorded,
+        recordEventHours,
+    };
 };

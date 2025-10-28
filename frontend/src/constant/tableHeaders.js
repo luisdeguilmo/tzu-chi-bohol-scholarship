@@ -12,7 +12,7 @@ export const scholarTableHeaders = [
     { name: "Scholar", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Rendered Hours", style: "text-center" },
-    { name: "Allowance Status", style: "text-center" },
+    // { name: "Allowance Status", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
 
@@ -96,6 +96,7 @@ export const interviewResultTableHeaders = [
     { name: "Applicant", style: "text-center" },
     { name: "Date Approved", style: "text-center" },
     { name: "Status", style: "text-center" },
+    { name: "Action", style: "text-center" },
 ];
 
 export const homeVisitationTableHeaders = [
@@ -110,6 +111,7 @@ export const homeVisitationResultTableHeaders = [
     { name: "Applicant", style: "text-center" },
     { name: "Date Approved", style: "text-center" },
     { name: "Status", style: "text-center" },
+    { name: "Action", style: "text-center" },
 ];
 
 export const finalInterviewApplicationsTableHeaders = [
@@ -124,6 +126,7 @@ export const finalInterviewResultTableHeaders = [
     { name: "Applicant", style: "text-center" },
     { name: "Date Approved", style: "text-center" },
     { name: "Status", style: "text-center" },
+    { name: "Action", style: "text-center" },
 ];
 
 export const volunteerActivitiesTableHeaders = [

@@ -34,6 +34,8 @@ export const useStaffAccounts = () => {
         };
 
         try {
+            setLoading(true);
+
             const response = await fetch(
                 `${BASE_URL}app/views/staff-accounts.php`,
                 {
@@ -50,14 +52,17 @@ export const useStaffAccounts = () => {
             if (result.success) {
                 toast.success(result.message + ".");
                 await fetchStaffAccounts();
+                setLoading(false);
                 return true;
             } else {
                 alert("Error: " + result.message);
+                setLoading(false);
                 return false;
             }
         } catch (error) {
             console.error("Submission error:", error);
             alert("Failed to create staff account. Please try again.");
+            setLoading(false);
             return false;
         }
     };
@@ -137,6 +142,7 @@ export const useStaffAccounts = () => {
     }, []);
 
     return {
+        loading,
         staffAccounts,
         addStaff,
         editStaff,

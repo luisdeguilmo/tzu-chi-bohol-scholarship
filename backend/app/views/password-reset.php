@@ -258,6 +258,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'change_passwor
     exit();
 }
 
+// Reset Password
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'reset_password') {
+    $account_id = $_POST['account_id'] ?? '';
+    $newPassword = $_POST['new_password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+
+    // Validate input
+    if (empty($newPassword) || empty($confirmPassword)) {
+        echo json_encode(['success' => false, 'message' => 'All fields are required']);
+        exit();
+    }
+
+    if ($newPassword !== $confirmPassword) {
+        echo json_encode(['success' => false, 'message' => 'Passwords do not match']);
+        exit();
+    }
+
+    if (strlen($newPassword) < 8) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Password must be at least 8 characters long',
+        ]);
+        exit();
+    }
+
+    // Verify token and get email
+    // $stmt = $pdo->prepare('SELECT password FROM users WHERE account_id = ?');
+    // $stmt->execute([$account_id]);
+    // $password = $stmt->fetch();
+
+    // if (!$password) {
+    //     echo json_encode(['success' => false, 'message' => 'User not found']);
+    //     exit();
+    // }
+    // // Hash new password
+    // // $hashedCurrentPassword = password_hash($currentPassword, password_verify());
+    $hashedNewPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+
+    // if (!password_verify($currentPassword, $password['password'])) {
+    //     echo json_encode(['success' => false, 'message' => 'Incorrect current password']);
+    //     exit();
+    // }
+
+    // Update user's password
+    $updateStmt = $pdo->prepare('UPDATE users SET password = ? WHERE account_id = ?');
+    $updateSuccess = $updateStmt->execute([$hashedNewPassword, $account_id]);
+
+    if ($updateSuccess) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Password updated successfully',
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to update password']);
+    }
+    exit();
+}
+
 // Clean up expired tokens (optional - run this periodically)
 if (isset($_GET['cleanup'])) {
     $cleanupStmt = $pdo->prepare('DELETE FROM password_resets WHERE expires_at < NOW()');

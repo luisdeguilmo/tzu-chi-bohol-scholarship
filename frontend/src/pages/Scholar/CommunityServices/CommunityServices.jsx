@@ -54,6 +54,8 @@ export default function CommunityServices() {
         return () => document.removeEventListener("click", handleClickOutside);
     }, [isDotMenuOpen]);
 
+    console.log(activeTab);
+
     // Filter data based on search term
     const filteredActivities = activities.filter(
         (activity) =>
@@ -110,6 +112,11 @@ export default function CommunityServices() {
         },
         [itemIndex, isDotMenuOpen]
     );
+
+    const handleRefresh = () => {
+        fetchActivities(activeTab, user.user_id);
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <OverviewCard
@@ -160,19 +167,19 @@ export default function CommunityServices() {
                             searchTerm
                                 ? "No Results Found"
                                 : activeTab === "all"
-                                ? "You haven’t submitted any community service yet."
-                                : activeTab === "this_month"
-                                ? "No community service submitted this month."
-                                : "No past community service submissions found."
+                                  ? "You haven’t submitted any community service yet."
+                                  : activeTab === "this_month"
+                                    ? "No community service submitted this month."
+                                    : "No past community service submissions found."
                         }
                         subHeader={
                             searchTerm
                                 ? `No activities match your search for "${searchTerm}"`
                                 : activeTab === "all"
-                                ? "Start making a difference in your community and track your impact here."
-                                : activeTab === "this_month"
-                                ? "Add your first service for this month!"
-                                : "Once you submit and a new month starts, past entries will appear here."
+                                  ? "Start making a difference in your community and track your impact here."
+                                  : activeTab === "this_month"
+                                    ? "Add your first service for this month!"
+                                    : "Once you submit and a new month starts, past entries will appear here."
                         }
                     />
                 )}
@@ -186,13 +193,18 @@ export default function CommunityServices() {
                 <Plus className="w-4 h-4  text-white" />
             </button>
 
-            <ActivityFormModal isOpen={isOpen} setIsOpen={setIsOpen} />
+            <ActivityFormModal
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                onSuccess={handleRefresh}
+            />
 
             {isEditFormModalOpen && (
                 <EditFormModal
                     isOpen={isEditFormModalOpen}
                     setIsOpen={setIsEditFormModalOpen}
                     activity={selectedActivity}
+                    onSuccess={handleRefresh}
                 />
             )}
 

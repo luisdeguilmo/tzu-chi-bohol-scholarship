@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Config\Database;
 
-class RequirementsModel {
-    private $table_name = "application_requirements";
-    
+class RequirementsModel
+{
+    private $table_name = 'application_requirements';
+
     public $id;
     public $application_id;
     public $file_name;
@@ -15,16 +16,21 @@ class RequirementsModel {
     public $file_size;
     public $requirement_type;
     public $uploaded_at;
-    
+
     private $pdo;
-    
-    public function __construct() {
+
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
     }
-    
-    public function create($file_data, $application_id) {
-        $query = "INSERT INTO " . $this->table_name . " 
+
+    public function create($file_data, $application_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
                   SET application_id = :application_id,
                       file_name = :file_name,
                       file_path = :file_path,
@@ -44,148 +50,167 @@ class RequirementsModel {
         $this->uploaded_at = date('Y-m-d H:i:s');
 
         // Bind values
-        $stmt->bindParam(":application_id", $this->application_id);
-        $stmt->bindParam(":file_name", $this->file_name);
-        $stmt->bindParam(":file_path", $this->file_path);
-        $stmt->bindParam(":file_type", $this->file_type);
-        $stmt->bindParam(":file_size", $this->file_size);
-        $stmt->bindParam(":requirement_type", $this->requirement_type);
-        $stmt->bindParam(":uploaded_at", $this->uploaded_at);
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':file_name', $this->file_name);
+        $stmt->bindParam(':file_path', $this->file_path);
+        $stmt->bindParam(':file_type', $this->file_type);
+        $stmt->bindParam(':file_size', $this->file_size);
+        $stmt->bindParam(':requirement_type', $this->requirement_type);
+        $stmt->bindParam(':uploaded_at', $this->uploaded_at);
 
         return $stmt->execute();
     }
 
-    
-
-
     // Updated methods for ProfilePictureModel.php
 
-    public function getFileUrlByApplicationId($application_id) {
-    try {
-        $query = "SELECT file_name, file_path FROM " . $this->table_name . " 
+    public function getFileUrlByApplicationId($application_id)
+    {
+        try {
+            $query =
+                'SELECT file_name, file_path FROM ' .
+                $this->table_name .
+                " 
                   WHERE application_id = ? 
                   ORDER BY uploaded_at DESC 
                   LIMIT 5";
-        
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$application_id]);
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
-        if ($rows) {
-            $file_urls = []; // Initialize array to store URLs
-            $base_url = $this->getBaseUrl();
-            
-            foreach ($rows as $row) {
+
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$application_id]);
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            if ($rows) {
+                $file_urls = []; // Initialize array to store URLs
+                $base_url = $this->getBaseUrl();
+
+                foreach ($rows as $row) {
+                    // Extract filename from path
+                    $filename = basename($row['file_path']);
+
+                    // Build the URL using the serving endpoint
+                    $file_url =
+                        $base_url .
+                        '/public/upload/applications/' .
+                        $application_id .
+                        '/requirements/' .
+                        urlencode($filename);
+                    $file_urls[] = $file_url; // Add to array
+                }
+
+                return $file_urls; // Return array of URLs
+            }
+
+            return null;
+        } catch (\Exception $e) {
+            error_log('Error getting file URL by application ID: ' . $e->getMessage());
+            return null;
+        }
+    }
+    
+    public function getFileUrl($id)
+    {
+        try {
+            $query = 'SELECT file_path, application_id FROM ' . $this->table_name . ' WHERE id = ?';
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$id]);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if ($row) {
                 // Extract filename from path
                 $filename = basename($row['file_path']);
-                
-                // Build the URL using the serving endpoint
-                $file_url = $base_url . "/public/upload/applications/" . $application_id . "/requirements/" . urlencode($filename);
-                $file_urls[] = $file_url; // Add to array
-            }
-            
-            return $file_urls; // Return array of URLs
-        }
-        
-        return null;
-    } catch (\Exception $e) {
-        error_log("Error getting file URL by application ID: " . $e->getMessage());
-        return null;
-    }
-}
-public function getFileUrl($id) {
-    try {
-        $query = "SELECT file_path, application_id FROM " . $this->table_name . " WHERE id = ?";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$id]);
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        
-        if ($row) {
-            // Extract filename from path
-            $filename = basename($row['file_path']);
-            $application_id = $row['application_id'];
-            
-            // Return the URL using the serving endpoint
-            $base_url = $this->getBaseUrl();
-            return $base_url . "/public/upload/applications/" . $application_id . "/requirements/" . urlencode($filename);
-        }
-        
-        return null;
-    } catch (\Exception $e) {
-        error_log("Error getting file URL: " . $e->getMessage());
-        return null;
-    }
-}
+                $application_id = $row['application_id'];
 
-private function getBaseUrl() {
-    // Get the protocol (http or https)
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    
-    // Get the host
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
-    
-    // Return the base URL
-    return $protocol . '://' . $host;
-}
- 
-    public function getByApplicationId($application_id) {
+                // Return the URL using the serving endpoint
+                $base_url = $this->getBaseUrl();
+                return $base_url .
+                    '/public/upload/applications/' .
+                    $application_id .
+                    '/requirements/' .
+                    urlencode($filename);
+            }
+
+            return null;
+        } catch (\Exception $e) {
+            error_log('Error getting file URL: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    private function getBaseUrl()
+    {
+        // Get the protocol (http or https)
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+
+        // Get the host
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
+
+        // Return the base URL
+        return $protocol . '://' . $host;
+    }
+
+    public function getByApplicationId($application_id)
+    {
         try {
-            $query = "SELECT * FROM " . $this->table_name . "
+            $query =
+                'SELECT * FROM ' .
+                $this->table_name .
+                "
                      WHERE application_id = ?
                      ORDER BY uploaded_at DESC
                      LIMIT 1";
-            
+
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([$application_id]);
-            
+
             return $stmt->fetch(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
-            error_log("Error fetching profile picture: " . $e->getMessage());
+            error_log('Error fetching profile picture: ' . $e->getMessage());
             return false;
         }
     }
-    
-    public function delete($id) {
+
+    public function delete($id)
+    {
         try {
             // First, get the file path to delete the actual file
-            $query = "SELECT file_path FROM " . $this->table_name . " WHERE id = ?";
+            $query = 'SELECT file_path FROM ' . $this->table_name . ' WHERE id = ?';
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([$id]);
-            
+
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
+
             if ($row) {
                 // Get absolute path
                 $file_path = $_SERVER['DOCUMENT_ROOT'] . $row['file_path'];
-                
+
                 // Delete the physical file if it exists
                 if (file_exists($file_path)) {
                     unlink($file_path);
                 }
-                
+
                 // Now delete the database record
-                $deleteQuery = "DELETE FROM " . $this->table_name . " WHERE id = ?";
+                $deleteQuery = 'DELETE FROM ' . $this->table_name . ' WHERE id = ?';
                 $deleteStmt = $this->pdo->prepare($deleteQuery);
-                
+
                 return $deleteStmt->execute([$id]);
             }
-            
+
             return false;
         } catch (\Exception $e) {
-            error_log("Error deleting profile picture: " . $e->getMessage());
+            error_log('Error deleting profile picture: ' . $e->getMessage());
             return false;
         }
     }
-    
-    public function deleteByApplicationId($application_id) {
+
+    public function deleteByApplicationId($application_id)
+    {
         try {
             // First, get all file paths to delete the actual files
-            $query = "SELECT file_path FROM " . $this->table_name . " WHERE application_id = ?";
+            $query = 'SELECT file_path FROM ' . $this->table_name . ' WHERE application_id = ?';
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([$application_id]);
-            
+
             $files = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             // Delete physical files
             foreach ($files as $file) {
                 $file_path = $_SERVER['DOCUMENT_ROOT'] . $file['file_path'];
@@ -193,14 +218,14 @@ private function getBaseUrl() {
                     unlink($file_path);
                 }
             }
-            
+
             // Now delete the database records
-            $deleteQuery = "DELETE FROM " . $this->table_name . " WHERE application_id = ?";
+            $deleteQuery = 'DELETE FROM ' . $this->table_name . ' WHERE application_id = ?';
             $deleteStmt = $this->pdo->prepare($deleteQuery);
-            
+
             return $deleteStmt->execute([$application_id]);
         } catch (\Exception $e) {
-            error_log("Error deleting profile pictures by application ID: " . $e->getMessage());
+            error_log('Error deleting profile pictures by application ID: ' . $e->getMessage());
             return false;
         }
     }

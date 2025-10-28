@@ -16,8 +16,8 @@ import { applicationButtons } from "../../../constant/tableToolbarButtons";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { CheckCircle, DownloadIcon, Eye, XCircle } from "lucide-react";
-import FormModal from "./FormModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 
 export default function Applications() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -27,7 +27,8 @@ export default function Applications() {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [action, setAction] = useState("");
     const [selectedApplicant, setSelectedApplicant] = useState(null);
-    const [isRefresh, setIsRefresh] = useState(false);
+    const [isOpenModal, setIsOpenModal] = useState(false);
+    const [feedback, setFeedback] = useState("");
 
     const { loading, error, applications, fetchApplications } =
         useApplications(activeTab);
@@ -35,28 +36,47 @@ export default function Applications() {
     const { profilePics } = useProfilePicture(applications);
     const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
 
-    const { isLoading, approveApplication, rejectApplication } =
-        manageApplication();
+    const {
+        isLoading,
+        approveApplication,
+        approveRenewApplication,
+        rejectApplication,
+    } = manageApplication();
 
     useEffect(() => {
         fetchApplications();
     }, [activeTab]);
 
     const handleApproveApplication = async () => {
-        const success = await approveApplication(selectedApplicant);
+        if (activeTab === "new") {
+            const success = await approveApplication(selectedApplicant);
 
-        if (success) {
-            await fetchApplications();
-            setIsFormModalOpen(false);
+            if (success) {
+                await fetchApplications();
+                setIsFormModalOpen(false);
+            }
+        } else if (activeTab === "old") {
+            const success = await approveRenewApplication(selectedApplicant);
+
+            if (success) {
+                await fetchApplications();
+                setIsFormModalOpen(false);
+            }
         }
     };
 
     const handleRejectApplication = async () => {
-        const success = await rejectApplication(selectedApplicant, feedback);
+        if (activeTab === "new") {
+            const success = await rejectApplication(
+                selectedApplicant,
+                feedback
+            );
 
-        if (success) {
-            await fetchApplicantData();
-            setIsFormModalOpen(false);
+            if (success) {
+                await fetchApplications();
+                setIsFormModalOpen(false);
+            }
+        } else if (activeTab === "old") {
         }
     };
 
@@ -122,8 +142,6 @@ export default function Applications() {
         await fetchApplications();
     };
 
-    console.log(profilePics);
-
     return (
         <div className="lg:p-6">
             <div className="w-[100%] mx-auto bg-white rounded-md shadow p-6">
@@ -145,6 +163,9 @@ export default function Applications() {
                     onChangeItemsPerPage={setItemsPerPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
+                    buttonLabel={"Set Message"}
+                    addButton={true}
+                    onOpen={setIsOpenModal}
                 />
 
                 <div className="overflow-x-auto rounded-[4px]">
@@ -164,15 +185,15 @@ export default function Applications() {
                                 <td className="text-gray-500">{`${
                                     numberOfItemsPerPage + index + 1
                                 }.`}</td>
-                                <td className="py-2 whitespace-nowrap text-gray-600 font-bold">
+                                <td className="py-1 whitespace-nowrap text-gray-600">
                                     {info.application_id}
                                 </td>
                                 {activeTab === "old" && (
-                                    <td className="py-2 whitespace-nowrap text-gray-600 font-bold">
+                                    <td className="py-1 whitespace-nowrap text-gray-600 font-bold">
                                         {info.scholar_id}
                                     </td>
                                 )}
-                                <td className="py-2 flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                <td className="py-1 flex justify-start whitespace-nowrap text-sm text-gray-700">
                                     <div className="w-[30%]"></div>
                                     <div className="w-[max-content] flex items-center text-left gap-2">
                                         <img
@@ -200,14 +221,18 @@ export default function Applications() {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="py-2 whitespace-nowrap text-gray-500">
+                                <td className="py-1 whitespace-nowrap text-gray-500">
                                     {formatDateTime(info.created_at)}
                                 </td>
-                                <td className="py-2 whitespace-nowrap text-right font-medium">
+                                <td className="py-1 whitespace-nowrap text-right font-medium">
                                     <div className="flex items-center justify-center">
                                         <button
                                             onClick={() =>
-                                                viewPdf(info.application_id)
+                                                viewPdf(
+                                                    info.type === "Old"
+                                                        ? info.scholar_id
+                                                        : info.application_id
+                                                )
                                             }
                                             className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                                             title="View PDF"
@@ -216,7 +241,11 @@ export default function Applications() {
                                         </button>
                                         <button
                                             onClick={() =>
-                                                downloadPdf(info.application_id)
+                                                downloadPdf(
+                                                    info.type === "Old"
+                                                        ? info.scholar_id
+                                                        : info.application_id
+                                                )
                                             }
                                             className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"
                                             title="Download PDF"
@@ -276,6 +305,9 @@ export default function Applications() {
                     onClose={setIsFormModalOpen}
                     isLoading={isLoading}
                     label={"Confirmation"}
+                    action={action === "reject" ? "reject" : ""}
+                    feedback={action === "reject" ? feedback : null}
+                    setFeedback={action === "reject" ? setFeedback : null}
                     message={
                         action === "approve"
                             ? "Are you sure you want to approve this application? This action cannot be undone."
@@ -286,6 +318,15 @@ export default function Applications() {
                             ? handleApproveApplication
                             : handleRejectApplication
                     }
+                />
+
+                <EmailMessageFormModal
+                    stage={"application"}
+                    isOpen={isOpenModal}
+                    onClose={setIsOpenModal}
+                    onRefresh={fetchApplicantData}
+                    firstLabel={"Application Approved Message"}
+                    secondLabel={"Application Rejected Message"}
                 />
             </div>
         </div>

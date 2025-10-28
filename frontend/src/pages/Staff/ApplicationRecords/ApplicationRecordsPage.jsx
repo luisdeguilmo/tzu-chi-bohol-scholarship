@@ -133,10 +133,10 @@ export default function ApplicationRecordsPage() {
                 <Table tableHeaders={approvedApplicationTableHeaders}>
                     {currentItems.map((info) => (
                         <TableRow key={info.application_id}>
-                            <td className="py-2 whitespace-nowrap">
+                            <td className="py-1 whitespace-nowrap">
                                 {info.application_id}
                             </td>
-                            <td className="py-2 flex justify-start whitespace-nowrap">
+                            <td className="py-1 flex justify-start whitespace-nowrap">
                                 <div className="w-[20%]"></div>
                                 <div className="w-[max-content] flex items-center text-left gap-2">
                                     <img
@@ -162,43 +162,43 @@ export default function ApplicationRecordsPage() {
                                     </div>
                                 </div>
                             </td>
-                            <td className="py-2 whitespace-nowrap ">
+                            <td className="py-1 whitespace-nowrap text-xs">
                                 <span
                                     className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
                                         info.is_final_interview_passed
                                             ? "bg-green-100 text-green-800"
                                             : info.is_home_visitation_not_qualified
-                                            ? "bg-red-100 text-red-800"
-                                            : info.is_interview_failed
-                                            ? "bg-red-100 text-red-800"
-                                            : info.is_examination_failed
-                                            ? "bg-red-100 text-red-800"
-                                            : info.is_application_rejected
-                                            ? "bg-red-100 text-red-800"
-                                            : "bg-yellow-100 text-yellow-800"
+                                              ? "bg-red-100 text-red-800"
+                                              : info.is_interview_failed
+                                                ? "bg-red-100 text-red-800"
+                                                : info.is_examination_failed
+                                                  ? "bg-red-100 text-red-800"
+                                                  : info.is_application_rejected
+                                                    ? "bg-red-100 text-red-800"
+                                                    : "bg-yellow-100 text-yellow-800"
                                     }`}
                                 >
                                     {info.is_final_interview_passed
                                         ? "Fully Qualified"
                                         : info.is_home_visitation_not_qualified
-                                        ? "Home Visitation Not Qualified"
-                                        : info.is_interview_failed
-                                        ? "Initial Interview Failed"
-                                        : info.is_examination_failed
-                                        ? "Exam Failed"
-                                        : info.is_application_rejected
-                                        ? "Application Rejected"
-                                        : "Pending"}
+                                          ? "Home Visitation Not Qualified"
+                                          : info.is_interview_failed
+                                            ? "Initial Interview Failed"
+                                            : info.is_examination_failed
+                                              ? "Exam Failed"
+                                              : info.is_application_rejected
+                                                ? "Application Rejected"
+                                                : "Pending"}
                                 </span>
                             </td>
-                            <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
-                                {info.created_at}
+                            <td className="py-1 whitespace-nowrap text-gray-500 text-xs">
+                                {formatDateTime(info.created_at)}
                             </td>
-                            <td className="py-2 whitespace-nowrap">
-                                {info.approved_at ?? "--"}
+                            <td className="py-1 whitespace-nowrap">
+                                {formatDateTime(info.updated_at) || "--"}
                             </td>
 
-                            <td className="py-2 text-left whitespace-nowrap font-medium">
+                            <td className="py-1 text-left whitespace-nowrap font-medium">
                                 <div className="flex items-center justify-center">
                                     <button
                                         onClick={() =>

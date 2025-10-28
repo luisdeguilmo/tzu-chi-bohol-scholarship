@@ -6,6 +6,9 @@ export const date = {
     getCurrentTime: function () {
         return this.today.toTimeString().split(" ")[0];
     },
+    getCurrentYear: function () {
+        return this.today.getFullYear();
+    },
     getCurrentMonth: function () {
         const months = [
             "January",

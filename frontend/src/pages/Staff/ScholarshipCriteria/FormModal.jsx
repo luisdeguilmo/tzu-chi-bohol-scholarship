@@ -100,8 +100,7 @@ function FormModal({
         if (success) data = null;
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = () => {
         if (isEditing) handleEdit();
         else handleCreate();
         setIsValueChanged(false);
@@ -136,8 +135,12 @@ function FormModal({
             onEdit={onEdit}
             resetFields={resetFields}
             onClose={setIsOpen}
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+            buttonLabel={isEditing ? "Save Changes" : "Save"}
+            isLoading={isLoading}
         >
-            <form onSubmit={handleSubmit} className="pt-4 pb-6 px-6">
+            <div className="pt-4 pb-6 px-6">
                 {/* Form Inputs */}
                 <div>
                     {fields.map((field, index) =>
@@ -183,7 +186,7 @@ function FormModal({
                                     name=""
                                     id=""
                                     rows={4}
-                                    value={description || text}
+                                    value={description}
                                     required
                                     onChange={(e) => {
                                         setDescription(e.target.value);
@@ -198,32 +201,7 @@ function FormModal({
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 text-sm mt-2">
-                    <button
-                        type="button"
-                        onClick={handleCancel}
-                        className={`w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className={`w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none bg-green-600 text-white hover:bg-green-700`}
-                    >
-                        {/* Add {label} */}{" "}
-                        {/* {isLoading ? "Submitting" : `Add ${label}`} */}
-                        {isEditing
-                            ? isLoading
-                                ? "Saving..."
-                                : isValueChanged
-                                ? "Save Changes"
-                                : `Edit ${label}`
-                            : isLoading
-                            ? "Submitting..."
-                            : `Add ${label}`}
-                    </button>
-                </div>
-            </form>
+            </div>
         </InputModal>
     );
 }

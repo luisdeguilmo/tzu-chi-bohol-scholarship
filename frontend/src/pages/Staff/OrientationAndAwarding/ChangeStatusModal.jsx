@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputModal from "../../../components/InputModal";
 
 function ChangeStatusModal({
+    tab,
+    scholar,
     isOpen,
     onClose,
     isLoading,
@@ -11,6 +13,26 @@ function ChangeStatusModal({
     onRefresh,
 }) {
     const [allowanceStatus, setAllowanceStatus] = useState("");
+
+    useEffect(() => {
+        setAllowanceStatus(() => {
+            if (tab === "Orientation") {
+                return scholar.is_attended_orientation
+                    ? "attended"
+                    : scholar.is_not_attended_orientation
+                      ? "not_attended"
+                      : "pending";
+            } else if (tab === "Awarding") {
+                return scholar.is_attended_awarding
+                    ? "attended"
+                    : scholar.is_not_attended_awarding
+                      ? "not_attended"
+                      : "pending";
+            }
+        });
+    }, [tab, scholar]); // Add 'scholar' to dependencies
+
+    console.log(tab);
 
     const resetFields = () => {
         // setFeedback("");
@@ -23,12 +45,9 @@ function ChangeStatusModal({
 
     const handleAllowanceStatusChange = (newStatus) => {
         setAllowanceStatus(newStatus);
-        // Optional: Call API to update DB
-        // updateScholarAllowanceStatus(scholarId, newStatus);
     };
 
-    const handleChangeStatus = async () => {
-        console.log(allowanceStatus, scholarId);
+    const handleSubmit = async () => {
         const success = await onUpdate(allowanceStatus, scholarId);
         if (success) {
             onClose(false);
@@ -44,9 +63,13 @@ function ChangeStatusModal({
             isOpen={isOpen}
             resetFields={resetFields}
             onClose={onClose}
+            buttonLabel={"Confirm"}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            isLoading={isLoading}
         >
-            <form className="">
-                <div className="block w-full relative pt-4 px-6">
+            <div>
+                <div className="block w-full relative p-6">
                     <label className="block mb-1 text-gray-600 text-xs">
                         Status
                     </label>
@@ -67,29 +90,7 @@ function ChangeStatusModal({
                         <option value="not_attended">Not Attended</option>
                     </select>
                 </div>
-
-                <div className="pt-4 pb-6 px-6">
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 text-sm mt-2">
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                            className={`w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleChangeStatus}
-                            type="button"
-                            className={`w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none bg-green-600 text-white hover:bg-green-700`}
-                        >
-                            {/* Add {label} */}{" "}
-                            {/* {isLoading ? "Submitting" : `Add ${label}`} */}
-                            {isLoading ? "Processing..." : "Confirm"}
-                        </button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </InputModal>
     );
 }

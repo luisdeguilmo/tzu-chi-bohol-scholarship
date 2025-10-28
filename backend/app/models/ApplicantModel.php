@@ -30,6 +30,16 @@ class ApplicantModel
         return $stmt->execute();
     }
 
+    public function approveRenewApplication($data)
+    {
+        $query =
+            "UPDATE application_info SET is_application_approved = 1, is_eligible_for_exam = 1, status = 'scholar', approved_at = NOW() WHERE application_id = :application_id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':application_id', $data['application_id']);
+        return $stmt->execute();
+    }
+
     public function rejectApplication($data)
     {
         $query =

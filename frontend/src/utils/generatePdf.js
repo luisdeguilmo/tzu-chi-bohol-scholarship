@@ -1,4 +1,5 @@
 import { convertImageToBase64 } from "./convertImageToBase64";
+import { getExaminationFiles } from "./getExaminationFiles";
 import { getProfilePicture } from "./getPdfProfilePicture";
 import { getRequirements } from "./getRequirements";
 import FormLogo from "/src/assets/form_logo.png";
@@ -48,11 +49,36 @@ export const generatePDF = async (action, applicationId, applicantData) => {
 
         console.log("Profile picture base64:", requirementsBase64);
 
+        let examinationFilesBase64 = null;
+        if (applicationId) {
+            examinationFilesBase64 = await getExaminationFiles(applicationId);
+
+            if (!examinationFilesBase64) {
+                console.warn(
+                    "Failed to get requirements, PDF will be generated without them"
+                );
+            }
+        }
+
         const requirementImages = [];
         if (requirementsBase64 && Array.isArray(requirementsBase64)) {
             requirementsBase64.forEach((requirement, index) => {
                 if (requirement.success && requirement.base64) {
                     requirementImages.push({
+                        image: requirement.base64,
+                        width: 500, // scale down proportionally to fit within 500x300
+                        alignment: "center",
+                        margin: [0, 10, 0, 10], // optional spacing between images
+                    });
+                }
+            });
+        }
+
+        const examinationFilesImages = [];
+        if (examinationFilesBase64 && Array.isArray(examinationFilesBase64)) {
+            examinationFilesBase64.forEach((requirement, index) => {
+                if (requirement.success && requirement.base64) {
+                    examinationFilesImages.push({
                         image: requirement.base64,
                         width: 500, // scale down proportionally to fit within 500x300
                         alignment: "center",
@@ -69,7 +95,7 @@ export const generatePDF = async (action, applicationId, applicantData) => {
             educationalBackground,
             familyInfo,
             otherAssistance,
-            characterReference
+            characterReference,
         } = applicantData;
 
         const content = [
@@ -1045,8 +1071,7 @@ export const generatePDF = async (action, applicationId, applicantData) => {
                                 // Dynamically generate rows for tzu chi siblings
                                 ...(characterReference?.map((character) => [
                                     {
-                                        text:
-                                            character.name || "",
+                                        text: character.name || "",
                                         fontSize: 10,
                                     },
                                     {
@@ -1075,18 +1100,65 @@ export const generatePDF = async (action, applicationId, applicantData) => {
                     },
                 ],
             },
-            {
-                pageBreak: "before",
-                stack: [
-                    {
-                        text: "Requirements",
-                        fontSize: 16,
-                        alignment: "center",
-                        margin: [0, 0, 0, 10],
-                    },
-                    ...requirementImages,
-                ],
-            },
+            // {
+            //     pageBreak: "before",
+            //     stack: [
+            //         {
+            //             text: "Requirements",
+            //             fontSize: 16,
+            //             alignment: "center",
+            //             margin: [0, 0, 0, 10],
+            //         },
+            //         ...requirementImages,
+            //     ],
+            // },
+
+            ...(requirementImages.length > 0
+                ? [
+                      {
+                          pageBreak: "before",
+                          stack: [
+                              {
+                                  text: "Requirements",
+                                  fontSize: 16,
+                                  alignment: "center",
+                                  margin: [0, 0, 0, 10],
+                              },
+                              ...requirementImages,
+                          ],
+                      },
+                  ]
+                : []),
+
+            // {
+            //     pageBreak: "before",
+            //     stack: [
+            //         {
+            //             text: "Entrance Examination Files",
+            //             fontSize: 16,
+            //             alignment: "center",
+            //             margin: [0, 0, 0, 10],
+            //         },
+            //         ...examinationFilesImages,
+            //     ],
+            // },
+
+            ...(examinationFilesImages.length > 0
+                ? [
+                      {
+                          pageBreak: "before",
+                          stack: [
+                              {
+                                  text: "Entrance Examination Files",
+                                  fontSize: 16,
+                                  alignment: "center",
+                                  margin: [0, 0, 0, 10],
+                              },
+                              ...examinationFilesImages,
+                          ],
+                      },
+                  ]
+                : []),
         ];
 
         const docDefinition = {

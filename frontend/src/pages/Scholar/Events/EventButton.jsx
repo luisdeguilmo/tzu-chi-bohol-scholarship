@@ -1,8 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../../../config";
+import { toast } from "react-toastify";
 
 const EventButton = ({
+    numberOfParticipants,
+    participantLimit,
     hasJoinButton,
     setIsOpen,
     joinEvent,
@@ -45,6 +48,11 @@ const EventButton = ({
 
     const handleJoin = async () => {
         try {
+            if (numberOfParticipants === participantLimit) {
+                toast.error(`This event has reached its participant limit (${numberOfParticipants}/${participantLimit}).`);
+                return;
+            }
+
             setIsOpen(false); // Close modal before joining
             setActionLoading(true);
             await joinEvent(eventId, scholarId);

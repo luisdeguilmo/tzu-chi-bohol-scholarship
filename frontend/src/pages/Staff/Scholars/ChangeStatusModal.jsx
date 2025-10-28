@@ -1,17 +1,32 @@
-import { useState } from "react";
-import { User } from "lucide-react";
+import { useEffect, useState } from "react";
 import InputModal from "../../../components/InputModal";
 
 function ChangeStatusModal({
+    scholar,
     isOpen,
     onClose,
-    isLoading,
     label,
     onUpdate,
     scholarId,
     onRefresh,
+    onRefreshAllowanceData,
+    isLoading,
 }) {
-    const [allowanceStatus, setAllowanceStatus] = useState("");
+    const [allowance, setAllowance] = useState(scholar?.allowance || "");
+    const [transportAllowance, setTransportAllowance] = useState("");
+    const [loadAllowance, setLoadAllowance] = useState("");
+    const [allowanceStatus, setAllowanceStatus] = useState(
+        scholar?.allowance_status || ""
+    );
+
+    useEffect(() => {
+        if (scholar) {
+            setAllowance(scholar?.allowance || "");
+            setAllowanceStatus(scholar?.allowance_status || "");
+            setTransportAllowance(scholar?.transport_allowance || "");
+            setLoadAllowance(scholar?.load_allowance || "");
+        }
+    }, [scholar]);
 
     const resetFields = () => {
         // setFeedback("");
@@ -28,12 +43,18 @@ function ChangeStatusModal({
         // updateScholarAllowanceStatus(scholarId, newStatus);
     };
 
-    const handleChangeStatus = async () => {
-        console.log(allowanceStatus, scholarId);
-        const success = await onUpdate(allowanceStatus, scholarId);
+    const handleSubmit = async () => {
+        const success = await onUpdate(
+            allowanceStatus,
+            scholarId,
+            transportAllowance,
+            loadAllowance
+        );
+
         if (success) {
             onClose(false);
             onRefresh();
+            onRefreshAllowanceData();
         }
     };
 
@@ -43,19 +64,81 @@ function ChangeStatusModal({
             isOpen={isOpen}
             resetFields={resetFields}
             onClose={onClose}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            buttonLabel={"Save"}
+            isLoading={isLoading}
         >
-            <form className="">
+            <div className="pb-5">
                 <div className="block w-full relative pt-4 px-6">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Allowance
+                    </label>
+                    <input
+                        type="number"
+                        name="allowance"
+                        min={0}
+                        value={allowance}
+                        readOnly
+                        placeholder="Allowance"
+                        onChange={(e) => setAllowance(e.target.value)}
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800  focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    />
+                </div>
+
+                <div className="block w-full relative pt-4 px-6">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Transport Allowance
+                    </label>
+                    <input
+                        type="number"
+                        name="transport_allowance"
+                        min={0}
+                        value={transportAllowance}
+                        placeholder="Transport Allowance"
+                        onChange={(e) => setTransportAllowance(e.target.value)}
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    />
+                </div>
+
+                <div className="block w-full relative pt-4 px-6">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Load Allowance
+                    </label>
+                    <input
+                        type="number"
+                        name="load_allowance"
+                        min={0}
+                        value={loadAllowance}
+                        placeholder="Load Allowance"
+                        onChange={(e) => setLoadAllowance(e.target.value)}
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    />
+                </div>
+
+                <div className="block w-full relative pt-4 px-6">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Total
+                    </label>
+                    <div className="w-full border text-xs bg-gray-100 border-gray-200 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500">
+                        ₱{" "}{allowance + transportAllowance + loadAllowance}
+                    </div>
+                </div>
+
+                {/* <div className="block w-full relative pt-4 px-6">
                     <label className="block mb-1 text-gray-600 text-xs">
                         Allowance Status
                     </label>
                     <select
                         name="allowance_status"
-                        value={allowanceStatus} // <-- controlled value
+                        value={allowanceStatus}
                         onChange={(e) =>
                             handleAllowanceStatusChange(e.target.value)
                         } // <-- change handler
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     >
                         <option value="" disabled>
@@ -65,30 +148,8 @@ function ChangeStatusModal({
                         <option value="pending">Pending</option>
                         <option value="received">Received</option>
                     </select>
-                </div>
-
-                <div className="pt-4 pb-6 px-6">
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 text-sm mt-2">
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                            className={`w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleChangeStatus}
-                            type="button"
-                            className={`w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none bg-green-600 text-white hover:bg-green-700`}
-                        >
-                            {/* Add {label} */}{" "}
-                            {/* {isLoading ? "Submitting" : `Add ${label}`} */}
-                            {isLoading ? "Processing..." : "Confirm"}
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </div> */}
+            </div>
         </InputModal>
     );
 }

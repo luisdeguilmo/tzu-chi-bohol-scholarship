@@ -483,8 +483,9 @@ import Events from "./pages/Scholar/Events/Events";
 import InitialInterview from "./pages/Staff/InitialInterview/InitialInterview";
 import FinalInterview from "./pages/Staff/FinalInterview/FinalInterview";
 import ResetPasswordForm from "./components/ResetPasswordForm";
-import CollegeUniversityManagement from "./pages/Staff/SchoolCampusManagement/CollegeUniversityManagement";
+import CollegeUniversityManagement from "./pages/Staff/CollegeUniversityManagement/CollegeUniversityManagement";
 import OrientationAndAwarding from "./pages/Staff/OrientationAndAwarding/OrientationAndAwarding";
+import TestExcel from "./pages/Staff/test/TestExcel";
 
 // Component for role-specific login forms
 const RoleSpecificLoginForm = ({ role }) => {
@@ -647,7 +648,6 @@ export function App() {
                         path="/reset-password"
                         element={<ResetPasswordForm />}
                     />
-
                     <Route
                         path="/application"
                         element={<ApplicationSection />}
@@ -674,18 +674,10 @@ export function App() {
                         path="/scholar/renew"
                         element={<RenewalApplicationSection />}
                     />
-                    {/* <Route
-                        path="/scholar/documents"
-                        element={<DocumentsPage />}
-                    /> */}
                     <Route
                         path="/scholar/community-services"
                         element={<CommunityServices />}
                     />
-                    {/* <Route
-                        path="/scholar/rendered-hours"
-                        element={<HoursLog />}
-                    /> */}
                     <Route path="/scholar/events" element={<Events />} />
                     <Route
                         path="/scholar/archived-activities"
@@ -701,6 +693,10 @@ export function App() {
                         </ProtectedRoute>
                     }
                 >
+                    <Route
+                        path="/staff/test-excel"
+                        element={<TestExcel />}
+                    />
                     <Route
                         path="/staff/dashboard"
                         element={
@@ -788,7 +784,11 @@ export function App() {
                 <Route path="*" element={<NotFound />} />
             </Routes>
 
-            <ToastContainer toastClassName={'md:text-sm text-xs text-gray-700 text-center'} position="top-center" autoClose={3000} />
+            <ToastContainer
+                toastClassName={"md:text-sm text-xs text-gray-700 text-center"}
+                position="top-center"
+                autoClose={3000}
+            />
         </Router>
     );
 }

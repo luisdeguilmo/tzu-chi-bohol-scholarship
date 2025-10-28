@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-export const useDashboardOverviewData = (id, userType) => {
+export const useDashboardOverviewData = (id, userType, schoolYear) => {
     const [dashboardData, setDashboardData] = useState([]);
 
     const fetchStaffDashboardData = async () => {
@@ -41,7 +41,7 @@ export const useDashboardOverviewData = (id, userType) => {
     const fetchScholarDashboardData = async () => {
         try {
             const response = await fetch(
-                `${BASE_URL}app/views/scholar-dashboard-data.php?id=${id}`,
+                `${BASE_URL}app/views/scholar-dashboard-data.php?id=${id}&school_year=${schoolYear}`,
                 {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
@@ -60,10 +60,10 @@ export const useDashboardOverviewData = (id, userType) => {
             fetchStaffDashboardData(id);
         } else if (userType === "admin") {
             fetchAdminDashboardData(id);
-        } else if (userType === "scholar") {
+        } else if (userType === "scholar" && schoolYear) {
             fetchScholarDashboardData(id);
         }
-    }, [userType]);
+    }, [userType, schoolYear]);
 
     return { dashboardData, fetchStaffDashboardData };
 };

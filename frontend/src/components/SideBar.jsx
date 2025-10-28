@@ -1,17 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { AlignJustify, ChevronDown, ChevronUp, X } from "lucide-react";
+import { useApplicationPeriods } from "../hooks/useApplicationPeriods";
+import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
+import { useDashboardOverviewData } from "../hooks/useDashboardOverviewData";
 
 function SideBar({ items }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [openDropdown, setOpenDropdown] = useState(null); // Track which dropdown is open
+    const [openDropdown, setOpenDropdown] = useState(null);
     const [activeTab, setActiveTab] = useState("");
     const navigate = useNavigate();
 
     const { user, logout } = useAuth();
     const scholarId = { id: user.user_id };
+
+    const { dashboardData } = useDashboardOverviewData(
+        user.user_id,
+        user.type,
+        getCurrentSchoolYear()
+    );
+
+    const { applicationPeriods, fetchApplicationPeriods } =
+        useApplicationPeriods();
+
+    useEffect(() => {
+        fetchApplicationPeriods();
+    }, []);
+
+    const today = new Date().toISOString().split("T")[0];
 
     const toggleDropdown = (index, tab) => {
         setOpenDropdown(openDropdown === index ? null : index);
@@ -22,6 +40,46 @@ function SideBar({ items }) {
         navigate(path, { state });
         setIsOpen(false);
         setActiveTab(tab);
+    };
+
+    const handleClickRenew = () => {
+        if (
+            applicationPeriods[0].status === "Active" &&
+            today >= applicationPeriods[0].start_date &&
+            today <= applicationPeriods[0].end_date
+        ) {
+            if (
+                !dashboardData?.renewalApplicationStatus
+                    ?.is_application_approved &&
+                !dashboardData?.renewalApplicationStatus
+                    ?.is_application_rejected
+            ) {
+                toast.info(
+                    "You have already submitted a renewal application. Please wait for staff approval."
+                );
+                return false;
+            } else if (
+                dashboardData?.renewalApplicationStatus?.is_application_approved
+            ) {
+                toast.info(
+                    "Your renewal has been approved for the current school year!"
+                );
+                return false;
+            }
+
+            return true;
+        } else if (
+            today > applicationPeriods[0].end_date ||
+            applicationPeriods[0].status === "Closed"
+        ) {
+            toast.error("The online application has been closed.");
+            return false;
+        } else {
+            toast.info(
+                "The online application is not available at the moment."
+            );
+            return false;
+        }
     };
 
     const handleLogout = () => {
@@ -82,7 +140,7 @@ function SideBar({ items }) {
             )}
 
             <nav
-                className={`group lg:h-[91.5vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[370px] lg:hover:items-stretch z-20 overflow-hidden transition-all duration-200 ${
+                className={`group lg:h-[91.5vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[400px] lg:hover:items-stretch z-20 overflow-hidden transition-all duration-200 ${
                     isOpen ? "lg:w-[400px] w-[300px]" : "w-[0] lg:w-[70px]"
                 } ${!isOpen && "items-center"}`}
             >
@@ -176,11 +234,15 @@ function SideBar({ items }) {
                                             handleLogout();
                                             // handleClick(subItem.navigate)
                                         } else if (item.itemName === "renew") {
-                                            handleRenew(
-                                                item.navigate,
-                                                item.itemName,
-                                                scholarId
-                                            );
+                                            const success = handleClickRenew();
+
+                                            if (success) {
+                                                handleRenew(
+                                                    item.navigate,
+                                                    item.itemName,
+                                                    scholarId
+                                                );
+                                            }
                                         } else {
                                             handleClick(
                                                 item.navigate,

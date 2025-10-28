@@ -1,11 +1,15 @@
-import { ArrowRight, DownloadIcon, Eye, XCircle } from "lucide-react";
-import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
+import { Upload } from "lucide-react";
 import TableRow from "../../../components/TableRow";
 import { useApplicantData } from "../../../hooks/useApplicantData";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import { formatDateTime } from "../../../utils/formatDateTime";
 
-const ResultTableRow = ({ currentItems, selectedApplicants, profilePics }) => {
+const ResultTableRow = ({
+    currentItems,
+    selectedApplicants,
+    profilePics,
+    onOpenModal,
+}) => {
     const { fetchApplicantData } = useApplicantData();
     const { viewPdf } = usePdfActions(fetchApplicantData);
 
@@ -60,24 +64,15 @@ const ResultTableRow = ({ currentItems, selectedApplicants, profilePics }) => {
                                 : "Failed"}
                         </span>
                     </td>
-                    {/* <td className="py-2 whitespace-nowrap text-center font-medium">
-                        <div className="flex items-center justify-center">
-                            <button
-                                onClick={() => viewPdf(info.application_id)}
-                                className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                                title="View PDF"
-                            >
-                                <Eye className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={() => downloadPdf(info.application_id)}
-                                className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"
-                                title="Download PDF"
-                            >
-                                <DownloadIcon className="w-4 h-4" />
-                            </button>
-                        </div>
-                    </td> */}
+                    <td className="py-3 text-center whitespace-nowrap font-medium">
+                        <button
+                            title="Upload File(s)"
+                            onClick={() => onOpenModal(info.application_id)}
+                            className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
+                        >
+                            <Upload className="w-4 h-4" />
+                        </button>
+                    </td>
                 </TableRow>
             ))}
         </>

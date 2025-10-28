@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import InputModal from "../../../components/InputModal";
 import BASE_URL from "../../../config";
-import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import { useCommunityServicesSubmit } from "../../../hooks/useCommunityServicesSubmit";
 
@@ -22,7 +21,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const fileInputRef = useRef(null);
     const { user } = useAuth();
 
-    console.log(activity);
+    console.log(existingFilesRemoved);
 
     useEffect(() => {
         if (activity?.files?.length > 0) {
@@ -57,8 +56,6 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
         const selectedFiles = Array.from(event.target.files);
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
 
-        console.log(selectedFiles);
-
         const newPreviews = selectedFiles.map((file) => ({
             name: file.name,
             size: file.size,
@@ -85,10 +82,8 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
             setExistingFiles((prev) =>
                 prev.filter((file) => file.id !== fileId)
             );
-            setExistingFilesRemoved({
-                ...existingFilesRemoved,
-                ...{ id: fileId },
-            });
+
+            setExistingFilesRemoved([...existingFilesRemoved, { id: fileId }]);
         } else {
             // Remove from new files array
             const newFilesIndex = files.findIndex(
@@ -324,14 +319,12 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
         }
     };
 
-    const { editSubmit } = useCommunityServicesSubmit();
+    const { isLoading, editSubmit } = useCommunityServicesSubmit();
 
     const handleResubmit = () => {};
 
-    const handleEditSubmit = async (e) => {
-        e.preventDefault();
-
-        await editSubmit(
+    const handleSubmit = async () => {
+        const success = await editSubmit(
             user,
             activity,
             activityName,
@@ -351,9 +344,11 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
             resetForm,
             onSuccess
         );
-    };
 
-   
+        if (success) {
+            onSuccess();
+        }
+    };
 
     const isDocOrDocx = (fileType) => {
         return (
@@ -374,8 +369,12 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
             onClose={setIsOpen}
             resetFields={null}
             expandable={true}
+            buttonLabel={"Resubmit"}
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
         >
-            <form onSubmit={handleEditSubmit} className="">
+            <div>
                 <div className="py-4 overflow-y-auto scroll-smooth h-[400px]">
                     <div className="px-8 grid grid-cols-1 md:grid-cols-2 gap-2">
                         <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
@@ -567,11 +566,11 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                                             .status === "error"
                                                             ? "text-red-500"
                                                             : conversionStatus[
-                                                                  index
-                                                              ].status ===
-                                                              "completed"
-                                                            ? "text-green-500"
-                                                            : "text-blue-500"
+                                                                    index
+                                                                ].status ===
+                                                                "completed"
+                                                              ? "text-green-500"
+                                                              : "text-blue-500"
                                                     }`}
                                                 >
                                                     {
@@ -620,7 +619,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                     )}
                 </div>
 
-                <div className="pb-6 px-6 border-t">
+                {/* <div className="pb-6 px-6 border-t">
                     <div className="flex gap-2 mt-4">
                         <button
                             type="button"
@@ -661,8 +660,8 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                             {isSubmitting ? "Processing..." : "Resubmit"}
                         </button>
                     </div>
-                </div>
-            </form>
+                </div> */}
+            </div>
         </InputModal>
     );
 };

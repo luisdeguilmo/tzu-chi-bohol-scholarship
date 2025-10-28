@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import { Upload } from "lucide-react";
+import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 
 const ResultTableRow = ({ currentItems, profilePics, onOpenModal }) => {
+    
     const [edit, setEdit] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [score, setScore] = useState(0);
@@ -89,7 +91,7 @@ const ResultTableRow = ({ currentItems, profilePics, onOpenModal }) => {
                     <td className="py-3 text-center whitespace-nowrap font-medium">
                         <button
                             title="Upload Document"
-                            onClick={() => onOpenModal(true)}
+                            onClick={() => onOpenModal(info.application_id)}
                             className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                         >
                             <Upload className="w-4 h-4" />

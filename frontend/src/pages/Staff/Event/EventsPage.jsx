@@ -70,7 +70,7 @@ export default function EventsPage() {
 
     const handleRefresh = () => {
         fetchEvents();
-        setSelectedItems([]);
+        // setSelectedItems([]);
     };
 
     return (

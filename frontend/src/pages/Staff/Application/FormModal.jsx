@@ -73,6 +73,9 @@ function FormModal({
             isOpen={isOpen}
             resetFields={resetFields}
             onClose={onClose}
+            buttonLabel="Confirm"
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
         >
             <form onSubmit={handleSubmit} className="pt-4 pb-6 px-6">
                 {/* Form Inputs */}

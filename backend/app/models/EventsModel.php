@@ -39,6 +39,7 @@ class EventsModel {
                     start_time = :start_time,
                     end_time = :end_time,
                     event_location = :event_location,
+                    participant_limit = :participant_limit,
                     created_at = NOW()";
 
         $stmt = $this->pdo->prepare($query);
@@ -49,6 +50,7 @@ class EventsModel {
         $start_time = trim(strip_tags($data['start_time']));
         $end_time = trim(strip_tags($data['end_time']));
         $event_location = trim(strip_tags($data['event_location']));
+        $participant_limit = trim(strip_tags($data['participant_limit']));
 
         $stmt->bindParam(":event_name", $event_name);
         $stmt->bindParam(":event_type", $event_type);
@@ -56,6 +58,7 @@ class EventsModel {
         $stmt->bindParam(":start_time", $start_time);
         $stmt->bindParam(":end_time", $end_time);
         $stmt->bindParam(":event_location", $event_location);
+        $stmt->bindParam(":participant_limit", $participant_limit);
 
         if ($stmt->execute()) {
             return $this->pdo->lastInsertId();

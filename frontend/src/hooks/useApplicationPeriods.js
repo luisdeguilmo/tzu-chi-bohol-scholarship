@@ -48,6 +48,7 @@ export const useApplicationPeriods = () => {
         };
 
         try {
+            setLoading(true);
             const response = await fetch(
                 `${BASE_URL}app/views/application-periods.php`,
                 {
@@ -64,12 +65,15 @@ export const useApplicationPeriods = () => {
             if (result.success) {
                 toast.success(result.message + ".");
                 await fetchApplicationPeriods();
+                setLoading(false);
             } else {
                 alert("Error: " + result.message);
+                setLoading(false);
             }
         } catch (error) {
             console.error("Submission error:", error);
             alert("Failed to submit the form. Please try again.");
+            setLoading(false);
         }
     };
 
@@ -115,6 +119,7 @@ export const useApplicationPeriods = () => {
         };
 
         try {
+            setLoading(true);
             const response = await fetch(
                 `${BASE_URL}app/views/application-periods.php`,
                 {
@@ -131,12 +136,15 @@ export const useApplicationPeriods = () => {
             if (result.success) {
                 toast.success(result.message + ".");
                 await fetchApplicationPeriods();
+                setLoading(false);
             } else {
                 alert("Error: " + result.message);
+                setLoading(false);
             }
         } catch (error) {
             console.error("Submission error:", error);
             alert("Failed to submit the form. Please try again.");
+            setLoading(false);
         }
     };
 
@@ -145,6 +153,7 @@ export const useApplicationPeriods = () => {
     }, []);
 
     return {
+        loading,
         applicationPeriods,
         hasActiveApplicationPeriod,
         setHasActiveApplicationPeriod,

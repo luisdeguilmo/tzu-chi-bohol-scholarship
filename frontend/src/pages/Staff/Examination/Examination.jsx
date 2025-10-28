@@ -24,7 +24,9 @@ import {
 import { manageApplication } from "../../../services/emailService";
 import SendEmailButton from "./SendEmailButtton";
 import PassingScoreModal from "./PassingScoreModal";
-import DocumentFormModal from "./DocumentFormModal";
+import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
+import FileUploadFormModal from "../../../components/FileUploadFormModal";
+import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 
 export default function Examination() {
     const [isEmailSent, setIsEmailSent] = useState(false);
@@ -34,10 +36,13 @@ export default function Examination() {
     const { batches, setBatches, deleteBatch, fetchBatches } = useBatches(
         "entrance_examination"
     );
+
     const [isOpen, setIsOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [isDocumentFormModalOpen, setIsDocumentFormModalOpen] =
         useState(false);
+    const [selectedId, setSelectedId] = useState(null);
     const [sortBy, setSortBy] = useState("newest");
     const [status, setStatus] = useState("all");
     const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -97,10 +102,6 @@ export default function Examination() {
             }
         };
 
-        console.log("Active Tab: ", activeTab);
-        console.log("Status: ", status);
-        console.log("Sort By: ", sortBy);
-
         currentBatch();
     }, [
         status,
@@ -113,6 +114,15 @@ export default function Examination() {
         isModalOpen,
         batches.length,
     ]);
+
+    const { loading, applicationFiles, fetchApplicationFiles, reUploadFiles } =
+        useApplicationFiles("entrance_examination", selectedId);
+
+    useEffect(() => {
+        fetchApplicationFiles("entrance_examination", selectedId);
+    }, [selectedId]);
+
+    console.log("Application Files: ", applicationFiles);
 
     const handleChangeTab = async (tab) => {
         setActiveTab(tab);
@@ -157,77 +167,6 @@ export default function Examination() {
         );
     });
 
-    // const filteredApplications = applications.filter((applicant) => {
-    //     const term = searchTerm.trim().toLowerCase();
-
-    //     // Filter by status: approved
-    //     if ("aed".includes(term)) {
-    //         return (
-    //             applicant.is_application_approved === 0 ||
-    //             applicant.is_application_rejected === 0
-    //         );
-    //     }
-
-    //     if ("passed".includes(term)) {
-    //         return applicant.is_examination_passed === 1;
-    //     }
-
-    //     // Filter by status: rejected
-    //     if ("failed".includes(term)) {
-    //         return applicant.is_examination_failed === 1;
-    //     }
-
-    //     // General search by name or date
-    //     return (
-    //         applicant.last_name.toLowerCase().includes(term) ||
-    //         applicant.middle_name.toLowerCase().includes(term) ||
-    //         applicant.first_name.toLowerCase().includes(term) ||
-    //         applicant.created_at.includes(term)
-    //     );
-    // });
-
-    // const filteredApplications = applications.filter((applicant) => {
-    //     const term = searchTerm.trim().toLowerCase();
-
-    //     if (activeTab === "Result" && "aed".includes(term)) {
-    //         return applicant.score >= 50 || applicant.score < 50;
-    //     }
-
-    //     if (activeTab === "Result" && "passed".includes(term)) {
-    //         return applicant.score >= 50;
-    //     }
-
-    //     if (activeTab === "Result" && "failed".includes(term)) {
-    //         return applicant.score < 50;
-    //     }
-
-    //     return (
-    //         applicant.last_name
-    //             .toLowerCase()
-    //             .includes(searchTerm.toLowerCase()) ||
-    //         applicant.middle_name
-    //             .toLowerCase()
-    //             .includes(searchTerm.toLowerCase()) ||
-    //         applicant.first_name
-    //             .toLowerCase()
-    //             .includes(searchTerm.toLowerCase()) ||
-    //         applicant.created_at.includes(searchTerm)
-    //     );
-    // });
-
-    // const sortedApplications = [...filteredApplications].sort((a, b) => {
-    //     switch (sortBy) {
-    //         case "newest":
-    //             return new Date(b.created_at) - new Date(a.created_at);
-    //         case "oldest":
-    //             return new Date(a.created_at) - new Date(b.created_at);
-    //         case "name":
-    //             return a.first_name.localeCompare(b.first_name);
-    //         default:
-    //             return 0;
-    //     }
-    // });
-
     const {
         currentItems,
         currentPage,
@@ -238,18 +177,6 @@ export default function Examination() {
         goToPreviousPage,
         goToNextPage,
     } = usePagination(filteredApplications, itemsPerPage);
-
-    // const handleSendSchedule = () => {
-    //     applications.forEach((applicant) => {
-    //         sendExaminationSchedule(
-    //             applicant.application_id,
-    //             applicant,
-    //             batches,
-    //             selectedBatchInBatches,
-    //             setError
-    //         );
-    //     });
-    // };
 
     const handleBatchChange = async (value) => {
         setSelectedBatchInBatches(value);
@@ -274,6 +201,13 @@ export default function Examination() {
         if (success) {
             setIsEmailSent(true);
         }
+    };
+
+    const handleOpenFileFormModal = (applicationId) => {
+        fetchApplicationFiles("entrance_examination", applicationId);
+        setIsDocumentFormModalOpen(true);
+        setSelectedId(applicationId);
+        console.log("Selected ID: ", selectedId);
     };
 
     const handleRefresh = async () => {
@@ -302,13 +236,22 @@ export default function Examination() {
                 onChangeItemsPerPage={setItemsPerPage}
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
+                addButton={status === "passed" || status === "failed"}
+                buttonLabel={
+                    status === "passed" || status === "failed"
+                        ? "Set Message"
+                        : false
+                }
                 addCreateBatchButton={
-                    activeTab === "Batches" || activeTab === "Result"
+                    activeTab === "Batches" ||
+                    (activeTab === "Result" && status === "all")
                 }
                 onOpen={
                     activeTab === "Batches"
                         ? setIsCreateBatchModalOpen
-                        : setIsPassingScoreModalOpen
+                        : activeTab === "Result" && status === "all"
+                          ? setIsPassingScoreModalOpen
+                          : setIsMessageModalOpen
                 }
             >
                 {activeTab === "Result" && (
@@ -326,15 +269,6 @@ export default function Examination() {
                             <option value="failed">Failed</option>
                             <option value="pending">Pending</option>
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg
-                                className="fill-current h-4 w-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                            >
-                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                            </svg>
-                        </div>
                     </div>
                 )}
 
@@ -407,7 +341,7 @@ export default function Examination() {
                                     <ResultTableRow
                                         currentItems={currentItems}
                                         profilePics={profilePics}
-                                        onOpenModal={setIsDocumentFormModalOpen}
+                                        onOpenModal={handleOpenFileFormModal}
                                     />
                                 );
                         }
@@ -497,10 +431,26 @@ export default function Examination() {
                 onRefresh={fetchApplicationsOnResultTab}
             />
 
-            <DocumentFormModal
+            <EmailMessageFormModal
+                stage={"entrance_examination"}
+                isOpen={isMessageModalOpen}
+                onClose={setIsMessageModalOpen}
+                onRefresh={fetchApplicationsOnBatchesTab}
+                firstLabel={"Examination Passed Message"}
+                secondLabel={"Examination Failed Message"}
+            />
+
+            <FileUploadFormModal
+                label={"Entrance Examination Files"}
+                type={"entrance_examination"}
                 isOpen={isDocumentFormModalOpen}
                 setIsOpen={setIsDocumentFormModalOpen}
                 onSuccess={fetchApplicationsOnResultTab}
+                selectedId={selectedId}
+                applicationFiles={applicationFiles}
+                onReUploadFiles={reUploadFiles}
+                isLoading={loading}
+                onRefresh={fetchApplicationsOnResultTab}
             />
         </PageContent>
     );

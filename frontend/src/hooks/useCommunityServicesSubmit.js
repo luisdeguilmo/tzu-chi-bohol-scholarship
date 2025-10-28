@@ -1,7 +1,10 @@
 import { toast } from "react-toastify";
 import BASE_URL from "../config";
+import { useState } from "react";
 
 export const useCommunityServicesSubmit = () => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const resubmit = async (
         user,
         activity,
@@ -106,9 +109,8 @@ export const useCommunityServicesSubmit = () => {
                             }
                         }
 
-                        const base64Data = await convertFileToBase64(
-                            processedFile
-                        );
+                        const base64Data =
+                            await convertFileToBase64(processedFile);
                         uploadedFiles.push({
                             filename: processedFile.name,
                             base64_data: base64Data,
@@ -195,6 +197,9 @@ export const useCommunityServicesSubmit = () => {
         onSuccess
     ) => {
         setIsSubmitting(true);
+        setIsLoading(true);
+
+        console.log(existingFilesRemoved);
 
         try {
             // Validate time inputs
@@ -278,9 +283,8 @@ export const useCommunityServicesSubmit = () => {
                             }
                         }
 
-                        const base64Data = await convertFileToBase64(
-                            processedFile
-                        );
+                        const base64Data =
+                            await convertFileToBase64(processedFile);
                         uploadedFiles.push({
                             filename: processedFile.name,
                             base64_data: base64Data,
@@ -334,17 +338,23 @@ export const useCommunityServicesSubmit = () => {
                 resetForm();
                 setIsOpen(false);
 
+                setIsLoading(false);
+
                 if (onSuccess) onSuccess();
+                return true;
             } else {
                 toast.error("Error: " + result.message);
+                setIsLoading(false);
+                return false;
             }
         } catch (error) {
             console.error("Submission error:", error);
             toast.error("Failed to submit the form. Please try again.");
-        } finally {
+            setIsLoading(false);
             setIsSubmitting(false);
+            return false;
         }
     };
 
-    return { editSubmit };
+    return { isLoading, editSubmit };
 };

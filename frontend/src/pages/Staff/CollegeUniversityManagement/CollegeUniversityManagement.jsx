@@ -5,19 +5,20 @@ import Pagination from "../../../components/Pagination";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { collegesUniversitiesTableHeaders } from "../../../constant/tableHeaders";
-import EventDetailsModal from "../../../components/EventDetailsModal";
 import { useCollegesUniversities } from "../../../hooks/useCollegesUniversities";
 import AddCollegeUniversityForm from "./AddCollegeUniversityForm";
 import ConfirmationModal from "../../../components/ConfirmationModal";
-import FormModal from "./EditFormModal";
 import EditFormModal from "./EditFormModal";
+import { useCoursesAccepted } from "../../../hooks/useCoursesAccepted";
 
 export default function CollegeUniversityManagement() {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("newest");
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [isOpenFormModal, setIsOpenFormModal] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+    const [selectedCollegeUniversity, setSelectedCollegeUniversity] =
+        useState("");
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
         useState(false);
@@ -25,17 +26,29 @@ export default function CollegeUniversityManagement() {
     const [selectedItem, setSelectedItem] = useState(null);
     const [year, setYear] = useState("2025");
     const [status, setStatus] = useState("all");
+
     const {
         isLoading,
         collegesAndUniversities,
         addCollegeOrUniversity,
         deleteCollegeOrUniversity,
+        updateCollegeOrUniversity,
         fetchCollegesAndUniversities,
     } = useCollegesUniversities();
 
+    const {
+        isLoading: isLoadingForCourse,
+        coursesAccepted,
+        addCourse,
+        updateCourse,
+        deleteCourse,
+        fetchCoursesAccepted,
+    } = useCoursesAccepted(selectedId);
+
     useEffect(() => {
         fetchCollegesAndUniversities();
-    }, []);
+        fetchCoursesAccepted();
+    }, [selectedId]);
 
     // Filter data based on search term
     const filteredEvents = collegesAndUniversities.filter((event) =>
@@ -54,11 +67,6 @@ export default function CollegeUniversityManagement() {
                 return 0;
         }
     });
-
-    const handleOpenDetailsModal = (event) => {
-        setSelectedEvent(event);
-        setIsOpenEventDetailsModal(true);
-    };
 
     const {
         currentItems,
@@ -132,6 +140,10 @@ export default function CollegeUniversityManagement() {
                                     <button
                                         onClick={() => {
                                             setIsFormModalOpen(true);
+                                            setSelectedId(item.id);
+                                            setSelectedCollegeUniversity(
+                                                item.name
+                                            );
                                         }}
                                         className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                                     >
@@ -208,6 +220,7 @@ export default function CollegeUniversityManagement() {
                 onAddItem={addCollegeOrUniversity}
                 onSuccess={fetchCollegesAndUniversities}
                 onRefresh={fetchCollegesAndUniversities}
+                isLoading={isLoading}
             />
 
             <ConfirmationModal
@@ -223,6 +236,17 @@ export default function CollegeUniversityManagement() {
                 isOpen={isFormModalOpen}
                 setIsOpen={setIsFormModalOpen}
                 label={"Edit Item"}
+                selectedId={selectedId}
+                collegeUniversity={selectedCollegeUniversity}
+                isLoadingForCourse={isLoadingForCourse}
+                coursesAccepted={coursesAccepted}
+                onAddCourse={addCourse}
+                onUpdateCourse={updateCourse}
+                onDeleteCourse={deleteCourse}
+                onUpdateCollegeUniversity={updateCollegeOrUniversity}
+                onRefresh={handleRefresh}
+                onRefreshCourse={fetchCoursesAccepted}
+                isLoading={isLoading}
             />
         </div>
     );

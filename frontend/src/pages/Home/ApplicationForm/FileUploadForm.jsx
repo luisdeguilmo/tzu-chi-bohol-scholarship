@@ -20,7 +20,11 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
             const preview = URL.createObjectURL(formData.picture_file.fileObj);
 
             setPicturePreview({
-                name: formData.picture_file.fileObj.name.replaceAll(" ", "_"),
+                // name: formData.picture_file.fileObj.name.replaceAll(" ", "_"),
+                name: formData.picture_file.fileObj.name
+                    .replaceAll("(", "")
+                    .replaceAll(")", "")
+                    .replaceAll(" ", "_"),
                 size: formData.picture_file.size,
                 type: formData.picture_file.fileObj.type,
                 preview: preview,
@@ -33,7 +37,11 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
             formData?.uploaded_files.forEach((item) => {
                 const preview = URL.createObjectURL(item.fileObj);
                 newPrevious.push({
-                    name: item.fileObj.name.replaceAll(" ", "_"),
+                    // name: item.fileObj.name.replaceAll(" ", "_"),
+                    name: item.fileObj.name
+                        .replaceAll("(", "")
+                        .replaceAll(")", "")
+                        .replaceAll(" ", "_"),
                     size: item.fileObj.size,
                     type: item.fileObj.type,
                     preview: preview,

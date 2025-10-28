@@ -152,6 +152,22 @@ export const dashboardOverviewData = (data) => {
             icon: <Calendar className="w-5 h-5 text-gray-600" />,
             iconColor: "text-red-600",
         },
+        {
+            title: "Renewal Application",
+            status:
+                !data?.renewalApplicationStatus?.is_application_rejected &&
+                !data?.renewalApplicationStatus?.is_application_approved
+                    ? "Pending"
+                    : data?.renewalApplicationStatus?.is_application_approved
+                      ? "Approved"
+                      : data?.renewalApplicationStatus?.is_application_rejected
+                        ? "Rejected"
+                        : "Not Submitted",
+            color: "bg-red-300 text-gray-900",
+            icon: <ScrollText className="w-5 h-5 text-gray-600" />,
+            iconColor: "text-red-600",
+            dateSubmitted: "October 25, 2025",
+        },
     ];
 
     return { scholarOverviewData, staffOverviewData, adminOverviewData };

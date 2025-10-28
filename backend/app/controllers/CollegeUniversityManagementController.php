@@ -157,23 +157,23 @@ class CollegeUniversityManagementController
             }
 
             // Check if ID is provided
-            if (!isset($data['course']['id'])) {
+            if (!isset($data['id'])) {
                 throw new \Exception('ID is required for update');
             }
 
-            $id = $data['course']['id'];
+            $id = $data['id'];
 
             // Process application data
-            $criteria = new ScholarshipCriteriaModel();
+            $criteria = new CollegeUniversityManagementModel();
 
             // Check if qualification exists
-            $existingCourse = $criteria->getCourseById($id);
-            if (!$existingCourse) {
-                throw new \Exception('Course not found');
+            $existing = $criteria->getCollegeOrUniversityById($id);
+            if (!$existing) {
+                throw new \Exception('College/University not found');
             }
 
-            if (!$criteria->updateCourse($id, $data['course'])) {
-                throw new \Exception('Failed to update course information');
+            if (!$criteria->update($data)) {
+                throw new \Exception('Failed to update information');
             }
 
             $this->pdo->commit();
@@ -182,7 +182,7 @@ class CollegeUniversityManagementController
             http_response_code(200);
             echo json_encode([
                 'success' => true,
-                'message' => 'Course updated successfully',
+                'message' => 'College/University updated successfully',
             ]);
         } catch (\Exception $e) {
             // Roll back transaction on error

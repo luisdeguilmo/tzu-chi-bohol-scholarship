@@ -12,12 +12,14 @@ import {
 } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import FormModal from "../Application/FormModal";
 import { useHomeVisitation } from "../../../hooks/useHomeVisitation";
 import { homeVisitationTableButtons } from "../../../constant/tableToolbarButtons";
 import ApplicantsTableRow from "./ApplicantsTableRow";
 import ResultTableRow from "./ResultTableRow";
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
+import FileUploadFormModal from "../../../components/FileUploadFormModal";
+import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 
 export default function HomeVisitation() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +29,10 @@ export default function HomeVisitation() {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [action, setAction] = useState("");
     const [selectedApplicant, setSelectedApplicant] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+    const [isOpenFileUploadFormModal, setIsOpenFileUploadFormModal] =
+        useState(false);
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
 
     const { loading, error, applications, fetchApplications } =
         useHomeVisitation(activeTab);
@@ -38,6 +44,13 @@ export default function HomeVisitation() {
         fetchApplications();
     }, [activeTab]);
 
+    const { applicationFiles, fetchApplicationFiles, reUploadFiles } =
+        useApplicationFiles("home_visitation", selectedId);
+
+    useEffect(() => {
+        fetchApplicationFiles("home_visitation", selectedId);
+    }, [selectedId]);
+
     const {
         isLoading,
         updateStatusToHomeVisitationPassed,
@@ -45,9 +58,8 @@ export default function HomeVisitation() {
     } = manageApplication();
 
     const handleApprove = async () => {
-        const success = await updateStatusToHomeVisitationPassed(
-            selectedApplicant
-        );
+        const success =
+            await updateStatusToHomeVisitationPassed(selectedApplicant);
 
         if (success) {
             await fetchApplications();
@@ -56,9 +68,8 @@ export default function HomeVisitation() {
     };
 
     const handleReject = async () => {
-        const success = await updateStatusToHomeVisitationFailed(
-            selectedApplicant
-        );
+        const success =
+            await updateStatusToHomeVisitationFailed(selectedApplicant);
 
         if (success) {
             await fetchApplications();
@@ -123,6 +134,12 @@ export default function HomeVisitation() {
         setAction("reject");
     };
 
+    const handleOpenFileUploadFormModal = (applicationId) => {
+        fetchApplicationFiles("home_visitation", applicationId);
+        setIsOpenFileUploadFormModal(true);
+        setSelectedId(applicationId);
+    };
+
     const handleRefresh = () => {
         // setIsRefresh(true);
     };
@@ -150,6 +167,9 @@ export default function HomeVisitation() {
                     onChangeItemsPerPage={setItemsPerPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
+                    buttonLabel={"Set Message"}
+                    addButton={true}
+                    onOpen={setIsMessageModalOpen}
                 />
 
                 <div className="overflow-x-auto rounded-[4px]">
@@ -178,6 +198,9 @@ export default function HomeVisitation() {
                                         <ResultTableRow
                                             currentItems={currentItems}
                                             profilePics={profilePics}
+                                            onOpenModal={
+                                                handleOpenFileUploadFormModal
+                                            }
                                         />
                                     );
                             }
@@ -206,16 +229,6 @@ export default function HomeVisitation() {
                     </div>
                 )}
 
-                {/* <FormModal
-                    isOpen={isFormModalOpen}
-                    onClose={setIsFormModalOpen}
-                    action={action}
-                    label={"Confirmation"}
-                    applicant={selectedApplicant}
-                    setAction={setAction}
-                    onSuccess={fetchApplications}
-                /> */}
-
                 <ConfirmationModal
                     isOpen={isFormModalOpen}
                     onClose={setIsFormModalOpen}
@@ -231,6 +244,26 @@ export default function HomeVisitation() {
                     }
                 />
             </div>
+
+            <FileUploadFormModal
+                label={"Home Visitation Files"}
+                type={"home_visitation"}
+                isOpen={isOpenFileUploadFormModal}
+                setIsOpen={setIsOpenFileUploadFormModal}
+                onSuccess={fetchApplicantData}
+                selectedId={selectedId}
+                applicationFiles={applicationFiles}
+                onReUploadFiles={reUploadFiles}
+            />
+
+            <EmailMessageFormModal
+                stage={"home_visitation"}
+                isOpen={isMessageModalOpen}
+                onClose={setIsMessageModalOpen}
+                onRefresh={fetchApplicantData}
+                firstLabel={"Home Visitation Passed Message"}
+                secondLabel={"Home Visitation Failed Message"}
+            />
         </div>
     );
 }

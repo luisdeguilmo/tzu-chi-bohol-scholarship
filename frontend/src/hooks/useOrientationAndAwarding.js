@@ -63,6 +63,7 @@ export const useOrientationAndAwarding = (
 
     const updateStatusForOrientation = async (status, accountId) => {
         try {
+            setIsLoading(true);
             const response = await axios.put(
                 `${BASE_URL}app/views/orientation.php`,
                 {
@@ -82,19 +83,23 @@ export const useOrientationAndAwarding = (
 
             if (data.success) {
                 toast.success("Status Updated Successfully");
+                setIsLoading(false);
                 return true;
             }
 
+            setIsLoading(false);
             return false;
         } catch (error) {
             console.log("Error: ", error);
             alert("Failed: ", error);
+            setIsLoading(false);
             return false;
         }
     };
 
     const updateStatusForAwarding = async (status, accountId) => {
         try {
+            setIsLoading(true);
             const response = await axios.put(
                 `${BASE_URL}app/views/awarding.php`,
                 {
@@ -114,13 +119,16 @@ export const useOrientationAndAwarding = (
 
             if (data.success) {
                 toast.success("Status Updated Successfully");
+                setIsLoading(false);
                 return true;
             }
 
+            setIsLoading(false);
             return false;
         } catch (error) {
             console.log("Error: ", error);
             alert("Failed: ", error);
+            setIsLoading(false);
             return false;
         }
     };

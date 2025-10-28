@@ -10,7 +10,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const { addStaff } = useStaffAccounts();
+    const { loading, addStaff } = useStaffAccounts();
 
     const handleSubmit = async () => {
         if (password !== confirmPassword) {
@@ -45,8 +45,21 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
         setConfirmPassword("");
     };
 
+    const handleCancel = () => {
+        resetFields();
+        onClose(false);
+    };
+
     return (
-        <InputModal label={"New Staff Account"} isOpen={isOpen} onClose={onClose}>
+        <InputModal
+            label={"New Staff Account"}
+            isOpen={isOpen}
+            onClose={onClose}
+            buttonLabel={"Confirm"}
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+            isLoading={loading}
+        >
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -63,7 +76,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         placeholder="Enter first name"
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
                 </div>
@@ -77,7 +90,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         placeholder="Enter last name"
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
                 </div>
@@ -91,7 +104,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter email address"
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
                 </div>
@@ -105,7 +118,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter password"
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
                 </div>
@@ -119,26 +132,9 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Enter confirm password"
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-2 text-sm">
-                    <button
-                        type="button" // Explicitly set type to prevent form submission
-                        // onClick={handleCancel}
-                        className="w-full py-2 px-4 rounded-lg shadow-sm focus:outline-none bg-gray-200 text-gray-500"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className={`w-full py-2 px-4 rounded-lg shadow-sm focus:outline-none bg-green-600 text-white hover:bg-green-700 transition-all`}
-                    >
-                        Create Staff
-                    </button>
                 </div>
             </form>
         </InputModal>

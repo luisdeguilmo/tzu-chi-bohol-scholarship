@@ -14,6 +14,7 @@ const OrientationTableRow = ({
     onRefresh,
     onOpenModal,
     onSelectScholarId,
+    onSelectScholar,
 }) => {
     const [edit, setEdit] = useState(false);
     const [editingId, setEditingId] = useState(null);
@@ -145,6 +146,7 @@ const OrientationTableRow = ({
                         <button
                             onClick={() => {
                                 onSelectScholarId(info.application_id);
+                                onSelectScholar(info);
                                 onOpenModal(true);
                             }}
                             title={"Change Status"}
