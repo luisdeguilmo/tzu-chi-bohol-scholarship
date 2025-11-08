@@ -10,7 +10,7 @@ import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { Eye, PenLine, RotateCcw } from "lucide-react";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
-import ScholarProfileModal from "./ScholarProfileModal";
+import ScholarProfileModal from "../../../components/UserProfileModal";
 import ChangeStatusModal from "./ChangeStatusModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useAllowanceCycle } from "../../../hooks/useAllowanceCycle";
@@ -61,7 +61,7 @@ export default function Scholars() {
 
     console.log(scholarsInformation);
 
-    const { profilePics } = useProfilePicture(scholars);
+    const { profilePics } = useProfilePicture(scholars, "profile-picture");
 
     useEffect(() => {
         fetchScholars();
@@ -154,7 +154,7 @@ export default function Scholars() {
     };
 
     return (
-        <div className="lg:p-6">
+        <div className="bg-gray-50 lg:p-6">
             <div className="w-[100%] mx-auto bg-white rounded-md shadow p-6">
                 {/* Header */}
                 <TableToolbar
@@ -173,6 +173,7 @@ export default function Scholars() {
                     onSearchChange={setSearchTerm}
                     onChangeTab={handleChangeTab}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     buttonExport={activeTab === "active"}
@@ -224,10 +225,10 @@ export default function Scholars() {
                                         : ""
                                 }`}
                             >
-                                <td className="py-1 text-xs whitespace-nowrap text-center text-gray-600 font-bold">
+                                <td className="py-2 text-xs whitespace-nowrap text-center text-gray-600 font-bold">
                                     {scholar.account_id}
                                 </td>
-                                <td className="py-1 text-center flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                <td className="py-2 text-center flex justify-start whitespace-nowrap text-sm text-gray-700">
                                     <div className="w-[30%]"></div>
                                     <div className="w-[max-content] flex text-left gap-2">
                                         <img
@@ -249,14 +250,14 @@ export default function Scholars() {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="py-1 text-center whitespace-nowrap text-gray-500">
+                                <td className="py-2 text-center whitespace-nowrap text-gray-500">
                                     <span
                                         className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium`}
                                     >
                                         {scholar.type}
                                     </span>
                                 </td>
-                                <td className="py-1 whitespace-nowrap text-slate-600 text-center font-medium">
+                                <td className="py-2 whitespace-nowrap text-slate-600 text-center font-medium">
                                     {scholar.rendered_hours} hour
                                     {scholar.rendered_hours > 1 ? "s" : ""}
                                 </td>
@@ -280,7 +281,7 @@ export default function Scholars() {
                                               : "Pending"}
                                     </span>
                                 </td> */}
-                                <td className="py-1 whitespace-nowrap font-medium">
+                                <td className="py-2 whitespace-nowrap font-medium">
                                     <div className="flex items-center justify-center">
                                         <button
                                             onClick={() => {
@@ -290,7 +291,7 @@ export default function Scholars() {
                                                 );
                                             }}
                                             className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                                            title="View PDF"
+                                            title="View Profile"
                                         >
                                             <Eye className="w-4 h-4" />
                                         </button>
@@ -351,9 +352,10 @@ export default function Scholars() {
                 )}
 
                 <ScholarProfileModal
-                    scholarId={scholarId}
+                    userId={scholarId}
                     isOpen={isModalOpen}
                     setIsOpen={setIsModalOpen}
+                    isScholar={true}
                 />
 
                 <ChangeStatusModal

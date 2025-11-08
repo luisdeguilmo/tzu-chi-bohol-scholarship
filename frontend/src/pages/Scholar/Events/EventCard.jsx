@@ -56,9 +56,9 @@ const EventCard = ({
                 e.stopPropagation();
                 handleOpenDetails(event);
             }}
-            className={`group relative p-6 rounded-xl shadow-sm border transition-all duration-300 cursor-pointer ${
+            className={`group relative p-6 rounded-lg shadow-sm border transition-all duration-300 cursor-pointer ${
                 isArchived
-                    ? "bg-gradient-to-br from-slate-100 to-slate-200 border-slate-300 shadow-inner"
+                    ? "bg-gray-100 border-slate-300 shadow-inner"
                     : "bg-white border-gray-200 hover:shadow-md hover:border-green-200"
             }`}
         >
@@ -103,7 +103,9 @@ const EventCard = ({
                                     : "text-emerald-500"
                             }`}
                         />
-                        <span className={isArchived ? "italic" : ""}>
+                        <span
+                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
+                        >
                             {formatDate(event.date)}
                         </span>
                     </div>
@@ -120,7 +122,9 @@ const EventCard = ({
                                     : "text-emerald-500"
                             }`}
                         />
-                        <span className={isArchived ? "italic" : ""}>
+                        <span
+                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
+                        >
                             {formatTime(event.start_time)} -{" "}
                             {formatTime(event.end_time)}
                         </span>
@@ -139,7 +143,7 @@ const EventCard = ({
                             }`}
                         />
                         <span
-                            className={`truncate ${isArchived ? "italic" : ""}`}
+                            className={`text-xs sm:text-sm truncate ${isArchived ? "italic" : ""}`}
                         >
                             {event.event_location}
                         </span>
@@ -158,7 +162,7 @@ const EventCard = ({
                             }`}
                         />
                         <span
-                            className={`font-medium ${isArchived ? "italic" : ""}`}
+                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
                         >
                             {/* {event.numberOfParticipants}{" "}
                             {event.date > dateToday &&

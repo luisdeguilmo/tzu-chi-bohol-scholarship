@@ -49,6 +49,16 @@ class NotificationsModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function getLastPendingScholarNotification($currentYear)
+    {
+        $query =
+            "SELECT message, created_at FROM notifications WHERE type = 'pending_scholars' AND YEAR(created_at) = :year ORDER BY created_at DESC LIMIT 1";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':year', $currentYear);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
     // Staff
     public function createDailyDigest($total, $currentDate, $previousDate)
     {
@@ -89,6 +99,21 @@ class NotificationsModel
         }
     }
 
+    public function createNewPendingScholarsNotification($pendingScholarsCount)
+    {
+        $id = $this->createNotification([
+            'type' => 'pending_scholars',
+            'title' => 'New Scholar Account Awaiting Approval',
+            'message' => $pendingScholarsCount . ' scholar accounts are now pending approval.',
+        ]);
+
+        if ($id) {
+            return $this->createAdminNotification($id);
+        } else {
+            return false;
+        }
+    }
+
     // Scholar
     public function createEventNotification($data)
     {
@@ -99,6 +124,21 @@ class NotificationsModel
                 'A new event "' .
                 $data['event_name'] .
                 '" has been created and you’re invited to join!. Check it out and don’t miss the chance to be part of this event!',
+        ]);
+
+        if ($id) {
+            return $this->createUsersNotification($id);
+        } else {
+            return false;
+        }
+    }
+
+    public function createRenewalApplicationPeriodNotification($data)
+    {
+        $id = $this->createNotification([
+            'type' => 'application_period',
+            'title' => 'Renewal Application Open',
+            'message' => $data['announcementMessage'],
         ]);
 
         if ($id) {
@@ -192,6 +232,20 @@ class NotificationsModel
     {
         $query =
             'INSERT INTO user_notifications (user_id, notification_id) SELECT account_id, :notification_id FROM staff';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':notification_id', $notificationId);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function createAdminNotification($notificationId)
+    {
+        $query =
+            'INSERT INTO user_notifications (user_id, notification_id) SELECT id, :notification_id FROM admin';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':notification_id', $notificationId);
 

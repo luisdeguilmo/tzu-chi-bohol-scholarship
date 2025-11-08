@@ -37,7 +37,10 @@ export default function FinalInterview() {
     const { loading, error, applications, fetchApplications } =
         useFinalInterview(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(applications);
+    const { profilePics, fetchAllPics } = useProfilePicture(
+        applications,
+        "profile-picture"
+    );
     const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
 
     useEffect(() => {
@@ -165,6 +168,7 @@ export default function FinalInterview() {
                     onSearchChange={setSearchTerm}
                     onChangeTab={handleChangeTab}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     buttonLabel={"Set Message"}

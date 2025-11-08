@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Config\Database;
 
-class AssistanceModel {
-    private $table_name = "other_assistance";
+class AssistanceModel
+{
+    private $table_name = 'other_assistance';
 
     public $id;
     public $application_id;
@@ -15,13 +16,18 @@ class AssistanceModel {
 
     private $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
     }
 
-    public function create($assistance, $application_id) {
-        $query = "INSERT INTO " . $this->table_name . " 
+    public function create($assistance, $application_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
                   SET application_id = :application_id,
                       organization_name = :organization_name,
                       support_type = :support_type,
@@ -36,12 +42,49 @@ class AssistanceModel {
         $this->amount = htmlspecialchars(strip_tags($assistance['amount'] ?? '0'));
 
         // Bind values
-        $stmt->bindParam(":application_id", $this->application_id);
-        $stmt->bindParam(":organization_name", $this->organization);
-        $stmt->bindParam(":support_type", $this->type);
-        $stmt->bindParam(":amount", $this->amount);
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':organization_name', $this->organization);
+        $stmt->bindParam(':support_type', $this->type);
+        $stmt->bindParam(':amount', $this->amount);
 
         return $stmt->execute();
+    }
+
+    public function update($assistance, $id)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            " 
+                  SET
+                      organization_name = :organization_name,
+                      support_type = :support_type,
+                      amount = :amount
+                      WHERE application_id = :id";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize inputs
+        $this->organization = htmlspecialchars(strip_tags($assistance['organization_name']));
+        $this->type = htmlspecialchars(strip_tags($assistance['support_type']));
+        $this->amount = htmlspecialchars(strip_tags($assistance['amount'] ?? '0'));
+
+        // Bind values
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':organization_name', $this->organization);
+        $stmt->bindParam(':support_type', $this->type);
+        $stmt->bindParam(':amount', $this->amount);
+
+        return $stmt->execute();
+    }
+
+    public function getOtherAssistance($id)
+    {
+        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
 

@@ -672,6 +672,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import InputModal from "../../../components/InputModal";
 import BASE_URL from "../../../config";
+import { useAccountStatus } from "../../../hooks/useAccountStatus";
 
 function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     const [activityName, setActivityName] = useState("");
@@ -685,9 +686,8 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     const [isLoading, setIsLoading] = useState(false);
     const [conversionStatus, setConversionStatus] = useState({});
     const { user } = useAuth();
+    const { accountStatus } = useAccountStatus(user.user_id);
     const fileInputRef = useRef(null);
-
-    console.log(files);
 
     // Move this to environment variables or server-side
     const CLOUDCONVERT_API_KEY =
@@ -937,6 +937,13 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     };
 
     const handleSubmit = async () => {
+        if (accountStatus === "not_renewed") {
+            toast.error(
+                `You can’t submit community service until your renewal application is approved.`
+            );
+            return;
+        }
+
         setIsSubmitting(true);
         setIsLoading(true);
 

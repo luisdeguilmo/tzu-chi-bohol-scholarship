@@ -10,7 +10,7 @@ export const getExaminationFiles = async (applicationId) => {
 
         // Use your requirements endpoint
         const response = await axios.get(
-            `http://localhost:8000/backend/api/applications/${applicationId}/examination_files`
+            `${BASE_URL}backend/api/applications/${applicationId}/examination_files`
         );
 
         console.log("Requirements endpoint response:", response.data[0]);
@@ -18,17 +18,16 @@ export const getExaminationFiles = async (applicationId) => {
         // return response.data;
 
         // Check if the response has requirements array
-        if (response.data && response.data.requirements) {
-            console.log(response.data.requirements);
-            return response.data.requirements;
-        } else if (response.data && response.data.requirement_base64) {
-            return response.data.requirement_base64;
+        if (response.data && response.data.examination_files) {
+            return response.data.examination_files;
+        } else if (response.data && response.data.examination_files_base64) {
+            return response.data.examination_files_base64;
         } else if (response.data && response.data.base64) {
             return response.data.base64;
         } else {
             console.warn(
                 "Unexpected response format:",
-                response.data.requirements
+                response.data.examination_files
             );
             return null;
         }

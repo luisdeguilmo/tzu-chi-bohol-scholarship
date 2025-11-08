@@ -83,6 +83,49 @@ class ScholarModel
         return $stmt->execute();
     }
 
+    public function update($scholar, $id)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            " 
+                  SET
+                      name = :name,
+                      year_level = :year_level,
+                      school = :school,
+                      course = :course,
+                      school_year = :school_year
+                      WHERE application_id = :id";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize inputs
+        $this->name = htmlspecialchars(strip_tags($scholar['name']));
+        $this->year_level = htmlspecialchars(strip_tags($scholar['year_level']));
+        $this->school = htmlspecialchars(strip_tags($scholar['school']));
+        $this->course = htmlspecialchars(strip_tags($scholar['course']));
+        $this->school_year = htmlspecialchars(strip_tags($scholar['school_year']));
+
+        // Bind values
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':year_level', $this->year_level);
+        $stmt->bindParam(':school', $this->school);
+        $stmt->bindParam(':course', $this->course);
+        $stmt->bindParam(':school_year', $this->school_year);
+
+        return $stmt->execute();
+    }
+
+    public function getTzuChiSiblings($id)
+    {
+        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function updateAllowanceStatus($data)
     {
         $query =

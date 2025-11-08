@@ -10,7 +10,7 @@ const SearchInputMobile = React.memo(
                 </div>
                 <input
                     type="text"
-                    className="block w-full pl-10 pr-3 py-3 text-sm border border-gray-200 rounded-2xl leading-5 bg-white/80 backdrop-blur-sm placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-300 shadow-sm hover:shadow-md"
+                    className="block w-full pl-10 pr-3 py-3 text-xs md:text-sm border border-gray-200 rounded-2xl leading-5 bg-white/80 backdrop-blur-sm placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-300 shadow-sm hover:shadow-md"
                     placeholder={placeholder}
                     value={searchTerm}
                     onChange={(e) => onSearchChange(e.target.value)}

@@ -2,17 +2,23 @@
 
 namespace App\Models;
 
+date_default_timezone_set('Asia/Manila');
+
 use Config\Database;
 
 class ScholarsModel
 {
     private $table_name = 'scholars';
     private $pdo;
+    private $currentYearAndMonth;
+    private $currentDate;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->currentYearAndMonth = date('Y-m');
+        $this->currentDate = date('Y-m-s');
     }
 
     public function getAllScholars($status, $school_year, $sort)
@@ -191,6 +197,22 @@ class ScholarsModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function getAccountStatus($id)
+    {
+        $query =
+            'SELECT status FROM users WHERE account_id = :scholar_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':scholar_id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($row) {
+            return $row['status'];
+        }
+
+        return null;
+    }
+
     public function unProcessScholarsAllowance($scholarId, $allowance)
     {
         $query =
@@ -216,6 +238,16 @@ class ScholarsModel
         return $stmt->execute();
     }
 
+    public function resetCommunityServiceAndEventRenderedHours()
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            " SET community_service_rendered_hours = 0, event_rendered_hours = 0, community_event_rendered_hours_reset_at = NOW() WHERE DATE_FORMAT(community_event_rendered_hours_reset_at, '%Y-%m') != '$this->currentYearAndMonth'";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute();
+    }
+
     public function resetAllScholarsAllowanceStatusToPending()
     {
         $query =
@@ -229,6 +261,34 @@ class ScholarsModel
     ';
 
         $stmt = $this->pdo->prepare($query);
+        return $stmt->execute();
+    }
+
+    public function setIsSubmittedTransportInfo($scholarId)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            ' SET has_submitted_living_info = 1 WHERE account_id = :scholar_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':scholar_id', $scholarId);
+        return $stmt->execute();
+    }
+
+    public function setScholarsAsNotRenewed($id)
+    {
+        $query =
+            "UPDATE users SET status = 'not_renewed' WHERE type = 'scholar' AND status = 'active' AND account_id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function setScholarsAsActive($id)
+    {
+        $query = "UPDATE users SET status = 'active' WHERE type = 'scholar' AND account_id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         return $stmt->execute();
     }
 }

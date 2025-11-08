@@ -23,11 +23,30 @@ export const useStaffAccounts = () => {
         }
     };
 
-    const addStaff = async (firstName, lastName, email, password) => {
+    const addStaff = async (
+        firstName,
+        middleName,
+        lastName,
+        contactNumber,
+        suffix,
+        age,
+        gender,
+        address,
+        facebook,
+        email,
+        password
+    ) => {
         const data = {
             staff: {
                 first_name: firstName,
+                middle_name: middleName,
                 last_name: lastName,
+                contact_number: contactNumber,
+                suffix: suffix,
+                age: age,
+                gender: gender,
+                address: address,
+                facebook: facebook,
                 email: email,
                 password: password,
             },

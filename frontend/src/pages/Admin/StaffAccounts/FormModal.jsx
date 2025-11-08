@@ -5,8 +5,15 @@ import { useStaffAccounts } from "../../../hooks/useStaffAccounts";
 
 const FormModal = ({ isOpen, onClose, onSuccess }) => {
     const [firstName, setFirstName] = useState("");
+    const [middleName, setMiddleName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [suffix, setSuffix] = useState("");
+    const [contactNumber, setContactNumber] = useState("");
     const [email, setEmail] = useState("");
+    const [age, setAge] = useState("");
+    const [gender, setGender] = useState("");
+    const [address, setAddress] = useState("");
+    const [facebook, setFacebook] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -21,7 +28,14 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
         try {
             const success = await addStaff(
                 firstName,
+                middleName,
                 lastName,
+                contactNumber,
+                suffix,
+                age,
+                gender,
+                address,
+                facebook,
                 email,
                 password,
                 confirmPassword
@@ -39,7 +53,14 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
 
     const resetFields = () => {
         setFirstName("");
+        setMiddleName("");
         setLastName("");
+        setSuffix("");
+        setContactNumber("");
+        setAge("");
+        setAddress("");
+        setFacebook("");
+        setGender("");
         setEmail("");
         setPassword("");
         setConfirmPassword("");
@@ -60,12 +81,12 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
             onSubmit={handleSubmit}
             isLoading={loading}
         >
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmit();
-                }}
-                className="p-6 space-y-4"
+            <div
+                // onSubmit={(e) => {
+                //     e.preventDefault();
+                //     handleSubmit();
+                // }}
+                className="p-6 space-y-4 h-[500px]"
             >
                 <div className="block mb-2 relative">
                     <label className="block mb-1 text-gray-600 text-xs">
@@ -75,12 +96,24 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="text"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="Enter first name"
+                        placeholder="Enter your first name"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
                 </div>
-
+                <div className="block mb-2 relative">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Middle Name
+                    </label>
+                    <input
+                        type="text"
+                        value={middleName}
+                        onChange={(e) => setMiddleName(e.target.value)}
+                        placeholder="Enter your middle name"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    />
+                </div>
                 <div className="block mb-2 relative">
                     <label className="block mb-1 text-gray-600 text-xs">
                         Last Name
@@ -89,12 +122,106 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="text"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Enter last name"
+                        placeholder="Enter your last name"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
                 </div>
-
+                <div className="mt-2 block w-full relative">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Suffix
+                    </label>
+                    <select
+                        name="suffix"
+                        value={suffix} // <-- controlled value
+                        onChange={(e) => setSuffix(e.target.value)} // <-- change handler
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    >
+                        <option value="" disabled>
+                            -- Select --
+                        </option>
+                        {/* <option value="pending">Pending</option> */}
+                        <option value="None">None</option>
+                        <option value="Jr.">Jr</option>
+                        <option value="Sr.">Sr</option>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                    </select>
+                </div>
+                <div className="block mb-2 relative">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Contact Number
+                    </label>
+                    <input
+                        type="text"
+                        value={contactNumber}
+                        onChange={(e) => setContactNumber(e.target.value)}
+                        placeholder="Enter your contact number"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    />
+                </div>
+                <div className="block mb-2 relative">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Age
+                    </label>
+                    <input
+                        type="number"
+                        value={age}
+                        onChange={(e) => setAge(e.target.value)}
+                        placeholder="Enter your age"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    />
+                </div>
+                <div className="mt-2 block w-full relative">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Gender
+                    </label>
+                    <select
+                        name="gender"
+                        value={gender} // <-- controlled value
+                        onChange={(e) => setGender(e.target.value)} // <-- change handler
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    >
+                        <option value="" disabled>
+                            -- Select --
+                        </option>
+                        {/* <option value="pending">Pending</option> */}
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div className="block mb-2 relative">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Address
+                    </label>
+                    <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        placeholder="Enter your address"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    />
+                </div>
+                <div className="block mb-2 relative">
+                    <label className="block mb-1 text-gray-600 text-xs">
+                        Facebook
+                    </label>
+                    <input
+                        type="text"
+                        value={facebook}
+                        onChange={(e) => setFacebook(e.target.value)}
+                        placeholder="Enter your facebook"
+                        className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        required
+                    />
+                </div>
                 <div className="block mb-2 relative">
                     <label className="block mb-1 text-gray-600 text-xs">
                         Email Address
@@ -108,7 +235,6 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         required
                     />
                 </div>
-
                 <div className="block mb-2 relative">
                     <label className="block mb-1 text-gray-600 text-xs">
                         Password
@@ -122,7 +248,6 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         required
                     />
                 </div>
-
                 <div className="block mb-2 relative">
                     <label className="block mb-1 text-gray-600 text-xs">
                         Confirm Password
@@ -136,7 +261,8 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         required
                     />
                 </div>
-            </form>
+                <div className="h-4"></div>
+            </div>
         </InputModal>
     );
 };

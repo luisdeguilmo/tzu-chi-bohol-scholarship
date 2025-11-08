@@ -78,7 +78,7 @@ function NavBar({ isScrolled }) {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { applicationPeriods, fetchApplicationPeriods } =
-        useApplicationPeriods();
+        useApplicationPeriods("new");
 
     useEffect(() => {
         fetchApplicationPeriods();
@@ -92,14 +92,14 @@ function NavBar({ isScrolled }) {
 
     const handleClick = () => {
         if (
-            applicationPeriods[0].status === "Active" &&
-            today >= applicationPeriods[0].start_date &&
-            today <= applicationPeriods[0].end_date
+            applicationPeriods.status === "Active" &&
+            today >= applicationPeriods.start_date &&
+            today <= applicationPeriods.end_date
         ) {
             navigate("/application");
         } else if (
-            today > applicationPeriods[0].end_date ||
-            applicationPeriods[0].status === "Closed"
+            today > applicationPeriods.end_date ||
+            applicationPeriods.status === "Closed"
         ) {
             toast.error("The online application has been closed.");
         } else {

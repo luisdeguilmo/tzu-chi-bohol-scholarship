@@ -113,7 +113,7 @@ export const getRequirements = async (applicationId) => {
 
         // Use your requirements endpoint
         const response = await axios.get(
-            `http://localhost:8000/backend/api/applications/${applicationId}/requirements`
+            `${BASE_URL}backend/api/applications/${applicationId}/requirements`
         );
 
         console.log("Requirements endpoint response:", response.data[0]);
@@ -129,7 +129,10 @@ export const getRequirements = async (applicationId) => {
         } else if (response.data && response.data.base64) {
             return response.data.base64;
         } else {
-            console.warn("Unexpected response format:", response.data.requirements);
+            console.warn(
+                "Unexpected response format:",
+                response.data.requirements
+            );
             return null;
         }
     } catch (error) {

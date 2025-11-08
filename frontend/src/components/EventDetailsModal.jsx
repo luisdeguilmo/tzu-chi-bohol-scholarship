@@ -6,6 +6,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { convertTo24HourFormat } from "../utils/convertTo24HourFormat";
 import EventButton from "../pages/Scholar/Events/EventButton";
 import ConfirmationModal from "../pages/Staff/Event/ConfirmationModal";
+import InputModal from "./InputModal";
+import { toast } from "react-toastify";
 
 const EventDetailsModal = React.memo(
     ({
@@ -51,38 +53,46 @@ const EventDetailsModal = React.memo(
             }
         }, [method]);
 
-        return (
-            <div
-                className={`fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-60 p-4 animate-in fade-in duration-200 ${
-                    isOpen ? "block" : "hidden"
-                }`}
-                // onKeyDown={handleKeyDown}
-                // onClick={handleBackdropClick}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="modal-title"
-            >
-                <div className="relative w-full scroll-smooth sm:w-[60%] md:[45%] lg:w-[40%] xl:w-[30%] bg-white rounded-xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200">
-                    {/* Header */}
-                    <div className="relative px-6 py-4 border-b border-slate-200">
-                        <h2
-                            id="modal-title"
-                            className="text-lg text-slate-700 pr-10 leading-tight"
-                        >
-                            {event?.event_name}
-                        </h2>
-                        <button
-                            type="button"
-                            onClick={() => onClose(false)}
-                            className="absolute top-3 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-100 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
-                            aria-label="Close modal"
-                        >
-                            <X size={18} />
-                        </button>
-                    </div>
+        console.log(event);
 
+        const participated = event?.participants.filter(
+            (participant) => participant.is_attended
+        );
+
+        const handleCancel = () => {
+            onClose(false);
+        };
+
+        const handleOpenConfirmationModal = () => {
+            if (selectedScholars.length < 1) {
+                toast.error("Select scholar(s) to proceed.");
+                return;
+            }
+
+            if (renderedHours === "") {
+                toast.error("Please enter number of hours.");
+                return;
+            }
+
+            setIsOpenSelectedScholarModal(true);
+        };
+
+        return (
+            <>
+                <InputModal
+                    label={event?.event_name}
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    // resetFields={resetForm}
+                    expandable={true}
+                    onCancel={handleCancel}
+                    disabledButton={true}
+                >
                     {/* Content */}
-                    <div className="max-h-[400px] overflow-y-auto scroll-smooth p-6 space-y-6">
+                    <div
+                        className={`max-h-[400px] overflow-y-auto scroll-smooth p-6 ${event?.participants.length > 0 && "space-y-6"}`}
+                    >
+                        {/* <p className="text-gray-700">{event?.event_name}</p> */}
                         {/* Event Details Grid */}
                         <div className="grid grid-cols-2 sm:gap-12 gap-14 text-xs">
                             <div className="space-y-3">
@@ -119,15 +129,12 @@ const EventDetailsModal = React.memo(
                                             {" / "}
                                             {event?.participant_limit}{" "}
                                             Participants
-                                            {/* {event?.numberOfParticipants > 1
-                                                ? "Participants"
-                                                : "Participant"} */}
                                         </span>
                                     ) : (
                                         <span className="text-slate-700 font-medium">
                                             {event?.numberOfParticipants}
                                             {" / "}
-                                            {event?.participant_limit}
+                                            {event?.participant_limit}{" "}
                                             Participated
                                         </span>
                                     )}
@@ -141,7 +148,7 @@ const EventDetailsModal = React.memo(
                                     event?.participants?.length > 0
                                         ? "block"
                                         : "hidden"
-                                } text-xs text-gray-700 font-bold`}
+                                } text-xs text-gray-600`}
                             >
                                 {event?.date + " " + event?.end_time >
                                 date.getCurrentDateAndTime()
@@ -149,11 +156,11 @@ const EventDetailsModal = React.memo(
                                     : "Scholars Who Participated:"}
                             </h3>
                             <ul
-                                className={`mt-4 grid gap-1 ${
+                                className={`mt-2 grid gap-1 ${event?.participants?.length > 0 ? "block" : "hidden"} ${
                                     event?.participants?.length >= 15
                                         ? "grid-cols-2"
                                         : "grid-cols-1"
-                                }`}
+                                } p-4 border rounded-lg bg-gray-50/50 border-gray-200`}
                             >
                                 {event?.participants?.map(
                                     (participant, index) => (
@@ -205,14 +212,18 @@ const EventDetailsModal = React.memo(
 
                         {event?.date + " " + event?.end_time <
                             date.getCurrentDateAndTime() &&
-                            isStaff && (
+                            isStaff &&
+                            participated.length <
+                                event?.numberOfParticipants && (
                                 <div>
-                                    <h3 className="text-xs text-gray-700 font-bold">
+                                    <h3 className="text-xs text-gray-600">
                                         Rendered Hours:
                                     </h3>
-                                    <form className="mt-4">
-                                        <div className="block mb-4 relative">
-                                            <label className="mb-1 text-xs text-slate-600 flex gap-1 items-center">
+                                    <div className="mt-2 p-4 border rounded-lg bg-gray-50/50 border-gray-200">
+                                        <div
+                                            className={`block relative ${method === "manual" ? "mb-4" : "mb-0"}`}
+                                        >
+                                            <label className="mb-1 text-xs text-slate-600 flex gap-2 items-center">
                                                 <input
                                                     value={method}
                                                     onChange={() =>
@@ -225,7 +236,7 @@ const EventDetailsModal = React.memo(
                                                 Based on the event's start and
                                                 end time
                                             </label>
-                                            <label className="text-xs text-slate-600 flex gap-1 items-center">
+                                            <label className="text-xs text-slate-600 flex gap-2 items-center">
                                                 <input
                                                     value={method}
                                                     onChange={() =>
@@ -247,6 +258,7 @@ const EventDetailsModal = React.memo(
                                                 <input
                                                     type="number"
                                                     min={1}
+                                                    // max={10}
                                                     value={renderedHours}
                                                     onChange={(e) =>
                                                         setRenderedHours(
@@ -255,20 +267,20 @@ const EventDetailsModal = React.memo(
                                                     }
                                                     required
                                                     placeholder="Enter number of hours"
-                                                    className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                                    className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                                 />
                                             </div>
                                         )}
-                                    </form>
+                                    </div>
                                 </div>
                             )}
                     </div>
 
-                    <div className="p-4 flex flex-col sm:flex-row gap-3 border-t border-slate-200">
+                    <div className="flex justify-end rounded-b-sm gap-2 p-3.5 border-t border-gray-300 bg-gray-50 flex-shrink-0">
                         <button
                             onClick={() => onClose(false)}
                             type="button"
-                            className="flex-1 text-sm bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-200 transition-colors duration-200"
+                            className="ml-auto bg-gray-200 text-gray-600 text-sm px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
                         >
                             Close
                         </button>
@@ -276,7 +288,9 @@ const EventDetailsModal = React.memo(
                             event?.date + " " + event?.end_time >
                                 date.getCurrentDateAndTime() && (
                                 <EventButton
-                                    numberOfParticipants={event?.numberOfParticipants}
+                                    numberOfParticipants={
+                                        event?.numberOfParticipants
+                                    }
                                     participantLimit={event?.participant_limit}
                                     hasJoinButton={
                                         event?.event_type === "optional"
@@ -294,19 +308,15 @@ const EventDetailsModal = React.memo(
                             event?.date + " " + event?.end_time <
                                 date.getCurrentDateAndTime() && (
                                 <button
-                                    onClick={() => {
-                                        console.log("Clicked");
-                                        setIsOpenSelectedScholarModal(true);
-                                    }}
-                                    type="submit"
-                                    className="flex-1 text-sm bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200"
+                                    onClick={handleOpenConfirmationModal}
+                                    type="button"
+                                    className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition"
                                 >
                                     Record
                                 </button>
                             )}
                     </div>
-                </div>
-
+                </InputModal>
                 <ConfirmationModal
                     isOpen={isOpenSelectedScholarModal}
                     onClose={setIsOpenSelectedScholarModal}
@@ -316,7 +326,7 @@ const EventDetailsModal = React.memo(
                     selectedScholars={selectedScholars}
                     renderedHours={renderedHours}
                 />
-            </div>
+            </>
         );
     }
 );

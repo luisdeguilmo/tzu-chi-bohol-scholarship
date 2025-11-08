@@ -54,6 +54,7 @@ export const useScholars = (tab, status, scholarYear, sortBy) => {
                 toast.error(
                     "You’ve already processed the allowance for this cycle. Please start a new cycle to proceed."
                 );
+                console.log(data);
                 setLoading(false);
                 return false;
             }

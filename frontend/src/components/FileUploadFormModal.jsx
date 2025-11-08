@@ -21,7 +21,6 @@ function FileUploadFormModal({
     const [existingFiles, setExistingFiles] = useState([]);
     const [existingFilesRemoved, setExistingFilesRemoved] = useState([]);
 
-    console.log(existingFilesRemoved);
 
     useEffect(() => {
         if (applicationFiles[0]?.files?.length > 0) {
@@ -155,9 +154,12 @@ function FileUploadFormModal({
 
         if (success) {
             setIsOpen(false);
+            setIsSubmitting(false);
             onRefresh();
         }
     };
+
+    console.log(isSubmitting);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -262,7 +264,7 @@ function FileUploadFormModal({
             buttonLabel={"Upload"}
             isLoading={isLoading}
         >
-            <form onSubmit={handleReUploadFiles} className="px-8 py-4">
+            <div className="px-8 py-4">
                 <div className="">
                     <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                         Files
@@ -343,20 +345,20 @@ function FileUploadFormModal({
                                             </div>
                                         )}
                                         <div>
-                                            <div className="font-medium text-gray-700 flex items-center text-[10px]">
-                                                {filePreview.name}
+                                            <div className="w-full md:w-[150px] lg:w-[100px] font-medium text-gray-700 flex items-center text-[10px]">
+                                                <p className="truncate">{filePreview.name}</p>
                                                 {/* {filePreview.isExisting && (
                                                     <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
                                                         Saved
                                                     </span>
                                                 )} */}
                                             </div>
-                                            <div className="text-gray-500">
+                                            {/* <div className="text-gray-500">
                                                 {(
                                                     filePreview.size / 1024
                                                 ).toFixed(2)}{" "}
                                                 KB
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                     <button
@@ -407,7 +409,7 @@ function FileUploadFormModal({
                         </button>
                     </div> */}
                 </div>
-            </form>
+            </div>
         </InputModal>
     );
 }

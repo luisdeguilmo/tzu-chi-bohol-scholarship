@@ -31,19 +31,12 @@ const ScholarshipCriteriaTable = ({
     activeTab,
     handleChangeTab,
     currentPage,
+    setCurrentPage,
     sortedItems,
 }) => {
     const { headers, fields, primaryField, searchFields } = tableConfig;
     const { setId, setText, setQuantity, setDescription, setSubmit } =
         useCriteria();
-
-    // const {
-    //     editData,
-    //     onFieldChange,
-    //     onSave,
-    //     onStartEdit,
-    //     onDelete,
-    // } = editState;
 
     const {
         currentItems,
@@ -51,9 +44,12 @@ const ScholarshipCriteriaTable = ({
         indexOfFirstItem,
         indexOfLastItem,
         numberOfItemsPerPage,
+        setNumberOfItemsPerPage,
         goToPreviousPage,
         goToNextPage,
     } = paginationState;
+
+    console.log(currentPage);
 
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -124,6 +120,8 @@ const ScholarshipCriteriaTable = ({
                     onSearchChange={onSearchChange}
                     onChangeTab={handleChangeTab}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
+                    onChangeNumberOfItemsPerPage={setNumberOfItemsPerPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     onOpen={setIsModalOpen}

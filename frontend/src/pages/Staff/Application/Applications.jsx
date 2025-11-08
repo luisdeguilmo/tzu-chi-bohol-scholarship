@@ -33,7 +33,7 @@ export default function Applications() {
     const { loading, error, applications, fetchApplications } =
         useApplications(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics } = useProfilePicture(applications);
+    const { profilePics } = useProfilePicture(applications, "profile-picture");
     const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
 
     const {
@@ -41,6 +41,7 @@ export default function Applications() {
         approveApplication,
         approveRenewApplication,
         rejectApplication,
+        rejectRenewApplication,
     } = manageApplication();
 
     useEffect(() => {
@@ -77,6 +78,15 @@ export default function Applications() {
                 setIsFormModalOpen(false);
             }
         } else if (activeTab === "old") {
+            const success = await rejectRenewApplication(
+                selectedApplicant,
+                feedback
+            );
+
+            if (success) {
+                await fetchApplications();
+                setIsFormModalOpen(false);
+            }
         }
     };
 
@@ -161,6 +171,7 @@ export default function Applications() {
                     onSearchChange={setSearchTerm}
                     onChangeTab={handleChangeTab}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     buttonLabel={"Set Message"}
@@ -170,7 +181,7 @@ export default function Applications() {
 
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table
-                        hasNumberColumn={true}
+                        // hasNumberColumn={true}
                         tableHeaders={
                             activeTab === "new"
                                 ? applicationTableHeaders
@@ -182,9 +193,9 @@ export default function Applications() {
                                 key={info.application_id}
                                 className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50 `}
                             >
-                                <td className="text-gray-500">{`${
+                                {/* <td className="text-gray-500">{`${
                                     numberOfItemsPerPage + index + 1
-                                }.`}</td>
+                                }.`}</td> */}
                                 <td className="py-1 whitespace-nowrap text-gray-600">
                                     {info.application_id}
                                 </td>

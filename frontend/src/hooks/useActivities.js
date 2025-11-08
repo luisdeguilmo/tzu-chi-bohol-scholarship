@@ -30,5 +30,5 @@ export const useActivities = (tab, userId) => {
         fetchActivities(tab, userId);
     }, [tab, userId]);
 
-    return { activities, fetchActivities };
+    return { loading, activities, fetchActivities };
 };

@@ -2,6 +2,7 @@
 export const applicationPeriodTableHeaders = [
     { name: "Start Date", style: "text-center" },
     { name: "End Date", style: "text-center" },
+    { name: "Type", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Message", style: "text-center" },
     { name: "Action", style: "text-center" },
@@ -16,12 +17,33 @@ export const scholarTableHeaders = [
     { name: "Action", style: "text-center" },
 ];
 
+export const allowanceCyclesTableHeaders = [
+    { name: "Rendered Month", style: "text-center" },
+    { name: "Allowance Month", style: "text-center" },
+    { name: "Cutoff Date", style: "text-center" },
+    { name: "Status", style: "text-center" },
+    { name: "Date Processed", style: "text-center" },
+    { name: "Action", style: "text-center" },
+];
+
 export const applicationTableHeaders = [
     { name: "Application ID", style: "text-center" },
     { name: "Applicant", style: "text-center" },
     { name: "Date Applied", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
+
+// export const applicationTableHeaders = [
+//     { name: "Application ID", style: "text-center" },
+//     { name: "Image", style: "text-center" },
+//     { name: "Lastname", style: "text-center" },
+//     { name: "Firstname", style: "text-center" },
+//     { name: "Age", style: "text-center" },
+//     { name: "Gender", style: "text-center" },
+//     { name: "Email", style: "text-center" },
+//     { name: "Date Applied", style: "text-center" },
+//     { name: "Action", style: "text-center" },
+// ];
 
 export const renewalTableHeaders = [
     { name: "Application ID", style: "text-center" },
@@ -37,6 +59,15 @@ export const approvedApplicationTableHeaders = [
     { name: "Status", style: "text-center" },
     { name: "Date Applied", style: "text-center" },
     { name: "Date Status Changed", style: "text-center" },
+    { name: "Action", style: "text-center" },
+];
+
+export const applicationRecordsTableHeaders = [
+    { name: "Application ID", style: "text-center" },
+    { name: "Applicant", style: "text-center" },
+    { name: "School Year", style: "text-center" },
+    { name: "Status", style: "text-center" },
+    { name: "Date Applied", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
 
@@ -169,8 +200,8 @@ export const scholarAccountHeaders = [
 
 export const staffAccountHeaders = [
     { name: "Staff ID" },
-    { name: "Name" },
-    { name: "Email" },
-    { name: "Created" },
+    { name: "Staff" },
+    { name: "Status" },
+    { name: "Date Created" },
     { name: "Action" },
 ];

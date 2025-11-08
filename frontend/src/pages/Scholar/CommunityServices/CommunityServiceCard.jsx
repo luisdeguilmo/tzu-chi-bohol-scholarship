@@ -55,14 +55,17 @@ const CommunityServiceCard = ({
             // key={`${activity.id || index}-${activity.activity_name}`}
             onClick={(e) => {
                 e.stopPropagation();
-                if (activity.activity_status === "Not Recorded" && !isArchived) {
+                if (
+                    activity.activity_status === "Not Recorded" &&
+                    !isArchived
+                ) {
                     setIsEditFormModalOpen(true);
                     handleSelectCommunityService(activity);
                 } else {
                     handleOpenDetails(activity);
                 }
             }}
-            className={`group relative p-6 rounded-2xl shadow-sm border transition-all duration-300 cursor-pointer ${
+            className={`group relative p-6 rounded-lg shadow-sm border transition-all duration-300 cursor-pointer ${
                 isArchived
                     ? "bg-gradient-to-br from-slate-100 to-slate-200 border-slate-300 shadow-inner"
                     : "bg-white border-gray-200 hover:shadow-md hover:border-green-200"
@@ -100,9 +103,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                            className={`${
-                                isArchived ? "italic text-slate-400" : ""
-                            }`}
+                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
                         >
                             {formatDate(activity.activity_date)}
                         </span>
@@ -119,9 +120,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                            className={`${
-                                isArchived ? "italic text-slate-400" : ""
-                            }`}
+                           className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
                         >
                             {formatTime(activity.start_time)} -{" "}
                             {formatTime(activity.end_time)}
@@ -139,9 +138,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                            className={`truncate ${
-                                isArchived ? "italic text-slate-400" : ""
-                            }`}
+                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
                         >
                             {activity.activity_location}
                         </span>
@@ -174,15 +171,15 @@ const CommunityServiceCard = ({
                                 activity.activity_status === "Pending"
                                     ? "bg-yellow-100 text-yellow-800"
                                     : activity.activity_status === "Recorded"
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-red-100 text-red-800"
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-red-100 text-red-800"
                             } ${isArchived ? "italic text-slate-400" : ""}`}
                         >
                             {activity.activity_status === "Pending"
                                 ? "Pending"
                                 : activity.activity_status === "Recorded"
-                                ? "Recorded"
-                                : "Not Recorded"}
+                                  ? "Recorded"
+                                  : "Not Recorded"}
                         </span>
                     </div>
                 </div>

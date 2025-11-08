@@ -75,7 +75,7 @@ class ScholarsController
                 $results = $scholar->getAllScholars($status, $school_year, $sort);
             } elseif ($tab === 'active') {
                 $scholarIds = $scholar->getAllScholarsId();
-                $isProcessed = $cycleModel->isCurrentMonthProcessed();
+                $isProcessed = $cycleModel->isPreviousMonthProcessed();
 
                 if (!$isProcessed) {
                     foreach ($scholarIds as $scholarId) {
@@ -152,7 +152,7 @@ class ScholarsController
             $allowanceCycleModel->processAllowanceCycle();
 
             $scholarIds = $model->getAllScholarsId();
-            $isProcessed = $allowanceCycleModel->isCurrentMonthProcessed();
+            $isProcessed = $allowanceCycleModel->isPreviousMonthProcessed();
 
             if ($isProcessed) {
                 foreach ($scholarIds as $scholarId) {

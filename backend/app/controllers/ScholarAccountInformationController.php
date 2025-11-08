@@ -66,12 +66,16 @@ class ScholarAccountInformationController
                 );
             }
 
-            $basicInfo = $model->getBasicInformation($scholarId, $currentSchoolYear);
+            $basicInfo = $model->getBasicInformation($scholarId);
+            $academicInfo = $model->getAcademicInfo($scholarId);
+            $transportDetails = $model->getTransportDetails($scholarId);
             $scholarStatus = $model->getScholarStatus($scholarId);
             $renderedHours = $model->getRenderedHours($scholarId);
 
             $result = [
                 'basic_information' => $basicInfo,
+                'academic_information' => $academicInfo,
+                'transport_details' => $transportDetails,
                 'scholar_status' => $scholarStatus,
                 'rendered_hours' => $renderedHours,
             ];

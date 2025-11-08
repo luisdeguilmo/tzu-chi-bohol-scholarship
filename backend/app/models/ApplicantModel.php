@@ -33,17 +33,40 @@ class ApplicantModel
     public function approveRenewApplication($data)
     {
         $query =
-            "UPDATE application_info SET is_application_approved = 1, is_eligible_for_exam = 1, status = 'scholar', approved_at = NOW() WHERE application_id = :application_id";
+            "UPDATE application_info SET is_application_approved = 1, status = 'scholar', approved_at = NOW() WHERE application_id = :application_id";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':application_id', $data['application_id']);
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            $query_2 = "SELECT scholar_id FROM application_info WHERE application_id = :application_id";
+            $stmt_2 = $this->pdo->prepare($query_2);
+            $stmt_2->bindParam(":application_id", $data['application_id']);
+            $stmt_2->execute();
+            $row = $stmt_2->fetch(\PDO::PARAM_INT);
+            if ($row) {
+                return $row['scholar_id'];
+            }
+
+            return null;
+        }
+
+        return false;
     }
 
     public function rejectApplication($data)
     {
         $query =
             "UPDATE application_info SET is_application_rejected = 1, status = 'Rejected', rejected_at = NOW() WHERE application_id = :application_id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':application_id', $data['application_id']);
+        return $stmt->execute();
+    }
+
+    public function rejectRenewApplication($data)
+    {
+        $query =
+            "UPDATE application_info SET is_application_rejected = 1, status = 'renewal_application_rejected', rejected_at = NOW() WHERE application_id = :application_id";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':application_id', $data['application_id']);
@@ -130,9 +153,54 @@ class ApplicantModel
         return $stmt->execute();
     }
 
+    public function getApplicantInfo($id, $schoolYear)
+    {
+        $query =
+            'SELECT * FROM application_info WHERE scholar_id = :id AND school_year = :school_year';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindParam(':school_year', $schoolYear);
+        $stmt->execute();
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+    }
+
+    public function getApplicantInformation($id, $schoolYear)
+    {
+        $query = '
+        SELECT 
+            pi.*, 
+            eb.*, 
+            pg.*, 
+            cp.*, 
+            fm.*, 
+            ts.*, 
+            oa.*, 
+            cr.*  
+        FROM application_info ai
+            LEFT JOIN personal_information pi ON pi.scholar_id = ai.scholar_id
+            LEFT JOIN educational_background eb ON eb.scholar_id = ai.scholar_id
+            LEFT JOIN parents_guardian pg ON pg.scholar_id = ai.scholar_id
+            LEFT JOIN contact_person cp ON cp.scholar_id = ai.scholar_id
+            LEFT JOIN family_members fm ON fm.scholar_id = ai.scholar_id
+            LEFT JOIN tzu_chi_siblings ts ON ts.scholar_id = ai.scholar_id
+            LEFT JOIN other_assistance oa ON oa.scholar_id = ai.scholar_id
+            LEFT JOIN character_reference cr ON cr.scholar_id = ai.scholar_id
+        WHERE ai.scholar_id = :id 
+          AND ai.school_year = :school_year
+    ';
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindParam(':school_year', $schoolYear);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getApplicantsWhoTookExam()
     {
-        $query = "SELECT * FROM application_info WHERE is_application_approved = '1' AND is_eligible_for_exam = '1' AND YEAR(created_at) = $this->currentYear";
+        $query = "SELECT * FROM application_info WHERE is_application_approved = '1' AND is_eligible_for_exam = '1' AND YEAR(created_at) = '$this->currentYear'";
 
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

@@ -36,7 +36,7 @@ export default function InitialInterview() {
     const { loading, error, applications, fetchApplications } =
         useInitialInterview(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(applications);
+    const { profilePics, fetchAllPics } = useProfilePicture(applications, "profile-picture");
 
     useEffect(() => {
         fetchApplications();
@@ -160,6 +160,7 @@ export default function InitialInterview() {
                     onSearchChange={setSearchTerm}
                     onChangeTab={handleChangeTab}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     buttonLabel={"Set Message"}

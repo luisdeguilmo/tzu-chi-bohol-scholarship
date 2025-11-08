@@ -72,7 +72,8 @@ class ScholarsController
             if ($tab === 'all') {
                 $results = $scholar->getAllScholars($status, $school_year, $sort);
             } elseif ($tab === 'active') {
-                $results = $scholar->getActiveScholars($status, $school_year, $sort);
+                $newScholars = $scholar->getNewActiveScholars($status, $school_year, $sort);
+                $oldScolar = $scholar->getNewActiveScholars($status, $school_year, $sort);
             } elseif ($tab === 'deactivated') {
                 $results = $scholar->getDeactivatedScholars($status, $school_year, $sort);
             } elseif ($tab === 'not_renewed') {

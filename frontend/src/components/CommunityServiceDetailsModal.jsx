@@ -28,9 +28,6 @@ const CommunityServiceDetailsModal = React.memo(
         const URL = `${BASE_URL}public/`;
         const [filePreviews, setFilePreviews] = useState([]);
         const [feedback, setFeedback] = useState("");
-        const [isFeedbackRequired, setIsFeedbackRequired] = useState(false);
-        const [isRenderedHoursRequired, setIsRenderedHoursRequired] =
-            useState(false);
         const [isRevoked, setIsRevoked] = useState(false);
         const [action, setAction] = useState("");
         const [method, setMethod] = useState("");
@@ -141,9 +138,18 @@ const CommunityServiceDetailsModal = React.memo(
                         aria-modal="true"
                         aria-labelledby="modal-title"
                     >
-                        <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200">
+                        <div
+                            className={`
+                        relative bg-white rounded-sm shadow-2xl w-full
+                        sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[35%]
+                        transition-transform duration-300
+                        ${isOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}
+
+                        absolute bottom-0 sm:relative sm:bottom-auto flex flex-col h-auto
+                    `}
+                        >
                             {/* Header */}
-                            <div className="relative px-4 py-4 border-b bg-gray-100 border-slate-200">
+                            <div className="relative px-4 py-4 rounded-t-sm border-b bg-gray-100 border-slate-200">
                                 <h2
                                     id="modal-title"
                                     className="text-sm text-slate-700 pr-10 leading-tight"
@@ -371,11 +377,11 @@ const CommunityServiceDetailsModal = React.memo(
                                     <div
                                         className={`${!isRevoked && isStaff && activity?.status === "Pending" ? "block" : "hidden"}`}
                                     >
-                                        <h3 className="text-xs mb-2 text-gray-700 font-bold">
+                                        <h3 className="text-xs mb-2 text-gray-700">
                                             Choose Action:
                                         </h3>
-                                        <div className="block mb-4 relative">
-                                            <label className="mb-1 text-xs text-slate-600 flex gap-1 items-center">
+                                        <div className="block mb-2 relative p-4 border rounded-lg bg-gray-50/50 border-gray-200">
+                                            <label className="mb-1 text-xs text-slate-600 flex gap-2 items-center">
                                                 <input
                                                     value={action}
                                                     onChange={() => {
@@ -387,7 +393,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                 />
                                                 Approve
                                             </label>
-                                            <label className="text-xs text-slate-600 flex gap-1 items-center">
+                                            <label className="text-xs text-slate-600 flex gap-2 items-center">
                                                 <input
                                                     value={action}
                                                     onChange={() => {
@@ -409,16 +415,20 @@ const CommunityServiceDetailsModal = React.memo(
                                                 !isRevoked)
                                                 ? "block"
                                                 : "hidden"
-                                        } mb-2 relative`}
+                                        } relative`}
                                     >
-                                        <div
-                                            className={`${action === "approve" || (isRevoked && activity?.status === "Not Recorded") ? "block" : "hidden"}`}
+                                        <h3
+                                            className={`${action === "approve" || (isRevoked && activity?.status === "Not Recorded") ? "block" : "hidden"} text-xs mb-2 text-gray-700`}
                                         >
-                                            <h3 className="text-xs mb-2 text-gray-700 font-bold">
-                                                Rendered Hours:
-                                            </h3>
-                                            <div className="block mb-4 relative">
-                                                <label className="mb-1 text-xs text-slate-600 flex gap-1 items-center">
+                                            Rendered Hours:
+                                        </h3>
+                                        <div
+                                            className={`${action === "approve" || (isRevoked && activity?.status === "Not Recorded") ? "block" : "hidden"} p-4 border rounded-lg bg-gray-50/50 border-gray-200`}
+                                        >
+                                            <div
+                                                className={`block relative ${method === "manual" ? "mb-4" : "mb-0"}`}
+                                            >
+                                                <label className="mb-1 text-xs text-slate-600 flex gap-2 items-center">
                                                     <input
                                                         value={method}
                                                         onChange={() =>
@@ -433,7 +443,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                     Based on the event's start
                                                     and end time
                                                 </label>
-                                                <label className="text-xs text-slate-600 flex gap-1 items-center">
+                                                <label className="text-xs text-slate-600 flex gap-2 items-center">
                                                     <input
                                                         value={method}
                                                         onChange={() =>
@@ -449,7 +459,10 @@ const CommunityServiceDetailsModal = React.memo(
                                             </div>
 
                                             {method === "manual" && (
-                                                <div className="block -mt-2 mb-4 relative">
+                                                <div className="block mb-2 relative">
+                                                    <label className="block mb-1 text-gray-600 text-xs">
+                                                        Rendered Hours
+                                                    </label>
                                                     <input
                                                         type="number"
                                                         min={1}
@@ -461,34 +474,36 @@ const CommunityServiceDetailsModal = React.memo(
                                                         }
                                                         required
                                                         placeholder="Enter number of hours"
-                                                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                                     />
                                                 </div>
                                             )}
                                         </div>
 
-                                        <label className="block mb-1 text-gray-600 font-bold text-xs">
-                                            Feedback{" "}
-                                            <span className="font-normal">
-                                                (Optional for approval, required
-                                                for rejection)
-                                            </span>
-                                        </label>
-                                        <textarea
-                                            rows={5}
-                                            placeholder="Enter feedback"
-                                            value={feedback}
-                                            onChange={(e) =>
-                                                setFeedback(e.target.value)
-                                            }
-                                            className="w-full resize-none border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
-                                            required={
-                                                action === "reject" ||
-                                                (isRevoked &&
-                                                    activity?.status ===
-                                                        "Recorded")
-                                            }
-                                        ></textarea>
+                                        <div className="mt-6">
+                                            <label className="block mb-1 text-gray-600 text-xs">
+                                                Feedback{" "}
+                                                <span className="font-normal text-[10px] italic">
+                                                    (Optional for approval,
+                                                    required for rejection)
+                                                </span>
+                                            </label>
+                                            <textarea
+                                                rows={5}
+                                                placeholder="Enter feedback"
+                                                value={feedback}
+                                                onChange={(e) =>
+                                                    setFeedback(e.target.value)
+                                                }
+                                                className="w-full resize-none border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                                required={
+                                                    action === "reject" ||
+                                                    (isRevoked &&
+                                                        activity?.status ===
+                                                            "Recorded")
+                                                }
+                                            ></textarea>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -497,6 +512,7 @@ const CommunityServiceDetailsModal = React.memo(
                                     <button
                                         onClick={() => {
                                             onClose(false);
+                                            setIsRevoked(false);
                                             setAction("");
                                         }}
                                         type="button"
@@ -557,7 +573,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                         setAction("reject");
                                                     }}
                                                     type="submit"
-                                                    className={`w-[30%] text-sm bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors duration-200 ${
+                                                    className={`w-[35%] text-sm bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors duration-200 ${
                                                         isStaff &&
                                                         activity?.status ===
                                                             "Recorded" &&
@@ -575,7 +591,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                         setAction("approve");
                                                     }}
                                                     type="submit"
-                                                    className={`w-[30%] text-sm bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors duration-200 ${
+                                                    className={`w-[35%] text-sm bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors duration-200 ${
                                                         isStaff &&
                                                         activity?.status ===
                                                             "Not Recorded" &&

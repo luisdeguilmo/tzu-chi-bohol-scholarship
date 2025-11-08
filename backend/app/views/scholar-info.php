@@ -11,6 +11,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-// The controller instantiation and execution are handled within QualificationController.php
-
 ?>

@@ -9,6 +9,7 @@ class AllowanceCycleModel
     private $pdo;
     private $currentDate;
     private $currentYearAndMonth;
+    private $previousYearAndMonth;
 
     public function __construct()
     {
@@ -16,8 +17,10 @@ class AllowanceCycleModel
         $this->pdo = $db->getConnection();
         $this->currentDate = date('Y-m-d');
         $this->currentYearAndMonth = date('Y-m');
+        // Get previous month in Y-m format
+        $this->previousYearAndMonth = date('Y-m', strtotime('-1 month'));
     }
-
+    
     public function getPendingCycles()
     {
         $query = "SELECT * FROM {$this->table_name} 
@@ -31,12 +34,57 @@ class AllowanceCycleModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function isCycleProcessed()
+    /**
+     * Check if there's a cycle ready to process
+     * Returns true if the PREVIOUS month's cycle can be processed now
+     */
+    public function hasCycleReadyToProcess()
     {
-        $query = "SELECT is_processed FROM {$this->table_name} WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month";
+        $pending = $this->getPendingCycles();
+        return !empty($pending);
+    }
+
+    /**
+     * Process allowance cycle for the PREVIOUS month
+     * When called in November, this marks October as processed
+     * October hours → November allowance
+     */
+    public function processAllowanceCycle()
+    {
+        // Process the PREVIOUS month's cycle
+        $query = "UPDATE {$this->table_name} 
+                  SET allowance_month = :allowance_month, is_processed = 1, processed_at = NOW() 
+                  WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month
+                  AND is_processed = 0";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':cycle_month', $this->currentYearAndMonth);
+        $stmt->bindParam(':cycle_month', $this->previousYearAndMonth);
+        $stmt->bindParam(':allowance_month', $this->currentYearAndMonth);
+        $result = $stmt->execute();
+        
+        // Return the cycle month that was processed
+        if ($result && $stmt->rowCount() > 0) {
+            return [
+                'success' => true,
+                'rendered_month' => $this->previousYearAndMonth,
+                'allowance_month' => $this->currentYearAndMonth
+            ];
+        }
+        
+        return ['success' => false];
+    }
+
+    /**
+     * Check if the previous month's cycle is already processed
+     * In November, checks if October is processed
+     */
+    public function isPreviousMonthProcessed()
+    {
+        $query = "SELECT is_processed FROM {$this->table_name} 
+                  WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':cycle_month', $this->previousYearAndMonth);
         $stmt->execute();
 
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -44,42 +92,10 @@ class AllowanceCycleModel
         return $result && (bool) $result['is_processed'];
     }
 
-    public function hasCycleReadyToProcess()
-    {
-        $pending = $this->getPendingCycles();
-        return !empty($pending);
-    }
-
-    // public function processAllowanceCycle()
-    // {
-    //     $pending = $this->getPendingCycles();
-
-    //     if (empty($pending)) {
-    //         return false; // Nothing to process
-    //     }
-
-    //     // Process the oldest cycle
-    //     $cycleToProcess = $pending[0];
-
-    //     $query = "UPDATE {$this->table_name}
-    //               SET is_processed = 1, processed_at = NOW()
-    //               WHERE id = :id";
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->bindParam(':id', $cycleToProcess['id']);
-    //     return $stmt->execute();
-    // }
-
-    public function processAllowanceCycle()
-    {
-        $query = "UPDATE {$this->table_name} 
-          SET is_processed = 1, processed_at = NOW() 
-          WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month";
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':cycle_month', $this->currentYearAndMonth);
-        return $stmt->execute();
-    }
-
+    /**
+     * Create yearly cycles
+     * Each cycle represents a RENDERED month
+     */
     public function createYearlyCycles($year = null)
     {
         if ($year === null) {
@@ -89,11 +105,11 @@ class AllowanceCycleModel
         $cycles = [];
 
         for ($month = 1; $month <= 12; $month++) {
-            // Cycle month: first day of the month
+            // Cycle month: first day of the rendered month
             $cycleMonth = sprintf('%d-%02d-01', $year, $month);
 
-            // Cutoff: last day of the month
-            $lastDay = date('t', strtotime($cycleMonth)); // Get last day of month
+            // Cutoff: last day of the rendered month
+            $lastDay = date('t', strtotime($cycleMonth));
             $cutoffDate = sprintf('%d-%02d-%d', $year, $month, $lastDay);
 
             // Check if cycle already exists
@@ -113,7 +129,11 @@ class AllowanceCycleModel
                 $insertStmt->bindParam(':cutoff_date', $cutoffDate);
                 $insertStmt->execute();
 
-                $cycles[] = ['month' => $cycleMonth, 'cutoff' => $cutoffDate];
+                $cycles[] = [
+                    'rendered_month' => $cycleMonth, 
+                    'cutoff' => $cutoffDate,
+                    'allowance_month' => date('Y-m-01', strtotime('+1 month', strtotime($cycleMonth)))
+                ];
             }
         }
 
@@ -134,22 +154,18 @@ class AllowanceCycleModel
     public function cyclesExistForYear($year)
     {
         $stmt = $this->pdo->prepare(
-            'SELECT COUNT(*) FROM allowance_cycles WHERE YEAR(cycle_month) = ?',
+            'SELECT COUNT(*) FROM allowance_cycles WHERE YEAR(cycle_month) = ?'
         );
         $stmt->execute([$year]);
         return $stmt->fetchColumn() > 0;
     }
 
-    public function cycleExists($startDate)
-    {
-        $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM allowance_cycles WHERE start_date = ?');
-        $stmt->execute([$startDate]);
-        return $stmt->fetchColumn() > 0;
-    }
-
+    /**
+     * Reset the most recently processed cycle
+     */
     public function resetAllowanceCycle()
     {
-        // Reset the most recent processed cycle
+        // Find the most recent processed cycle
         $findQuery = "SELECT cycle_month
                       FROM {$this->table_name}
                       WHERE is_reset = 0 AND is_processed = 1
@@ -174,13 +190,37 @@ class AllowanceCycleModel
     }
 
     /**
-     * Get upcoming cycle info (for display)
+     * Get the current processable cycle info
+     * Returns info about the previous month (rendered month)
+     */
+    public function getCurrentProcessableCycle()
+    {
+        $query = "SELECT *, 
+                  DATE_FORMAT(cycle_month, '%Y-%m') as rendered_month,
+                  DATE_FORMAT(DATE_ADD(cycle_month, INTERVAL 1 MONTH), '%Y-%m') as allowance_month
+                  FROM {$this->table_name} 
+                  WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :previous_month
+                  AND is_processed = 0
+                  AND is_reset = 0";
+        
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':previous_month', $this->previousYearAndMonth);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get next upcoming cycle (after the current processable one)
      */
     public function getNextCycleInfo()
     {
-        $query = "SELECT * FROM {$this->table_name} 
+        $query = "SELECT *,
+                  DATE_FORMAT(cycle_month, '%Y-%m') as rendered_month,
+                  DATE_FORMAT(DATE_ADD(cycle_month, INTERVAL 1 MONTH), '%Y-%m') as allowance_month
+                  FROM {$this->table_name} 
                   WHERE cutoff_date > :current_date 
                   AND is_processed = 0
+                  AND is_reset = 0
                   ORDER BY cycle_month ASC
                   LIMIT 1";
         $stmt = $this->pdo->prepare($query);
@@ -189,17 +229,29 @@ class AllowanceCycleModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function isCurrentMonthProcessed()
+    /**
+     * Get all cycles with their status for display
+     * Includes rendered month → allowance month mapping
+     */
+    public function getAllCyclesWithStatus($year = null)
     {
-        $query = "SELECT is_processed FROM {$this->table_name} WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month";
+        if ($year === null) {
+            $year = date('Y');
+        }
 
+        $query = "SELECT *,
+                  DATE_FORMAT(cycle_month, '%M %Y') as rendered_month_formatted,
+                  DATE_FORMAT(DATE_ADD(cycle_month, INTERVAL 1 MONTH), '%M %Y') as allowance_month_formatted,
+                  DATE_FORMAT(cutoff_date, '%M %d, %Y') as cutoff_formatted,
+                  DATE_FORMAT(processed_at, '%M %d, %Y') as processed_formatted
+                  FROM {$this->table_name}
+                  WHERE YEAR(cycle_month) = :year
+                  ORDER BY cycle_month DESC";
+        
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':cycle_month', $this->currentYearAndMonth);
+        $stmt->bindParam(':year', $year);
         $stmt->execute();
-
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-        return $result && (bool) $result['is_processed'];
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
 ?>

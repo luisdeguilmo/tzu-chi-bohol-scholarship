@@ -71,18 +71,34 @@ class StaffAccountModel
     public function createStaff($data, $account_id, $today)
     {
         $query =
-            'INSERT INTO staff (account_id, first_name, last_name, created_at) VALUES (:account_id, :first_name, :last_name, :created_at)';
+            'INSERT INTO staff (account_id, first_name, middle_name, last_name, suffix, contact_number, email_address, age, gender, address, facebook, created_at) VALUES (:account_id, :first_name, :middle_name, :last_name, :suffix, :contact_number, :email_address, :age, :gender, :address, :facebook, :created_at)';
 
         $stmt = $this->pdo->prepare($query);
 
         $account_id = htmlspecialchars(strip_tags($account_id));
         $first_name = htmlspecialchars(strip_tags($data['first_name']));
+        $middle_name = htmlspecialchars(strip_tags($data['middle_name']));
         $last_name = htmlspecialchars(strip_tags($data['last_name']));
+        $suffix = htmlspecialchars(strip_tags($data['suffix']));
+        $contact_number = htmlspecialchars(strip_tags($data['contact_number']));
+        $email_address = htmlspecialchars(strip_tags($data['email']));
+        $age = htmlspecialchars(strip_tags($data['age']));
+        $gender = htmlspecialchars(strip_tags($data['gender']));
+        $address = htmlspecialchars(strip_tags($data['address']));
+        $facebook = htmlspecialchars(strip_tags($data['facebook']));
         $created_at = htmlspecialchars(strip_tags($today));
 
         $stmt->bindParam(':account_id', $account_id);
         $stmt->bindParam(':first_name', $first_name);
+        $stmt->bindParam(':middle_name', $middle_name);
         $stmt->bindParam(':last_name', $last_name);
+        $stmt->bindParam(':suffix', $suffix);
+        $stmt->bindParam(':contact_number', $contact_number);
+        $stmt->bindParam(':email_address', $email_address);
+        $stmt->bindParam(':age', $age);
+        $stmt->bindParam(':gender', $gender);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':facebook', $facebook);
         $stmt->bindParam(':created_at', $created_at);
 
         if ($stmt->execute()) {
@@ -132,7 +148,7 @@ class StaffAccountModel
     public function getAllStaffs()
     {
         $query =
-            'SELECT s.*, u.email FROM ' .
+            'SELECT s.*, u.email, u.status FROM ' .
             $this->table_name .
             ' s JOIN users u ON s.account_id = u.account_id';
         $stmt = $this->pdo->prepare($query);
@@ -144,7 +160,7 @@ class StaffAccountModel
     public function getStaffInfoById($account_id)
     {
         $query =
-            'SELECT s.*, u.email FROM ' .
+            'SELECT s.*, u.email, u.status FROM ' .
             $this->table_name .
             ' s JOIN users u ON s.account_id = u.account_id WHERE s.account_id = :account_id';
         $stmt = $this->pdo->prepare($query);
@@ -163,6 +179,15 @@ class StaffAccountModel
         $stmt->execute();
 
         return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function updateAccountStatus($staff_id, $status)
+    {
+        $query = 'UPDATE users SET status = :status WHERE account_id = :staff_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':staff_id', $staff_id);
+        return $stmt->execute();
     }
 
     public function updateStaff($id, $data)

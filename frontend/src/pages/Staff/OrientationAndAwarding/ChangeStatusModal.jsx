@@ -79,13 +79,13 @@ function ChangeStatusModal({
                         onChange={(e) =>
                             handleAllowanceStatusChange(e.target.value)
                         } // <-- change handler
-                        className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     >
                         <option value="" disabled>
                             Select
                         </option>
-                        <option value="pending">Pending</option>
+                        {/* <option value="pending">Pending</option> */}
                         <option value="attended">Attended</option>
                         <option value="not_attended">Not Attended</option>
                     </select>

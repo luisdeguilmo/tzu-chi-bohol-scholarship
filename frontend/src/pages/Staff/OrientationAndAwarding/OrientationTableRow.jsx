@@ -156,7 +156,7 @@ const OrientationTableRow = ({
                                     : "text-green-600 hover:text-green-900"
                             }`}
                         >
-                            <ClipboardEdit className="w-4 h-4 mr-1" />
+                            <PenLine className="w-4 h-4 mr-1" />
                         </button>
                     </td>
                 </tr>

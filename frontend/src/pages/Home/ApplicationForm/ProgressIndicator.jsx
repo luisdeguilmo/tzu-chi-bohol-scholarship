@@ -11,7 +11,7 @@ const ProgressIndicator = ({ steps, currentStep }) => {
                 {steps.map((step, index) => (
                     <div
                         key={index}
-                        className={`relative z-10 flex items-center justify-center w-6 h-6 rounded-full 
+                        className={`relative z-0 flex items-center justify-center w-6 h-6 rounded-full 
                   ${index + 1 <= currentStep ? "bg-green-600" : "bg-gray-300"}`}
                     >
                         {/* Optional step number or icon inside the circle */}

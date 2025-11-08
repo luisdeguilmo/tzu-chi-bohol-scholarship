@@ -3,6 +3,8 @@ import InputModal from "../../../components/InputModal";
 import BASE_URL from "../../../config";
 import { useAuth } from "../../../context/AuthContext";
 import { useCommunityServicesSubmit } from "../../../hooks/useCommunityServicesSubmit";
+import { toast } from "react-toastify";
+import { useAccountStatus } from "../../../hooks/useAccountStatus";
 
 const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const [activityName, setActivityName] = useState(activity.activity_name);
@@ -20,8 +22,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const [conversionStatus, setConversionStatus] = useState({});
     const fileInputRef = useRef(null);
     const { user } = useAuth();
-
-    console.log(existingFilesRemoved);
+    const { accountStatus } = useAccountStatus(user.user_id);
 
     useEffect(() => {
         if (activity?.files?.length > 0) {
@@ -324,6 +325,13 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const handleResubmit = () => {};
 
     const handleSubmit = async () => {
+        if (accountStatus === "not_renewed") {
+            toast.error(
+                `You can’t resubmit community service until your renewal application is approved.`
+            );
+            return;
+        }
+
         const success = await editSubmit(
             user,
             activity,
@@ -390,7 +398,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                     )
                                 }
                                 placeholder="Enter activity name"
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
 
@@ -407,7 +415,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                     )
                                 }
                                 placeholder="Enter activity location"
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
 
@@ -423,7 +431,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                         e.target.value
                                     )
                                 }
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
 
@@ -440,7 +448,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                             e.target.value
                                         )
                                     }
-                                    className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 />
                             </label>
 
@@ -453,13 +461,13 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                     onChange={(e) =>
                                         handleChange(setEndTime, e.target.value)
                                     }
-                                    className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 />
                             </label>
                         </div>
                     </div>
 
-                    <label className="px-8  py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                    <label className="px-8 pt-2 pb-3 flex flex-col gap-[1px] text-gray-600 text-xs">
                         Certificate of Appearance
                         <input
                             type="file"
@@ -472,12 +480,12 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                         <button
                             type="button"
                             onClick={handleAddFileClick}
-                            className="p-2 flex justify-center gap-[1px] text-gray-600 text-sm rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
+                            className="px-2 py-2.5 flex justify-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
                             disabled={isSubmitting}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5 mr-1"
+                                className="h-4 w-4 mr-1"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -608,11 +616,11 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                     )}
 
                     {activity.activity_status === "Not Recorded" && (
-                        <div className="p-8">
-                            <p className="font-bold text-xs text-gray-700">
+                        <div className="px-8 pt-6 pb-8">
+                            <p className="text-xs mb-1 text-gray-700">
                                 Feedback:{" "}
                             </p>
-                            <p className="text-xs text-gray-700">
+                            <p className="text-xs border bg-gray-50 px-2 py-2.5 rounded-md text-gray-700">
                                 {activity.feedback}
                             </p>
                         </div>

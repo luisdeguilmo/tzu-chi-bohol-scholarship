@@ -34,6 +34,9 @@ use App\Models\ScholarModel;
 use App\Models\AssistanceModel;
 use App\Models\CharacterReferenceModel;
 use App\Models\ExaminationFilesModel;
+use App\Models\FinalInterviewFilesModel;
+use App\Models\HomeVisitationFilesModel;
+use App\Models\InitialInterviewFilesModel;
 use App\Models\RequirementModel;
 use App\Models\ProfilePictureModel; // Add this new model
 use App\Models\RequirementsModel;
@@ -195,18 +198,49 @@ class ApplicationController
                     'success' => true,
                     'profile_picture_url' => $profile_url,
                 ]);
-            } else {
-                http_response_code(404);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Profile picture not found',
-                ]);
             }
+
+            // else {
+            //     http_response_code(404);
+            //     echo json_encode([
+            //         'success' => false,
+            //         'message' => 'Profile picture not found',
+            //     ]);
+            // }
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => $e->getMessage() . 'sjdbusbds',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function getUserProfilePicture($account_id)
+    {
+        try {
+            $profilePictureModel = new ProfilePictureModel();
+            $profile_url = $profilePictureModel->getFileUrlByAccountId($account_id);
+
+            if ($profile_url) {
+                echo json_encode([
+                    'success' => true,
+                    'profile_picture_url' => $profile_url,
+                ]);
+            }
+
+            // else {
+            //     http_response_code(404);
+            //     echo json_encode([
+            //         'success' => false,
+            //         'message' => 'Profile picture not found',
+            //     ]);
+            // }
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -430,19 +464,21 @@ class ApplicationController
     public function getExaminationFiles64($application_id)
     {
         try {
-            $requirementsModel = new ExaminationFilesModel(); // Adjust class name as needed
-            $requirements_urls = $requirementsModel->getFileUrlByApplicationId($application_id);
+            $examinationFilesModel = new ExaminationFilesModel(); // Adjust class name as needed
+            $examination_files_urls = $examinationFilesModel->getFileUrlByApplicationId(
+                $application_id,
+            );
 
-            if (!$requirements_urls) {
+            if (!$examination_files_urls) {
                 http_response_code(404);
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Requirements not found',
+                    'message' => 'Examination files not found',
                 ]);
                 return;
             }
 
-            $requirements_base64 = [];
+            $examination_files_base64 = [];
             $mimeTypes = [
                 'jpg' => 'image/jpeg',
                 'jpeg' => 'image/jpeg',
@@ -452,19 +488,19 @@ class ApplicationController
             ];
 
             // Process each URL in the array
-            foreach ($requirements_urls as $index => $requirement_url) {
+            foreach ($examination_files_urls as $index => $examination_files_url) {
                 try {
                     // Convert URL to file path
-                    $parsedUrl = parse_url($requirement_url);
+                    $parsedUrl = parse_url($examination_files_url);
                     $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
 
                     // Validate file exists and is readable
                     if (!file_exists($filePath) || !is_readable($filePath)) {
-                        $requirements_base64[] = [
+                        $examination_files_base64[] = [
                             'index' => $index,
                             'success' => false,
-                            'message' => 'Requirement file not accessible',
-                            'url' => $requirement_url,
+                            'message' => 'Examination file not accessible',
+                            'url' => $examination_files_url,
                         ];
                         continue;
                     }
@@ -472,11 +508,11 @@ class ApplicationController
                     // Read file and convert to base64
                     $imageData = file_get_contents($filePath);
                     if ($imageData === false) {
-                        $requirements_base64[] = [
+                        $examination_files_base64[] = [
                             'index' => $index,
                             'success' => false,
-                            'message' => 'Failed to read requirement file',
-                            'url' => $requirement_url,
+                            'message' => 'Failed to read examination file',
+                            'url' => $examination_files_url,
                         ];
                         continue;
                     }
@@ -487,11 +523,11 @@ class ApplicationController
 
                     // Validate it's a supported image type
                     if (!$mimeType) {
-                        $requirements_base64[] = [
+                        $examination_files_base64[] = [
                             'index' => $index,
                             'success' => false,
                             'message' => 'Unsupported file type: ' . $extension,
-                            'url' => $requirement_url,
+                            'url' => $examination_files_url,
                         ];
                         continue;
                     }
@@ -500,24 +536,24 @@ class ApplicationController
                     $base64 = base64_encode($imageData);
                     $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
 
-                    $requirements_base64[] = [
+                    $examination_files_base64[] = [
                         'index' => $index,
                         'success' => true,
-                        'requirement_base64' => $base64Image,
+                        'examination_files_base64' => $base64Image,
                         'base64' => $base64Image, // Alternative key for compatibility
                         'mime_type' => $mimeType,
-                        'url' => $requirement_url,
+                        'url' => $examination_files_url,
                     ];
                 } catch (\Exception $fileException) {
                     error_log(
                         "Error processing requirement file {$index}: " .
                             $fileException->getMessage(),
                     );
-                    $requirements_base64[] = [
+                    $examination_files_base64[] = [
                         'index' => $index,
                         'success' => false,
                         'message' => 'Error processing file: ' . $fileException->getMessage(),
-                        'url' => $requirement_url,
+                        'url' => $examination_files_url,
                     ];
                 }
             }
@@ -529,12 +565,348 @@ class ApplicationController
 
             echo json_encode([
                 'success' => true,
-                'total_files' => count($requirements_urls),
+                'total_files' => count($examination_files_urls),
                 // "successful_files" => count($successfulFiles),
-                'requirements' => $requirements_base64,
+                'examination_files' => $examination_files_base64,
             ]);
         } catch (\Exception $e) {
-            error_log('Requirements error: ' . $e->getMessage());
+            error_log('Examination files error: ' . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Internal server error: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function getInitialInterviewFiles64($application_id)
+    {
+        try {
+            $initialInterviewFilesModel = new InitialInterviewFilesModel(); // Adjust class name as needed
+            $initial_interview_files_urls = $initialInterviewFilesModel->getFileUrlByApplicationId(
+                $application_id,
+            );
+
+            if (!$initial_interview_files_urls) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Initial interview files not found',
+                ]);
+                return;
+            }
+
+            $initial_interview_files_base64 = [];
+            $mimeTypes = [
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'webp' => 'image/webp',
+            ];
+
+            // Process each URL in the array
+            foreach ($initial_interview_files_urls as $index => $initial_interview_files_url) {
+                try {
+                    // Convert URL to file path
+                    $parsedUrl = parse_url($initial_interview_files_url);
+                    $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
+
+                    // Validate file exists and is readable
+                    if (!file_exists($filePath) || !is_readable($filePath)) {
+                        $initial_interview_files_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Initial interview file not accessible',
+                            'url' => $initial_interview_files_url,
+                        ];
+                        continue;
+                    }
+
+                    // Read file and convert to base64
+                    $imageData = file_get_contents($filePath);
+                    if ($imageData === false) {
+                        $initial_interview_files_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Failed to read examination file',
+                            'url' => $initial_interview_files_url,
+                        ];
+                        continue;
+                    }
+
+                    // Get MIME type from file extension
+                    $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                    $mimeType = $mimeTypes[$extension] ?? null;
+
+                    // Validate it's a supported image type
+                    if (!$mimeType) {
+                        $initial_interview_files_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Unsupported file type: ' . $extension,
+                            'url' => $initial_interview_files_url,
+                        ];
+                        continue;
+                    }
+
+                    // Convert to base64
+                    $base64 = base64_encode($imageData);
+                    $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
+
+                    $initial_interview_files_base64[] = [
+                        'index' => $index,
+                        'success' => true,
+                        'initial_interview_files_base64' => $base64Image,
+                        'base64' => $base64Image, // Alternative key for compatibility
+                        'mime_type' => $mimeType,
+                        'url' => $initial_interview_files_url,
+                    ];
+                } catch (\Exception $fileException) {
+                    error_log(
+                        "Error processing requirement file {$index}: " .
+                            $fileException->getMessage(),
+                    );
+                    $initial_interview_files_base64[] = [
+                        'index' => $index,
+                        'success' => false,
+                        'message' => 'Error processing file: ' . $fileException->getMessage(),
+                        'url' => $initial_interview_files_url,
+                    ];
+                }
+            }
+
+            // Check if any files were successfully processed
+            // $successfulFiles = array_filter($requirements_base64, function($item) {
+            //     return $item['success'] === true;
+            // });
+
+            echo json_encode([
+                'success' => true,
+                'total_files' => count($initial_interview_files_urls),
+                // "successful_files" => count($successfulFiles),
+                'initial_interview_files' => $initial_interview_files_base64,
+            ]);
+        } catch (\Exception $e) {
+            error_log('Initial interview files error: ' . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Internal server error: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function getHomeVisitationFiles64($application_id)
+    {
+        try {
+            $homeVisitationFilesModel = new HomeVisitationFilesModel(); // Adjust class name as needed
+            $home_visitation_files_urls = $homeVisitationFilesModel->getFileUrlByApplicationId(
+                $application_id,
+            );
+
+            if (!$home_visitation_files_urls) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Home visitation files not found',
+                ]);
+                return;
+            }
+
+            $home_visitation_files_base64 = [];
+            $mimeTypes = [
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'webp' => 'image/webp',
+            ];
+
+            foreach ($home_visitation_files_urls as $index => $home_visitation_files_url) {
+                try {
+                    $parsedUrl = parse_url($home_visitation_files_url);
+                    $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
+
+                    if (!file_exists($filePath) || !is_readable($filePath)) {
+                        $home_visitation_files_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Home visitation file not accessible',
+                            'url' => $home_visitation_files_url,
+                        ];
+                        continue;
+                    }
+
+                    $imageData = file_get_contents($filePath);
+                    if ($imageData === false) {
+                        $home_visitation_files_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Failed to read home visitation file',
+                            'url' => $home_visitation_files_url,
+                        ];
+                        continue;
+                    }
+
+                    $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                    $mimeType = $mimeTypes[$extension] ?? null;
+
+                    if (!$mimeType) {
+                        $home_visitation_files_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Unsupported file type: ' . $extension,
+                            'url' => $home_visitation_files_url,
+                        ];
+                        continue;
+                    }
+
+                    $base64 = base64_encode($imageData);
+                    $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
+
+                    $home_visitation_files_base64[] = [
+                        'index' => $index,
+                        'success' => true,
+                        'home_visitation_files_base64' => $base64Image,
+                        'base64' => $base64Image,
+                        'mime_type' => $mimeType,
+                        'url' => $home_visitation_files_url,
+                    ];
+                } catch (\Exception $fileException) {
+                    error_log(
+                        "Error processing home visitation file {$index}: " .
+                            $fileException->getMessage(),
+                    );
+                    $home_visitation_files_base64[] = [
+                        'index' => $index,
+                        'success' => false,
+                        'message' => 'Error processing file: ' . $fileException->getMessage(),
+                        'url' => $home_visitation_files_url,
+                    ];
+                }
+            }
+
+            echo json_encode([
+                'success' => true,
+                'total_files' => count($home_visitation_files_urls),
+                'home_visitation_files' => $home_visitation_files_base64,
+            ]);
+        } catch (\Exception $e) {
+            error_log('Home visitation files error: ' . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Internal server error: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function getFinalInterviewFiles64($application_id)
+    {
+        try {
+            $finalInterviewFilesModel = new FinalInterviewFilesModel(); // Adjust class name as needed
+            $final_interview_files_urls = $finalInterviewFilesModel->getFileUrlByApplicationId(
+                $application_id,
+            );
+
+            if (!$final_interview_files_urls) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Final interview files not found',
+                ]);
+                return;
+            }
+
+            $final_interview_files_base64 = [];
+            $mimeTypes = [
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'webp' => 'image/webp',
+            ];
+
+            // Process each URL in the array
+            foreach ($final_interview_files_urls as $index => $final_interview_files_url) {
+                try {
+                    // Convert URL to file path
+                    $parsedUrl = parse_url($final_interview_files_url);
+                    $filePath = $_SERVER['DOCUMENT_ROOT'] . $parsedUrl['path'];
+
+                    // Validate file exists and is readable
+                    if (!file_exists($filePath) || !is_readable($filePath)) {
+                        $final_interview_files_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Final interview file not accessible',
+                            'url' => $final_interview_files_url,
+                        ];
+                        continue;
+                    }
+
+                    // Read file and convert to base64
+                    $imageData = file_get_contents($filePath);
+                    if ($imageData === false) {
+                        $final_interview_files_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Failed to read final interview file',
+                            'url' => $final_interview_files_url,
+                        ];
+                        continue;
+                    }
+
+                    // Get MIME type from file extension
+                    $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                    $mimeType = $mimeTypes[$extension] ?? null;
+
+                    // Validate it's a supported image type
+                    if (!$mimeType) {
+                        $final_interview_files_base64[] = [
+                            'index' => $index,
+                            'success' => false,
+                            'message' => 'Unsupported file type: ' . $extension,
+                            'url' => $final_interview_files_url,
+                        ];
+                        continue;
+                    }
+
+                    // Convert to base64
+                    $base64 = base64_encode($imageData);
+                    $base64Image = 'data:' . $mimeType . ';base64,' . $base64;
+
+                    $final_interview_files_base64[] = [
+                        'index' => $index,
+                        'success' => true,
+                        'final_interview_files_base64' => $base64Image,
+                        'base64' => $base64Image,
+                        'mime_type' => $mimeType,
+                        'url' => $final_interview_files_url,
+                    ];
+                } catch (\Exception $fileException) {
+                    error_log(
+                        "Error processing final interview file {$index}: " .
+                            $fileException->getMessage(),
+                    );
+                    $final_interview_files_base64[] = [
+                        'index' => $index,
+                        'success' => false,
+                        'message' => 'Error processing file: ' . $fileException->getMessage(),
+                        'url' => $final_interview_files_url,
+                    ];
+                }
+            }
+
+            // Output JSON response
+            echo json_encode([
+                'success' => true,
+                'total_files' => count($final_interview_files_urls),
+                'final_interview_files' => $final_interview_files_base64,
+            ]);
+        } catch (\Exception $e) {
+            error_log('Final interview files error: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'success' => false,

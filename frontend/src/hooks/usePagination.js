@@ -39,6 +39,7 @@ export const usePagination = (items, itemsPerPage = 5) => {
         indexOfLastItem,
         numberOfItemsPerPage,
         setNumberOfItemsPerPage,
+        setNumberOfItemsPerPage,
         goToPreviousPage,
         goToNextPage,
         resetPagination,

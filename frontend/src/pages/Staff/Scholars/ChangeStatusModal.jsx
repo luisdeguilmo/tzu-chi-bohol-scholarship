@@ -12,19 +12,19 @@ function ChangeStatusModal({
     onRefreshAllowanceData,
     isLoading,
 }) {
-    const [allowance, setAllowance] = useState(scholar?.allowance || "");
-    const [transportAllowance, setTransportAllowance] = useState("");
-    const [loadAllowance, setLoadAllowance] = useState("");
+    const [allowance, setAllowance] = useState(scholar?.allowance || 0);
+    const [transportAllowance, setTransportAllowance] = useState(0);
+    const [loadAllowance, setLoadAllowance] = useState(0);
     const [allowanceStatus, setAllowanceStatus] = useState(
-        scholar?.allowance_status || ""
+        scholar?.allowance_status || 0
     );
 
     useEffect(() => {
         if (scholar) {
-            setAllowance(scholar?.allowance || "");
-            setAllowanceStatus(scholar?.allowance_status || "");
-            setTransportAllowance(scholar?.transport_allowance || "");
-            setLoadAllowance(scholar?.load_allowance || "");
+            setAllowance(scholar?.allowance || 0);
+            setAllowanceStatus(scholar?.allowance_status || 0);
+            setTransportAllowance(scholar?.transport_allowance || 0);
+            setLoadAllowance(scholar?.load_allowance || 0);
         }
     }, [scholar]);
 
@@ -124,7 +124,10 @@ function ChangeStatusModal({
                         Total
                     </label>
                     <div className="w-full border text-xs bg-gray-100 border-gray-200 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500">
-                        ₱{" "}{allowance + transportAllowance + loadAllowance}
+                        ₱{" "}
+                        {parseFloat(allowance) +
+                            parseFloat(transportAllowance) +
+                            parseFloat(loadAllowance)}
                     </div>
                 </div>
 

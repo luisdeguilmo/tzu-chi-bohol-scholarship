@@ -33,7 +33,7 @@ const ConfirmationModal = React.memo(
 
         return (
             <div
-                className={`fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-30 p-4 animate-in fade-in duration-200 ${
+                className={`fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-30 animate-in fade-in duration-200 ${
                     isOpen ? "block" : "hidden"
                 }`}
                 // onKeyDown={handleKeyDown}
@@ -42,19 +42,23 @@ const ConfirmationModal = React.memo(
                 aria-modal="true"
                 aria-labelledby="modal-title"
             >
-                <div className="relative w-full scroll-smooth sm:w-[60%] md:[45%] lg:w-[40%] xl:w-[30%] bg-white rounded-xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200">
+                <div
+                    className={`relative w-full
+                        sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[35%]
+                        transition-transform duration-300 bg-white shadow-2xl overflow-hidden transform animate-in zoom-in-95 bottom-0 sm:relative sm:bottom-auto flex flex-col`}
+                >
                     {/* Header */}
-                    <div className="relative px-6 py-4 border-b border-slate-200">
+                    <div className="relative px-4 py-4 bg-gray-100 border-b border-gray-300 flex-shrink-0">
                         <h2
                             id="modal-title"
-                            className="text-lg text-slate-700 pr-10 leading-tight"
+                            className="text-sm font-medium text-slate-700 pr-10 leading-tight"
                         >
-                            Confirmation
+                            Confirm
                         </h2>
                         <button
                             type="button"
                             onClick={() => onClose(false)}
-                            className="absolute top-3 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-100 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
+                            className="absolute top-2 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-200 active:ring-1 active:ring-gray-300 transition"
                             aria-label="Close modal"
                         >
                             <X size={18} />
@@ -64,15 +68,15 @@ const ConfirmationModal = React.memo(
                     {/* Content */}
                     <div className="max-h-[400px] overflow-y-auto scroll-smooth p-6">
                         <div>
-                            <h3 className="text-xs text-gray-700 font-bold">
+                            <h3 className="text-xs text-gray-700">
                                 Selected Scholars:
                             </h3>
                             <ul
-                                className={`mt-4 grid gap-1 ${
+                                className={`mt-2 gap-1 grid ${
                                     filteredParticipants?.length >= 15
                                         ? "grid-cols-2"
                                         : "grid-cols-1"
-                                }`}
+                                } p-3 border rounded-md bg-gray-50/50 border-gray-200`}
                             >
                                 {filteredParticipants?.map(
                                     (participant, index) => (
@@ -80,43 +84,43 @@ const ConfirmationModal = React.memo(
                                             key={index}
                                             className="w-[max-content]"
                                         >
-                                            <label className="flex gap-2 items-center text-slate-600 text-xs">
+                                            <p className="flex gap-2 items-center text-slate-600 text-xs">
                                                 <span>
                                                     {
                                                         participant.participant_name
                                                     }
                                                 </span>
-                                            </label>
+                                            </p>
                                         </li>
                                     )
                                 )}
                             </ul>
                         </div>
 
-                        <div className="pt-4">
-                            <span className="text-xs text-gray-700 font-bold">
+                        <div className="pt-2">
+                            <span className="text-xs text-gray-700">
                                 Rendered Hours:
-                            </span>
-                            <span className="ml-2 text-xs text-slate-700">
-                                {renderedHours}{" "}
-                                {renderedHours > 1 ? "hours" : "hour"}
+                                <p className="rounded-lg mt-1 border px-3 py-2.5 text-xs text-slate-700">
+                                    {renderedHours}{" "}
+                                    {renderedHours > 1 ? "hours" : "hour"}
+                                </p>
                             </span>
                         </div>
 
                         {/* Action Buttons */}
                     </div>
-                    <div className="p-4 flex flex-col sm:flex-row gap-3 border-t border-slate-200">
+                    <div className="flex justify-end gap-2 p-3.5 border-t border-gray-300 bg-gray-50 flex-shrink-0">
                         <button
                             onClick={() => onClose(false)}
                             type="button"
-                            className="flex-1 text-sm bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-200 transition-colors duration-200"
+                            className="bg-gray-200 text-gray-600 text-sm px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
                         >
                             Back
                         </button>
                         <button
                             onClick={handleRecordHours}
                             type="button"
-                            className="flex-1 text-sm text-white bg-green-600 px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200"
+                            className="text-sm text-white bg-green-600 px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200"
                         >
                             Confirm
                         </button>

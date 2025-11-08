@@ -1,45 +1,48 @@
-import { GraduationCap, House, Info, Settings } from "lucide-react";
+import { GraduationCap, House, Info, Settings, Bus } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getProfilePicture } from "../utils/getProfilePicture";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useScholarAccountInformation } from "../hooks/useScholarAccountInformation";
 import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
 
-const UserAccount = ({ scholarId = false, isMaximize = false }) => {
+const UserAccount = ({ scholarId = false, isModal = false }) => {
     const { user } = useAuth();
     const userId = user.user_id;
-    const { imageUrl } = getProfilePicture(scholarId ? scholarId : userId);
+    const { imageUrl } = getProfilePicture(
+        scholarId ? scholarId : userId,
+        "profile-picture"
+    );
     const currentSchoolYear = getCurrentSchoolYear();
-    const { scholarInfo, fetchScholarInfo } = useScholarAccountInformation(
+    const { scholarInfo } = useScholarAccountInformation(
         scholarId ? scholarId : userId,
         currentSchoolYear
     );
     const info = "block md:hidden";
 
-    console.log(scholarInfo);
-
     return (
         <div className="min-h-screen bg-gray-50">
             <div
                 className={`${
-                    isMaximize
+                    isModal
                         ? "md:w-[100%] lg:w-[100%] xl:w-[100%] md:py-0"
                         : "md:w-[90%] lg:w-[85%] xl:w-[80%] md:py-8"
                 } w-[100%] mx-auto`}
             >
                 <div
                     className={`bg-white ${
-                        isMaximize && "md:rounded-none"
-                    } md:rounded-xl overflow-hidden border border-gray-100 shadow-sm`}
+                        isModal
+                            ? "md:rounded-none"
+                            : "md:rounded-xl overflow-hidden"
+                    } border border-gray-100 shadow-sm`}
                 >
                     {/* Header Section */}
-                    <div className="relative">
+                    <div className={`relative`}>
                         <div
                             className={`${
-                                isMaximize ? "p-0" : ""
-                            } bg-white px-6 md:px-8 py-6 border-b border-gray-100`}
+                                isModal ? "p-0" : ""
+                            } bg-white px-6 md:px-8 py-6 border-b border-gray-200`}
                         >
-                            {!isMaximize && (
+                            {!isModal && (
                                 <h2 className="text-base text-gray-900 font-semibold mb-6">
                                     My Account
                                 </h2>
@@ -98,14 +101,6 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                         mobileClass={info}
                                     />
                                     <InfoField
-                                        label="Email Address"
-                                        value={
-                                            scholarInfo?.basic_information
-                                                ?.email
-                                        }
-                                        mobileClass={info}
-                                    />
-                                    <InfoField
                                         label="Contact Number"
                                         value={
                                             scholarInfo?.basic_information
@@ -136,6 +131,22 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                         }
                                         mobileClass={info}
                                     />
+                                    <InfoField
+                                        label="Email Address"
+                                        value={
+                                            scholarInfo?.basic_information
+                                                ?.email
+                                        }
+                                        mobileClass={info}
+                                    />
+                                    <InfoField
+                                        label="Facebook"
+                                        value={
+                                            scholarInfo?.basic_information
+                                                ?.facebook
+                                        }
+                                        mobileClass={info}
+                                    />
                                 </div>
 
                                 <div className="hidden md:block space-y-4">
@@ -146,12 +157,6 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                             " " +
                                             scholarInfo?.basic_information
                                                 ?.last_name
-                                        }
-                                    />
-                                    <ValueField
-                                        value={
-                                            scholarInfo?.basic_information
-                                                ?.email
                                         }
                                     />
                                     <ValueField
@@ -177,6 +182,18 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                                 ?.home_address
                                         }
                                     />
+                                    <ValueField
+                                        value={
+                                            scholarInfo?.basic_information
+                                                ?.email
+                                        }
+                                    />
+                                    <ValueField
+                                        value={
+                                            scholarInfo?.basic_information
+                                                ?.facebook
+                                        }
+                                    />
                                 </div>
                             </div>
                         </section>
@@ -194,7 +211,10 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                 <div className="space-y-4">
                                     <InfoField
                                         label="Academic Year"
-                                        value={currentSchoolYear}
+                                        value={
+                                            scholarInfo?.basic_information
+                                                ?.school_year
+                                        }
                                         mobileClass={info}
                                     />
                                     <InfoField
@@ -218,7 +238,12 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                 </div>
 
                                 <div className="hidden md:block space-y-4">
-                                    <ValueField value={currentSchoolYear} />
+                                    <ValueField
+                                        value={
+                                            scholarInfo?.basic_information
+                                                ?.school_year
+                                        }
+                                    />
                                     <ValueField
                                         value={
                                             scholarInfo?.scholar_status ===
@@ -229,7 +254,15 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                                   ? "Deactivated"
                                                   : "Not Renewed"
                                         }
-                                        badge="green"
+                                        badge={
+                                            scholarInfo?.scholar_status ===
+                                            "active"
+                                                ? "green"
+                                                : scholarInfo?.scholar_status ===
+                                                    "deactivated"
+                                                  ? "red"
+                                                  : "yellow"
+                                        }
                                     />
                                     <ValueField
                                         value={scholarInfo?.rendered_hours}
@@ -251,67 +284,123 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                 <div className="space-y-4">
                                     <InfoField
                                         label="School"
-                                        value="BISU Balilihan Campus"
+                                        value={
+                                            scholarInfo?.academic_information
+                                                ?.present_school
+                                        }
                                         mobileClass={info}
                                     />
                                     <InfoField
                                         label="Course"
-                                        value="Bachelor of Science in Information Technology"
+                                        value={
+                                            scholarInfo?.academic_information
+                                                ?.present_course1
+                                        }
                                         mobileClass={info}
                                     />
                                     <InfoField
                                         label="Year Level"
-                                        value="4th Year"
-                                        mobileClass={info}      
+                                        value={
+                                            scholarInfo?.academic_information
+                                                ?.year_level === 1
+                                                ? "1st Year"
+                                                : scholarInfo
+                                                        ?.academic_information
+                                                        ?.year_level === 2
+                                                  ? "2nd Year"
+                                                  : scholarInfo
+                                                          ?.academic_information
+                                                          ?.year_level === 3
+                                                    ? "3rd Year"
+                                                    : scholarInfo
+                                                            ?.academic_information
+                                                            ?.year_level === 4
+                                                      ? "4th Year"
+                                                      : "--"
+                                        }
+                                        mobileClass={info}
                                     />
                                 </div>
 
                                 <div className="hidden md:block space-y-4">
-                                    <ValueField value="BISU Balilihan Campus" />
-                                    <ValueField value="Bachelor of Science in Information Technology" />
-                                    <ValueField value="4th Year" />
+                                    <ValueField
+                                        value={
+                                            scholarInfo?.academic_information
+                                                ?.present_school
+                                        }
+                                    />
+                                    <ValueField
+                                        value={
+                                            scholarInfo?.academic_information
+                                                ?.present_course1
+                                        }
+                                    />
+                                    <ValueField
+                                        value={
+                                            scholarInfo?.academic_information
+                                                ?.year_level === 1
+                                                ? "1st Year"
+                                                : scholarInfo
+                                                        ?.academic_information
+                                                        ?.year_level === 2
+                                                  ? "2nd Year"
+                                                  : scholarInfo
+                                                          ?.academic_information
+                                                          ?.year_level === 3
+                                                    ? "3rd Year"
+                                                    : scholarInfo
+                                                            ?.academic_information
+                                                            ?.year_level === 4
+                                                      ? "4th Year"
+                                                      : "--"
+                                        }
+                                    />
                                 </div>
                             </div>
                         </section>
 
-                        {/* Allowance Breakdown */}
-                        {/* <section className="mb-10">
+                        {/* Transport Details */}
+                        <section className="mb-10">
                             <div className="flex items-center gap-2 mb-6">
-                                <Info className="w-4 h-4 text-gray-600" />
+                                <Bus className="w-4 h-4 text-gray-600" />
                                 <h3 className="text-sm font-semibold text-gray-900">
-                                    Allowance Details
+                                    Transport Details
                                 </h3>
                             </div>
 
                             <div className="grid md:grid-cols-2 gap-x-12">
                                 <div className="space-y-4">
                                     <InfoField
-                                        label="Total Allowance"
+                                        label="Stay Type"
                                         value={
-                                            scholarInfo?.allowance
-                                                ?.total_allowance
-                                                ? `₱ ${scholarInfo.allowance.total_allowance.toLocaleString()}`
+                                            scholarInfo?.transport_details
+                                                ?.stay_type || "N/A"
+                                        }
+                                        mobileClass={info}
+                                    />
+                                    <InfoField
+                                        label="Address"
+                                        value={
+                                            scholarInfo?.transport_details
+                                                ?.address || "N/A"
+                                        }
+                                        mobileClass={info}
+                                    />
+                                    <InfoField
+                                        label="Daily Transport Cost"
+                                        value={
+                                            scholarInfo?.transport_details
+                                                ?.daily_transport_cost
+                                                ? `₱ ${Number(scholarInfo.transport_details.daily_transport_cost).toFixed(2)}`
                                                 : "N/A"
                                         }
                                         mobileClass={info}
                                     />
                                     <InfoField
-                                        label="Transport Allowance"
+                                        label="Travel Route & Cost"
                                         value={
-                                            scholarInfo?.allowance
-                                                ?.transport_allowance
-                                                ? `₱ ${scholarInfo.allowance.transport_allowance.toLocaleString()}`
-                                                : "N/A"
-                                        }
-                                        mobileClass={info}
-                                    />
-                                    <InfoField
-                                        label="Load Allowance"
-                                        value={
-                                            scholarInfo?.allowance
-                                                ?.load_allowance
-                                                ? `₱ ${scholarInfo.allowance.load_allowance.toLocaleString()}`
-                                                : "N/A"
+                                            scholarInfo?.transport_details
+                                                ?.route_explanation || "N/A"
                                         }
                                         mobileClass={info}
                                     />
@@ -320,34 +409,36 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                 <div className="hidden md:block space-y-4">
                                     <ValueField
                                         value={
-                                            scholarInfo?.allowance
-                                                ?.total_allowance
-                                                ? `₱ ${scholarInfo.allowance.total_allowance.toLocaleString()}`
-                                                : "₱ 1000"
+                                            scholarInfo?.transport_details
+                                                ?.stay_type || "--"
                                         }
                                     />
                                     <ValueField
                                         value={
-                                            scholarInfo?.allowance
-                                                ?.transport_allowance
-                                                ? `₱ ${scholarInfo.allowance.transport_allowance.toLocaleString()}`
-                                                : "₱ 300"
+                                            scholarInfo?.transport_details
+                                                ?.address || "--"
                                         }
                                     />
                                     <ValueField
                                         value={
-                                            scholarInfo?.allowance
-                                                ?.load_allowance
-                                                ? `₱ ${scholarInfo.allowance.load_allowance.toLocaleString()}`
-                                                : "₱ 300"
+                                            scholarInfo?.transport_details
+                                                ?.daily_transport_cost
+                                                ? `₱ ${Number(scholarInfo.transport_details.daily_transport_cost).toFixed(2)}`
+                                                : "--"
+                                        }
+                                    />
+                                    <ValueField
+                                        value={
+                                            scholarInfo?.transport_details
+                                                ?.route_explanation || "--"
                                         }
                                     />
                                 </div>
                             </div>
-                        </section> */}
+                        </section>
 
                         {/* Account Settings */}
-                        {!isMaximize && (
+                        {!isModal && (
                             <section>
                                 <div className="flex items-center gap-2 mb-6">
                                     <Settings className="w-4 h-4 text-gray-600" />
@@ -384,7 +475,15 @@ const UserAccount = ({ scholarId = false, isMaximize = false }) => {
                                     </div>
                                 </div>
 
-                                <div className="mt-8 pt-6 border-t border-gray-100">
+                                <div className="mt-8 pt-6 border-t border-gray-200">
+                                    <div className="mb-8">
+                                        <h3 className="text-xl font-bold text-gray-800">
+                                            Password
+                                        </h3>
+                                        <p className="text-sm text-gray-700">
+                                            Must be at least 8 characters long.
+                                        </p>
+                                    </div>
                                     <ChangePasswordForm userId={user.user_id} />
                                 </div>
                             </section>
@@ -407,9 +506,17 @@ const InfoField = ({ label, value, mobileClass }) => (
 );
 
 const ValueField = ({ value, badge }) => (
-    <div className="flex items-center">
+    <div className={`flex items-center`}>
         {badge === "green" ? (
             <span className="inline-flex items-center bg-green-50 text-green-700 text-sm px-3 py-1 rounded-md">
+                {value}
+            </span>
+        ) : badge === "red" ? (
+            <span className="inline-flex items-center bg-red-50 text-red-700 text-sm px-3 py-1 rounded-md">
+                {value}
+            </span>
+        ) : badge === "yellow" ? (
+            <span className="inline-flex items-center bg-yellow-50 text-yellow-700 text-sm px-3 py-1 rounded-md">
                 {value}
             </span>
         ) : (

@@ -6,6 +6,7 @@ import { Bell, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../hooks/useNotifications";
 import NotificationPage from "./NotificationPage";
+import { useAdminAccountInformation } from "../hooks/useAdminAccountInformation";
 
 function TopBar() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -19,7 +20,10 @@ function TopBar() {
 
     const { user } = useAuth();
     const userId = user.user_id;
-    const { imageUrl } = getProfilePicture(userId);
+    const { imageUrl } = getProfilePicture(
+        userId,
+        user.type === "scholar" ? "profile-picture" : "user-profile-picture"
+    );
     const navigate = useNavigate();
     const {
         notifications,
@@ -27,6 +31,9 @@ function TopBar() {
         deleteNotification,
         fetchNotifications,
     } = useNotifications(userId);
+    const { adminInfo } = useAdminAccountInformation(
+        user.type === "admin" && userId
+    );
 
     console.log(user);
 
@@ -61,9 +68,7 @@ function TopBar() {
                 className={`relative py-1 px-5 flex items-center bg-white border-b-[2px] border-gray-300`}
             >
                 <div
-                    className={`${
-                        user.type === "scholar" ? "py-0" : "py-[2px]"
-                    } flex justify-between items-center ml-8 px-2 w-full`}
+                    className={`flex justify-between items-center ml-8 pl-2 w-full`}
                 >
                     <div className="flex justify-center items-center">
                         <img
@@ -85,7 +90,7 @@ function TopBar() {
                         ref={bellButtonRef}
                         onClick={() => setIsNotificationPanelOpen(true)}
                         title="Notifications"
-                        className={`relative ml-auto -mr-3 p-2 hover:bg-gray-100 rounded-lg ${user.type === "scholar" || user.type === "staff" ? "block" : "hidden"}`}
+                        className={`relative ml-auto -mr-2 p-2 hover:bg-gray-100 rounded-lg ${user.type === "scholar" || user.type === "staff" || user.type === "admin" ? "block" : "hidden"}`}
                     >
                         <span
                             className={`${
@@ -109,10 +114,12 @@ function TopBar() {
                         ref={dropdownButtonRef}
                         onClick={() => setIsDropdownOpen(true)}
                         className={`${
-                            user.type === "scholar" || user.type === "staff"
+                            user.type === "scholar" ||
+                            user.type === "staff" ||
+                            user.type === "admin"
                                 ? "block"
                                 : "hidden"
-                        } relative px-3 py-0.5 cursor-pointer rounded-full inline-block text-white text-center`}
+                        } relative pl-2 -mr-1 py-0.5 cursor-pointer rounded-full inline-block text-white text-center`}
                     >
                         <div className="py-1 px-2 flex items-center gap-4 sm:gap-2 rounded-md">
                             {user.type === "scholar" ? (
@@ -129,13 +136,54 @@ function TopBar() {
                                 </>
                             ) : (
                                 <>
-                                    {user.type === "scholar" ||
-                                        (user.type === "staff" && (
-                                            <div className="w-8 h-8 mr-1 rounded-full text-white text-sm bg-black flex justify-center items-center">
-                                                {user.first_name[0]}{" "}
-                                                {user.last_name[0]}
-                                            </div>
-                                        ))}
+                                    {user.type === "staff" ? (
+                                        <>
+                                            {imageUrl ? (
+                                                <img
+                                                    src={imageUrl}
+                                                    className="w-9 h-9 rounded-full"
+                                                />
+                                            ) : (
+                                                <div className="w-9 h-9 rounded-full text-white text-sm bg-black flex justify-center items-center">
+                                                    {user.first_name[0]}{" "}
+                                                    {user.last_name[0]}
+                                                </div>
+                                            )}
+
+                                            <p
+                                                className={`text-gray-500 text-xs hidden sm:block`}
+                                            >
+                                                {user.first_name}{" "}
+                                                {user.last_name}
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {imageUrl ? (
+                                                <img
+                                                    src={imageUrl}
+                                                    className="w-9 h-9 rounded-full"
+                                                />
+                                            ) : (
+                                                <div className="w-9 h-9 rounded-full text-white text-sm bg-black flex justify-center items-center">
+                                                    {
+                                                        adminInfo
+                                                            ?.basic_information
+                                                            ?.name[0]
+                                                    }
+                                                </div>
+                                            )}
+
+                                            <p
+                                                className={`text-gray-500 text-xs hidden sm:block`}
+                                            >
+                                                {
+                                                    adminInfo?.basic_information
+                                                        ?.name
+                                                }
+                                            </p>
+                                        </>
+                                    )}
                                 </>
                             )}
                             <ChevronDown
@@ -150,12 +198,18 @@ function TopBar() {
                             >
                                 <button
                                     onClick={() => {
-                                        navigate("/scholar/my-account");
+                                        if (user.type === "scholar") {
+                                            navigate("/scholar/my-account");
+                                        } else if (user.type === "staff") {
+                                            navigate("/staff/my-account");
+                                        } else {
+                                            navigate("/admin/my-account");
+                                        }
                                         setIsDropdownOpen(!isDropdownOpen);
                                     }}
                                     className="w-full px-2 py-2 hover:bg-gray-100 rounded-md"
                                 >
-                                    My Account
+                                    My Profile
                                 </button>
                                 <button className="w-full px-2 py-2 hover:bg-gray-100 rounded-md">
                                     Logout

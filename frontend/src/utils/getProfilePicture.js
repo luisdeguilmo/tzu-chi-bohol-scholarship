@@ -2,7 +2,7 @@ import axios from "axios";
 import BASE_URL from "../config";
 import { useEffect, useState } from "react";
 
-export const getProfilePicture = (userId) => {
+export const getProfilePicture = (userId, endpoint) => {
     const [imageUrl, setImageUrl] = useState(null);
     // const userId = user?.user_id;
 
@@ -13,7 +13,7 @@ export const getProfilePicture = (userId) => {
     const fetchProfilePicture = async () => {
         try {
             const response = await axios.get(
-                `${BASE_URL}backend/api/applications/${userId}/profile-picture`
+                `${BASE_URL}backend/api/applications/${userId}/${endpoint}`
             );
 
             if (response.data.success) {
@@ -29,5 +29,5 @@ export const getProfilePicture = (userId) => {
         fetchProfilePicture();
     }, [userId]);
 
-    return { imageUrl };
+    return { imageUrl, fetchProfilePicture };
 };

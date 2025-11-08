@@ -1,10 +1,8 @@
 import { ArrowRight, DownloadIcon, Eye, XCircle } from "lucide-react";
-import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import TableRow from "../../../components/TableRow";
 import { useApplicantData } from "../../../hooks/useApplicantData";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import { formatDateTime } from "../../../utils/formatDateTime";
-import { manageApplication } from "../../../services/emailService";
 
 const ApplicantsTableRow = ({
     currentItems,

@@ -59,7 +59,7 @@ export const manageApplication = () => {
 
             if (response.data.success) {
                 toast.success(
-                    "Application approved and notification email sent successfully!"
+                    "Application approved!"
                 );
                 setIsLoading(false);
                 return true;
@@ -80,7 +80,7 @@ export const manageApplication = () => {
             setIsLoading(true);
             // Only update status if email was sent successfully
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=reject_renew`,
+                `${BASE_URL}app/views/application-management.php?action=reject`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -115,7 +115,7 @@ export const manageApplication = () => {
             setIsLoading(true);
             // Only update status if email was sent successfully
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=reject`,
+                `${BASE_URL}app/views/application-management.php?action=reject_renew`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -123,13 +123,14 @@ export const manageApplication = () => {
                     email: applicant.email,
                     school_year: applicant.school_year,
                     is_application_rejected: 1,
+                    status: "application_rejected",
                     feedback: feedback,
                 }
             );
 
             if (response.data.success) {
                 toast.success(
-                    "Application rejected and notification email sent successfully!"
+                    "Application rejected!"
                 );
                 setIsLoading(false);
                 return true;

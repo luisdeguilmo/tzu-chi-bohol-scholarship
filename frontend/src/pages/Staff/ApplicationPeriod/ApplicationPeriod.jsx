@@ -15,6 +15,8 @@ const ApplicationPeriod = () => {
     // const [isModalOpen, setIsModalOpen] = useState(false);
     const [sortBy, setSortBy] = useState("newest");
     const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [selectedApplicationPeriod, setSelectedApplicationPeriod] =
+        useState("");
     const { deleteApplicationPeriod } = useApplicationPeriods();
 
     const {
@@ -30,7 +32,8 @@ const ApplicationPeriod = () => {
 
     const {
         applicationPeriods,
-        hasActiveApplicationPeriod,
+        hasActiveNewApplicationPeriod,
+        hasActiveRenewalApplicationPeriod,
         fetchApplicationPeriods,
     } = useApplicationPeriods();
 
@@ -197,9 +200,10 @@ const ApplicationPeriod = () => {
                                 </span>
                                 <select
                                     value={itemsPerPage}
-                                    onChange={(e) =>
-                                        setItemsPerPage(Number(e.target.value))
-                                    }
+                                    onChange={(e) => {
+                                        setItemsPerPage(Number(e.target.value));
+                                        setCurrentPage(1);
+                                    }}
                                     className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
                                 >
                                     <option value={5}>5</option>
@@ -271,30 +275,39 @@ const ApplicationPeriod = () => {
                                         )}
                                     </td>
                                     <td className="py-3 whitespace-nowrap text-gray-500">
+                                        {applicationPeriod.type === "new"
+                                            ? "New"
+                                            : "Renewal"}
+                                    </td>
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
                                         <span
                                             className={`inline-flex px-2 py-1 text-xs rounded-full ${
                                                 applicationPeriod.status ===
                                                 "Active"
                                                     ? "bg-green-100 text-green-800"
                                                     : applicationPeriod.status ===
-                                                      "Pending"
-                                                    ? "bg-yellow-100 text-yellow-800"
-                                                    : "bg-red-100 text-red-800"
+                                                        "Pending"
+                                                      ? "bg-yellow-100 text-yellow-800"
+                                                      : "bg-red-100 text-red-800"
                                             }`}
                                         >
                                             {applicationPeriod.status}
                                         </span>
                                     </td>
+
                                     <td className="py-3 whitespace-nowrap text-gray-500">
                                         {applicationPeriod.announcement_message}
                                     </td>
                                     <td className="py-3 whitespace-nowrap font-medium">
                                         <button
-                                            onClick={() =>
+                                            onClick={() => {
+                                                setSelectedApplicationPeriod(
+                                                    applicationPeriod.type
+                                                );
                                                 handlePeriodToEdit(
                                                     applicationPeriod
-                                                )
-                                            }
+                                                );
+                                            }}
                                             className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                                         >
                                             <svg
@@ -318,7 +331,9 @@ const ApplicationPeriod = () => {
 
                                         <button
                                             onClick={() =>
-                                                handleDelete(applicationPeriod.id)
+                                                handleDelete(
+                                                    applicationPeriod.id
+                                                )
                                             }
                                             className="inline-flex items-center text-red-600 hover:text-red-900 mr-3"
                                         >
@@ -370,7 +385,9 @@ const ApplicationPeriod = () => {
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
                 onRefresh={fetchApplicationPeriods}
-                disabled={hasActiveApplicationPeriod}
+                selectedApplicationPeriod={selectedApplicationPeriod}
+                disabledNew={hasActiveNewApplicationPeriod}
+                disabledRenewal={hasActiveRenewalApplicationPeriod}
             />
         </div>
     );

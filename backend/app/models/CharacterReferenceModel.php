@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Config\Database;
 
-class CharacterReferenceModel {
-    private $table_name = "character_reference";
+class CharacterReferenceModel
+{
+    private $table_name = 'character_reference';
 
     public $id;
     public $application_id;
@@ -17,13 +18,18 @@ class CharacterReferenceModel {
 
     private $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
     }
 
-    public function create($scholar, $application_id) {
-        $query = "INSERT INTO " . $this->table_name . " 
+    public function create($scholar, $application_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
                   SET application_id = :application_id,
                       name = :name,
                       address = :address,
@@ -42,14 +48,57 @@ class CharacterReferenceModel {
         $this->contact_number = htmlspecialchars(strip_tags($scholar['contact_number']));
 
         // Bind values
-        $stmt->bindParam(":application_id", $this->application_id);
-        $stmt->bindParam(":name", $this->name);
-        $stmt->bindParam(":address", $this->address);
-        $stmt->bindParam(":company", $this->company);
-        $stmt->bindParam(":position", $this->position);
-        $stmt->bindParam(":contact_number", $this->contact_number);
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':address', $this->address);
+        $stmt->bindParam(':company', $this->company);
+        $stmt->bindParam(':position', $this->position);
+        $stmt->bindParam(':contact_number', $this->contact_number);
 
         return $stmt->execute();
+    }
+
+    public function update($scholar, $id)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            " 
+                  SET 
+                      name = :name,
+                      address = :address,
+                      company = :company,
+                      position = :position,
+                      contact_number = :contact_number
+                      WHERE application_id = :id";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize inputs
+        $this->name = htmlspecialchars(strip_tags($scholar['name']));
+        $this->address = htmlspecialchars(strip_tags($scholar['address']));
+        $this->company = htmlspecialchars(strip_tags($scholar['company']));
+        $this->position = htmlspecialchars(strip_tags($scholar['position']));
+        $this->contact_number = htmlspecialchars(strip_tags($scholar['contact_number']));
+
+        // Bind values
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':address', $this->address);
+        $stmt->bindParam(':company', $this->company);
+        $stmt->bindParam(':position', $this->position);
+        $stmt->bindParam(':contact_number', $this->contact_number);
+
+        return $stmt->execute();
+    }
+
+    public function getCharacterReference($id)
+    {
+        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
 

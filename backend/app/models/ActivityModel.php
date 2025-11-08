@@ -154,6 +154,14 @@ class ActivityModel
         return null;
     }
 
+    public function revertRenderedHours($accountId)
+    {
+        $query = 'UPDATE volunteer_activities SET rendered_hours = 0 WHERE id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $accountId);
+        return $stmt->execute();
+    }
+
     public function getVolunteerActivities($scholarId)
     {
         $query =

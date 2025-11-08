@@ -1,36 +1,33 @@
 import { useEffect, useState } from "react";
 import InputModal from "./InputModal";
+import { useSchoolTransportInfo } from "../hooks/useSchoolTransportInfo";
+import { useAuth } from "../context/AuthContext";
 
-function LivingInfoFormModal({
-    scholar,
-    isOpen,
-    onClose,
-    label,
-    isLoading,
-    onUpdate,
-    onRefresh,
-    onRefreshAllowanceData,
-}) {
+function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
     const [stayingArrangement, setStayingArrangement] = useState("");
     const [otherStayingArrangement, setOtherStayingArrangement] = useState("");
     const [address, setAddress] = useState("");
-    const [distanceFromSchool, setDistanceFromSchool] = useState("");
-    const [transportMode, setTransportMode] = useState("");
-    const [otherTransportMode, setOtherTransportMode] = useState("");
     const [dailyTransportCost, setDailyTransportCost] = useState("");
-    const [stayDurationFrom, setStayDurationFrom] = useState("");
-    const [stayDurationTo, setStayDurationTo] = useState("");
+    const [routeAndCost, setRouteAndCost] = useState("");
+
+    const { user } = useAuth();
+    const { transportInfo, addTransportInfo } = useSchoolTransportInfo(
+        user.user_id
+    );
+
+    useEffect(() => {
+        setStayingArrangement(transportInfo?.stay_type || "");
+        setAddress(transportInfo?.address || "");
+        setDailyTransportCost(transportInfo?.daily_transport_cost || "");
+        setRouteAndCost(transportInfo?.route_explanation || "");
+    }, [transportInfo]);
 
     const resetFields = () => {
         setStayingArrangement("");
         setOtherStayingArrangement("");
         setAddress("");
-        setDistanceFromSchool("");
-        setTransportMode("");
-        setOtherTransportMode("");
+        setRouteAndCost("");
         setDailyTransportCost("");
-        setStayDurationFrom("");
-        setStayDurationTo("");
     };
 
     const handleCancel = (e) => {
@@ -39,26 +36,17 @@ function LivingInfoFormModal({
     };
 
     const handleSubmit = async () => {
-        const livingInfo = {
-            stayingArrangement:
-                stayingArrangement === "Others"
-                    ? otherStayingArrangement
-                    : stayingArrangement,
+        const success = await addTransportInfo(
+            user.user_id,
+            stayingArrangement,
             address,
-            distanceFromSchool,
-            transportMode:
-                transportMode === "Others" ? otherTransportMode : transportMode,
             dailyTransportCost,
-            stayDurationFrom,
-            stayDurationTo,
-        };
-
-        const success = await onUpdate(livingInfo);
+            routeAndCost
+        );
 
         if (success) {
             onClose(false);
             onRefresh?.();
-            onRefreshAllowanceData?.();
         }
     };
 
@@ -70,9 +58,9 @@ function LivingInfoFormModal({
             onClose={onClose}
             onSubmit={handleSubmit}
             onCancel={handleCancel}
-            buttonLabel={"Save"}
+            buttonLabel={"Submit"}
             isLoading={isLoading}
-            isScholar={true}
+            // isScholar={true}
         >
             <div className="pb-5">
                 {/* Where do you stay during the school term? */}
@@ -91,6 +79,7 @@ function LivingInfoFormModal({
                                     setStayingArrangement(e.target.value)
                                 }
                                 className="mr-2 accent-green-600"
+                                required
                             />
                             At home
                         </label>
@@ -106,6 +95,7 @@ function LivingInfoFormModal({
                                     setStayingArrangement(e.target.value)
                                 }
                                 className="mr-2 accent-green-600"
+                                required
                             />
                             In a boarding house
                         </label>
@@ -122,6 +112,7 @@ function LivingInfoFormModal({
                                     setStayingArrangement(e.target.value)
                                 }
                                 className="mr-2 accent-green-600"
+                                required
                             />
                             With relatives or friends near the school
                         </label>
@@ -135,6 +126,7 @@ function LivingInfoFormModal({
                                     setStayingArrangement(e.target.value)
                                 }
                                 className="mr-2 accent-green-600"
+                                required
                             />
                             Others:
                         </label>
@@ -157,65 +149,67 @@ function LivingInfoFormModal({
                     </div>
                 </div>
 
-                {/* Address */}
-                <div className="block w-full relative pt-4 px-6">
-                    <label className="block mb-1 text-gray-600 text-xs">
-                        Address
-                    </label>
-                    <input
-                        type="text"
-                        name="address"
-                        value={address}
-                        placeholder="Complete address"
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
-                        required
-                    />
-                </div>
-
-                {/* Approximate distance from school */}
-                {/* <div className="block w-full relative pt-4 px-6">
-                    <label className="block mb-1 text-gray-600 text-xs">
-                        Approximate distance from school (km)
-                    </label>
-                    <input
-                        type="number"
-                        name="distanceFromSchool"
-                        min={0}
-                        step="0.1"
-                        value={distanceFromSchool}
-                        placeholder="Distance in kilometers"
-                        onChange={(e) => setDistanceFromSchool(e.target.value)}
-                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
-                        required
-                    />
-                </div> */}
-
-                {/* Mode of transport */}
+                {stayingArrangement !== "At home" && (
+                    <div className="block w-full relative pt-4 px-6">
+                        <label className="block mb-1 text-gray-600 text-xs">
+                            Address
+                        </label>
+                        <input
+                            type="text"
+                            name="address"
+                            value={address}
+                            placeholder="Complete address"
+                            onChange={(e) => setAddress(e.target.value)}
+                            className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            required
+                        />
+                    </div>
+                )}
 
                 {/* Estimated daily transport cost */}
+                {(stayingArrangement === "At home" ||
+                    stayingArrangement === "Others") && (
+                    <div className="block w-full relative pt-4 px-6">
+                        <label className="block mb-1 text-gray-600 text-xs">
+                            Estimated daily transport cost (₱)
+                        </label>
+                        <input
+                            type="number"
+                            name="dailyTransportCost"
+                            min={0}
+                            value={dailyTransportCost}
+                            placeholder="Daily transport cost"
+                            onChange={(e) =>
+                                setDailyTransportCost(e.target.value)
+                            }
+                            className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            required
+                        />
+                    </div>
+                )}
+
                 <div className="block w-full relative pt-4 px-6">
                     <label className="block mb-1 text-gray-600 text-xs">
-                        Estimated daily transport cost (₱)
+                        Travel Route & Cost
                     </label>
-                    <input
-                        type="number"
-                        name="dailyTransportCost"
-                        min={0}
-                        value={dailyTransportCost}
-                        placeholder="Daily transport cost"
-                        onChange={(e) => setDailyTransportCost(e.target.value)}
-                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
+                    <textarea
+                        rows={5}
+                        value={routeAndCost}
+                        onChange={(e) => setRouteAndCost(e.target.value)}
+                        placeholder="(e.g., Loon → Tagbilaran = ₱50)"
+                        className="w-full border resize-none text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
-                    />
+                    ></textarea>
                 </div>
 
-                <div className="pt-4 px-6">
+                {/* You can update it anytime in your Profile */}
+
+                <div className="mt-auto pt-4 px-6">
                     <p className="text-xs italic">
                         Tip:{" "}
                         <span className="text-gray-600">
                             This information is required before allowance
-                            release. You can update it anytime in your Profile.
+                            release.
                         </span>
                     </p>
                 </div>

@@ -76,6 +76,7 @@ export default function CollegeUniversityManagement() {
         indexOfFirstItem,
         indexOfLastItem,
         numberOfItemsPerPage,
+        setNumberOfItemsPerPage,
         goToPreviousPage,
         goToNextPage,
     } = usePagination(sortedApplications, itemsPerPage);
@@ -111,6 +112,8 @@ export default function CollegeUniversityManagement() {
                     onSort={setSortBy}
                     onSearchChange={setSearchTerm}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
+                    onChangeNumberOfItemsPerPage={setNumberOfItemsPerPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     addButton={true}

@@ -52,7 +52,10 @@ export default function Examination() {
         selectedBatchInBatches,
         activeTab
     );
-    const { profilePics, fetchAllPics } = useProfilePicture(applications);
+    const { profilePics, fetchAllPics } = useProfilePicture(
+        applications,
+        "profile-picture"
+    );
 
     useEffect(() => {
         fetchBatches();
@@ -215,8 +218,8 @@ export default function Examination() {
                         activeTab === "Applicants"
                             ? unassignedTableHeaders
                             : activeTab === "Batches"
-                            ? batchesTableHeaders
-                            : resultTableHeaders
+                              ? batchesTableHeaders
+                              : resultTableHeaders
                     }
                     hasCheckbox={true}
                     currentItems={currentItems}

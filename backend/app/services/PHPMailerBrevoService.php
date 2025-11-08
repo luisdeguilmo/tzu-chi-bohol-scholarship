@@ -378,6 +378,22 @@ class PHPMailerBrevoService
         return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
     }
 
+    public function sendRenewalApplicationEmail($studentInfo, $data)
+    {
+        $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
+        $subject = 'New Event';
+        $htmlContent = "
+        <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
+            <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
+            <p style=\"margin-bottom: 16px;\">{$data['announcementMessage']}</p>
+            <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
+            <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
+            <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">Contact: {$this->contactInfo}</p>
+        </div>";
+
+        return $this->sendEmail($studentInfo['email'], $subject, $htmlContent);
+    }
+
     public function sendActivityRecordedEmail($studentInfo, $data)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];

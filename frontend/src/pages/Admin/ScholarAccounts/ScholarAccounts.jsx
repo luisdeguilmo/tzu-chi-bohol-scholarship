@@ -13,6 +13,7 @@ import ScholarAccountsRow from "./ScholarAccountsRow";
 import { scholarAccountButtons } from "../../../constant/tableToolbarButtons";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
+import { useUserAccount } from "../../../hooks/useUserAccount";
 
 const ScholarAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -22,18 +23,15 @@ const ScholarAccounts = () => {
     const [activeTab, setActiveTab] = useState("pending");
     const [headers, setHeaders] = useState(pendingScholarHeaders);
 
-    const {
-        loading,
+    const { loading, scholars, createScholarAccount, fetchScholars } =
+        useScholarAccounts(activeTab);
+
+    const { loading: isLoading, updateScholarAccountStatus } = useUserAccount();
+
+    const { profilePics, fetchAllPics } = useProfilePicture(
         scholars,
-        createScholarAccount,
-        updateScholarAccountStatus,
-        fetchScholars,
-    } = useScholarAccounts(activeTab);
-
-    const { profilePics, fetchAllPics } = useProfilePicture(scholars);
-
-    console.log(scholars);
-    console.log(activeTab);
+        "profile-picture"
+    );
 
     useEffect(() => {
         fetchScholars(activeTab);
@@ -112,7 +110,7 @@ const ScholarAccounts = () => {
                 <TableToolbar
                     items={scholars}
                     label={"Scholars Accounts"}
-                    placeholder={"applications"}
+                    placeholder={"scholars"}
                     tab={activeTab}
                     buttons={scholarAccountButtons}
                     searchTerm={searchTerm}
@@ -135,7 +133,7 @@ const ScholarAccounts = () => {
                         currentItems={currentItems}
                         selectedItems={selectedScholars}
                         selectAllVisible={selectAllVisible}
-                        hasCheckbox={true}
+                        hasCheckbox={activeTab === "pending"}
                     >
                         {activeTab === "pending" ? (
                             <PendingScholarsRow
@@ -151,10 +149,11 @@ const ScholarAccounts = () => {
                                 selectedAccounts={selectedScholars}
                                 toggleAccountSelection={toggleScholarSelection}
                                 profilePics={profilePics}
-                                isLoading={loading}
+                                isLoading={isLoading}
                                 onUpdateAccountStatus={
                                     updateScholarAccountStatus
                                 }
+                                onRefresh={() => fetchScholars(activeTab)}
                             />
                         )}
                     </Table>

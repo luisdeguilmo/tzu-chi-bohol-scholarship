@@ -43,6 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit();
     }
 
+    if (count($uri) >= 6 && $uri[5] === 'user-profile-picture') {
+        $applicationId = $uri[4];
+        $controller->getUserProfilePicture($applicationId);
+        exit();
+    }
+
     if (count($uri) >= 6 && $uri[5] === '2x2-picture') {
         $applicationId = $uri[4];
         $controller->getProfilePicture64($applicationId);
@@ -58,6 +64,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (count($uri) >= 6 && $uri[5] === 'examination_files') {
         $applicationId = $uri[4];
         $controller->getExaminationFiles64($applicationId);
+        exit();
+    }
+
+    if (count($uri) >= 6 && $uri[5] === 'initial_interview_files') {
+        $applicationId = $uri[4];
+        $controller->getInitialInterviewFiles64($applicationId);
+        exit();
+    }
+
+    if (count($uri) >= 6 && $uri[5] === 'home_visitation_files') {
+        $applicationId = $uri[4];
+        $controller->getHomeVisitationFiles64($applicationId);
+        exit();
+    }
+
+    if (count($uri) >= 6 && $uri[5] === 'final_interview_files') {
+        $applicationId = $uri[4];
+        $controller->getFinalInterviewFiles64($applicationId);
         exit();
     }
 }

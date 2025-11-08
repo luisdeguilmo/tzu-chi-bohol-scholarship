@@ -96,6 +96,10 @@ try {
         $stmt = $pdo->prepare('SELECT first_name, last_name FROM staff WHERE account_id = ?');
         $stmt->execute([$user['account_id']]);
         $userName = $stmt->fetch(PDO::FETCH_ASSOC);
+    } elseif ($userType === 'admin') {
+        $stmt = $pdo->prepare('SELECT name FROM admin WHERE id = ?');
+        $stmt->execute([$user['account_id']]);
+        $userName = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     if (!$user) {
@@ -136,8 +140,10 @@ try {
 
     $payload = [
         'user_id' => $user['account_id'],
+        'account_status' => $user['status'],
+        'name' => $userName['name'] ?? null,
         'first_name' => $userName['first_name'] ?? null,
-        'last_name' => $userName['last_name'] ?? null, 
+        'last_name' => $userName['last_name'] ?? null,
         'email' => $user['email'],
         'type' => $user['type'],
         'iat' => time(),
@@ -186,10 +192,12 @@ try {
         'token' => $jwt,
         'user' => [
             'user_id' => $user['account_id'],
+            'name' => $userName['name'] ?? null,
             'first_name' => $userName['first_name'] ?? null,
             'last_name' => $userName['last_name'] ?? null,
             'email' => $user['email'],
             'type' => $user['type'],
+            'account_status' => $user['status'],
         ],
     ]);
 } catch (PDOException $e) {

@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-export const useApplicationPeriods = () => {
+export const useApplicationPeriods = (type) => {
     const [applicationPeriods, setApplicationPeriods] = useState([]);
-    const [hasActiveApplicationPeriod, setHasActiveApplicationPeriod] =
+    const [hasActiveNewApplicationPeriod, setHasActiveNewApplicationPeriod] =
         useState(false);
+    const [
+        hasActiveRenewalApplicationPeriod,
+        setHasActiveRenewalApplicationPeriod,
+    ] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -14,14 +18,16 @@ export const useApplicationPeriods = () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/application-periods.php`
+                `${BASE_URL}app/views/application-periods.php?type=${type}`
             );
             // Set application periods data
             setApplicationPeriods(response.data.data || []);
             // Set active application period flag
-            console.log(response.data.hasActiveApplicationPeriod);
-            setHasActiveApplicationPeriod(
-                response.data.hasActiveApplicationPeriod || false
+            setHasActiveNewApplicationPeriod(
+                response.data.hasActiveNewApplicationPeriod || false
+            );
+            setHasActiveRenewalApplicationPeriod(
+                response.data.hasActiveRenewalApplicationPeriod || false
             );
             setLoading(false);
         } catch (err) {
@@ -36,13 +42,16 @@ export const useApplicationPeriods = () => {
     const createApplicationPeriod = async (
         startDate,
         endDate,
-        announcementMessage
+        announcementMessage,
+        status,
+        type
     ) => {
         const data = {
             application: {
                 startDate: startDate,
                 endDate: endDate,
-                status: "Active",
+                type: type,
+                status: status,
                 announcementMessage: announcementMessage,
             },
         };
@@ -66,14 +75,17 @@ export const useApplicationPeriods = () => {
                 toast.success(result.message + ".");
                 await fetchApplicationPeriods();
                 setLoading(false);
+                return true;
             } else {
                 alert("Error: " + result.message);
                 setLoading(false);
+                return false;
             }
         } catch (error) {
             console.error("Submission error:", error);
             alert("Failed to submit the form. Please try again.");
             setLoading(false);
+            return false;
         }
     };
 
@@ -106,13 +118,15 @@ export const useApplicationPeriods = () => {
         startDate,
         endDate,
         announcementMessage,
-        status
+        status,
+        type
     ) => {
         const data = {
             application: {
                 id: id,
                 startDate: startDate,
                 endDate: endDate,
+                type: type,
                 status: status,
                 announcementMessage: announcementMessage,
             },
@@ -155,8 +169,10 @@ export const useApplicationPeriods = () => {
     return {
         loading,
         applicationPeriods,
-        hasActiveApplicationPeriod,
-        setHasActiveApplicationPeriod,
+        hasActiveNewApplicationPeriod,
+        hasActiveRenewalApplicationPeriod,
+        setHasActiveNewApplicationPeriod,
+        setHasActiveRenewalApplicationPeriod,
         createApplicationPeriod,
         editApplicationPeriod,
         deleteApplicationPeriod,

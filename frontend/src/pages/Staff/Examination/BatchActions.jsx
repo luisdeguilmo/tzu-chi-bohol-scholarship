@@ -1,9 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
 import DeleteBatchButton from "./DeleteBatchButton";
 import SetScheduleForm from "./SetScheduleForm";
-import { Send } from "lucide-react";
 
 export default function BatchActions({
     applications,

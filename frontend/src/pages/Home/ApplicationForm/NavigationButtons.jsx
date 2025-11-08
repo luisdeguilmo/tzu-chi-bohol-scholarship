@@ -1,6 +1,7 @@
-import { use, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useCheckEmail } from "../../../hooks/useCheckEmail";
+import { useAuth } from "../../../context/AuthContext";
+import { useEffect } from "react";
 
 const validateSection = (section, formData, formConfig) => {
     const errors = {};
@@ -36,22 +37,22 @@ const NavigationButtons = ({
     isFirstFormApplicable = false,
     isSecondFormApplicable = false,
 }) => {
-    const { isEmailExist } = useCheckEmail(
-        formData?.personal_information.email
+    const { user } = useAuth();
+
+    const { isEmailExist, refetch } = useCheckEmail(
+        formData?.personal_information.email,
+        user?.user_id ?? null
     );
 
-    // useEffect(() => {
-    //     console.log("Email exists:", isEmailExist);
-    // }, [isEmailExist]);
+    useEffect(() => {
+        refetch();
+    }, [formData?.personal_information.email]);
 
     const checkAndProceed = (e) => {
         e.preventDefault();
 
         if (sections) {
             let [section1, section2] = sections;
-            console.log(section1, section2);
-            console.log(sections);
-            // let section1, section2;
 
             const { errors, hasErrors } = validateSection(
                 section1.toString(),
@@ -88,7 +89,7 @@ const NavigationButtons = ({
 
         if (section === "Personal") {
             if (isEmailExist) {
-                toast.error("An application with this email already exists");
+                toast.error(user?.user_id ? "Email is already used." : "An application with this email already exists.");
 
                 // You could also highlight the fields with errors here if needed
                 return;

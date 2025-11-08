@@ -65,5 +65,5 @@ export const useDashboardOverviewData = (id, userType, schoolYear) => {
         }
     }, [userType, schoolYear]);
 
-    return { dashboardData, fetchStaffDashboardData };
+    return { dashboardData, fetchStaffDashboardData, fetchScholarDashboardData };
 };

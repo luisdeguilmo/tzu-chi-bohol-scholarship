@@ -22,6 +22,8 @@ const TableToolbar = ({
     sortBy,
     itemsPerPage,
     onChangeItemsPerPage,
+    onChangeCurrentPage,
+    onChangeNumberOfItemsPerPage = false,
     onSort,
     onSearchChange,
     onRefresh,
@@ -121,7 +123,8 @@ const TableToolbar = ({
                             Export
                         </button>
                     )}
-                    {addCreateBatchButton && tab === "Batches" ? (
+                    {addCreateBatchButton &&
+                    (tab === "Batches" || tab === "Orientation") ? (
                         <button
                             onClick={() => onOpen(true)}
                             className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
@@ -141,7 +144,6 @@ const TableToolbar = ({
                 </div>
             </div>
 
-            {/* Modern Table Toolbar */}
             <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-slate-100">
                 {/* Top Row - Tabs and Search */}
                 <div className="flex justify-between items-center mb-4 gap-2 flex-col sm:flex-row">
@@ -220,9 +222,15 @@ const TableToolbar = ({
                             <span className="text-xs text-gray-600">Show:</span>
                             <select
                                 value={itemsPerPage}
-                                onChange={(e) =>
-                                    onChangeItemsPerPage(Number(e.target.value))
-                                }
+                                onChange={(e) => {
+                                    onChangeItemsPerPage(
+                                        Number(e.target.value)
+                                    );
+                                    onChangeCurrentPage(1);
+                                    if (onChangeNumberOfItemsPerPage) {
+                                        onChangeNumberOfItemsPerPage(0);
+                                    }
+                                }}
                                 className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
                                 <option value={5}>5</option>

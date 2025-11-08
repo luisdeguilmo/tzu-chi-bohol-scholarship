@@ -21,7 +21,10 @@ const ReviewedApplications = () => {
     const [sortBy, setSortBy] = useState("newest");
     const { applications, fetchApplications } = useApprovedApplications();
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(applications);
+    const { profilePics, fetchAllPics } = useProfilePicture(
+        applications,
+        "profile-picture"
+    );
     const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
 
     useEffect(() => {
@@ -112,6 +115,7 @@ const ReviewedApplications = () => {
                 onSearchChange={setSearchTerm}
                 onChangeTab={handleChangeTab}
                 onChangeItemsPerPage={setItemsPerPage}
+                onChangeCurrentPage={setCurrentPage}
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
             />
@@ -157,8 +161,8 @@ const ReviewedApplications = () => {
                                     {info.is_application_approved
                                         ? "Approved"
                                         : info.is_application_rejected
-                                        ? "Rejected"
-                                        : "--"}
+                                          ? "Rejected"
+                                          : "--"}
                                 </span>
                             </td>
                             <td className="py-2 whitespace-nowrap text-gray-500 text-xs">

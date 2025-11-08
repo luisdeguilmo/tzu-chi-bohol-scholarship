@@ -14,6 +14,8 @@ function ConfirmationModal({
     onSuccess,
     feedback,
     setFeedback,
+    deactivationReason,
+    setDeactivationReason,
 }) {
     const resetFields = () => {
         if (action === "reject") {
@@ -57,6 +59,30 @@ function ConfirmationModal({
                                 className="w-full resize-none border border-gray-300 text-xs text-gray-700 rounded-md p-1 focus:outline-none focus:ring-1 focus:ring-green-500"
                             ></textarea>
                         </label>
+                    )}
+                    {action === "deactivate" && (
+                        <div className="mt-2 block w-full relative">
+                            <label className="block mb-1 text-gray-600 text-xs">
+                                Reason for Deactivation
+                            </label>
+                            <select
+                                name="deactivation_reason"
+                                value={deactivationReason} // <-- controlled value
+                                onChange={(e) =>
+                                    setDeactivationReason(e.target.value)
+                                } // <-- change handler
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                required
+                            >
+                                <option value="" disabled>
+                                    Select
+                                </option>
+                                {/* <option value="pending">Pending</option> */}
+                                <option value="graduated">Graduated</option>
+                                <option value="terminated">Terminated</option>
+                                <option value="terminated">Other</option>
+                            </select>
+                        </div>
                     )}
                 </div>
             </div>

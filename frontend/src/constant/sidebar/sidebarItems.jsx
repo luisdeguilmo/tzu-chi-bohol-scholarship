@@ -10,6 +10,8 @@ import {
     HandHeart,
     RotateCcw,
     UserCog,
+    BookOpen,
+    Users,
 } from "lucide-react";
 
 export const scholarSidebarItems = [
@@ -31,12 +33,12 @@ export const scholarSidebarItems = [
         icon: <Calendar className="w-5 h-5 text-slate-600" />,
         navigate: "/scholar/events",
     },
-    // {
-    //     itemName: "hours_log",
-    //     text: "Rendered Hours",
-    //     icon: <FileClock className="w-5 h-5 text-slate-600" />,
-    //     navigate: "/scholar/rendered-hours",
-    // },
+    {
+        itemName: "recent",
+        text: "Recent Activities",
+        icon: <BookOpen className="w-5 h-5 text-slate-600" />,
+        navigate: "/scholar/recent-activities",
+    },
     {
         itemName: "archive",
         text: "Archived Activities",
@@ -91,7 +93,10 @@ export const staffSidebarItems = [
         icon: <Layers className="w-5 h-5 text-slate-600" />,
         subItems: [
             { text: "Scholars", navigate: "/staff/scholars" },
-            // { text: "Test Excel", navigate: "/staff/test-excel" },
+            {
+                text: "Monthly Allowance Summary",
+                navigate: "/staff/monthly-allowance-summary",
+            },
             { text: "Applications", navigate: "/staff/application-records" },
         ],
     },
@@ -107,7 +112,7 @@ export const staffSidebarItems = [
             },
             {
                 text: "Entrance Examination",
-                navigate: "/staff/examination-list",
+                navigate: "/staff/entrance-examination",
             },
             { text: "Initial Interview", navigate: "/staff/initial-interview" },
             { text: "Home Visitation", navigate: "/staff/home-visitation" },
@@ -123,7 +128,7 @@ export const staffSidebarItems = [
         itemName: "events_duty",
         icon: <Calendar className="w-5 h-5 text-slate-600" />,
         subItems: [
-            { text: "Events", navigate: "/staff/set-events" },
+            { text: "Events", navigate: "/staff/events" },
             {
                 text: "Community Services",
                 navigate: "/staff/community-services",
@@ -146,6 +151,12 @@ export const adminSidebarItems = [
         itemName: "dashboard",
         icon: <LayoutDashboard className="w-5 h-5 text-slate-600" />,
         navigate: "/admin/dashboard",
+    },
+    {
+        text: "Users",
+        itemName: "users",
+        icon: <Users className="w-5 h-5 text-slate-600" />,
+        navigate: "/admin/users",
     },
     {
         text: "Manage Accounts",

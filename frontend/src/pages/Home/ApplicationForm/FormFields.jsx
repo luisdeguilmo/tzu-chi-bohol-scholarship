@@ -12,7 +12,9 @@ const FormFields = ({
     errors,
 }) => {
     const [selectedCollegeOrUniversity, setSelectedCollegeOrUniversity] =
-        useState(formData.educational_background.currentSchoolId || 0);
+        useState(formData?.educational_background?.selected_school_id || 0);
+
+    console.log(selectedCollegeOrUniversity);
 
     const { collegesAndUniversities } = useCollegesUniversities();
     const { coursesAccepted, fetchCoursesAccepted, resetCoursesAccepted } =
@@ -27,13 +29,13 @@ const FormFields = ({
 
         if (
             selectedCollegeOrUniversity !==
-            formData.educational_background.currentSchoolId
+            formData.educational_background.selected_school_id
         ) {
             formData.educational_background.present_course1 = "";
             formData.educational_background.present_course2 = "";
         }
 
-        formData.educational_background.currentSchoolId =
+        formData.educational_background.selected_school_id =
             +selectedCollegeOrUniversity;
         // Remove fetchCoursesAccepted and resetCoursesAccepted from dependencies
     }, [selectedCollegeOrUniversity]);
@@ -47,6 +49,8 @@ const FormFields = ({
     const previous =
         section === FORM_SECTIONS.EDUCATION ? fields.slice(0, 5) : [];
     const present = section === FORM_SECTIONS.EDUCATION ? fields.slice(6) : [];
+
+    console.log(formData);
 
     // Memoize mapped arrays
     const collegesAndUniversitiesArray = useMemo(

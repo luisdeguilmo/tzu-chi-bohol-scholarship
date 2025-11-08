@@ -11,6 +11,7 @@ import { date } from "../../../utils/getDateAndTime";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { eventTableHeaders } from "../../../constant/tableHeaders";
+import { ClipboardEdit } from "lucide-react";
 
 export default function EventsPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -90,6 +91,7 @@ export default function EventsPage() {
                     onSort={setSortBy}
                     onSearchChange={setSearchTerm}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     addButton={true}
@@ -131,7 +133,7 @@ export default function EventsPage() {
                                 key={event.id}
                                 className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
                             >
-                                <td className="py-3 pl-6 whitespace-nowrap text-gray-700">
+                                <td className="py-5 pl-6 whitespace-nowrap text-gray-700">
                                     <p className="text-left">
                                         {event.event_name}
                                     </p>
@@ -171,26 +173,7 @@ export default function EventsPage() {
                                         }
                                         className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            class="w-4 h-4 text-blue-600"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                            />
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                            />
-                                        </svg>
+                                        <ClipboardEdit className="w-4 h-4 text-blue-600" />
                                     </button>
                                 </td>
                             </tr>

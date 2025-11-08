@@ -69,7 +69,10 @@ export default function Examination() {
         fetchApplicationsOnResultTab,
     } = useExamination(selectedBatchInBatches, activeTab, status, sortBy);
 
-    const { profilePics, fetchAllPics } = useProfilePicture(applications);
+    const { profilePics, fetchAllPics } = useProfilePicture(
+        applications,
+        "profile-picture"
+    );
     const { isLoading, sendExaminationPassed, sendExaminationFailed } =
         manageApplication();
 
@@ -234,6 +237,7 @@ export default function Examination() {
                 onSearchChange={setSearchTerm}
                 onChangeTab={handleChangeTab}
                 onChangeItemsPerPage={setItemsPerPage}
+                onChangeCurrentPage={setCurrentPage}
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
                 addButton={status === "passed" || status === "failed"}

@@ -146,13 +146,14 @@ export const useApplicationFiles = (type, applicationId) => {
 
                 resetForm();
                 setIsOpen(false);
-
+                setIsSubmitting(false);
                 // if (onSuccess) onSuccess();
                 setLoading(false);
                 return false;
             } else {
                 toast.error("Error: " + result.message);
                 setLoading(false);
+                setIsSubmitting(false);
                 return false;
             }
         } catch (error) {

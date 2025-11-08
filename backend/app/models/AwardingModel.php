@@ -57,7 +57,7 @@ class AwardingModel
     public function updateStatusToAttended($data)
     {
         $query =
-            "UPDATE application_info SET is_attended_awarding = '1', is_not_attended_awarding = '0' WHERE application_id = :account_id";
+            "UPDATE application_info SET status = 'is_attended_awarding', is_attended_awarding = '1', is_not_attended_awarding = '0' WHERE application_id = :account_id";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':account_id', $data['account_id'], \PDO::PARAM_INT);
         return $stmt->execute();

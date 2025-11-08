@@ -8,17 +8,38 @@ import { staffAccountHeaders } from "../../../constant/tableHeaders";
 import { useStaffAccounts } from "../../../hooks/useStaffAccounts";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import FormModal from "./FormModal";
+import { Eye, RotateCcw, UserCheck, UserX } from "lucide-react";
+import UserProfileModal from "../../../components/UserProfileModal";
+import ChangePasswordModal from "../../../components/ChangePasswordModal";
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import { useUserAccount } from "../../../hooks/useUserAccount";
+import { toast } from "react-toastify";
+import { useProfilePicture } from "../../../hooks/useProfilePicture";
 
 const StaffAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("newest");
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-
+    const [staffId, setStaffId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+        useState(false);
+    const [action, setAction] = useState("");
+    const [accountStatus, setAccountStatus] = useState("");
+    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
+        useState(false);
+    const [selectedStaff, setSelectedStaff] = useState(null);
     const { staffAccounts, fetchStaffAccounts } = useStaffAccounts();
+    const { profilePics, fetchAllPics } = useProfilePicture(
+        staffAccounts,
+        "user-profile-picture"
+    );
+    const { loading: isLoading, updateScholarAccountStatus } = useUserAccount();
 
     useEffect(() => {
         fetchStaffAccounts();
+        fetchAllPics();
     }, []);
 
     // Filter data based on search term
@@ -41,11 +62,6 @@ const StaffAccounts = () => {
         }
     });
 
-    const handleOpenDetailsModal = (event) => {
-        setSelectedEvent(event);
-        setIsOpenEventDetailsModal(true);
-    };
-
     const {
         currentItems,
         currentPage,
@@ -56,6 +72,49 @@ const StaffAccounts = () => {
         goToPreviousPage,
         goToNextPage,
     } = usePagination(sortedStaffAccounts, itemsPerPage);
+
+    const handleOpenConfirmationModal = (
+        accountId,
+        accountStatus,
+        actionType
+    ) => {
+        setAction(actionType);
+        setAccountStatus(accountStatus);
+        setSelectedStaff(accountId);
+        setIsConfirmationModalOpen(true);
+    };
+
+    const handleAccountStatusChange = async (
+        accountId,
+        accountStatus,
+        action
+    ) => {
+        if (action === "activate" && accountStatus === "active") {
+            toast.error("Account is already active.");
+            return;
+        }
+
+        if (action === "deactivate" && accountStatus === "deactivated") {
+            toast.error("Account is already deactivated.");
+            return;
+        }
+
+        try {
+            const success = await updateScholarAccountStatus(accountId, action);
+            if (success) {
+                toast.success(
+                    `Account ${
+                        action === "activate" ? "activated" : "deactivated"
+                    } successfully.`
+                );
+                setIsConfirmationModalOpen(false);
+                fetchStaffAccounts();
+            }
+        } catch (error) {
+            console.error("Error updating account status:", error);
+            toast.error(`Failed to ${action} account. Please try again.`);
+        }
+    };
 
     const handleRefresh = () => {
         fetchApplications(activeTab);
@@ -92,53 +151,109 @@ const StaffAccounts = () => {
                                 key={staff.account_id}
                                 className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
                             >
-                                <td className="py-5 whitespace-nowrap text-gray-700">
+                                <td className="py-2 whitespace-nowrap text-gray-700">
                                     {staff.account_id}
                                 </td>
-                                <td className="py-5 whitespace-nowrap text-gray-700 font-bold">
-                                    {staff.first_name} {staff.last_name}
+                                <td className="py-2 flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                    <div className="w-[30%]"></div>
+                                    <div className="w-[max-content] flex items-center text-left gap-2">
+                                        {profilePics[staff.account_id] ? (
+                                            <img
+                                                src={
+                                                    profilePics[
+                                                        staff.account_id
+                                                    ]
+                                                }
+                                                alt="Profile"
+                                                className="w-10 h-10 object-cover rounded-full mx-auto"
+                                            />
+                                        ) : (
+                                            <div className="w-8 h-8 mr-1 rounded-full text-white text-sm bg-black flex justify-center items-center">
+                                                {staff.first_name[0]}{" "}
+                                                {staff.last_name[0]}
+                                            </div>
+                                        )}
+
+                                        <div>
+                                            <p className="font-bold text-xs">
+                                                {staff.first_name +
+                                                    " " +
+                                                    staff.last_name}
+                                            </p>
+                                            <p className="text-xs text-gray-500">
+                                                {staff.email}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-xs text-gray-700">
-                                    {staff.email}
+                                <td
+                                    className={`py-2 whitespace-nowrap text-gray-500 `}
+                                >
+                                    <span
+                                        className={`px-2 py-1 rounded-full ${
+                                            staff.status === "active"
+                                                ? "text-green-800 bg-green-100"
+                                                : "text-red-800 bg-red-100"
+                                        }`}
+                                    >
+                                        {staff.status === "active"
+                                            ? "Active"
+                                            : "Deactivated"}
+                                    </span>
                                 </td>
-                                <td className="py-3 whitespace-nowrap text-gray-500">
+                                <td className="py-2 whitespace-nowrap text-gray-500">
                                     {formatDateTime(staff.created_at)}
                                 </td>
-                                <td className="py-3 whitespace-nowrap font-medium">
-                                    <button className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-4 w-4 mr-1"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
+                                <td className="py-2 whitespace-nowrap font-medium">
+                                    <div className="flex gap-3 justify-center">
+                                        <button
+                                            onClick={() => {
+                                                setIsModalOpen(true);
+                                                setStaffId(staff.account_id);
+                                            }}
+                                            // className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                                            title="View Profile"
                                         >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                            />
-                                        </svg>
-                                        Edit
-                                    </button>
-                                    <button className="inline-flex items-center text-red-600 hover:text-red-900">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-4 w-4 mr-1"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
+                                            <Eye className="w-4 h-4 text-blue-600 hover:text-blue-800 transition-colors" />
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsChangePasswordModalOpen(
+                                                    true
+                                                );
+                                                setSelectedStaff(
+                                                    staff.account_id
+                                                );
+                                            }}
+                                            title="Change Password"
                                         >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7"
-                                            />
-                                        </svg>
-                                        Delete
-                                    </button>
+                                            <RotateCcw className="w-4 h-4 text-green-600 hover:text-green-800 transition-colors" />
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                handleOpenConfirmationModal(
+                                                    staff.account_id,
+                                                    staff.status,
+                                                    "activate"
+                                                )
+                                            }
+                                            title="Activate Account"
+                                        >
+                                            <UserCheck className="w-4 h-4 text-green-600 hover:text-green-800 transition-colors" />
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                handleOpenConfirmationModal(
+                                                    staff.account_id,
+                                                    staff.status,
+                                                    "deactivate"
+                                                )
+                                            }
+                                            title="Deactivate Account"
+                                        >
+                                            <UserX className="w-4 h-4 text-red-600 hover:text-red-800 transition-colors" />
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -168,6 +283,41 @@ const StaffAccounts = () => {
                     )}
                 </div>
             </div>
+
+            <UserProfileModal
+                isOpen={isModalOpen}
+                setIsOpen={setIsModalOpen}
+                isStaff={true}
+                userId={staffId}
+            />
+
+            <ChangePasswordModal
+                isOpen={isChangePasswordModalOpen}
+                onClose={setIsChangePasswordModalOpen}
+                userId={selectedStaff}
+            />
+
+            <ConfirmationModal
+                isOpen={isConfirmationModalOpen}
+                onClose={setIsConfirmationModalOpen}
+                isLoading={isLoading}
+                label={"Confirmation"}
+                action={action}
+                message={
+                    action === "activate"
+                        ? "Are you sure you want to activate this account?"
+                        : "Are you sure you want to deactivate this account?"
+                }
+                onClick={() =>
+                    handleAccountStatusChange(
+                        selectedStaff,
+                        accountStatus,
+                        action
+                    )
+                }
+                // deactivationReason={deactivationReason}
+                // setDeactivationReason={setDeactivationReason}
+            />
 
             <FormModal
                 isOpen={isFormModalOpen}

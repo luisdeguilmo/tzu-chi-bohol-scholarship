@@ -190,12 +190,15 @@ class RenderedHoursController
                         throw new \Exception('Failed to record hours');
                     }
 
+                    $activity->revertRenderedHours($data['id']);
+
                     if (!$renderedHours->recordHours($data['account_id'])) {
                         throw new \Exception('Failed to record hours');
                     }
 
                     $activity->markAsNotRecordedWithFeedback($data);
                     $notification->createActivityNotification($data);
+                    $recentActivity->removeRecentActivityById($data['id']);
                 }
             } elseif ($dutyType === 'event') {
                 foreach ($data['selected_scholars'] as $scholarId) {

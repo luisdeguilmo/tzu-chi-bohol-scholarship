@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PersonalSection from "./PersonalSection";
 import EducationSection from "./EducationSection";
-import ApplicationSection from "./ApplicationSection";
 import FamilySection from "./FamilySection";
 import RequirementsSection from "./RequirementsSection";
 import ProgressIndicator from "./ProgressIndicator";
@@ -16,6 +15,10 @@ import BASE_URL from "../../../config";
 import OtherInformationSection from "./OtherInformationSection";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import { useAuth } from "../../../context/AuthContext";
+import { useApplicantInformation } from "../../../hooks/useApplicantInformation";
+import { useCoursesAccepted } from "../../../hooks/useCoursesAccepted";
+import { useDashboardOverviewData } from "../../../hooks/useDashboardOverviewData";
+import { useSidebar } from "../../../context/SidebarContext";
 
 const generateInitialState = (fieldsConfig) => {
     const initialState = {};
@@ -26,15 +29,18 @@ const generateInitialState = (fieldsConfig) => {
     return initialState;
 };
 
-function ApplicationForm({ includeRequirements = true, userId }) {
+function ApplicationForm({ includeRequirements = true }) {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
-    const [loading, setLoading] = useState(false); // For showing a loading spinner or message
-    const [error, setError] = useState(null); // For displaying error messages
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const { user } = useAuth();
-
-    console.log(user);
+    const { setActiveTab } = useSidebar();
+    const { applicantInformation } = useApplicantInformation(
+        user?.user_id,
+        getCurrentSchoolYear()
+    );
 
     // Define steps based on whether requirements are included
     const steps = [
@@ -43,7 +49,6 @@ function ApplicationForm({ includeRequirements = true, userId }) {
         { label: "Family", section: FORM_SECTIONS.FAMILY },
     ];
 
-    // Add requirements step if needed
     if (includeRequirements) {
         steps.push({
             label: "Requirements",
@@ -60,11 +65,7 @@ function ApplicationForm({ includeRequirements = true, userId }) {
         label: "Review",
     });
 
-    // Total number of steps in the form
     const totalSteps = steps.length;
-
-    console.log("Steps: ", steps);
-    console.log("Current Step: ", currentStep);
 
     // Consolidated form state
     const [formData, setFormData] = useState({
@@ -86,14 +87,159 @@ function ApplicationForm({ includeRequirements = true, userId }) {
         other_information: generateInitialState(
             formConfig[FORM_SECTIONS.OTHER_INFORMATION]
         ),
-        // Initialize the family-related data
         family_members: [],
         tzu_chi_siblings: [],
         other_assistance: [],
         character_reference: [],
-        // Initialize the files-related data
         uploaded_files: [],
     });
+
+    const { coursesAccepted, fetchCoursesAccepted, resetCoursesAccepted } =
+        useCoursesAccepted(
+            applicantInformation?.educationalInfo?.present_school
+        );
+
+    // Initialize personal information from API
+    useEffect(() => {
+        console.log("applicantInformation:", applicantInformation);
+
+        if (applicantInformation?.personalInfo && !includeRequirements) {
+            const {
+                applicationInfo,
+                personalInfo,
+                educationalInfo,
+                familyInfo,
+                contactPersonInfo,
+                familyMembers,
+                tzuChiSiblings,
+                assistanceInfo,
+                characterReference,
+            } = applicantInformation;
+
+            console.log("Personal Info from API:", personalInfo);
+
+            setFormData((prevData) => ({
+                ...prevData,
+
+                application_info: {
+                    school_year: applicationInfo?.school_year || "",
+                },
+                personal_information: {
+                    last_name: personalInfo.last_name || "",
+                    first_name: personalInfo.first_name || "",
+                    middle_name: personalInfo.middle_name || "",
+                    suffix: personalInfo.suffix || "",
+                    gender: personalInfo.gender || "",
+                    age: personalInfo.age || 0,
+                    birthdate: personalInfo.birthdate || "",
+                    birthplace: personalInfo.birthplace || "",
+                    home_address: personalInfo.home_address || "",
+                    subdivision: personalInfo.subdivision || "",
+                    barangay: personalInfo.barangay || "",
+                    city: personalInfo.city || "",
+                    zip_code: personalInfo.zip_code || "",
+                    contact_number: personalInfo.contact_number || "",
+                    secondary_contact: personalInfo.secondary_contact || "",
+                    religion: personalInfo.religion || "",
+                    civil_status: personalInfo.civil_status || "",
+                    facebook: personalInfo.facebook || "",
+                    email: personalInfo.email || "",
+                },
+
+                educational_background: {
+                    previous_school: educationalInfo?.previous_school || "",
+                    previous_location: educationalInfo?.previous_location || "",
+                    previous_honor: educationalInfo?.previous_honor || "",
+                    previous_gwa: educationalInfo?.previous_gwa || "",
+                    previous_course: educationalInfo?.previous_course || "",
+                    incoming_grade:
+                        educationalInfo?.incoming_grade || "College",
+                    present_school: educationalInfo?.present_school || "",
+                    present_location: educationalInfo?.present_location || "",
+                    present_course1: educationalInfo?.present_course1 || "",
+                    present_course2: educationalInfo?.present_course2 || "",
+                    selected_school_id:
+                        educationalInfo?.selected_school_id || "",
+                },
+
+                parents_guardian: {
+                    father_name: familyInfo?.father_name || "",
+                    father_age: familyInfo?.father_age || 0,
+                    father_education: familyInfo?.father_education || "",
+                    father_occupation: familyInfo?.father_occupation || "",
+                    father_income: parseFloat(familyInfo?.father_income) || 0,
+                    father_contact: familyInfo?.father_contact || "",
+                    mother_name: familyInfo?.mother_name || "",
+                    mother_age: familyInfo?.mother_age || 0,
+                    mother_education: familyInfo?.mother_education || "",
+                    mother_occupation: familyInfo?.mother_occupation || "",
+                    mother_income: parseFloat(familyInfo?.mother_income) || 0,
+                    mother_contact: familyInfo?.mother_contact || "",
+                    guardian_name: familyInfo?.guardian_name || "",
+                    guardian_age: familyInfo?.guardian_age || "",
+                    guardian_education: familyInfo?.guardian_education || "",
+                    guardian_occupation: familyInfo?.guardian_occupation || "",
+                    guardian_income: familyInfo?.guardian_income || "",
+                },
+
+                contact_person: {
+                    emergency_contact_name:
+                        contactPersonInfo?.emergency_contact_name || "",
+                    emergency_contact_relationship:
+                        contactPersonInfo?.emergency_contact_relationship || "",
+                    emergency_contact_address:
+                        contactPersonInfo?.emergency_contact_address || "",
+                    emergency_contact_number:
+                        contactPersonInfo?.emergency_contact_number || "",
+                },
+
+                other_information: {
+                    expectation: applicationInfo?.expectation || "",
+                },
+
+                family_members: familyMembers.map((member) => ({
+                    id: member.id,
+                    name: member.name || "",
+                    relationship: member.relationship || "",
+                    age: member.age || 0,
+                    gender: member.gender || "",
+                    civil_status: member.civil_status || "",
+                    living_with_family: member.living_with_family || "",
+                    education_occupation: member.education_occupation || "",
+                    monthly_income: member.monthly_income || "0.00",
+                })),
+
+                tzu_chi_siblings: tzuChiSiblings,
+                other_assistance: assistanceInfo,
+                character_reference: characterReference.map((ref) => ({
+                    id: ref.id,
+                    name: ref.name || "",
+                    address: ref.address || "",
+                    company: ref.company || "",
+                    position: ref.position || "",
+                    contact_number: ref.contact_number || "",
+                })),
+            }));
+
+            console.log("Personal information initialized successfully");
+        } else {
+            console.log("Condition not met - checking values:");
+            console.log(
+                "applicantInformation?.success:",
+                applicantInformation?.success
+            );
+            console.log(
+                "applicantInformation?.data:",
+                applicantInformation?.data
+            );
+            console.log(
+                "applicantInformation?.data?.personalInfo:",
+                applicantInformation?.data?.personalInfo
+            );
+        }
+    }, [applicantInformation]);
+
+    console.log(formData);
 
     // Generic handler for input changes
     const handleInputChange = (section, e) => {
@@ -171,11 +317,59 @@ function ApplicationForm({ includeRequirements = true, userId }) {
         console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
     };
 
+    const handleReSubmit = async (e) => {
+        e.preventDefault();
+        formData.application_info.school_year = getCurrentSchoolYear();
+        formData.application_info.application_status = "renew";
+        // formData.application_info.status = "Old";
+        formData.application_info.scholar_id = user.user_id;
+        // formData.personal_information.scholar_id = user.user_id;
+        // formData.educational_background.scholar_id = user.user_id;
+
+        console.log("HUHUHUHHUHUH");
+
+        try {
+            const formDataToSend = new FormData();
+
+            const applicationData = { ...formData };
+
+            formDataToSend.append(
+                "applicationData",
+                JSON.stringify(applicationData)
+            );
+
+            console.log(formDataToSend);
+
+            const response = await axios.post(
+                `${BASE_URL}app/views/renewal.php`,
+                formDataToSend,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
+            console.log("Server response:", response.data);
+            toast.success("Application submitted successfully!");
+            setLoading(false);
+            setTimeout(() => {
+                navigate("/scholar/dashboard");
+            }, 1000);
+            setActiveTab("dashboard");
+        } catch (error) {
+            console.log("Error: ", error);
+            alert("Failed: ", error);
+        }
+        console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
+    };
+
     // Handle final form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.status = "New";
+        formData.educational_background.year_level = user.user_id;
         console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
 
         const submitStudentData = async () => {
@@ -184,7 +378,6 @@ function ApplicationForm({ includeRequirements = true, userId }) {
 
                 const formDataToSend = new FormData();
 
-                // Separate application data (excluding files)
                 const applicationData = { ...formData };
                 delete applicationData.uploaded_files;
 
@@ -193,13 +386,11 @@ function ApplicationForm({ includeRequirements = true, userId }) {
                     JSON.stringify(applicationData)
                 );
 
-                // Append the 2x2 picture file if it exists
                 if (formData.picture_file && formData.picture_file.fileObj) {
                     formDataToSend.append(
                         "picture",
                         formData.picture_file.fileObj
                     );
-                    // Also send the filename info
                     formDataToSend.append(
                         "pictureInfo",
                         JSON.stringify({
@@ -208,17 +399,14 @@ function ApplicationForm({ includeRequirements = true, userId }) {
                     );
                 }
 
-                // Append files one by one
                 if (
                     formData.uploaded_files &&
                     formData.uploaded_files.length > 0
                 ) {
                     formData.uploaded_files.forEach((fileItem) => {
-                        // If we have the actual file object stored in fileObj property
                         if (fileItem.fileObj) {
                             formDataToSend.append("files[]", fileItem.fileObj);
                         }
-                        // Also send the filename format as a separate key
                         formDataToSend.append(
                             "fileInfo[]",
                             JSON.stringify({
@@ -227,16 +415,6 @@ function ApplicationForm({ includeRequirements = true, userId }) {
                         );
                     });
                 }
-
-                // const response = await axios.post(
-                //     `${BASE_URL}backend/api/applications`,
-                //     formDataToSend,
-                //     {
-                //         headers: {
-                //             "Content-Type": "multipart/form-data",
-                //         },
-                //     }
-                // );
 
                 const response = await axios.post(
                     `${BASE_URL}app/views/submit-application.php`,
@@ -270,14 +448,6 @@ function ApplicationForm({ includeRequirements = true, userId }) {
     // Render form step components
     const renderStep = () => {
         switch (currentStep) {
-            // case 1:
-            //     return (
-            //         <ApplicationSection
-            //             formData={formData}
-            //             handleInputChange={handleInputChange}
-            //             nextStep={nextStep}
-            //         />
-            //     );
             case 1:
                 return (
                     <PersonalSection
@@ -307,7 +477,6 @@ function ApplicationForm({ includeRequirements = true, userId }) {
                     />
                 );
             case 4:
-                // Only render if requirements are included
                 if (includeRequirements) {
                     return (
                         <RequirementsSection
@@ -335,9 +504,7 @@ function ApplicationForm({ includeRequirements = true, userId }) {
                         prevStep={prevStep}
                         nextStep={nextStep}
                         handleSubmit={
-                            !includeRequirements
-                                ? handleRenewSubmit
-                                : handleSubmit
+                            !includeRequirements ? handleReSubmit : handleSubmit
                         }
                         isLast={true}
                     />

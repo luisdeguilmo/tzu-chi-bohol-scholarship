@@ -10,6 +10,7 @@ import EditFormModal from "./EditFormModal";
 import OverviewCard from "../OverviewCard";
 import { scholarOverviewData } from "../../../config/scholarOverviewData";
 import ActivityFormModal from "./FormModal";
+import BackgroundLoadingIndicator from "../../../components/BackgroundLoadingIndicator";
 
 export default function CommunityServices() {
     const [activeTab, setActiveTab] = useState("all");
@@ -25,7 +26,7 @@ export default function CommunityServices() {
 
     const { user } = useAuth();
 
-    const { activities, fetchActivities } = useActivities(
+    const { loading, activities, fetchActivities } = useActivities(
         activeTab,
         user.user_id
     );
@@ -131,33 +132,37 @@ export default function CommunityServices() {
             />
 
             {/* Scrollable Content Area */}
-            <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {currentItems.map((activity, index) => (
-                        <CommunityServiceCard
-                            userId={user.user_id}
-                            key={index}
-                            activity={activity}
-                            index={index}
-                            handleOpenDetails={handleOpenDetails}
-                            handleOpenDotMenu={handleOpenDotMenu}
-                            handleSelectCommunityService={
-                                handleSelectCommunityService
-                            }
-                            isDotMenuOpen={isDotMenuOpen}
-                            itemIndex={itemIndex}
-                            setIsDotMenuOpen={setIsDotMenuOpen}
-                            setItemIndex={setItemIndex}
-                            isEditFormModalOpen={isEditFormModalOpen}
-                            setIsEditFormModalOpen={setIsEditFormModalOpen}
-                            activeTab={activeTab}
-                            onRefresh={fetchActivities}
-                        />
-                    ))}
+            <div className="p-4 md:p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {loading ? (
+                        <BackgroundLoadingIndicator />
+                    ) : (
+                        currentItems.map((activity, index) => (
+                            <CommunityServiceCard
+                                userId={user.user_id}
+                                key={index}
+                                activity={activity}
+                                index={index}
+                                handleOpenDetails={handleOpenDetails}
+                                handleOpenDotMenu={handleOpenDotMenu}
+                                handleSelectCommunityService={
+                                    handleSelectCommunityService
+                                }
+                                isDotMenuOpen={isDotMenuOpen}
+                                itemIndex={itemIndex}
+                                setIsDotMenuOpen={setIsDotMenuOpen}
+                                setItemIndex={setItemIndex}
+                                isEditFormModalOpen={isEditFormModalOpen}
+                                setIsEditFormModalOpen={setIsEditFormModalOpen}
+                                activeTab={activeTab}
+                                onRefresh={fetchActivities}
+                            />
+                        ))
+                    )}
                 </div>
 
                 {/* Empty State */}
-                {currentItems.length === 0 && (
+                {!loading && currentItems.length === 0 && (
                     <EmptyState
                         section={"community_services"}
                         activeTab={activeTab}

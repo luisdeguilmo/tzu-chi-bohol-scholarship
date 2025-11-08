@@ -30,7 +30,10 @@ const CommunityServicePage = () => {
         sortBy
     );
 
-    const { profilePics, fetchAllPics } = useProfilePicture(scholars);
+    const { profilePics, fetchAllPics } = useProfilePicture(
+        scholars,
+        "profile-picture"
+    );
 
     console.log(scholars);
 
@@ -105,6 +108,7 @@ const CommunityServicePage = () => {
                     onSearchChange={setSearchTerm}
                     onChangeTab={handleChangeTab}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                 >
@@ -191,16 +195,16 @@ const CommunityServicePage = () => {
                                                 info.status === "Recorded"
                                                     ? "bg-green-100 text-green-800"
                                                     : info.status ===
-                                                      "Not Recorded"
-                                                    ? "bg-red-100 text-red-800"
-                                                    : "bg-yellow-100 text-yellow-800"
+                                                        "Not Recorded"
+                                                      ? "bg-red-100 text-red-800"
+                                                      : "bg-yellow-100 text-yellow-800"
                                             }`}
                                     >
                                         {info.status === "Recorded"
                                             ? "Recorded"
                                             : info.status === "Not Recorded"
-                                            ? "Not Recorded"
-                                            : "Pending"}
+                                              ? "Not Recorded"
+                                              : "Pending"}
                                     </span>
                                 </td>
                                 <td className="py-2 whitespace-nowrap text-gray-500">

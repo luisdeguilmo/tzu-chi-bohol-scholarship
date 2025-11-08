@@ -42,9 +42,10 @@ class RecentActivityModel
         $query =
             'INSERT INTO ' .
             $this->table_name .
-            ' SET scholar_id = :scholar_id, activity_type = :activity_type, activity_name = :activity_name, activity_date = :activity_date, activity_start_time = :start_time, activity_end_time = :end_time, activity_location = :activity_location, rendered_hours = :rendered_hours, created_at = NOW()';
+            ' SET activity_id = :activity_id, scholar_id = :scholar_id, activity_type = :activity_type, activity_name = :activity_name, activity_date = :activity_date, activity_start_time = :start_time, activity_end_time = :end_time, activity_location = :activity_location, rendered_hours = :rendered_hours, created_at = NOW()';
 
         $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':activity_id', $data['id']);
         $stmt->bindParam(':scholar_id', $data['account_id']);
         $stmt->bindParam(':activity_type', $data['activity_type']);
         $stmt->bindParam(':activity_name', $data['activity_name']);
@@ -61,9 +62,10 @@ class RecentActivityModel
         $query =
             'INSERT INTO ' .
             $this->table_name .
-            ' SET scholar_id = :scholar_id, activity_type = :activity_type, activity_name = :activity_name, activity_date = :activity_date, activity_start_time = :start_time, activity_end_time = :end_time, activity_location = :activity_location, created_at = NOW()';
+            ' SET activity_id = :activity_id, scholar_id = :scholar_id, activity_type = :activity_type, activity_name = :activity_name, activity_date = :activity_date, activity_start_time = :start_time, activity_end_time = :end_time, activity_location = :activity_location, rendered_hours = :rendered_hours, created_at = NOW()';
 
         $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':activity_id', $data['event_id']);
         $stmt->bindParam(':scholar_id', $scholarId);
         $stmt->bindParam(':activity_type', $data['event_type']);
         $stmt->bindParam(':activity_name', $data['event_name']);
@@ -71,6 +73,15 @@ class RecentActivityModel
         $stmt->bindParam(':start_time', $data['event_start_time']);
         $stmt->bindParam(':end_time', $data['event_end_time']);
         $stmt->bindParam(':activity_location', $data['event_location']);
+        $stmt->bindParam(':rendered_hours', $data['rendered_hours']);
+        return $stmt->execute();
+    }
+
+    public function removeRecentActivityById($id)
+    {
+        $query = 'DELETE FROM ' . $this->table_name . ' WHERE activity_id = :activity_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':activity_id', $id, \PDO::PARAM_INT);
         return $stmt->execute();
     }
 }

@@ -12,6 +12,7 @@ require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../models/ScholarDashboardDataModel.php';
 
 use App\Models\ScholarDashboardDataModel;
+use App\Models\ScholarsModel;
 use Config\Database;
 
 class ScholarDashboardDataController
@@ -50,6 +51,7 @@ class ScholarDashboardDataController
             $data = [];
 
             $dashboardData = new ScholarDashboardDataModel();
+            $scholarModel = new ScholarsModel();
 
             $id = $_GET['id'] ?? null;
             $school_year = $_GET['school_year'] ?? null;
@@ -65,6 +67,38 @@ class ScholarDashboardDataController
                 $school_year,
             );
 
+            $status = [];
+
+            if ($renewalApplicationStatus) {
+                if ($renewalApplicationStatus === null) {
+                    $status = [
+                        'status' => 'not_submitted',
+                    ];
+                } elseif (
+                    $renewalApplicationStatus['is_application_approved'] === 0 &&
+                    $renewalApplicationStatus['is_application_rejected'] === 0
+                ) {
+                    $status = [
+                        'status' => 'pending',
+                        'created_at' => $renewalApplicationStatus['created_at'],
+                    ];
+                } elseif ($renewalApplicationStatus['is_application_approved'] === 1) {
+                    $status = [
+                        'status' => 'approved',
+                        'created_at' => $renewalApplicationStatus['created_at'],
+                    ];
+                } elseif ($renewalApplicationStatus['is_application_rejected'] === 1) {
+                    $status = [
+                        'status' => 'rejected',
+                        'created_at' => $renewalApplicationStatus['created_at'],
+                    ];
+                }
+            } else {
+                $status = [
+                    'status' => 'not_submitted',
+                ];
+            }
+
             $data = [
                 'userName' => $userName,
                 'hasSubmittedLivingInfo' => $hasSubmitted,
@@ -72,8 +106,10 @@ class ScholarDashboardDataController
                 'attendedEvents' => $attendedEvents,
                 'numberOfCommunityServices' => $numberOfCommunityServices,
                 'numberOfUpcomingEvents' => $numberOfUpcomingEvents,
-                'renewalApplicationStatus' => $renewalApplicationStatus,
+                'renewalApplicationStatus' => $status,
             ];
+
+            $scholarModel->resetCommunityServiceAndEventRenderedHours();
 
             http_response_code(200);
             echo json_encode([

@@ -25,6 +25,7 @@ export const useBatches = (purpose) => {
 
     const createBatch = async (data) => {
         try {
+            setLoading(true);
             const response = await fetch(`${BASE_URL}app/views/batches.php`, {
                 method: "POST",
                 headers: {
@@ -41,12 +42,15 @@ export const useBatches = (purpose) => {
                 toast.success(result.message || "Batch created successfully.");
                 // if (onSuccess) onSuccess(); // Refresh the batches list
                 fetchBatches();
+                setLoading(false);
             } else {
                 alert("Error: " + (result.message || "Failed to create batch"));
+                setLoading(false);
             }
         } catch (error) {
             console.error("Submission error:", error);
             alert("Failed to submit the form. Please try again.");
+            setLoading(false);
         }
     };
 
@@ -80,5 +84,12 @@ export const useBatches = (purpose) => {
         fetchBatches();
     }, []);
 
-    return { batches, setBatches, createBatch, deleteBatch, fetchBatches };
+    return {
+        loading,
+        batches,
+        setBatches,
+        createBatch,
+        deleteBatch,
+        fetchBatches,
+    };
 };

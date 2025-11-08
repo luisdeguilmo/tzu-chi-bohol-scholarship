@@ -19,7 +19,7 @@ const UpcomingEvents = ({ events }) => {
                             <h3 className="text-gray-700 text-sm font-bold">
                                 {event.event_name}
                             </h3>
-                            <div className="mt-2 flex gap-6">
+                            <div className="mt-2 flex flex-col md:flex-row gap-2 md:gap-6">
                                 <div className="flex gap-1.5">
                                     <Calendar className="w-4 h-4 text-gray-500" />
                                     <p className="text-xs text-gray-600">

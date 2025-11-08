@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../../../config";
 import { toast } from "react-toastify";
+import { useAuth } from "../../../context/AuthContext";
+import { useAccountStatus } from "../../../hooks/useAccountStatus";
 
 const EventButton = ({
     numberOfParticipants,
@@ -18,6 +20,9 @@ const EventButton = ({
     const [joined, setJoined] = useState(false); // Start with false instead of true
     const [loading, setLoading] = useState(true); // Add loading state
     const [actionLoading, setActionLoading] = useState(false); // Add action loading state
+
+    const { user } = useAuth();
+    const { accountStatus } = useAccountStatus(user.user_id);
 
     const isUserParticipant = async () => {
         try {
@@ -48,8 +53,17 @@ const EventButton = ({
 
     const handleJoin = async () => {
         try {
+            if (accountStatus === "not_renewed") {
+                toast.error(
+                    `You can’t join events until your renewal application is approved.`
+                );
+                return;
+            }
+
             if (numberOfParticipants === participantLimit) {
-                toast.error(`This event has reached its participant limit (${numberOfParticipants}/${participantLimit}).`);
+                toast.error(
+                    `This event has reached its participant limit (${numberOfParticipants}/${participantLimit}).`
+                );
                 return;
             }
 
@@ -118,16 +132,16 @@ const EventButton = ({
                     className={`${
                         joined
                             ? "bg-slate-300 text-slate-600 hover:bg-slate-400"
-                            : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-green-600 hover:to-emerald-600 text-white"
-                    } px-4 py-2 flex-1 text-sm rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed`}
+                            : "bg-green-600 text-white hover:bg-green-700 transition"
+                    } px-4 py-2 rounded-lg font-medium text-sm `}
                 >
                     {actionLoading
                         ? joined
                             ? "Cancelling..."
                             : "Joining..."
                         : joined
-                        ? "Cancel"
-                        : "Join Event"}
+                          ? "Cancel"
+                          : "Join Event"}
                 </button>
             )}
         </>

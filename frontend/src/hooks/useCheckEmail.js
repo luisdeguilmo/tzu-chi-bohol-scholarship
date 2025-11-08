@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-export const useCheckEmail = (email) => {
+export const useCheckEmail = (email, userId) => {
     const [isEmailExist, setIsEmailExist] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -14,7 +14,7 @@ export const useCheckEmail = (email) => {
             const response = await axios.get(
                 `${BASE_URL}app/views/check-email.php`,
                 {
-                    params: { email: email } // ✅ Pass as query parameters
+                    params: { email: email, id: userId ?? null}
                 }
             );
 
@@ -32,8 +32,6 @@ export const useCheckEmail = (email) => {
             checkEmail();
         }
     }, [email]);
-
-    console.log(isEmailExist);
 
     return { isEmailExist, loading, error, refetch: checkEmail };
 };

@@ -23,7 +23,7 @@ class ScholarAccountModel
     public function createScholar($data, $today)
     {
         $query =
-            'INSERT INTO scholars (account_id, first_name, last_name, created_at) VALUES (:account_id, :first_name, :last_name, :created_at)';
+            'INSERT INTO scholars (account_id, first_name, last_name, created_at, community_event_rendered_hours_reset_at) VALUES (:account_id, :first_name, :last_name, :created_at, :reset_at)';
 
         $stmt = $this->pdo->prepare($query);
 
@@ -31,11 +31,13 @@ class ScholarAccountModel
         $first_name = htmlspecialchars(strip_tags($data['first_name']));
         $last_name = htmlspecialchars(strip_tags($data['last_name']));
         $created_at = htmlspecialchars(strip_tags($today));
+        $reset_at = htmlspecialchars(strip_tags($today));
 
         $stmt->bindParam(':account_id', $account_id);
         $stmt->bindParam(':first_name', $first_name);
         $stmt->bindParam(':last_name', $last_name);
         $stmt->bindParam(':created_at', $created_at);
+        $stmt->bindParam(':reset_at', $reset_at);
 
         if ($stmt->execute()) {
             return true;
@@ -106,6 +108,26 @@ class ScholarAccountModel
             $stmt->execute();
 
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception('Database error: ' . $e->getMessage());
+        }
+    }
+
+    public function getPendingScholarsCount()
+    {
+        try {
+            $query =
+                'SELECT COUNT(*) AS pending_scholars_count FROM ' .
+                $this->table_name .
+                " ai 
+                     JOIN personal_information pi ON ai.application_id = pi.application_id WHERE ai.is_application_approved = '1' AND ai.is_examination_passed = '1' AND ai.is_initial_interview_passed = '1'
+                     AND ai.is_home_visitation_qualified = '1' AND ai.is_final_interview_passed = '1' AND ai.is_attended_orientation = '1' AND ai.is_attended_awarding = '1' AND ai.status = 'is_attended_awarding'";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute();
+
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            return $result['pending_scholars_count'] ?? 0;
         } catch (\PDOException $e) {
             throw new \Exception('Database error: ' . $e->getMessage());
         }

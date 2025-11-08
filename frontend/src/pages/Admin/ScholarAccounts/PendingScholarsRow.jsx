@@ -1,4 +1,4 @@
-import { CirclePlus, Plus, User } from "lucide-react";
+import { Check, CirclePlus, Plus, User } from "lucide-react";
 
 const PendingScholarsRow = ({
     currentItems,
@@ -40,7 +40,7 @@ const PendingScholarsRow = ({
                             <img
                                 src={profilePics[scholar.application_id]}
                                 alt="Profile"
-                                className="w-10 h-10 object-cover rounded-full mx-auto"
+                                className="w-8 h-8 object-cover rounded-full mx-auto"
                             />
                             <div>
                                 <p className="font-bold text-xs">
@@ -65,10 +65,10 @@ const PendingScholarsRow = ({
                                 onCreateAccount([scholar.application_id]);
                                 console.log([scholar.application_id]);
                             }}
-                            title="Create Account"
+                            title="Approve Account"
                             className="p-2 rounded-xl hover:bg-green-50"
                         >
-                            <User className="w-4 h-4 text-green-600 hover:text-green-700" />
+                            <Check className="w-4 h-4 text-green-600 hover:text-green-700" />
                         </button>
                     </td>
                 </tr>

@@ -6,28 +6,33 @@ import { AlignJustify, ChevronDown, ChevronUp, X } from "lucide-react";
 import { useApplicationPeriods } from "../hooks/useApplicationPeriods";
 import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
 import { useDashboardOverviewData } from "../hooks/useDashboardOverviewData";
+import { useSidebar } from "../context/SidebarContext";
+import ConfirmationModal from "./ConfirmationModal";
 
 function SideBar({ items }) {
     const [isOpen, setIsOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState(null);
-    const [activeTab, setActiveTab] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { activeTab, setActiveTab } = useSidebar();
     const navigate = useNavigate();
 
     const { user, logout } = useAuth();
     const scholarId = { id: user.user_id };
 
-    const { dashboardData } = useDashboardOverviewData(
-        user.user_id,
-        user.type,
-        getCurrentSchoolYear()
-    );
+    const { dashboardData, fetchScholarDashboardData } =
+        useDashboardOverviewData(
+            user.user_id,
+            user.type,
+            getCurrentSchoolYear()
+        );
 
     const { applicationPeriods, fetchApplicationPeriods } =
-        useApplicationPeriods();
+        useApplicationPeriods("renewal");
 
     useEffect(() => {
         fetchApplicationPeriods();
-    }, []);
+        fetchScholarDashboardData();
+    }, [activeTab]);
 
     const today = new Date().toISOString().split("T")[0];
 
@@ -44,22 +49,17 @@ function SideBar({ items }) {
 
     const handleClickRenew = () => {
         if (
-            applicationPeriods[0].status === "Active" &&
-            today >= applicationPeriods[0].start_date &&
-            today <= applicationPeriods[0].end_date
+            applicationPeriods.status === "Active" &&
+            today >= applicationPeriods.start_date &&
+            today <= applicationPeriods.end_date
         ) {
-            if (
-                !dashboardData?.renewalApplicationStatus
-                    ?.is_application_approved &&
-                !dashboardData?.renewalApplicationStatus
-                    ?.is_application_rejected
-            ) {
+            if (dashboardData?.renewalApplicationStatus?.status === "pending") {
                 toast.info(
                     "You have already submitted a renewal application. Please wait for staff approval."
                 );
                 return false;
             } else if (
-                dashboardData?.renewalApplicationStatus?.is_application_approved
+                dashboardData?.renewalApplicationStatus?.status === "approved"
             ) {
                 toast.info(
                     "Your renewal has been approved for the current school year!"
@@ -69,8 +69,8 @@ function SideBar({ items }) {
 
             return true;
         } else if (
-            today > applicationPeriods[0].end_date ||
-            applicationPeriods[0].status === "Closed"
+            today > applicationPeriods.end_date ||
+            applicationPeriods.status === "Closed"
         ) {
             toast.error("The online application has been closed.");
             return false;
@@ -231,8 +231,7 @@ function SideBar({ items }) {
                                 <div
                                     onClick={() => {
                                         if (item.itemName === "logout") {
-                                            handleLogout();
-                                            // handleClick(subItem.navigate)
+                                            setIsModalOpen(true);
                                         } else if (item.itemName === "renew") {
                                             const success = handleClickRenew();
 
@@ -275,6 +274,14 @@ function SideBar({ items }) {
                     ))}
                 </ul>
             </nav>
+
+            <ConfirmationModal
+                label={"Logout"}
+                isOpen={isModalOpen}
+                onClose={setIsModalOpen}
+                message={"Are you sure you want to log out?"}
+                onClick={handleLogout}
+            />
         </>
     );
 }

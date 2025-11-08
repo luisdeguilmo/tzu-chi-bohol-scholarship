@@ -9,11 +9,11 @@ const EmptyState = ({
     subHeader,
 }) => {
     return (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl flex items-center justify-center mb-6 border border-green-100">
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="md:w-24 md:h-24 w-20 h-20 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl flex items-center justify-center mb-6 border border-green-100">
                 {searchTerm ? (
                     <svg
-                        className="w-12 h-12 text-green-400"
+                        className="md:w-12 md:h-12 w-8 h-8 text-green-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -26,17 +26,19 @@ const EmptyState = ({
                         />
                     </svg>
                 ) : section === "events" ? (
-                    <Calendar className="w-12 h-12 text-green-400" />
+                    <Calendar className="md:w-12 md:h-12 w-8 h-8 text-green-400" />
                 ) : section === "community_services" ? (
-                    <HandHeart className="w-12 h-12 text-green-400" />
+                    <HandHeart className="md:w-12 md:h-12 w-8 h-8 text-green-400" />
                 ) : (
-                    <Archive className="w-12 h-12 text-green-400" />
+                    <Archive className="md:w-12 md:h-12 w-8 h-8 text-green-400" />
                 )}
             </div>
-            <h3 className="text-xl font-semibold text-slate-700 mb-2">
+            <h3 className="md:text-xl text-lg font-semibold text-slate-700 mb-2">
                 {header}
             </h3>
-            <p className="text-slate-500 max-w-md mb-4">{subHeader}</p>
+            <p className="text-slate-500 md:text-lg text-sm max-w-md mb-4">
+                {subHeader}
+            </p>
             {searchTerm && (
                 <button
                     onClick={() => setSearchTerm("")}

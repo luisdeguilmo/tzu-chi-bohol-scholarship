@@ -132,7 +132,7 @@ function EditFormModal({
                         <button
                             type="button"
                             onClick={handleAddCourse}
-                            className={`w-[20%] text-sm text-white rounded-lg ${courseName === "" ? "bg-green-300" : "bg-green-600 hover:bg-green-700"}`}
+                            className={`w-[20%] text-xs text-white rounded-lg ${courseName === "" ? "bg-green-300" : "bg-green-600 hover:bg-green-700"}`}
                             disabled={courseName === ""}
                         >
                             {isLoadingForCourse
@@ -160,7 +160,7 @@ function EditFormModal({
                                     <span>{course.course}</span>
                                 )}
 
-                                <div className="space-x-3 hidden group-hover:block">
+                                <div className="space-x-3 invisible group-hover:visible">
                                     {selectedCourseId === course.id &&
                                     isEditing ? (
                                         <>

@@ -175,6 +175,7 @@ const ScholarshipCriteria = () => {
             setActiveTab={setActiveTab}
             handleChangeTab={handleChangeTab}
             currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
             onNumberOfItemsPerPageChange={setNumberOfItemsPerPage}
             sortedItems={sortedItems}
         />

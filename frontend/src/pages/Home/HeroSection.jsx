@@ -5,65 +5,25 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BASE_URL from "../../config";
+import { useApplicationPeriods } from "../../hooks/useApplicationPeriods";
 
 function HeroSection() {
     const navigate = useNavigate();
 
-    const scholar = { type: "Scholar" };
-
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    const [applicationPeriods, setApplicationPeriods] = useState([]);
-    const [hasActiveApplicationPeriod, setHasActiveApplicationPeriod] =
-        useState(false);
-    const [editingPeriod, setEditingPeriod] = useState(null);
-
-    const fetchApplicationPeriods = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get(
-                `${BASE_URL}app/views/application-periods.php`
-            );
-            // Set application periods data
-            setApplicationPeriods(response.data.data || []);
-            // Set active application period flag
-            setHasActiveApplicationPeriod(
-                response.data.hasActiveApplicationPeriod || false
-            );
-            setLoading(false);
-        } catch (err) {
-            console.error("Error fetching application period data:", err);
-            setError(
-                "Failed to load application period data. Please try again."
-            );
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchApplicationPeriods();
-    }, []);
-
-    const announcementMessage =
-        applicationPeriods.length > 0
-            ? applicationPeriods[0].announcement_message
-            : "";
-
-    console.log(applicationPeriods);
+    const { applicationPeriods } = useApplicationPeriods('new');
 
     const today = new Date().toISOString().split("T")[0];
 
     const handleClick = () => {
         if (
-            applicationPeriods[0].status === "Active" &&
-            today >= applicationPeriods[0].start_date &&
-            today <= applicationPeriods[0].end_date
+            applicationPeriods.status === "Active" &&
+            today >= applicationPeriods.start_date &&
+            today <= applicationPeriods.end_date
         ) {
             navigate("/application");
         } else if (
-            today > applicationPeriods[0].end_date ||
-            applicationPeriods[0].status === "Closed"
+            today > applicationPeriods.end_date ||
+            applicationPeriods.status === "Closed"
         ) {
             toast.error("The online application has been closed.");
         } else {
@@ -98,7 +58,7 @@ function HeroSection() {
                 </div>
                 <div className="mt-10">
                     <p className="text-center text-sm md:text-lg">
-                        {announcementMessage}
+                        {applicationPeriods.announcement_message}
                     </p>
                 </div>
             </div>

@@ -16,6 +16,7 @@ export const PeriodProvider = ({ children }) => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [announcementMessage, setAnnouncementMessage] = useState("");
+    const [type, setType] = useState("");
     const [status, setStatus] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -25,6 +26,7 @@ export const PeriodProvider = ({ children }) => {
         startDate,
         endDate,
         announcementMessage,
+        type,
         status,
         isModalOpen,
         isEditing,
@@ -32,6 +34,7 @@ export const PeriodProvider = ({ children }) => {
         setStartDate,
         setEndDate,
         setAnnouncementMessage,
+        setType,
         setStatus,
         setIsModalOpen,
         setIsEditing,

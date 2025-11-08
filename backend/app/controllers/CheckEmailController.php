@@ -49,11 +49,65 @@ class CheckEmailController
         try {
             $model = new ApplicationModel();
 
-            // ✅ Use $_GET to retrieve query parameters
+            // ✅ Retrieve and sanitize query parameters
             $email = isset($_GET['email']) ? trim($_GET['email']) : null;
+            $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
-            if ($email) {
-                $result = $model->checkEmailAddress($email);
+            if (!$email) {
+                http_response_code(200);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Email parameter is missing.',
+                ]);
+                return;
+            }
+
+            // ✅ Renewal check (email + id provided)
+            if ($id) {
+                $result = $model->checkEmailAddressForRenewal($email);
+
+                if ($result && array_key_exists('scholar_id', $result)) {
+                    $scholarId = $result['scholar_id']; // may be null or int
+
+                    if ($scholarId !== null) {
+                        $scholarId = (int) $scholarId;
+                    }
+
+                    if ($scholarId > 0 && $scholarId === $id) {
+                        // Same scholar – renewal allowed
+                        http_response_code(200);
+                        echo json_encode([
+                            'success' => true,
+                            'data' => false,
+                        ]);
+                    } elseif ($scholarId === null || $scholarId !== $id) {
+                        // Scholar ID is null OR belongs to another scholar
+                        http_response_code(200);
+                        echo json_encode([
+                            'success' => true,
+                            'data' => true,
+                        ]);
+                    } else {
+                        // Fallback (should not be reached)
+                        http_response_code(200);
+                        echo json_encode([
+                            'success' => true,
+                            'data' => false,
+                        ]);
+                    }
+                } else {
+                    // No record found for this email
+                    http_response_code(200);
+                    echo json_encode([
+                        'success' => true,
+                        'data' => false,
+                    ]);
+                }
+            }
+
+            // ✅ New application check (email only)
+            else {
+                $result = $model->checkEmailAddressForNew($email);
 
                 if ($result) {
                     http_response_code(200);
@@ -62,19 +116,13 @@ class CheckEmailController
                         'data' => true,
                     ]);
                 } else {
-                    http_response_code(200); // still 200, but indicates email is not used
+                    http_response_code(200);
                     echo json_encode([
                         'success' => true,
                         'data' => false,
                         'message' => 'Email not found',
                     ]);
                 }
-            } else {
-                http_response_code(400); // Bad request
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Email parameter is missing.',
-                ]);
             }
         } catch (\Exception $e) {
             http_response_code(500);

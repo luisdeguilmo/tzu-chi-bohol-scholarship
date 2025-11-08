@@ -1,53 +1,67 @@
-<?php 
+<?php
 
 namespace App\Controllers;
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Content-Type: application/json");
+date_default_timezone_set('Asia/Manila');
 
-require_once __DIR__ . "/../../vendor/autoload.php";
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Content-Type: application/json');
+
+require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/BatchModel.php';
 
+use App\Models\NotificationsModel;
+use App\Models\ScholarAccountModel;
 use App\Models\ScholarOverviewDataModel;
+use App\Models\ScholarsModel;
 use App\Models\StaffDashboardDataModel;
 use Config\Database;
 
-class StaffDashboardDataController {
-
+class StaffDashboardDataController
+{
     private $pdo;
+    private $currentYear;
+    private $currentDateTime;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->currentYear = date('Y');
+        $this->currentDateTime = date('Y-m-d H:i:s');
     }
 
-    public function processRequest() {
+    public function processRequest()
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             http_response_code(200);
             return;
-        }  
-    
+        }
+
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
         switch ($requestMethod) {
-            case "GET":
+            case 'GET':
                 $this->getOverviewData();
                 break;
             default:
                 http_response_code(405);
-                echo json_encode(array("message" => "Method not allowed"));
+                echo json_encode(['message' => 'Method not allowed']);
                 break;
         }
     }
-   
-    public function getOverviewData() {
+
+    public function getOverviewData()
+    {
         try {
             $data = [];
 
             $dashboardData = new StaffDashboardDataModel();
+            $notificationModel = new NotificationsModel();
+            $scholarModel = new ScholarAccountModel();
 
             $id = $_GET['id'] ?? null;
 
@@ -60,39 +74,86 @@ class StaffDashboardDataController {
             $numberOfAllScholars = $dashboardData->getNumberOfAllScholars();
             $numberOfNewScholars = $dashboardData->getNumberOfNewScholars();
             $numberOfOldScholars = $dashboardData->getNumberOfOldScholars();
+            $numberOfApplicantsEligibleForExam = $dashboardData->getNumberOfApplicantsEligibleForExam();
+            $numberOfApplicantsForInitialInterview = $dashboardData->getNumberOfApplicantsForInitialInterview();
+            $numberOfApplicantsForHomeVisitation = $dashboardData->getNumberOfApplicantsForHomeVisitation();
+            $numberOfApplicantsForFinalInterview = $dashboardData->getNumberOfApplicantsForFinalInterview();
+            $numberOfApplicantsForOrientation = $dashboardData->getNumberOfApplicantsForOrientation();
+            $numberOfApplicantsForAwarding = $dashboardData->getNumberOfApplicantsForAwarding();
             $numberOfUpcomingEvents = $dashboardData->getNumberOfUpcomingEvents();
             $numberOfNewCommunityServices = $dashboardData->getNumberOfNewCommunityServices();
 
-             $data = [
-                    'userName' => $userName,
-                    'numberOfAllApplications' => $numberOfAllApplications,
-                    'numberOfNewApplications' => $numberOfNewApplications,
-                    'numberOfOldApplications' => $numberOfOldApplications,
-                    'numberOfApprovedApplications' => $numberOfApprovedApplications,
-                    'numberOfRejectedApplications' => $numberOfRejectedApplications,
-                    'numberOfAllScholars' => $numberOfAllScholars,
-                    'numberOfNewScholars' => $numberOfNewScholars,
-                    'numberOfOldScholars' => $numberOfOldScholars,
-                    'numberOfUpcomingEvents' => $numberOfUpcomingEvents,
-                    'numberOfNewCommunityServices' => $numberOfNewCommunityServices,
-                ];
+            $data = [
+                'userName' => $userName,
+                'numberOfAllApplications' => $numberOfAllApplications,
+                'numberOfNewApplications' => $numberOfNewApplications,
+                'numberOfOldApplications' => $numberOfOldApplications,
+                'numberOfApprovedApplications' => $numberOfApprovedApplications,
+                'numberOfRejectedApplications' => $numberOfRejectedApplications,
+                'numberOfAllScholars' => $numberOfAllScholars,
+                'numberOfNewScholars' => $numberOfNewScholars,
+                'numberOfOldScholars' => $numberOfOldScholars,
+                'numberOfApplicationsSubmitted' =>
+                    $numberOfNewApplications + $numberOfOldApplications,
+                'numberOfReviewedApplications' =>
+                    $numberOfApprovedApplications + $numberOfRejectedApplications,
+                'numberOfApplicantsEligibleForExam' => $numberOfApplicantsEligibleForExam,
+                'numberOfApplicantsForInitialInterview' => $numberOfApplicantsForInitialInterview,
+                'numberOfApplicantsForHomeVisitation' => $numberOfApplicantsForHomeVisitation,
+                'numberOfApplicantsForFinalInterview' => $numberOfApplicantsForFinalInterview,
+                'numberOfApplicantsForOrientation' => $numberOfApplicantsForOrientation,
+                'numberOfApplicantsForAwarding' => $numberOfApplicantsForAwarding,
+                'numberOfUpcomingEvents' => $numberOfUpcomingEvents,
+                'numberOfNewCommunityServices' => $numberOfNewCommunityServices,
+            ];
+
+            // preg_match('/\d+/', $pendingScholarNotification['message'], $matches);
+            // $numberOfPendingScholars = (int) $matches[0];
+
+            $pendingScholarsCount = $scholarModel->getPendingScholarsCount();
+            $pendingScholarNotification = $notificationModel->getLastPendingScholarNotification(
+                $this->currentYear,
+            );
+
+            // First-ever notification
+            if (!$pendingScholarNotification) {
+                if ($pendingScholarsCount > 0) {
+                    $notificationModel->createNewPendingScholarsNotification($pendingScholarsCount);
+                }
+                return;
+            }
+
+            // Calculate time difference
+            $lastNotification = $pendingScholarNotification['created_at'] ?? null;
+            if ($lastNotification) {
+                $lastTimestamp = strtotime($lastNotification);
+                $currentTimestamp = strtotime($this->currentDateTime);
+                $diffInSeconds = $currentTimestamp - $lastTimestamp;
+            } else {
+                $diffInSeconds = PHP_INT_MAX; // force notification if missing
+            }
+
+            // Create new notification if pending scholars exist and 1 hour passed
+            if ($pendingScholarsCount > 0 && $diffInSeconds >= 3600) {
+                $notificationModel->createNewPendingScholarsNotification($pendingScholarsCount);
+            }
 
             http_response_code(200);
-            echo json_encode(array(
-                "message" => "Overview data fetched successfully",
-                "data" => $data
-            ));
+            echo json_encode([
+                'message' => 'Overview data fetched successfully',
+                'data' => $data,
+            ]);
         } catch (\Exception $e) {
             http_response_code(500);
-            echo json_encode(array( 
-                "message" => "An error occurred while fetching overview data",
-                "error" => $e->getMessage()
-            ));
+            echo json_encode([
+                'message' => 'An error occurred while fetching overview data',
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 }
 
 $controller = new StaffDashboardDataController();
-$controller->processRequest(); 
+$controller->processRequest();
 
 ?>

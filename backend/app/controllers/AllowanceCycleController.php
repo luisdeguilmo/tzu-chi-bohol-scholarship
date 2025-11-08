@@ -56,7 +56,7 @@ class AllowanceCycleController
         try {
             $cycleModel = new AllowanceCycleModel();
 
-            $isProcessed = $cycleModel->isCurrentMonthProcessed();
+            $isProcessed = $cycleModel->isPreviousMonthProcessed();
 
             http_response_code(200);
             echo json_encode([

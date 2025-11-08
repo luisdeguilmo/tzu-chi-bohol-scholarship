@@ -8,6 +8,7 @@ import EventDetailsModal from "../../../components/EventDetailsModal";
 import CommunityServiceDetailsModal from "../../../components/CommunityServiceDetailsModal";
 import CommunityServiceCard from "../CommunityServices/CommunityServiceCard";
 import EventCard from "../Events/EventCard";
+import BackgroundLoadingIndicator from "../../../components/BackgroundLoadingIndicator";
 
 export default function ArchivedActivities() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -18,8 +19,10 @@ export default function ArchivedActivities() {
     const [isDotMenuOpen, setIsDotMenuOpen] = useState(false);
     const [itemIndex, setItemIndex] = useState(-1);
 
-    const { unarchiveActivity, archivedActivities, fetchArchivedActivities } =
-        useArchive(activeTab, user.user_id);
+    const { loading, archivedActivities, fetchArchivedActivities } = useArchive(
+        activeTab,
+        user.user_id
+    );
 
     const tabs = [
         { name: "All", value: "all" },
@@ -99,8 +102,6 @@ export default function ArchivedActivities() {
     const today = new Date();
     const dateToday = today.toISOString().split("T")[0];
 
-    console.log(archivedActivities);
-
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Fixed Header Section */}
@@ -129,49 +130,53 @@ export default function ArchivedActivities() {
             </div>
 
             {/* Scrollable Content Area */}
-            <div className="px-6 py-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {currentItems.map((activity, index) => (
-                        <div key={index}>
-                            {activity.event_name ? (
-                                <EventCard
-                                    userId={user.user_id}
-                                    event={activity}
-                                    index={index}
-                                    handleOpenDetails={handleOpenDetails}
-                                    handleOpenDotMenu={handleOpenDotMenu}
-                                    isDotMenuOpen={isDotMenuOpen}
-                                    itemIndex={itemIndex}
-                                    setIsDotMenuOpen={setIsDotMenuOpen}
-                                    setItemIndex={setItemIndex}
-                                    dateToday={dateToday}
-                                    isArchived={true}
-                                    activeTab={activeTab}
-                                    onRefresh={fetchArchivedActivities}
-                                />
-                            ) : (
-                                <CommunityServiceCard
-                                    userId={user.user_id}
-                                    key={index}
-                                    activity={activity}
-                                    index={index}
-                                    handleOpenDetails={handleOpenDetails}
-                                    handleOpenDotMenu={handleOpenDotMenu}
-                                    isDotMenuOpen={isDotMenuOpen}
-                                    itemIndex={itemIndex}
-                                    setIsDotMenuOpen={setIsDotMenuOpen}
-                                    setItemIndex={setItemIndex}
-                                    isArchived={true}
-                                    activeTab={activeTab}
-                                    onRefresh={fetchArchivedActivities}
-                                />
-                            )}
-                        </div>
-                    ))}
+            <div className="p-4 md:p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {loading ? (
+                        <BackgroundLoadingIndicator />
+                    ) : (
+                        currentItems.map((activity, index) => (
+                            <div key={index}>
+                                {activity.event_name ? (
+                                    <EventCard
+                                        userId={user.user_id}
+                                        event={activity}
+                                        index={index}
+                                        handleOpenDetails={handleOpenDetails}
+                                        handleOpenDotMenu={handleOpenDotMenu}
+                                        isDotMenuOpen={isDotMenuOpen}
+                                        itemIndex={itemIndex}
+                                        setIsDotMenuOpen={setIsDotMenuOpen}
+                                        setItemIndex={setItemIndex}
+                                        dateToday={dateToday}
+                                        isArchived={true}
+                                        activeTab={activeTab}
+                                        onRefresh={fetchArchivedActivities}
+                                    />
+                                ) : (
+                                    <CommunityServiceCard
+                                        userId={user.user_id}
+                                        key={index}
+                                        activity={activity}
+                                        index={index}
+                                        handleOpenDetails={handleOpenDetails}
+                                        handleOpenDotMenu={handleOpenDotMenu}
+                                        isDotMenuOpen={isDotMenuOpen}
+                                        itemIndex={itemIndex}
+                                        setIsDotMenuOpen={setIsDotMenuOpen}
+                                        setItemIndex={setItemIndex}
+                                        isArchived={true}
+                                        activeTab={activeTab}
+                                        onRefresh={fetchArchivedActivities}
+                                    />
+                                )}
+                            </div>
+                        ))
+                    )}
                 </div>
 
                 {/* Empty State */}
-                {currentItems.length === 0 && (
+                {!loading && currentItems.length === 0 && (
                     <EmptyState
                         section={"archived_activities"}
                         activeTab={activeTab}

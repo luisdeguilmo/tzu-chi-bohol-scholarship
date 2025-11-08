@@ -1,50 +1,3 @@
-// import { BookOpen, Calendar, Clock, Locate, MapPin } from "lucide-react";
-// import { formatDate } from "../utils/formatDate";
-// import { formatTime } from "../utils/formatTime";
-
-// const RecentActivities = ({ activities }) => {
-//     return (
-//         <div className="p-6 bg-white shadow-sm border  rounded-lg">
-//             <div className="flex justify-between">
-//                 <h2 className="font-bold text-gray-700">Recent Activities</h2>
-//                 <BookOpen className="w-5 h-5 text-gray-500" />
-//             </div>
-//             <ul className="pt-6 space-y-3">
-//                 {activities.map((activity) => (
-//                     <li key={activity.id} className="p-3 bg-gray-50 rounded-lg">
-//                         <h3 className="text-gray-700 text-sm font-bold">
-//                             {activity.activity_name}
-//                         </h3>
-//                         <div className="mt-2 flex gap-6">
-//                             <div className="flex gap-1.5">
-//                                 <Calendar className="w-4 h-4 text-gray-500" />
-//                                 <p className="text-xs text-gray-600">
-//                                     {formatDate(activity.activity_date)}
-//                                 </p>
-//                             </div>
-//                             <div className="flex gap-1.5">
-//                                 <Clock className="w-4 h-4 text-gray-500" />
-//                                 <p className="text-xs text-gray-600">
-//                                     {formatTime(activity.activity_start_time)} -{" "}
-//                                     {formatTime(activity.activity_end_time)}
-//                                 </p>
-//                             </div>
-//                             <div className="flex gap-1.5">
-//                                 <MapPin className="w-4 h-4 text-gray-500" />
-//                                 <p className="text-xs text-gray-600">
-//                                     {activity.activity_location}
-//                                 </p>
-//                             </div>
-//                         </div>
-//                     </li>
-//                 ))}
-//             </ul>
-//         </div>
-//     );
-// };
-
-// export default RecentActivities;
-
 import { useState } from "react";
 import {
     BookOpen,
@@ -69,7 +22,7 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
     return (
         <div className="p-6 bg-white shadow-sm border rounded-lg">
             <div className="flex justify-between">
-                <h2 className="font-bold text-gray-700">Recent Activities</h2>
+                <h2 className="font-bold text-gray-700">Recent Activities This Month</h2>
                 <BookOpen className="w-5 h-5 text-gray-500" />
             </div>
             <ul className="pt-6 space-y-3">
@@ -77,35 +30,40 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                     recentActivities.map((activity) => (
                         <li
                             key={activity.id}
-                            className="p-3 bg-gray-50 rounded-lg"
+                            className="p-3 flex items-center justify-between bg-gray-50 rounded-lg"
                         >
-                            <h3 className="text-gray-700 text-sm font-bold">
-                                {activity.activity_name}
-                            </h3>
-                            <div className="mt-2 flex gap-6">
-                                <div className="flex gap-1.5">
-                                    <Calendar className="w-4 h-4 text-gray-500" />
-                                    <p className="text-xs text-gray-600">
-                                        {formatDate(activity.activity_date)}
-                                    </p>
-                                </div>
-                                <div className="flex gap-1.5">
-                                    <Clock className="w-4 h-4 text-gray-500" />
-                                    <p className="text-xs text-gray-600">
-                                        {formatTime(
-                                            activity.activity_start_time
-                                        )}{" "}
-                                        -{" "}
-                                        {formatTime(activity.activity_end_time)}
-                                    </p>
-                                </div>
-                                <div className="flex gap-1.5">
-                                    <MapPin className="w-4 h-4 text-gray-500" />
-                                    <p className="text-xs text-gray-600">
-                                        {activity.activity_location}
-                                    </p>
+                            <div>
+                                <h3 className="text-gray-700 text-sm font-bold">
+                                    {activity.activity_name}
+                                </h3>
+                                <div className="mt-2 flex flex-col md:flex-row gap-2 md:gap-6">
+                                    <div className="flex gap-1.5">
+                                        <Calendar className="w-4 h-4 text-gray-500" />
+                                        <p className="text-xs text-gray-600">
+                                            {formatDate(activity.activity_date)}
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-1.5">
+                                        <Clock className="w-4 h-4 text-gray-500" />
+                                        <p className="text-xs text-gray-600">
+                                            {formatTime(
+                                                activity.activity_start_time
+                                            )}{" "}
+                                            -{" "}
+                                            {formatTime(
+                                                activity.activity_end_time
+                                            )}
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-1.5">
+                                        <MapPin className="w-4 h-4 text-gray-500" />
+                                        <p className="text-xs text-gray-600">
+                                            {activity.activity_location}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
+                            <p className="text-xs text-gray-700">{activity.rendered_hours} {activity.rendered_hours > 1 ? "hours" : "hour"}</p>
                         </li>
                     ))
                 ) : (
@@ -129,7 +87,7 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                 <div className="mt-4 flex justify-center">
                     <button
                         onClick={() => setShowAll(!showAll)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                        className="flex items-center gap-2 px-4 py-2 text-xs md:text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-colors duration-200"
                     >
                         {showAll ? (
                             <>

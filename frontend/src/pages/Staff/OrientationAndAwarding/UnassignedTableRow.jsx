@@ -1,4 +1,3 @@
-import ApplicationFormPDF from "../../../components/ApplicationFormPDF";
 import TableRow from "../../../components/TableRow";
 import { useApplicantData } from "../../../hooks/useApplicantData";
 import { usePdfActions } from "../../../hooks/usePdfActions";

@@ -45,7 +45,7 @@ class ApplicationRecordsModel {
     }
 
     public function getAllOldApplicants($status, $school_year, $sort) {
-        $query = "SELECT pi.*, ai.* FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE ai.type= 'Old' AND scholar_id IS NOT NULL";
+        $query = "SELECT pi.*, ai.* FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE ai.type= 'Old' AND ai.scholar_id IS NOT NULL";
 
         if ($status === 'all') {
             $query .= " AND (ai.is_application_approved = '0' OR ai.is_application_approved = '1' OR ai.is_application_rejected = '1')";
@@ -58,16 +58,18 @@ class ApplicationRecordsModel {
         }
 
         if ($school_year !== 'all_years') {
-            $query .= " AND ai.school_year = '$school_year'";
+            $query .= " AND ai.school_year ='$school_year'";
         }
 
         if ($sort === 'newest') {
             $query .= " ORDER BY ai.created_at DESC";
-        } else if ($sort === 'oldest') {
-            $query .= " ORDER BY ai.created_at ASC";
-        } else if ($sort === 'name') {
-            $query .= " ORDER BY pi.first_name ASC";
         }
+        
+        // else if ($sort === 'oldest') {
+        //     $query .= " ORDER BY ai.created_at ASC";
+        // } else if ($sort === 'name') {
+        //     $query .= " ORDER BY pi.first_name ASC";
+        // }
         
         $stmt = $this->pdo->query($query);
         $stmt->execute();

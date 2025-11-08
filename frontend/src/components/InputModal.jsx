@@ -108,7 +108,7 @@
 // export default InputModal;
 
 import { X } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 const InputModal = React.memo(
     ({
@@ -120,12 +120,14 @@ const InputModal = React.memo(
         resetFields,
         children,
         isScholar = false,
-        expandable = false,
         removeBackground = false,
         onCancel,
-        onSubmit,
+        onSubmit = false,
         buttonLabel,
         isLoading,
+        disabledButton = false,
+        disabledButtonSave = false,
+        isSubmitting,
     }) => {
         const handleClose = () => {
             if (isEditing) onEdit(false);
@@ -135,13 +137,15 @@ const InputModal = React.memo(
 
         const handleSubmit = (e) => {
             e.preventDefault();
-            onSubmit();
+            if (onSubmit) {
+                onSubmit();
+            }
         };
 
         return (
             <div
                 className={`fixed inset-0 z-50 flex items-center justify-center bg-black transition-all duration-200
-                    ${removeBackground ? "bg-opacity-0" : "bg-opacity-60"}
+                    ${removeBackground ? "bg-opacity-30" : "bg-opacity-70"}
                     ${isOpen ? "visible opacity-100" : "invisible opacity-0"}
                 `}
                 role="dialog"
@@ -152,18 +156,11 @@ const InputModal = React.memo(
                 <form
                     onSubmit={handleSubmit}
                     className={`
-                        relative bg-white rounded-t-lg sm:rounded-lg shadow-2xl w-full
-                        sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[35%]
-                        transition-transform duration-300
-                        ${isOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}
-
-                        absolute bottom-0 sm:relative sm:bottom-auto flex flex-col
-
-                        ${isScholar ? "h-[90vh]" : "h-auto"}
+                        relative bg-white shadow-2xl rounded-sm w-full sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[35%] transition-transform duration-300 ${isOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"} absolute bottom-0 sm:relative sm:bottom-auto flex flex-col ${isScholar ? "h-[90vh]" : "h-auto"}
                     `}
                 >
                     {/* Header */}
-                    <div className="relative px-4 py-4 bg-gray-100 border-b border-gray-300 flex-shrink-0">
+                    <div className="relative px-4 py-4 rounded-t-sm bg-gray-50 border-b border-gray-300 flex-shrink-0">
                         <h2
                             id="modal-title"
                             className="text-sm font-medium text-slate-700 pr-10 leading-tight"
@@ -181,38 +178,40 @@ const InputModal = React.memo(
                     </div>
 
                     {/* Modal Content */}
-                    <div className="flex-1 overflow-y-auto px-1">
-                        {children}
-                    </div>
+                    <div className="flex-1 overflow-y-auto">{children}</div>
 
                     {/* Footer */}
-                    <div className="flex justify-end gap-2 p-3.5 border-t border-gray-300 bg-gray-50 flex-shrink-0">
-                        <button
-                            onClick={onCancel}
-                            type="button"
-                            className="ml-auto bg-gray-200 text-gray-600 text-sm px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition"
-                        >
-                            {isLoading
-                                ? buttonLabel === "Save"
-                                    ? "Saving..."
-                                    : buttonLabel === "Confirm"
-                                      ? "Confirming..."
-                                      : buttonLabel === "Submit"
-                                        ? "Submitting..."
-                                        : buttonLabel === "Resubmit"
-                                          ? "Resubmitting..."
-                                          : buttonLabel === "Upload"
-                                            ? "Uploading..."
-                                            : "Saving Changes..."
-                                : buttonLabel}
-                        </button>
-                    </div>
+                    {!disabledButton && (
+                        <div className="flex rounded-b-sm justify-end gap-2 p-3.5 border-t border-gray-300 bg-gray-50 flex-shrink-0">
+                            <button
+                                onClick={onCancel}
+                                type="button"
+                                className="ml-auto bg-gray-200 text-gray-600 text-sm px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
+                            >
+                                {disabledButtonSave ? "Close" : "Cancel"}
+                            </button>
+                            {!disabledButtonSave && (
+                                <button
+                                    type="submit"
+                                    className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition"
+                                >
+                                    {isLoading
+                                        ? buttonLabel === "Save"
+                                            ? "Saving..."
+                                            : buttonLabel === "Confirm"
+                                              ? "Confirming..."
+                                              : buttonLabel === "Submit"
+                                                ? "Submitting..."
+                                                : buttonLabel === "Resubmit"
+                                                  ? "Resubmitting..."
+                                                  : buttonLabel === "Upload"
+                                                    ? "Uploading..."
+                                                    : "Saving Changes..."
+                                        : buttonLabel}
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </form>
             </div>
         );

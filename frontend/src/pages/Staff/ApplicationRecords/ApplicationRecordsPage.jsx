@@ -9,17 +9,21 @@ import { usePdfActions } from "../../../hooks/usePdfActions";
 import { applicationButtons } from "../../../constant/tableToolbarButtons";
 import { useApplicationRecords } from "../../../hooks/useApplicationRecords";
 import TableToolbar from "../../../components/TableToolbar";
-import { approvedApplicationTableHeaders } from "../../../constant/tableHeaders";
+import {
+    applicationRecordsTableHeaders,
+    approvedApplicationTableHeaders,
+} from "../../../constant/tableHeaders";
 import Table from "../../../components/Table";
 import TableRow from "../../../components/TableRow";
 import PageContent from "../../../components/PageContent";
+import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 
 export default function ApplicationRecordsPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("new");
     const [sortBy, setSortBy] = useState("newest");
-    const [schoolYear, setSchoolYear] = useState("all_years");
+    const [schoolYear, setSchoolYear] = useState(getCurrentSchoolYear());
     const [status, setStatus] = useState("all");
 
     const { applications, fetchApplications } = useApplicationRecords(
@@ -29,10 +33,11 @@ export default function ApplicationRecordsPage() {
         sortBy
     );
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(applications);
+    const { profilePics, fetchAllPics } = useProfilePicture(
+        applications,
+        "profile-picture"
+    );
     const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
-
-    // console.log("Current Profile Pic: ", profilePics[applications[0]?.scholar_id]);
 
     useEffect(() => {
         fetchApplications();
@@ -64,7 +69,6 @@ export default function ApplicationRecordsPage() {
     const handleChangeTab = (tab) => {
         setActiveTab(tab);
         setCurrentPage(1);
-        console.log("PROFILE PICTURE", profilePics);
     };
 
     const handleRefresh = () => {
@@ -75,7 +79,7 @@ export default function ApplicationRecordsPage() {
         <PageContent>
             <TableToolbar
                 items={applications}
-                label={"Applications Records"}
+                label={"Application Records"}
                 placeholder={"applications"}
                 tab={activeTab}
                 buttons={applicationButtons}
@@ -88,6 +92,7 @@ export default function ApplicationRecordsPage() {
                 onSearchChange={setSearchTerm}
                 onChangeTab={handleChangeTab}
                 onChangeItemsPerPage={setItemsPerPage}
+                onChangeCurrentPage={setCurrentPage}
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
             >
@@ -97,13 +102,66 @@ export default function ApplicationRecordsPage() {
                     </span>
                     <select
                         value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                        className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        onChange={(e) => {
+                            setStatus(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                        className="w-[100px] px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
-                        <option value="all">All</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="pending">Pending</option>
+                        {activeTab === "new" ? (
+                            <>
+                                <option value="all">All</option>
+                                <option value="approved">
+                                    Application Approved
+                                </option>
+                                <option value="rejected">
+                                    Entrance Examination Passed
+                                </option>
+                                <option value="pending">
+                                    Initial Interview Passed
+                                </option>
+                                <option value="pending">
+                                    Home Visitation Qualified
+                                </option>{" "}
+                                <option value="pending">
+                                    Final Interview Passed
+                                </option>
+                                <option value="approved">
+                                    Attended Orientation
+                                </option>
+                                <option value="approved">
+                                    Attended Awarding
+                                </option>
+                                <option value="approved">
+                                    Application Rejected
+                                </option>
+                                <option value="rejected">
+                                    Entrance Examination Failed
+                                </option>
+                                <option value="pending">
+                                    Initial Interview Failed
+                                </option>
+                                <option value="pending">
+                                    Home Visitation Not Qualified
+                                </option>{" "}
+                                <option value="pending">
+                                    Final Interview Failed
+                                </option>
+                                <option value="approved">
+                                    Not Attended Orientation
+                                </option>
+                                <option value="approved">
+                                    Not Attended Awarding
+                                </option>
+                            </>
+                        ) : (
+                            <>
+                                <option value="all">All</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="pending">Pending</option>
+                            </>
+                        )}
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                         <svg
@@ -119,7 +177,10 @@ export default function ApplicationRecordsPage() {
                     <span className="text-xs text-gray-600">School Year:</span>
                     <select
                         value={schoolYear}
-                        onChange={(e) => setSchoolYear(e.target.value)}
+                        onChange={(e) => {
+                            setSchoolYear(e.target.value);
+                            setCurrentPage(1);
+                        }}
                         className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all_years">All Years</option>
@@ -130,13 +191,13 @@ export default function ApplicationRecordsPage() {
             </TableToolbar>
 
             <div className="overflow-x-auto rounded-[4px]">
-                <Table tableHeaders={approvedApplicationTableHeaders}>
+                <Table tableHeaders={applicationRecordsTableHeaders}>
                     {currentItems.map((info) => (
                         <TableRow key={info.application_id}>
-                            <td className="py-1 whitespace-nowrap">
+                            <td className="py-2 whitespace-nowrap">
                                 {info.application_id}
                             </td>
-                            <td className="py-1 flex justify-start whitespace-nowrap">
+                            <td className="py-2 flex justify-start whitespace-nowrap">
                                 <div className="w-[20%]"></div>
                                 <div className="w-[max-content] flex items-center text-left gap-2">
                                     <img
@@ -162,7 +223,10 @@ export default function ApplicationRecordsPage() {
                                     </div>
                                 </div>
                             </td>
-                            <td className="py-1 whitespace-nowrap text-xs">
+                            <td className="py-2 whitespace-nowrap">
+                                {info.school_year}
+                            </td>
+                            {/* <td className="py-1 whitespace-nowrap text-xs">
                                 <span
                                     className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
                                         info.is_final_interview_passed
@@ -190,15 +254,81 @@ export default function ApplicationRecordsPage() {
                                                 ? "Application Rejected"
                                                 : "Pending"}
                                 </span>
+                            </td> */}
+
+                            <td className="py-2 whitespace-nowrap text-xs">
+                                <span
+                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
+                                        info.is_attended_awarding
+                                            ? "bg-green-100 text-green-800"
+                                            : info.is_not_attended_awarding
+                                              ? "bg-red-100 text-red-800"
+                                              : info.is_attended_orientation
+                                                ? "bg-green-100 text-green-800"
+                                                : info.is_not_attended_orientation
+                                                  ? "bg-red-100 text-red-800"
+                                                  : info.is_final_interview_passed
+                                                    ? "bg-green-100 text-green-800"
+                                                    : info.is_final_interview_failed
+                                                      ? "bg-red-100 text-red-800"
+                                                      : info.is_home_visitation_qualified
+                                                        ? "bg-green-100 text-green-800"
+                                                        : info.is_home_visitation_not_qualified
+                                                          ? "bg-red-100 text-red-800"
+                                                          : info.is_initial_interview_passed
+                                                            ? "bg-green-100 text-green-800"
+                                                            : info.is_initial_interview_failed
+                                                              ? "bg-red-100 text-red-800"
+                                                              : info.is_examination_passed
+                                                                ? "bg-green-100 text-green-800"
+                                                                : info.is_examination_failed
+                                                                  ? "bg-red-100 text-red-800"
+                                                                  : info.is_application_approved
+                                                                    ? "bg-green-100 text-green-800"
+                                                                    : info.is_application_rejected
+                                                                      ? "bg-red-100 text-red-800"
+                                                                      : "bg-yellow-100 text-yellow-800"
+                                    }`}
+                                >
+                                    {info.is_attended_awarding
+                                        ? "Fully Qualified"
+                                        : info.is_not_attended_awarding
+                                          ? "Not Attended Awarding"
+                                          : info.is_attended_orientation
+                                            ? "Attended Orientation"
+                                            : info.is_not_attended_orientation
+                                              ? "Not Attended Orientation"
+                                              : info.is_final_interview_passed
+                                                ? "Final Interview Passed"
+                                                : info.is_final_interview_failed
+                                                  ? "Final Interview Failed"
+                                                  : info.is_home_visitation_qualified
+                                                    ? "Home Visitation Qualified"
+                                                    : info.is_home_visitation_not_qualified
+                                                      ? "Home Visitation Not Qualified"
+                                                      : info.is_initial_interview_passed
+                                                        ? "Initial Interview Passed"
+                                                        : info.is_initial_interview_failed
+                                                          ? "Initial Interview Failed"
+                                                          : info.is_examination_passed
+                                                            ? "Exam Passed"
+                                                            : info.is_examination_failed
+                                                              ? "Exam Failed"
+                                                              : info.is_application_approved
+                                                                ? "Application Approved"
+                                                                : info.is_application_rejected
+                                                                  ? "Application Rejected"
+                                                                  : "Pending"}
+                                </span>
                             </td>
-                            <td className="py-1 whitespace-nowrap text-gray-500 text-xs">
+                            <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
                                 {formatDateTime(info.created_at)}
                             </td>
-                            <td className="py-1 whitespace-nowrap">
+                            {/* <td className="py-2 whitespace-nowrap">
                                 {formatDateTime(info.updated_at) || "--"}
-                            </td>
+                            </td> */}
 
-                            <td className="py-1 text-left whitespace-nowrap font-medium">
+                            <td className="py-2 text-left whitespace-nowrap font-medium">
                                 <div className="flex items-center justify-center">
                                     <button
                                         onClick={() =>

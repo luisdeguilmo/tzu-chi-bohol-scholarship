@@ -12,6 +12,7 @@ class AllowanceCycleModel
     private $pdo;
     private $currentYearAndMonth;
     private $currentDate;
+    private $previousYearAndMonth;
 
     public function __construct()
     {
@@ -19,6 +20,9 @@ class AllowanceCycleModel
         $this->pdo = $db->getConnection();
         $this->currentYearAndMonth = date('Y-m');
         $this->currentDate = date('Y-m-d');
+        
+        // Calculate previous month in Y-m format
+        $this->previousYearAndMonth = date('Y-m', strtotime('-1 month'));
     }
 
     public function isCycleStartedThisMonth()
@@ -43,25 +47,16 @@ class AllowanceCycleModel
 
     public function processAllowanceCycle()
     {
+        // Process the PREVIOUS month's cycle (rendered month)
+        // e.g., In November, we process October's rendered hours
         $query = "UPDATE {$this->table_name} 
           SET is_processed = 1, processed_at = NOW() 
           WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':cycle_month', $this->currentYearAndMonth);
+        $stmt->bindParam(':cycle_month', $this->previousYearAndMonth);
         return $stmt->execute();
     }
-
-    // public function resetAllowanceCycle()
-    // {
-    //     $query = "UPDATE {$this->table_name}
-    //       SET is_reset = 1, reset_at = NOW()
-    //       WHERE cycle_month = :cycle_month";
-
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->bindParam(':cycle_month', $this->currentYearAndMonth);
-    //     return $stmt->execute();
-    // }
 
     public function resetAllowanceCycle()
     {
@@ -97,15 +92,30 @@ class AllowanceCycleModel
 
     public function isCurrentMonthProcessed()
     {
+        // Check if PREVIOUS month (rendered month) has been processed
+        // e.g., In November, check if October was processed
         $query = "SELECT is_processed FROM {$this->table_name} WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':cycle_month', $this->currentYearAndMonth);
+        $stmt->bindParam(':cycle_month', $this->previousYearAndMonth);
         $stmt->execute();
 
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         return $result && (bool) $result['is_processed'];
+    }
+    
+    public function isPreviousMonthCycleExists()
+    {
+        // Check if previous month's cycle exists before processing
+        $query = "SELECT id FROM {$this->table_name} WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month LIMIT 1";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':cycle_month', $this->previousYearAndMonth);
+        $stmt->execute();
+
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $result && (bool) $result['id'];
     }
 }
 

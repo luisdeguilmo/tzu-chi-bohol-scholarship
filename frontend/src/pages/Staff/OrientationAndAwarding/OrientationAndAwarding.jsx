@@ -69,7 +69,10 @@ export default function OrientationAndAwarding() {
         sortBy
     );
 
-    const { profilePics, fetchAllPics } = useProfilePicture(applications);
+    const { profilePics, fetchAllPics } = useProfilePicture(
+        applications,
+        "profile-picture"
+    );
 
     useEffect(() => {
         fetchBatches();
@@ -196,6 +199,7 @@ export default function OrientationAndAwarding() {
                 onSearchChange={setSearchTerm}
                 onChangeTab={handleChangeTab}
                 onChangeItemsPerPage={setItemsPerPage}
+                onChangeCurrentPage={setCurrentPage}
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
                 addCreateBatchButton={activeTab === "Orientation"}

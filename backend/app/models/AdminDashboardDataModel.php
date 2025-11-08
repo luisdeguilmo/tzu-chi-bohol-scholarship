@@ -52,7 +52,7 @@ class AdminDashboardDataModel
     {
         $query = "SELECT COUNT(*) AS scholar_count FROM application_info
                   WHERE is_application_approved = '1' AND is_examination_passed = '1' AND is_initial_interview_passed = '1'
-                     AND is_home_visitation_qualified = '1' AND is_final_interview_passed = '1' AND status = 'final_interview_passed'";
+                     AND is_home_visitation_qualified = '1' AND is_final_interview_passed = '1' AND is_attended_orientation = '1' AND is_attended_awarding = '1' AND status = 'is_attended_awarding'";
 
         $stmt = $this->pdo->prepare($query);
 
@@ -81,6 +81,20 @@ class AdminDashboardDataModel
         $query = "SELECT u.status, u.type, COUNT(*) AS scholar_count FROM users u JOIN scholars s 
                   ON u.account_id = s.account_id
                   WHERE u.status = 'deactivated' AND u.type = 'scholar'";
+
+        $stmt = $this->pdo->prepare($query);
+
+        $stmt->execute();
+
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['scholar_count'] ?? 0;
+    }
+
+    public function getNumberOfNotRenewedScholars()
+    {
+        $query = "SELECT u.status, u.type, COUNT(*) AS scholar_count FROM users u JOIN scholars s 
+                  ON u.account_id = s.account_id
+                  WHERE u.status = 'not_renewed' AND u.type = 'scholar'";
 
         $stmt = $this->pdo->prepare($query);
 

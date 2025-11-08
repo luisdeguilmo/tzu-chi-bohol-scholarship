@@ -9,6 +9,8 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Models\ApplicantModel;
+use App\Models\ApplicationModel;
 use App\Models\ScholarModel;
 use Config\Database;
 
@@ -53,13 +55,21 @@ class ScholarController
             $scholar = new ScholarModel();
 
             // Get ID parameter if it exists
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
+            // $id = isset($_GET['id']) ? $_GET['id'] : null;
 
-            if ($id) {
-                $results = $scholar->getScholarById($id);
-            } else {
-                $results = $scholar->getAllScholars();
-            }
+            // if ($id) {
+            //     $results = $scholar->getScholarById($id);
+            // } else {
+            //     $results = $scholar->getAllScholars();
+            // }
+
+            // $model = new ApplicationModel();
+
+            // $results = $model->getNewScholarsFromPreviousSchoolYear();
+
+            $model = new ApplicantModel();
+
+            $results = $model->getAllApplicants();
 
             http_response_code(200);
             echo json_encode([

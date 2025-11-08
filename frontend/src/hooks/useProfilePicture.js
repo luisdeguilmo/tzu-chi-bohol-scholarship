@@ -2,13 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-export const useProfilePicture = (applications) => {
+export const useProfilePicture = (applications, endpoint) => {
     const [profilePics, setProfilePics] = useState([]);
 
     const getProfilePicture = async (applicationId) => {
         try {
             const response = await axios.get(
-                `${BASE_URL}backend/api/applications/${applicationId}/profile-picture`
+                `${BASE_URL}backend/api/applications/${applicationId}/${endpoint}`
             );
             console.log(response.data.profile_picture_url);
             return response.data.profile_picture_url;

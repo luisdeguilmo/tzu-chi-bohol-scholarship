@@ -22,6 +22,7 @@ try {
 use App\Models\ApplicantModel;
 use App\Models\BatchModel;
 use App\Models\EmailMessageModel;
+use App\Models\ScholarsModel;
 use App\Services\PHPMailerBrevoService; // Update this line
 use Config\Database;
 
@@ -104,6 +105,7 @@ class ApplicationManagementController
                     'approve',
                     'approve_renew',
                     'reject',
+                    'reject_renew',
                     'send_schedule',
                     'examination_passed',
                     'examination_failed',
@@ -122,6 +124,7 @@ class ApplicationManagementController
 
             $applicant = new ApplicantModel();
             $messageModel = new EmailMessageModel();
+            $scholarModel = new ScholarsModel();
 
             if ($action === 'approve') {
                 $message = $messageModel->getPassedMessage('application');
@@ -140,9 +143,13 @@ class ApplicationManagementController
                 //     throw new \Exception('Application approved but failed to send approval email');
                 // }
 
-                if (!$applicant->approveApplication($data)) {
+                $scholarId = $applicant->approveRenewApplication($data);
+
+                if (!$scholarId) {
                     throw new \Exception('Failed to approve application');
                 }
+
+                $scholarModel->setScholarsAsActive($scholarId);
             } elseif ($action === 'reject') {
                 $message = $messageModel->getFailedMessage('application');
 
@@ -151,6 +158,16 @@ class ApplicationManagementController
                 }
 
                 if (!$applicant->rejectApplication($data)) {
+                    throw new \Exception('Failed to reject application');
+                }
+            } elseif ($action === 'reject_renew') {
+                // $message = $messageModel->getFailedMessage('application');
+
+                // if (!$emailService->sendApplicationRejectionEmail($data, $message)) {
+                //     throw new \Exception('Application rejected but failed to send rejection email');
+                // }
+
+                if (!$applicant->rejectRenewApplication($data)) {
                     throw new \Exception('Failed to reject application');
                 }
             } elseif ($action === 'send_schedule') {

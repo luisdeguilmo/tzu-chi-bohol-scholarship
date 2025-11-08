@@ -8,6 +8,7 @@ import EmptyState from "../EmptyState";
 import EventDetailsModal from "../../../components/EventDetailsModal";
 import OverviewCard from "../OverviewCard";
 import { scholarOverviewData } from "../../../config/scholarOverviewData";
+import BackgroundLoadingIndicator from "../../../components/BackgroundLoadingIndicator";
 
 export default function Events() {
     const [activeTab, setActiveTab] = useState("all");
@@ -33,8 +34,8 @@ export default function Events() {
     const tabs = [
         { name: "All", value: "all" },
         { name: "This Month", value: "this_month" },
-        { name: "Upcoming Events", value: "upcoming" },
-        { name: "Past Events", value: "past" },
+        { name: "Upcoming", value: "upcoming" },
+        { name: "Past", value: "past" },
     ];
 
     useEffect(() => {
@@ -113,9 +114,11 @@ export default function Events() {
 
             {/* Scrollable Content Area */}
             <div className="p-4 md:p-6">
-                {!loading && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                        {currentItems.map((event, index) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {loading ? (
+                        <BackgroundLoadingIndicator />
+                    ) : (
+                        currentItems.map((event, index) => (
                             <EventCard
                                 userId={user.user_id}
                                 key={index}
@@ -131,12 +134,12 @@ export default function Events() {
                                 activeTab={activeTab}
                                 onRefresh={fetchEvents}
                             />
-                        ))}
-                    </div>
-                )}
+                        ))
+                    )}
+                </div>
 
                 {/* Empty State */}
-                {currentItems.length === 0 && (
+                {!loading && currentItems.length === 0 && (
                     <EmptyState
                         section={"events"}
                         activeTab={activeTab}
@@ -146,23 +149,23 @@ export default function Events() {
                             searchTerm
                                 ? "No Results Found"
                                 : activeTab === "all"
-                                ? "There are no events at the moment."
-                                : activeTab === "this_month"
-                                ? "No events scheduled for this month."
-                                : activeTab === "upcoming"
-                                ? "No upcoming events right now."
-                                : "No past events recorded yet."
+                                  ? "There are no events at the moment."
+                                  : activeTab === "this_month"
+                                    ? "No events scheduled for this month."
+                                    : activeTab === "upcoming"
+                                      ? "No upcoming events right now."
+                                      : "No past events recorded yet."
                         }
                         subHeader={
                             searchTerm
                                 ? `No activities match your search for "${searchTerm}"`
                                 : activeTab === "all"
-                                ? "Check back soon for new events."
-                                : activeTab === "this_month"
-                                ? "Check back later for new events."
-                                : activeTab === "upcoming"
-                                ? "Stay tuned for updates."
-                                : "Events will appear here after they occur."
+                                  ? "Check back soon for new events."
+                                  : activeTab === "this_month"
+                                    ? "Check back later for new events."
+                                    : activeTab === "upcoming"
+                                      ? "Stay tuned for updates."
+                                      : "Events will appear here after they occur."
                         }
                     />
                 )}
