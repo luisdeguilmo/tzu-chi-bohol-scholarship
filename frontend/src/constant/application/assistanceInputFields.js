@@ -1,21 +1,21 @@
 const assistanceInputFields = [
     {
-        label: "Name of Company/Organization/Association",
+        label: "Organization Name",
         name: "organization_name",
         type: "text",
-        placeholder: "Organization",
+        placeholder: "Enter organization",
     },
     {
         label: "Type of Support",
         name: "support_type",
         type: "text",
-        placeholder: "Type of Support",
+        placeholder: "Enter support type",
     },
     {
-        label: "How much?",
+        label: "Amount",
         name: "amount",
         type: "number",
-        placeholder: "Amount",
+        placeholder: "Enter amount",
     },
 ];
 

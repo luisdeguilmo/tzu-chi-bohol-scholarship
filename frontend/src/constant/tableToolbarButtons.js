@@ -1,8 +1,10 @@
 // Staff
 export const scholarButtons = [
-    { name: "All", tabName: "all" },
+    // { name: "All", tabName: "all" },
     { name: "Active", tabName: "active" },
-    { name: "Deactivated", tabName: "deactivated" },
+    { name: "Graduated", tabName: "graduated" },
+    { name: "Terminated", tabName: "terminated" },
+    // { name: "Deactivated", tabName: "deactivated" },
     { name: "Not Renewed", tabName: "not_renewed" },
 ];
 

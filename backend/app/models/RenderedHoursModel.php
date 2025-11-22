@@ -45,6 +45,35 @@ class RenderedHoursModel
         return $stmt->execute();
     }
 
+    public function addCommunityServiceEntry($data)
+    {
+        $query =
+            'INSERT INTO community_service_entries (activity_id, scholar_id, hours_earned, date_served, description, created_at) VALUES (:activity_id, :account_id, :hours_earned, :date_served, :description, NOW())';
+        $stmt = $this->pdo->prepare($query);
+
+        $id = strip_tags($data['id']);
+        $account_id = strip_tags($data['account_id']);
+        $hours = strip_tags($data['rendered_hours']);
+        $date = strip_tags($data['activity_date']);
+        $description = strip_tags($data['activity_name']);
+
+        $stmt->bindParam(':activity_id', $id, \PDO::PARAM_INT);
+        $stmt->bindParam(':account_id', $account_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':hours_earned', $hours, \PDO::PARAM_INT);
+        $stmt->bindParam(':date_served', $date);
+        $stmt->bindParam(':description', $description);
+        return $stmt->execute();
+    }
+
+    public function removeCommunityServiceEntry($id)
+    {
+        $query = 'DELETE FROM community_service_entries WHERE activity_id = :activity_id';
+        $stmt = $this->pdo->prepare($query);
+
+        $stmt->bindParam(':activity_id', $id, \PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
     public function recordCommunityServiceRenderedHours($accountId, $renderedHours)
     {
         $scholarRenderedHours = $this->getScholarCommunityServiceRenderedHoursById($accountId);

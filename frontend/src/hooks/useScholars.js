@@ -3,7 +3,16 @@ import BASE_URL from "../config";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const useScholars = (tab, status, scholarYear, sortBy) => {
+export const useScholars = (
+    tab,
+    status,
+    schoolYear,
+    school,
+    course,
+    yearLevel,
+    sortBy
+) => {
+    const [type, setType] = useState("");
     const [scholars, setScholars] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -14,7 +23,7 @@ export const useScholars = (tab, status, scholarYear, sortBy) => {
             setError(null);
 
             const response = await fetch(
-                `${BASE_URL}app/views/scholars.php?tab=${tab}&status=${status}&school_year=${scholarYear}&sort=${sortBy}`
+                `${BASE_URL}app/views/scholars.php?tab=${tab}&status=${status}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}`
             );
 
             if (!response.ok) {
@@ -51,9 +60,7 @@ export const useScholars = (tab, status, scholarYear, sortBy) => {
                 setLoading(false);
                 return true;
             } else {
-                toast.error(
-                    "You’ve already processed the allowance for this cycle. Please start a new cycle to proceed."
-                );
+                toast.error("Failed to process allowance. Please try again.");
                 console.log(data);
                 setLoading(false);
                 return false;
@@ -108,10 +115,10 @@ export const useScholars = (tab, status, scholarYear, sortBy) => {
     };
 
     useEffect(() => {
-        if (tab && status && scholarYear && sortBy) {
+        if (tab && status && school && course && schoolYear && sortBy) {
             fetchScholars();
         }
-    }, [tab, status, scholarYear, sortBy]);
+    }, [tab, status, school, course, schoolYear, sortBy]);
 
     return {
         scholars,

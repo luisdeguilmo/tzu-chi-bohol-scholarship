@@ -14,6 +14,7 @@ import { scholarAccountButtons } from "../../../constant/tableToolbarButtons";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { useUserAccount } from "../../../hooks/useUserAccount";
+import { Check } from "lucide-react";
 
 const ScholarAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -26,7 +27,7 @@ const ScholarAccounts = () => {
     const { loading, scholars, createScholarAccount, fetchScholars } =
         useScholarAccounts(activeTab);
 
-    const { loading: isLoading, updateScholarAccountStatus } = useUserAccount();
+    const { loading: isLoading, updateScholarAccountStatus } = useScholarAccounts();
 
     const { profilePics, fetchAllPics } = useProfilePicture(
         scholars,
@@ -39,6 +40,7 @@ const ScholarAccounts = () => {
     }, [activeTab]);
 
     console.log(scholars);
+    console.log(selectedScholars);
 
     // Toggle scholar selection
     const toggleScholarSelection = (scholarId) => {
@@ -54,7 +56,7 @@ const ScholarAccounts = () => {
 
     // Select all visible scholars
     const selectAllVisible = () => {
-        const visibleIds = currentItems.map((item) => item.id);
+        const visibleIds = currentItems.map((item) => item.application_id);
         if (selectedScholars.length === visibleIds.length) {
             // If all are selected, deselect all
             setSelectedScholars([]);
@@ -179,15 +181,16 @@ const ScholarAccounts = () => {
                                     disabled={
                                         selectedScholars.length === 0 || loading
                                     }
-                                    className={`px-4 py-3 rounded-md text-xs whitespace-nowrap ${
+                                    className={`flex items-center gap-1 px-3 py-2.5 rounded-md text-xs whitespace-nowrap ${
                                         selectedScholars.length === 0 || loading
                                             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                                             : "bg-green-500 text-white hover:bg-green-600 transition-all"
                                     }`}
                                 >
+                                    <Check className="w-4 h-4" />
                                     {loading
                                         ? "Processing..."
-                                        : "Create Selected Accounts"}
+                                        : "Approve Selected Accounts"}
                                 </button>
                             </div>
                         )}

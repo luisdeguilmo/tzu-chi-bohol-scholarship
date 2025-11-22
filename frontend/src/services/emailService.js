@@ -58,9 +58,7 @@ export const manageApplication = () => {
             );
 
             if (response.data.success) {
-                toast.success(
-                    "Application approved!"
-                );
+                toast.success("Application approved!");
                 setIsLoading(false);
                 return true;
             }
@@ -129,9 +127,7 @@ export const manageApplication = () => {
             );
 
             if (response.data.success) {
-                toast.success(
-                    "Application rejected!"
-                );
+                toast.success("Application rejected!");
                 setIsLoading(false);
                 return true;
             }
@@ -146,63 +142,22 @@ export const manageApplication = () => {
         }
     };
 
-    const sendSchedule = async (
-        batchId,
-        applicants,
-        date,
-        time,
-        venue,
-        selectedBatchInBatches
-    ) => {
-        try {
-            setIsLoading(true);
-
-            // Only update status if email was sent successfully
-            const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=send_schedule`,
-                {
-                    batch_id: batchId,
-                    applicants: applicants,
-                    date: date,
-                    time: time,
-                    batch: selectedBatchInBatches,
-                    venue: venue,
-                }
-            );
-
-            if (response.data.success) {
-                toast.success("Email sent successfully!");
-                setIsLoading(false);
-                return true;
-            }
-
-            setIsLoading(false);
-            return false;
-        } catch (err) {
-            console.error("Failed to send email:", err);
-            toast.error("Failed to send email.");
-            setIsLoading(false);
-            return false;
-        }
-    };
-
     // const sendSchedule = async (
+    //     batchId,
     //     applicants,
-    //     batches,
+    //     date,
+    //     time,
+    //     venue,
     //     selectedBatchInBatches
     // ) => {
     //     try {
     //         setIsLoading(true);
-    //         const result = getSchedule(batches, selectedBatchInBatches);
-    //         const value = getVenue(batches, selectedBatchInBatches);
-
-    //         const { date, time } = result;
-    //         const { venue } = value;
 
     //         // Only update status if email was sent successfully
     //         const response = await axios.put(
     //             `${BASE_URL}app/views/application-management.php?action=send_schedule`,
     //             {
+    //                 batch_id: batchId,
     //                 applicants: applicants,
     //                 date: date,
     //                 time: time,
@@ -227,14 +182,14 @@ export const manageApplication = () => {
     //     }
     // };
 
-    const sendExaminationPassed = async (applicants) => {
+    const sendExaminationResult = async (applicants) => {
         try {
             setIsLoading(true);
 
             // const { date, time } = result;
             // Only update status if email was sent successfully
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=examination_passed`,
+                `${BASE_URL}app/views/application-management.php?action=examination_result`,
                 {
                     applicants: applicants,
                 }
@@ -256,34 +211,63 @@ export const manageApplication = () => {
         }
     };
 
-    const sendExaminationFailed = async (applicants) => {
-        try {
-            setIsLoading(true);
+    // const sendExaminationPassed = async (applicants) => {
+    //     try {
+    //         setIsLoading(true);
 
-            // const { date, time } = result;
-            // Only update status if email was sent successfully
-            const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=examination_failed`,
-                {
-                    applicants: applicants,
-                }
-            );
+    //         // const { date, time } = result;
+    //         // Only update status if email was sent successfully
+    //         const response = await axios.put(
+    //             `${BASE_URL}app/views/application-management.php?action=examination_passed`,
+    //             {
+    //                 applicants: applicants,
+    //             }
+    //         );
 
-            if (response.data.success) {
-                toast.success("Email sent successfully!");
-                setIsLoading(false);
-                return true;
-            }
+    //         if (response.data.success) {
+    //             toast.success("Email sent successfully!");
+    //             setIsLoading(false);
+    //             return true;
+    //         }
 
-            setIsLoading(false);
-            return false;
-        } catch (err) {
-            console.error("Failed to send email:", err);
-            toast.error("Failed to send email.");
-            setIsLoading(false);
-            return false;
-        }
-    };
+    //         setIsLoading(false);
+    //         return false;
+    //     } catch (err) {
+    //         console.error("Failed to send email:", err);
+    //         toast.error("Failed to send email.");
+    //         setIsLoading(false);
+    //         return false;
+    //     }
+    // };
+
+    // const sendExaminationFailed = async (applicants) => {
+    //     try {
+    //         setIsLoading(true);
+
+    //         // const { date, time } = result;
+    //         // Only update status if email was sent successfully
+    //         const response = await axios.put(
+    //             `${BASE_URL}app/views/application-management.php?action=examination_failed`,
+    //             {
+    //                 applicants: applicants,
+    //             }
+    //         );
+
+    //         if (response.data.success) {
+    //             toast.success("Email sent successfully!");
+    //             setIsLoading(false);
+    //             return true;
+    //         }
+
+    //         setIsLoading(false);
+    //         return false;
+    //     } catch (err) {
+    //         console.error("Failed to send email:", err);
+    //         toast.error("Failed to send email.");
+    //         setIsLoading(false);
+    //         return false;
+    //     }
+    // };
 
     const updateStatusToInterviewPassed = async (applicant) => {
         try {
@@ -493,9 +477,7 @@ export const manageApplication = () => {
         approveRenewApplication,
         rejectApplication,
         rejectRenewApplication,
-        sendSchedule,
-        sendExaminationPassed,
-        sendExaminationFailed,
+        sendExaminationResult,
         updateStatusToInterviewPassed,
         updateStatusToInterviewFailed,
         updateStatusToHomeVisitationPassed,

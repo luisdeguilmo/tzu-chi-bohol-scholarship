@@ -1,11 +1,11 @@
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import BASE_URL from "../../../config";
 import InputModal from "../../../components/InputModal";
 
-const AddEventFormModal = React.memo(
-    ({ isOpen, onClose, onSuccess, onRefresh, disabled }) => {
+const EventFormModal = React.memo(
+    ({ isOpen, onClose, onRefresh, disabled, action, setAction, event }) => {
         const [eventDate, setEventDate] = useState("");
         const [startTime, setStartTime] = useState("");
         const [endTime, setEndTime] = useState("");
@@ -14,11 +14,22 @@ const AddEventFormModal = React.memo(
         const [eventType, setEventType] = useState("");
         const [isLoading, setIsLoading] = useState(false);
         const [participantLimit, setParticipantLimit] = useState("");
-        const [announcementMessage, setAnnouncementMessage] = useState(null);
-        const [enabled, setEnabled] = useState(true);
 
-        const handleSubmit = async () => {
+        useEffect(() => {
+            if (event && action === "edit") {
+                setEventDate(event?.date || "");
+                setStartTime(event?.start_time || "");
+                setEndTime(event?.end_time || "");
+                setEventName(event?.event_name || "");
+                setEventLocation(event?.event_location);
+                setEventType(event?.event_type || "");
+                setParticipantLimit(event?.participant_limit || "");
+            }
+        }, [event, action]);
 
+        console.log(action);
+
+        const handleAddEvent = async () => {
             // Create the data structure that matches your backend expectations
             const data = {
                 event: {
@@ -72,23 +83,90 @@ const AddEventFormModal = React.memo(
             }
         };
 
+        const handleEditEvent = async () => {
+            // Create the data structure that matches your backend expectations
+            const data = {
+                event: {
+                    event_id: event?.id,
+                    event_date: eventDate,
+                    start_time: startTime,
+                    end_time: endTime,
+                    event_name: eventName,
+                    event_type: eventType,
+                    event_location: eventLocation,
+                    participant_limit: participantLimit,
+                },
+            };
+
+            try {
+                setIsLoading(true);
+
+                const response = await fetch(
+                    `${BASE_URL}app/views/events.php`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json", // Important for JSON body
+                        },
+                        body: JSON.stringify(data),
+                    }
+                );
+
+                const result = await response.json(); // Parse as JSON instead of text
+
+                if (result.success) {
+                    toast.success(result.message + ".");
+                    setEventDate("");
+                    setStartTime("");
+                    setEndTime("");
+                    setEventName("");
+                    setEventLocation("");
+                    setAction("create");
+                    onRefresh();
+                    onClose(false);
+                    setIsLoading(false);
+                    return true;
+                } else {
+                    alert("Error: " + result.message);
+                    setIsLoading(false);
+                    return false;
+                }
+            } catch (error) {
+                console.error("Submission error:", error);
+                alert("Failed to submit the form. Please try again.");
+                setIsLoading(false);
+                return false;
+            }
+        };
+
         const handleCancel = (e) => {
             e.preventDefault(); // Prevent form submission
-            setEventDateAndTime("");
+            resetFields();
+        };
+
+        const resetFields = () => {
+            setAction("create");
             setEventName("");
             setEventLocation("");
+            setEventDate("");
+            setStartTime("");
+            setEndTime("");
+            setEventType("");
+            setParticipantLimit("");
         };
 
         const today = new Date().toISOString().split("T")[0]; // Current date in YYYY-MM-DD format
 
         return (
             <InputModal
-                label={"New Event"}
+                label={action === "create" ? "New Event" : "Edit Event"}
                 isOpen={isOpen}
-                // resetFields={resetFields}
+                resetFields={resetFields}
                 onClose={onClose}
                 onCancel={handleCancel}
-                onSubmit={handleSubmit}
+                onSubmit={
+                    action === "create" ? handleAddEvent : handleEditEvent
+                }
                 buttonLabel={"Save"}
                 isLoading={isLoading}
             >
@@ -244,4 +322,4 @@ const AddEventFormModal = React.memo(
     }
 );
 
-export default AddEventFormModal;
+export default EventFormModal;

@@ -8,114 +8,65 @@ import { useScholars } from "../../../hooks/useScholars";
 import { scholarTableHeaders } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import { Eye, PenLine, RotateCcw } from "lucide-react";
+import { Eye } from "lucide-react";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import ScholarProfileModal from "../../../components/UserProfileModal";
-import ChangeStatusModal from "./ChangeStatusModal";
-import ConfirmationModal from "../../../components/ConfirmationModal";
-import { useAllowanceCycle } from "../../../hooks/useAllowanceCycle";
 import { date } from "../../../utils/getDateAndTime";
-import { useScholarAllowances } from "../../../hooks/useScholarAllowances";
 import { generateExcel } from "../../../utils/generateExcel";
 import { useScholarInformation } from "../../../hooks/useScholarInformation";
+import { useCollegesUniversities } from "../../../hooks/useCollegesUniversities";
+import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
 
 export default function Scholars() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] =
-        useState(false);
-    const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
-        useState(false);
-    const [isResetConfirmationModalOpen, setIsResetConfirmationModalOpen] =
-        useState(false);
     const [scholarId, setScholarId] = useState(null);
     const [selectedItems, setSelectedItems] = useState([]);
-    const [selectedScholar, setSelectedScholar] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [itemsPerPage, setItemsPerPage] = useState(5);
-    const [activeTab, setActiveTab] = useState("all");
+    const [activeTab, setActiveTab] = useState("active");
+    const [school, setSchool] = useState("all");
+    const [course, setCourse] = useState("all");
+    const [yearLevel, setYearLevel] = useState("all");
     const [status, setStatus] = useState("all");
     const [schoolYear, setSchoolYear] = useState(getCurrentSchoolYear());
     const [sortBy, setSortBy] = useState("newest");
 
-    const {
-        loading,
-        scholars,
-        fetchScholars,
-        processAllowance,
-        updateAllowanceStatus,
-    } = useScholars(activeTab, status, schoolYear, sortBy);
+    const { loading, scholars, fetchScholars } = useScholars(
+        activeTab,
+        status,
+        schoolYear,
+        school,
+        course,
+        yearLevel,
+        sortBy
+    );
 
-    const {
-        loading: isLoading,
-        isProcessed,
-        fetchStatus,
-        startNewCycle,
-    } = useAllowanceCycle();
+    const { collegesAndUniversities } = useCollegesUniversities();
+    const { items: courses } = useScholarshipCriteria("courses", "Courses");
 
-    const { scholarAllowances, fetchScholarAllowances } =
-        useScholarAllowances();
     const { scholarsInformation, fetchScholarsInformation } =
-        useScholarInformation(status, schoolYear, sortBy);
-    const { exportAllowancesToExcel, exportScholarInformationToExcel } =
-        generateExcel();
+        useScholarInformation(
+            status,
+            schoolYear,
+            school,
+            course,
+            yearLevel,
+            sortBy
+        );
 
-    console.log(scholarsInformation);
+    const { exportScholarInformationToExcel } = generateExcel();
 
     const { profilePics } = useProfilePicture(scholars, "profile-picture");
 
     useEffect(() => {
         fetchScholars();
-    }, [activeTab, status, schoolYear, sortBy]);
-
-    const handleProcessAllowance = async () => {
-        try {
-            const fileName = `Scholar_Allowances_${date.getCurrentMonth()}_${date.getCurrentYear()}`;
-
-            // Step 1: Export to Excel
-            const exported = await exportAllowancesToExcel(
-                scholarAllowances,
-                fileName
-            );
-
-            if (!exported) {
-                console.error("Excel export failed, skipping processing");
-                return; // stop here if export fails
-            }
-
-            // Step 2: Process allowance only if export succeeded
-            const success = await processAllowance();
-
-            // Close modal regardless of success/failure
-            setIsConfirmationModalOpen(false);
-
-            if (success) {
-                // Step 3: Refresh data
-                await Promise.all([fetchScholars(), fetchStatus()]);
-            } else {
-                console.error("Allowance processing failed");
-            }
-        } catch (error) {
-            console.error("Error during allowance processing:", error);
-            setIsConfirmationModalOpen(false);
-        }
-    };
+    }, [activeTab, status, schoolYear, school, course, yearLevel, sortBy]);
 
     const handleExport = async () => {
-        const fileName = `Scholar_Information_${date.getCurrentMonth()}_${date.getCurrentYear()}`;
+        const fileName = `Scholar_Information_${date.getCurrentMonthFormatted()}_${date.getCurrentYear()}`;
 
         // Step 1: Export to Excel
         await exportScholarInformationToExcel(scholarsInformation, fileName);
-    };
-
-    const handleStartNewCycle = async () => {
-        const success = await startNewCycle();
-
-        if (success) {
-            setIsResetConfirmationModalOpen(false);
-            fetchScholars();
-        } else {
-            setIsResetConfirmationModalOpen(false);
-        }
     };
 
     // Filter data based on search term
@@ -129,6 +80,8 @@ export default function Scholars() {
                 .includes(searchTerm.toLowerCase()) ||
             applicant?.created_at?.includes(searchTerm)
     );
+
+    console.log(scholars);
 
     const {
         currentItems,
@@ -148,8 +101,7 @@ export default function Scholars() {
     };
 
     const handleRefresh = () => {
-        fetchStatus();
-        fetchScholars(activeTab, status, schoolYear, sortBy);
+        fetchScholars(activeTab, status, schoolYear, school, course, sortBy);
         setSelectedItems([]);
     };
 
@@ -158,7 +110,6 @@ export default function Scholars() {
             <div className="w-[100%] mx-auto bg-white rounded-md shadow p-6">
                 {/* Header */}
                 <TableToolbar
-                    isProcessed={isProcessed}
                     items={scholars}
                     label={"Scholars"}
                     placeholder={"scholars"}
@@ -176,26 +127,77 @@ export default function Scholars() {
                     onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
-                    buttonExport={activeTab === "active"}
+                    buttonExport={true}
                     onExport={handleExport}
-                    addButton={activeTab === "active"}
-                    buttonLabel={"Process Allowance"}
-                    onOpen={setIsConfirmationModalOpen}
                 >
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">
-                            Filtered by type:
-                        </span>
+                        <span className="text-xs text-gray-600">School:</span>
                         <select
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            value={school}
+                            onChange={(e) => setSchool(e.target.value)}
+                            className="w-[100px] px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
-                            <option value="new">New</option>
-                            <option value="old">Old</option>
+                            {collegesAndUniversities.map((item, index) => (
+                                <option key={index} value={item.name}>
+                                    {item.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-600">Course:</span>
+                        <select
+                            value={course}
+                            onChange={(e) => setCourse(e.target.value)}
+                            className="w-[100px] px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value="all">All</option>
+                            {courses.map((item, index) => (
+                                <option
+                                    key={index}
+                                    value={item.course
+                                        .replaceAll("*", "")
+                                        .trim()}
+                                >
+                                    {item.course.replaceAll("*", "").trim()}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    {activeTab === "active" && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-600">
+                                Year Level:
+                            </span>
+                            <select
+                                value={yearLevel}
+                                onChange={(e) => setYearLevel(e.target.value)}
+                                className="w-[100px] px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            >
+                                <option value="all">All</option>
+                                <option value={1}>1st Year</option>
+                                <option value={2}>2nd Year</option>
+                                <option value={3}>3rd Year</option>
+                                <option value={4}>4th Year</option>
+                                <option value={5}>5th Year</option>
+                            </select>
+                        </div>
+                    )}
+                    {activeTab !== "graduated" && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-600">Type:</span>
+                            <select
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                                className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            >
+                                <option value="all">All</option>
+                                <option value="new">New</option>
+                                <option value="old">Old</option>
+                            </select>
+                        </div>
+                    )}
                     {activeTab !== "active" && (
                         <div className="flex items-center gap-2">
                             <span className="text-xs text-gray-600">
@@ -229,7 +231,7 @@ export default function Scholars() {
                                     {scholar.account_id}
                                 </td>
                                 <td className="py-2 text-center flex justify-start whitespace-nowrap text-sm text-gray-700">
-                                    <div className="w-[30%]"></div>
+                                    <div className="w-[20%]"></div>
                                     <div className="w-[max-content] flex text-left gap-2">
                                         <img
                                             src={
@@ -254,33 +256,27 @@ export default function Scholars() {
                                     <span
                                         className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium`}
                                     >
-                                        {scholar.type}
+                                        {scholar.year_level === 1
+                                            ? "1st Year"
+                                            : scholar.year_level === 2
+                                              ? "2nd Year"
+                                              : scholar.year_level === 3
+                                                ? "3rd Year"
+                                                : scholar.year_level === 4
+                                                  ? "4th Year"
+                                                  : "5th Year"}
+                                    </span>
+                                </td>
+                                <td className="py-2 text-center whitespace-nowrap text-gray-500">
+                                    <span
+                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium`}
+                                    >
+                                        {scholar.present_school}
                                     </span>
                                 </td>
                                 <td className="py-2 whitespace-nowrap text-slate-600 text-center font-medium">
-                                    {scholar.rendered_hours} hour
-                                    {scholar.rendered_hours > 1 ? "s" : ""}
+                                    {scholar.present_course1}
                                 </td>
-                                {/* <td className="py-1 whitespace-nowrap text-gray-500">
-                                    <span
-                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium ${
-                                            scholar.allowance_status ===
-                                            "received"
-                                                ? "bg-green-100 text-green-800"
-                                                : scholar.allowance_status ===
-                                                    "not_received"
-                                                  ? "bg-red-100 text-red-800"
-                                                  : "bg-yellow-100 text-yellow-800"
-                                        }`}
-                                    >
-                                        {scholar.allowance_status === "received"
-                                            ? "Received"
-                                            : scholar.allowance_status ===
-                                                "not_received"
-                                              ? "Not Received"
-                                              : "Pending"}
-                                    </span>
-                                </td> */}
                                 <td className="py-2 whitespace-nowrap font-medium">
                                     <div className="flex items-center justify-center">
                                         <button
@@ -295,23 +291,6 @@ export default function Scholars() {
                                         >
                                             <Eye className="w-4 h-4" />
                                         </button>
-                                        {activeTab === "active" && (
-                                            <button
-                                                onClick={() => {
-                                                    setIsChangeStatusModalOpen(
-                                                        true
-                                                    );
-                                                    setScholarId(
-                                                        scholar.account_id
-                                                    );
-                                                    setSelectedScholar(scholar);
-                                                }}
-                                                className="p-2 text-green-600 hover:text-green-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                                                title="Change Status"
-                                            >
-                                                <PenLine className="w-4 h-4" />
-                                            </button>
-                                        )}
                                     </div>
                                 </td>
                             </tr>
@@ -320,24 +299,13 @@ export default function Scholars() {
 
                     {/* Empty state */}
                     {currentItems.length === 0 && (
-                        <EmptyState message="No applications found." />
+                        <EmptyState message="No scholars found." />
                     )}
                 </div>
 
                 {/* Pagination */}
                 {filteredScholars.length > 0 && (
                     <div className="flex justify-between items-center mt-6">
-                        {/* {activeTab === "active" && (
-                            <button
-                                onClick={() =>
-                                    setIsResetConfirmationModalOpen(true)
-                                }
-                                className="px-3 py-2 text-sm whitespace-nowrap bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
-                            >
-                                <RotateCcw className="w-4 h-4 text-white" />
-                                Initialize Month
-                            </button>
-                        )} */}
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}
@@ -356,40 +324,6 @@ export default function Scholars() {
                     isOpen={isModalOpen}
                     setIsOpen={setIsModalOpen}
                     isScholar={true}
-                />
-
-                <ChangeStatusModal
-                    scholar={selectedScholar}
-                    isOpen={isChangeStatusModalOpen}
-                    onClose={setIsChangeStatusModalOpen}
-                    label={"Update Allowance Status"}
-                    scholarId={scholarId}
-                    onUpdate={updateAllowanceStatus}
-                    onRefresh={handleRefresh}
-                    onRefreshAllowanceData={fetchScholarAllowances}
-                    isLoading={loading}
-                />
-
-                <ConfirmationModal
-                    isOpen={isConfirmationModalOpen}
-                    onClose={setIsConfirmationModalOpen}
-                    isLoading={loading}
-                    label={"Confirmation"}
-                    message={
-                        "This will calculate the allowance for all scholars with Pending status. This action cannot be undone. Proceed?"
-                    }
-                    onClick={handleProcessAllowance}
-                />
-
-                <ConfirmationModal
-                    isOpen={isResetConfirmationModalOpen}
-                    onClose={setIsResetConfirmationModalOpen}
-                    isLoading={isLoading}
-                    label={"Confirmation"}
-                    message={
-                        "You are about to reset all scholars’ allowance status to Pending. This will start a new allowance cycle and cannot be undone. Do you want to continue?"
-                    }
-                    onClick={handleStartNewCycle}
                 />
             </div>
         </div>

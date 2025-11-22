@@ -35,7 +35,7 @@ const OverviewCard = ({
                             <div className="flex items-center gap-2 text-white/80">
                                 <Calendar className="w-4 h-5 text-white" />
                                 <span className="text-sm">
-                                    {date.getCurrentMonth()}{" "}
+                                    {date.getCurrentMonthFormatted()}{" "}
                                     {new Date().getFullYear()}
                                 </span>
                             </div>

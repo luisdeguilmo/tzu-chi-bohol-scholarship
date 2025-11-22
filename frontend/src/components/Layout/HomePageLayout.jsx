@@ -17,14 +17,14 @@ export default function HomePageLayout() {
     }, []);
 
     return (
-        <div
-            onScroll={() => setIsScrolled(true)}
-            className={`hero scroll-smooth`}
-        >
-            <NavBar isScrolled={isScrolled} />
+        <div onScroll={() => setIsScrolled(true)} className={`scroll-smooth`}>
+            <div className="">
+                <NavBar isScrolled={isScrolled} />
+            </div>
+
             <main
                 className={`transition-all duration-300 ${
-                    isScrolled ? "" : "pt-28"
+                    isScrolled ? "" : "pt-16 md:pt-32"
                 }`}
             >
                 <Outlet />

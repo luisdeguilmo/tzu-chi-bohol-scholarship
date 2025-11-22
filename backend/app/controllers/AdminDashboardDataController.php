@@ -52,6 +52,7 @@ class AdminDashboardDataController
             $dashboardData = new AdminDashboardDataModel();
 
             $id = $_GET['id'] ?? null;
+            $school_year = $_GET['school_year'] ?? null;
 
             $numberOfAllScholars = $dashboardData->getNumberOfAllScholars();
             $numberOfPendingScholars = $dashboardData->getNumberOfPendingScholars();
@@ -59,6 +60,15 @@ class AdminDashboardDataController
             $numberOfDeactivatedScholars = $dashboardData->getNumberOfDeactivatedScholars();
             $numberOfNotRenewedScholars = $dashboardData->getNumberOfNotRenewedScholars();
             $numberOfAllStaff = $dashboardData->getNumberOfAllStaffs();
+            $scholarsByProgram = $dashboardData->getScholarsByProgram($school_year);
+            $applicationsSubmittedAndApplicationsApproved = $dashboardData->getApplicationsSubmittedAndApplicationsApproved(
+                $school_year,
+            );
+            $approvedAndRejectedByStage = $dashboardData->getApprovedAndRejectedByStage(
+                $school_year,
+            );
+            $eventAttendanceData = $dashboardData->getEventAttendanceData();
+            $communityServiceHoursCompletionData = $dashboardData->getCommunityServiceHoursCompletion();
 
             $data = [
                 'totalScholars' => $numberOfAllScholars,
@@ -68,6 +78,11 @@ class AdminDashboardDataController
                 'notRenewedScholars' => $numberOfNotRenewedScholars,
                 'totalStaff' => $numberOfAllStaff,
                 'totalUsers' => $numberOfAllScholars + $numberOfAllStaff,
+                'scholarsByProgram' => $scholarsByProgram,
+                'applicationsSubmittedAndApplicationsApproved' => $applicationsSubmittedAndApplicationsApproved,
+                'approvedAndRejectedByStage' => $approvedAndRejectedByStage,
+                'eventAttendanceData' => $eventAttendanceData,
+                'communityServiceHoursCompletionData' => $communityServiceHoursCompletionData,
             ];
 
             http_response_code(200);

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-export const useScholarAllowances = () => {
+export const useScholarAllowances = (schoolYear) => {
     const [scholarAllowances, setScholarAllowances] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -11,7 +11,7 @@ export const useScholarAllowances = () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/scholar-allowances.php`
+                `${BASE_URL}app/views/scholar-allowances.php?school_year=${schoolYear}`
             );
             // Set application periods data
             setScholarAllowances(response.data.data || []);

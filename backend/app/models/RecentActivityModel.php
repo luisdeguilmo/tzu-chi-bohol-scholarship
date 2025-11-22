@@ -9,7 +9,6 @@ use Config\Database;
 class RecentActivityModel
 {
     private $table_name = 'recent_activities';
-    private $currentYear;
     private $startOfMonth;
     private $startOfNextMonth;
     private $pdo;
@@ -18,7 +17,6 @@ class RecentActivityModel
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
-        $this->currentYear = 2024;
         $this->startOfMonth = date('Y-m-01');
         $this->startOfNextMonth = date('Y-m-01', strtotime('first day of next month'));
     }

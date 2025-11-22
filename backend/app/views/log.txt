@@ -972,3 +972,7 @@ null
 {"purpose":"orientation","batch_name":"Batch 2"}
 {"purpose":"orientation","batch_name":"Batch 2"}
 {"purpose":"orientation","batch_name":"Batch 3"}
+{"purpose":"entrance_examination","batch_name":"Batch 2"}
+{"applicantIds":[8467086],"batch":"Batch 2"}
+{"applicantIds":[8467086],"batch":"Unassigned"}
+{"applicantIds":[8467086],"batch":"Batch 1"}

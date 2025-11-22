@@ -1,13 +1,17 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, use } from "react";
 import familyMembersInputFields from "../../../constant/application/familyMembersInputFields";
 import scholarsInputFields from "../../../constant/application/scholarsInputFields";
 import assistanceInputFields from "../../../constant/application/assistanceInputFields";
+import { Plus, Trash2, TrashIcon } from "lucide-react";
+import { useApplicationForm } from "../../../context/ApplicationFormContext";
 
 const FamilyListForm = ({
     formData,
     updateFormData,
     setIsFirstFormApplicable,
     setIsSecondFormApplicable,
+    isTzuChiSiblingsExisted = false,
+    isOtherAssistanceExisted = false,
 }) => {
     // Initialize state from formData or use empty arrays if not present
     const [family_members, setFamilyMembers] = useState(
@@ -20,10 +24,22 @@ const FamilyListForm = ({
         formData.other_assistance || []
     );
 
-    const [isTzuChiSiblingsApplicable, setIsTzuChiSiblingsApplicable] =
-        useState(null);
-    const [isOtherAssistanceApplicable, setIsOtherAssistanceApplicable] =
-        useState(null);
+    const {
+        isTzuChiSiblingsApplicable,
+        setIsTzuChiSiblingsApplicable,
+        isOtherAssistanceApplicable,
+        setIsOtherAssistanceApplicable,
+    } = useApplicationForm();
+
+    useEffect(() => {
+        if (isTzuChiSiblingsExisted) {
+            setIsTzuChiSiblingsApplicable("applicable");
+        }
+
+        if (isOtherAssistanceExisted) {
+            setIsOtherAssistanceApplicable("applicable");
+        }
+    }, [isTzuChiSiblingsExisted, isOtherAssistanceExisted]);
 
     const [newMember, setNewMember] = useState({
         name: "",
@@ -147,7 +163,11 @@ const FamilyListForm = ({
 
     return (
         <div>
-            <h2 className="pt-12 pb-6 font-bold mb-4 text-gray-700 md:text-lg text-sm">
+            {/* <h2 className="pt-12 pb-6 font-bold mb-4 text-gray-700 md:text-lg text-sm">
+                Siblings (Eldest to Youngest) including Family Member
+            </h2> */}
+
+            <h2 className="mt-12 mb-8 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
                 Siblings (Eldest to Youngest) including Family Member
             </h2>
 
@@ -169,7 +189,7 @@ const FamilyListForm = ({
                                     //         ? "border-red-500"
                                     //         : "border-gray-400"
                                     // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
-                                    className="w-full border text-gray-800 text-xs border-gray-300 rounded-md py-2 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    className="w-full border text-gray-800 text-xs border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                     // required={field.required}
                                 >
                                     {input.options.map((option) => (
@@ -197,7 +217,7 @@ const FamilyListForm = ({
                                     value={newMember[input.name]}
                                     onChange={handleChange}
                                     placeholder={input.placeholder}
-                                    className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    className="w-full border text-xs text-gray-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 />
                             </div>
                         )
@@ -226,89 +246,121 @@ const FamilyListForm = ({
                 <button
                     type="button"
                     onClick={addFamilyMember}
-                    className="col-span-3 my-7 shadow-lg bg-green-600 hover:bg-green-700 text-sm rounded-md text-white p-2"
+                    className="col-span-3 mt-4 mb-7 flex items-center gap-1 shadow-lg bg-green-600 hover:bg-green-700 text-xs rounded-lg text-white px-4 py-2.5"
                 >
+                    <Plus className="mb-[.5px] w-4 h-4" />
                     Add Member
                 </button>
             </div>
 
             {/* Family Members Table */}
-            <div className="overflow-y-auto">
-                {sortedFamily.length > 0 && (
-                    <table className="w-full mb-6 lg:w-[100%] min-w-[1000px]">
-                        <thead>
-                            <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
-                                {[
-                                    "Name",
-                                    "Relationship",
-                                    "Age",
-                                    "Gender",
-                                    "Civil Status",
-                                    "Living w/ Family or Not?",
-                                    "Education/Job",
-                                    "Income",
-                                    "Action",
-                                ].map((header) => (
-                                    <th
-                                        key={header}
-                                        className="py-4 font-semibold text-xs"
-                                    >
-                                        {header}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {sortedFamily.map((member, index) => (
-                                <tr
-                                    key={index}
-                                    className="text-center text-xs border-y border-gray-200 text-gray-500"
-                                >
-                                    <td className="py-5">{member.name}</td>
-                                    <td className="py-2">
+            <div className="space-y-4">
+                {sortedFamily.length > 0 ? (
+                    sortedFamily.map((member, index) => (
+                        <div
+                            key={index}
+                            className="border border-gray-200 rounded-md p-4 bg-white shadow-sm relative"
+                        >
+                            <button
+                                onClick={() => removeFamilyMember(index)}
+                                className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                <p>
+                                    <span className="text-gray-500">Name:</span>{" "}
+                                    <span className="text-gray-800">
+                                        {member.name}
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-500">
+                                        Relationship:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.relationship}
-                                    </td>
-                                    <td className="py-2">{member.age}</td>
-                                    <td className="py-2">{member.gender}</td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-500">Age:</span>{" "}
+                                    <span className="text-gray-800">
+                                        {member.age}
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-500">
+                                        Gender:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
+                                        {member.gender}
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-500">
+                                        Civil Status:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.civil_status}
-                                    </td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-500">
+                                        Living with Family:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.living_with_family}
-                                    </td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p className="md:col-span-2">
+                                    <span className="text-gray-500">
+                                        Educational/Occupation:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.education_occupation}
-                                    </td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-500">
+                                        Monthly Income:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.monthly_income}
-                                    </td>
-                                    <td className="py-2">
-                                        <button
-                                            onClick={() =>
-                                                removeFamilyMember(index)
-                                            }
-                                            className="text-red-600 hover:text-red-700"
-                                        >
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p className="px-4 py-8 rounded-md border-2 border-dashed text-xs text-center text-gray-400">
+                        No family members added yet.
+                    </p>
                 )}
             </div>
 
             {/* Tzu Chi Scholars Section */}
-            <h2 className="pt-12 pb-6 font-bold mb-4 text-gray-800 md:text-lg text-sm">
+            {/* <h2 className="pt-12 pb-6 font-bold mb-4 text-gray-800 md:text-lg text-sm">
+                Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
+            </h2> */}
+
+            <h2 className="mt-16 mb-6 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
                 Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
             </h2>
+
             <div
                 className={`${
                     isTzuChiSiblingsApplicable === null ||
                     isTzuChiSiblingsApplicable === "not_applicable"
                         ? "mb-0"
-                        : "mb-12"
+                        : "mb-4"
                 } p-4 border rounded-lg bg-gray-50/50 border-gray-200`}
             >
                 <div>
@@ -342,6 +394,7 @@ const FamilyListForm = ({
                             isTzuChiSiblingsApplicable === "not_applicable"
                         }
                         onChange={(e) => {
+                            setTzuChiScholars([]);
                             setIsTzuChiSiblingsApplicable(e.target.value);
                             setIsFirstFormApplicable(false);
                         }}
@@ -356,9 +409,11 @@ const FamilyListForm = ({
                 </div>
             </div>
             <div>
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
-                    {scholarsInputFields.map((input) => (
-                        <div>
+                <div
+                    className={`grid sm:grid-cols-2 md:grid-cols-3 ${isTzuChiSiblingsApplicable === "applicable" && "gap-5 sm:gap-4"}`}
+                >
+                    {scholarsInputFields.map((input, index) => (
+                        <div key={index}>
                             <label
                                 className={`block mb-1 text-xs ${
                                     isTzuChiSiblingsApplicable === null ||
@@ -382,7 +437,7 @@ const FamilyListForm = ({
                                         "not_applicable"
                                         ? "text-gray-400 hidden"
                                         : "text-gray-600 block"
-                                } w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500`}
+                                } w-full border text-xs text-gray-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500`}
                                 disabled={
                                     isTzuChiSiblingsApplicable === null ||
                                     isTzuChiSiblingsApplicable ===
@@ -395,7 +450,7 @@ const FamilyListForm = ({
                 <button
                     type="button"
                     onClick={addScholar}
-                    className={`col-span-3 my-7 shadow-lg text-sm rounded-md text-white p-2 ${
+                    className={`col-span-3 flex items-center gap-1 mt-4 mb-7 shadow-lg text-xs rounded-lg text-white px-4 py-2.5 ${
                         isTzuChiSiblingsApplicable === null ||
                         isTzuChiSiblingsApplicable === "not_applicable"
                             ? "bg-green-300 hidden"
@@ -406,72 +461,95 @@ const FamilyListForm = ({
                         isTzuChiSiblingsApplicable === "not_applicable"
                     }
                 >
+                    <Plus className="mb-[.5px] w-4 h-4" />
                     Add Scholar
                 </button>
             </div>
 
-            {/* Display Scholars in a Table */}
-            <div className="overflow-y-auto">
-                {tzu_chi_siblings.length > 0 && (
-                    <table className="w-full mb-6 lg:w-[100%] min-w-[1000px]">
-                        <thead>
-                            <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
-                                {[
-                                    "Name",
-                                    "Year Level",
-                                    "School",
-                                    "Course",
-                                    "School Year",
-                                    "Action",
-                                ].map((header) => (
-                                    <th
-                                        key={header}
-                                        className="py-4 font-semibold text-xs"
-                                    >
-                                        {header}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tzu_chi_siblings.map((scholar, index) => (
-                                <tr
-                                    key={index}
-                                    className="text-center text-xs border-y border-gray-200 text-gray-500"
+            {isTzuChiSiblingsApplicable === "applicable" && (
+                <div className="space-y-4">
+                    {tzu_chi_siblings.length > 0 ? (
+                        tzu_chi_siblings.map((scholar, index) => (
+                            <div
+                                key={index}
+                                className="border border-gray-200 rounded-md p-4 bg-white shadow-sm relative"
+                            >
+                                <button
+                                    onClick={() => removeScholar(index)}
+                                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                                 >
-                                    <td className="py-5">{scholar.name}</td>
-                                    <td className="p-2">
-                                        {scholar.year_level}
-                                    </td>
-                                    <td className="p-2">{scholar.school}</td>
-                                    <td className="p-2">{scholar.course}</td>
-                                    <td className="p-2">
-                                        {scholar.school_year}
-                                    </td>
-                                    <td className="p-2">
-                                        <button
-                                            onClick={() => removeScholar(index)}
-                                            className="text-red-600 hover:text-red-700"
-                                        >
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
-            </div>
+                                    <TrashIcon className="w-4 h-4" />
+                                </button>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                    <p>
+                                        <span className="text-gray-600">
+                                            Name:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {scholar.name}
+                                        </span>
+                                    </p>
+
+                                    <p>
+                                        <span className="text-gray-600">
+                                            Year Level:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {scholar.year_level}
+                                        </span>
+                                    </p>
+
+                                    <p>
+                                        <span className="text-gray-600">
+                                            School:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {scholar.school}
+                                        </span>
+                                    </p>
+
+                                    <p>
+                                        <span className="text-gray-600">
+                                            Course:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {scholar.course}
+                                        </span>
+                                    </p>
+
+                                    <p className="md:col-span-2">
+                                        <span className="text-gray-600">
+                                            School Year:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {scholar.school_year}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="px-4 py-8 rounded-md border-2 border-dashed text-xs text-center text-gray-400">
+                            No siblings enjoying/enjoyed Tzu Chi Educational
+                            assistance added yet.
+                        </p>
+                    )}
+                </div>
+            )}
 
             {/* Assistance from Other Organizations */}
-            <h2
+            {/* <h2
                 className={`${
                     isTzuChiSiblingsApplicable === null ||
                     isTzuChiSiblingsApplicable === "not_applicable"
                         ? "pt-0 md:pt-4"
                         : "pt-8"
-                } pb-6 font-bold sm:mt-0 -mt-5  mb-4 text-gray-700 md:text-lg text-sm`}
+                } pb-6 font-bold sm:mt-0 -mt-5 mb-4 text-gray-700 md:text-lg text-sm`}
             >
+                Assistance from Other Association, Organization, School
+                Discount, etc.
+            </h2> */}
+            <h2 className="mt-16 mb-6 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
                 Assistance from Other Association, Organization, School
                 Discount, etc.
             </h2>
@@ -480,7 +558,7 @@ const FamilyListForm = ({
                     isOtherAssistanceApplicable === null ||
                     isOtherAssistanceApplicable === "not_applicable"
                         ? "mb-0"
-                        : "mb-12"
+                        : "mb-4"
                 } p-4 border rounded-lg bg-gray-50/50 border-gray-200`}
             >
                 <div>
@@ -513,6 +591,7 @@ const FamilyListForm = ({
                             isOtherAssistanceApplicable === "not_applicable"
                         }
                         onChange={(e) => {
+                            setAssistanceList([]);
                             setIsOtherAssistanceApplicable(e.target.value);
                             setIsSecondFormApplicable(false);
                         }}
@@ -527,7 +606,9 @@ const FamilyListForm = ({
                 </div>
             </div>
             <div>
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
+                <div
+                    className={`grid sm:grid-cols-2 md:grid-cols-3 ${isOtherAssistanceApplicable === "applicable" && "gap-5 sm:gap-4"}`}
+                >
                     {assistanceInputFields.map((input) => (
                         <div>
                             <label
@@ -537,7 +618,7 @@ const FamilyListForm = ({
                                         "not_applicable"
                                         ? "text-gray-400 hidden"
                                         : "text-gray-600 block"
-                                } text-xs`}
+                                } text-xs font-medium`}
                             >
                                 {input.label}
                             </label>
@@ -547,7 +628,7 @@ const FamilyListForm = ({
                                 value={newAssistance[input.name]}
                                 onChange={handleAssistanceChange}
                                 placeholder={input.placeholder}
-                                className={`w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500 ${
+                                className={`w-full border text-xs text-gray-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500 ${
                                     isOtherAssistanceApplicable === null ||
                                     isOtherAssistanceApplicable ===
                                         "not_applicable"
@@ -566,7 +647,7 @@ const FamilyListForm = ({
                 <button
                     type="button"
                     onClick={addAssistance}
-                    className={`col-span-3 my-7 shadow-lg text-sm rounded-md text-white p-2 ${
+                    className={`col-span-3 mt-4 mb-7 flex items-center gap-1 shadow-lg text-xs rounded-lg text-white px-4 py-2.5 ${
                         isOtherAssistanceApplicable === null ||
                         isOtherAssistanceApplicable === "not_applicable"
                             ? "bg-green-300 hidden"
@@ -577,62 +658,63 @@ const FamilyListForm = ({
                         isOtherAssistanceApplicable === "not_applicable"
                     }
                 >
+                    <Plus className="mb-[.5px] w-4 h-4" />
                     Add Assistance
                 </button>
             </div>
 
-            {/* Assistance Table */}
-            <div className="overflow-y-auto">
-                {other_assistance.length > 0 && (
-                    <table className="w-full mb-6 lg:w-[100%] min-w-[1000px]">
-                        <thead>
-                            <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
-                                {[
-                                    "Organization",
-                                    "Type of Support",
-                                    "Amount",
-                                    "Action",
-                                ].map((header) => (
-                                    <th
-                                        key={header}
-                                        className="py-4 font-semibold text-xs"
-                                    >
-                                        {header}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {other_assistance.map((assistance, index) => (
-                                <tr
-                                    key={index}
-                                    className="text-center text-xs border-y border-gray-200 text-gray-500"
+            {isOtherAssistanceApplicable === "applicable" && (
+                <div className="space-y-4">
+                    {other_assistance.length > 0 ? (
+                        other_assistance.map((item, index) => (
+                            <div
+                                key={index}
+                                className="border border-gray-200 rounded-md p-4 bg-white shadow-sm relative"
+                            >
+                                <button
+                                    onClick={() => removeAssistance(index)}
+                                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                                 >
-                                    <td className="py-5">
-                                        {assistance.organization_name}
-                                    </td>
-                                    <td className="py-2">
-                                        {assistance.support_type}
-                                    </td>
-                                    <td className="py-2">
-                                        {assistance.amount}
-                                    </td>
-                                    <td className="py-2">
-                                        <button
-                                            onClick={() =>
-                                                removeAssistance(index)
-                                            }
-                                            className="text-red-600 hover:text-red-700"
-                                        >
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
-            </div>
+                                    <TrashIcon className="w-4 h-4" />
+                                </button>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                    <p>
+                                        <span className="text-gray-600">
+                                            Organization:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {item.organization_name}
+                                        </span>
+                                    </p>
+
+                                    <p>
+                                        <span className="text-gray-600">
+                                            Type of Support:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {item.support_type}
+                                        </span>
+                                    </p>
+
+                                    <p className="md:col-span-2">
+                                        <span className="text-gray-600">
+                                            Amount:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {item.amount}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="px-4 py-8 rounded-md border-2 border-dashed text-xs text-center text-gray-400">
+                            No assistance records added yet.
+                        </p>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

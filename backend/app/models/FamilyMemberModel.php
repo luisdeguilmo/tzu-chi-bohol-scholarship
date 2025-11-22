@@ -72,6 +72,53 @@ class FamilyMemberModel
         return $stmt->execute();
     }
 
+    public function renew($member, $application_id, $scholar_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
+                  SET application_id = :application_id,
+                    scholar_id = :scholar_id,
+                      name = :name,
+                      relationship = :relationship,
+                      age = :age,
+                      gender = :gender,
+                      civil_status = :civil_status,
+                      living_with_family = :living_with_family,
+                      education_occupation = :education_occupation,
+                      monthly_income = :monthly_income";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize inputs
+        $this->application_id = $application_id;
+        $this->name = htmlspecialchars(strip_tags($member['name']));
+        $this->relationship = htmlspecialchars(strip_tags($member['relationship']));
+        $this->age = htmlspecialchars(strip_tags($member['age']));
+        $this->gender = htmlspecialchars(strip_tags($member['gender']));
+        $this->civil_status = htmlspecialchars(strip_tags($member['civil_status']));
+        $this->living_with_family = htmlspecialchars(strip_tags($member['living_with_family']));
+        $this->education_or_occupation = htmlspecialchars(
+            strip_tags($member['education_occupation']),
+        );
+        $this->monthly_income = htmlspecialchars(strip_tags($member['monthly_income'] ?? '0'));
+
+        // Bind values
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':scholar_id', $scholar_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':relationship', $this->relationship);
+        $stmt->bindParam(':age', $this->age);
+        $stmt->bindParam(':gender', $this->gender);
+        $stmt->bindParam(':civil_status', $this->civil_status);
+        $stmt->bindParam(':living_with_family', $this->living_with_family);
+        $stmt->bindParam(':education_occupation', $this->education_or_occupation);
+        $stmt->bindParam(':monthly_income', $this->monthly_income);
+
+        return $stmt->execute();
+    }
+
     public function update($member, $id)
     {
         $query =
@@ -114,6 +161,14 @@ class FamilyMemberModel
         $stmt->bindParam(':education_occupation', $this->education_or_occupation);
         $stmt->bindParam(':monthly_income', $this->monthly_income);
 
+        return $stmt->execute();
+    }
+
+    public function deleteByApplicationId($application_id)
+    {
+        $query = 'DELETE FROM ' . $this->table_name . ' WHERE application_id = :application_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':application_id', $application_id, \PDO::PARAM_INT);
         return $stmt->execute();
     }
 

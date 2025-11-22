@@ -1,11 +1,4 @@
-import {
-    CheckCircle,
-    Download,
-    Pen,
-    PenLine,
-    Plus,
-    Upload,
-} from "lucide-react";
+import { CheckCircle, Download, Pen, PenLine, Plus } from "lucide-react";
 import SearchInput from "./SearchInput";
 import { date } from "../utils/getDateAndTime";
 
@@ -35,6 +28,7 @@ const TableToolbar = ({
     buttonExport = false,
     onExport,
     addCreateBatchButton = false,
+    passingScore,
     children,
 }) => {
     return (
@@ -108,7 +102,7 @@ const TableToolbar = ({
                                 >
                                     <CheckCircle className="w-4 h-4 text-white" />
                                     {buttonLabel} {" for "}{" "}
-                                    {date.getCurrentMonth()}
+                                    {date.getCurrentMonthFormatted()}
                                 </button>
                             )}
                         </>
@@ -116,11 +110,10 @@ const TableToolbar = ({
                     {buttonExport && (
                         <button
                             onClick={onExport}
-                            className="px-3 py-2 text-sm rounded-lg flex items-center gap-2 transition-colors duration-200 
-             text-gray-700 bg-white border border-gray-300 hover:bg-gray-100"
+                            className="px-4 py-2 text-sm rounded-lg flex items-center gap-2 transition-colors duration-200 
+             text-white bg-green-600 hover:bg-green-700"
                         >
-                            <Download className="w-4 h-4 text-gray-700" />{" "}
-                            Export
+                            <Download className="w-4 h-4 text-white" /> Export
                         </button>
                     )}
                     {addCreateBatchButton &&
@@ -138,7 +131,9 @@ const TableToolbar = ({
                             className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
                         >
                             <Pen className="w-3.5 h-4 text-white" />
-                            Set Passing Score
+                            {passingScore
+                                ? "Edit Passing Score"
+                                : "Set Passing Score"}
                         </button>
                     ) : null}
                 </div>
@@ -201,7 +196,7 @@ const TableToolbar = ({
                     </div>
 
                     {/* Right side - Sort and view options */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-6">
                         {children}
                         <div className="flex items-center gap-2">
                             <span className="text-xs text-gray-600">
@@ -209,7 +204,10 @@ const TableToolbar = ({
                             </span>
                             <select
                                 value={sortBy}
-                                onChange={(e) => onSort(e.target.value)}
+                                onChange={(e) => {
+                                    onSort(e.target.value);
+                                    onChangeCurrentPage(1);
+                                }}
                                 className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
                                 <option value="newest">Newest First</option>

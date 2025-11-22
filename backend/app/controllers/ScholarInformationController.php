@@ -50,13 +50,31 @@ class ScholarInformationController
         try {
             $tab = $_GET['tab'] ?? null;
             $status = $_GET['status'] ?? null;
+            $school = $_GET['school'] ?? null;
+            $course = $_GET['course'] ?? null;
+            $current_school_year = $_GET['current_school_year'] ?? null;
+            $year_level = $_GET['year_level'] ?? null;
             $school_year = $_GET['school_year'] ?? null;
             $sort = $_GET['sort'] ?? null;
 
             $model = new ScholarsModel();
 
-            $newScholars = $model->getNewActiveScholars($status, $school_year, $sort);
-            $oldScholars = $model->getOldActiveScholars($status, $school_year, $sort);
+            $newScholars = $model->getNewActiveScholars(
+                $status,
+                $school_year,
+                $school,
+                $year_level,
+                $course,
+                $current_school_year,
+            );
+            $oldScholars = $model->getOldActiveScholars(
+                $status,
+                $school_year,
+                $school,
+                $year_level,
+                $course,
+                $current_school_year,
+            );
 
             // Format results
             $newScholarsArr = array_map(function ($scholar) {

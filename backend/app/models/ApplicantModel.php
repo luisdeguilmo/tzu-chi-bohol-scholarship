@@ -23,7 +23,7 @@ class ApplicantModel
     public function approveApplication($data)
     {
         $query =
-            "UPDATE application_info SET is_application_approved = 1, is_eligible_for_exam = 1, status = 'Approved', approved_at = NOW() WHERE application_id = :application_id";
+            "UPDATE application_info SET is_application_approved = 1, is_eligible_for_exam = 1, status = 'scholar', approved_at = NOW() WHERE application_id = :application_id";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':application_id', $data['application_id']);
@@ -38,9 +38,10 @@ class ApplicantModel
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':application_id', $data['application_id']);
         if ($stmt->execute()) {
-            $query_2 = "SELECT scholar_id FROM application_info WHERE application_id = :application_id";
+            $query_2 =
+                'SELECT scholar_id FROM application_info WHERE application_id = :application_id';
             $stmt_2 = $this->pdo->prepare($query_2);
-            $stmt_2->bindParam(":application_id", $data['application_id']);
+            $stmt_2->bindParam(':application_id', $data['application_id']);
             $stmt_2->execute();
             $row = $stmt_2->fetch(\PDO::PARAM_INT);
             if ($row) {
@@ -56,7 +57,7 @@ class ApplicantModel
     public function rejectApplication($data)
     {
         $query =
-            "UPDATE application_info SET is_application_rejected = 1, status = 'Rejected', rejected_at = NOW() WHERE application_id = :application_id";
+            "UPDATE application_info SET is_application_rejected = 1, status = 'rejected', rejected_at = NOW() WHERE application_id = :application_id";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':application_id', $data['application_id']);
@@ -237,12 +238,12 @@ class ApplicantModel
 
     public function getAllRenewalApplicants()
     {
-        $query = "SELECT 
-                ai.*,
-                pi.*
+        $query = "SELECT      
+              pi.*,
+              ai.*
               FROM personal_information pi
               JOIN application_info ai ON pi.application_id = ai.application_id          
-              WHERE ai.is_application_approved = '0' AND ai.is_application_rejected = '0' AND ai.type = 'Old' AND ai.scholar_id IS NOT NULL AND YEAR(pi.created_at) = $this->currentYear";
+              WHERE ai.is_application_approved = '0' AND ai.is_application_rejected = '0' AND ai.type = 'Old' AND ai.scholar_id IS NOT NULL AND YEAR(ai.created_at) = $this->currentYear";
 
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

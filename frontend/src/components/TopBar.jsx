@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../hooks/useNotifications";
 import NotificationPage from "./NotificationPage";
 import { useAdminAccountInformation } from "../hooks/useAdminAccountInformation";
+import { toast } from "react-toastify";
 
 function TopBar() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -18,7 +19,7 @@ function TopBar() {
     const notificationPanelRef = useRef(null);
     const bellButtonRef = useRef(null);
 
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const userId = user.user_id;
     const { imageUrl } = getProfilePicture(
         userId,
@@ -62,6 +63,25 @@ function TopBar() {
         return () => document.removeEventListener("click", handleClickOutside);
     }, [isNotificationPanelOpen, isDropdownOpen]);
 
+    const handleLogout = () => {
+        try {
+            const userType = user.type || "scholar";
+            toast.success("Logged out successfully");
+            logout();
+
+            if (userType === "scholar") {
+                navigate("/login/scholar");
+            } else if (userType === "staff") {
+                navigate("/login/staff");
+            } else if (userType === "admin") {
+                navigate("/login/admin");
+            }
+        } catch (error) {
+            console.error("Logout error:", error);
+            toast.error("Failed to log out. Please try again.");
+        }
+    };
+
     return (
         <>
             <div
@@ -78,7 +98,7 @@ function TopBar() {
                         />
                         <div className="flex flex-col p-1 ml-[1px]">
                             <h2 className="text-[12px] md:text-[14px] font-bold whitespace-nowrap">
-                                Tzu Chi Foundation
+                                Tzu Chi Bohol
                             </h2>
                             <p className="mt-[-4px] text-[8px] md:text-[10px] whitespace-nowrap">
                                 Information Management System
@@ -211,7 +231,10 @@ function TopBar() {
                                 >
                                     My Profile
                                 </button>
-                                <button className="w-full px-2 py-2 hover:bg-gray-100 rounded-md">
+                                <button
+                                    onClick={handleLogout}
+                                    className="w-full px-2 py-2 hover:bg-gray-100 rounded-md"
+                                >
                                     Logout
                                 </button>
                             </div>

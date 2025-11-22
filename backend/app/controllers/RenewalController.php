@@ -58,7 +58,7 @@ class RenewalController
 
             // Process application data
             $application = new ApplicationModel();
-            $application_id = $application->create(
+            $application_id = $application->renew(
                 $data['application_info'],
                 $data['other_information'],
             );
@@ -68,7 +68,11 @@ class RenewalController
             }
 
             // Process other data (personal, education, family, etc.)
-            $this->processApplicationData($data, $application_id);
+            $this->processApplicationData(
+                $data,
+                $application_id,
+                $data['application_info']['scholar_id'],
+            );
 
             $this->pdo->commit();
 
@@ -117,7 +121,11 @@ class RenewalController
             }
 
             // Process other data (personal, education, family, etc.)
-            $this->updateApplicationData($data, $application_id);
+            $this->updateApplicationData(
+                $data,
+                $application_id,
+                $data['application_info']['scholar_id'],
+            );
 
             $this->pdo->commit();
 
@@ -138,59 +146,59 @@ class RenewalController
         }
     }
 
-    private function processApplicationData($data, $application_id)
+    private function processApplicationData($data, $application_id, $scholar_id)
     {
         // Process personal information
         $personal = new PersonalModel($this->pdo);
-        if (!$personal->create($data['personal_information'], $application_id)) {
+        if (!$personal->renew($data['personal_information'], $application_id, $scholar_id, $scholar_id)) {
             throw new \Exception('Failed to save personal information');
         }
 
         // Process education information
         $education = new EducationModel($this->pdo);
-        if (!$education->create($data['educational_background'], $application_id)) {
+        if (!$education->renew($data['educational_background'], $application_id, $scholar_id)) {
             throw new \Exception('Failed to save education information');
         }
 
-        // Process family information
+        // // Process family information
         $family = new FamilyModel($this->pdo);
-        if (!$family->create($data['parents_guardian'], $application_id)) {
+        if (!$family->renew($data['parents_guardian'], $application_id, $scholar_id)) {
             throw new \Exception('Failed to save family information');
         }
 
-        // Process contact person
+        // // Process contact person
         $contactPerson = new ContactPersonModel($this->pdo);
         if (isset($data['contact_person']) && !empty($data['contact_person'])) {
-            if (!$contactPerson->create($data['contact_person'], $application_id)) {
+            if (!$contactPerson->renew($data['contact_person'], $application_id, $scholar_id)) {
                 throw new \Exception('Failed to save contact person');
             }
         }
 
-        // Process family members
+        // // Process family members
         if (isset($data['family_members']) && is_array($data['family_members'])) {
             $familyMember = new FamilyMemberModel($this->pdo);
             foreach ($data['family_members'] as $member) {
-                if (!$familyMember->create($member, $application_id)) {
+                if (!$familyMember->renew($member, $application_id, $scholar_id)) {
                     throw new \Exception('Failed to save family member');
                 }
             }
         }
 
-        // Process tzu chi scholars
+        // // Process tzu chi scholars
         if (isset($data['tzu_chi_siblings']) && is_array($data['tzu_chi_siblings'])) {
             $scholar = new ScholarModel($this->pdo);
             foreach ($data['tzu_chi_siblings'] as $scholarData) {
-                if (!$scholar->create($scholarData, $application_id)) {
+                if (!$scholar->renew($scholarData, $application_id, $scholar_id)) {
                     throw new \Exception('Failed to save scholar');
                 }
             }
         }
 
-        // Process assistance list
+        // // Process assistance list
         if (isset($data['other_assistance']) && is_array($data['other_assistance'])) {
             $assistance = new AssistanceModel($this->pdo);
             foreach ($data['other_assistance'] as $assistanceData) {
-                if (!$assistance->create($assistanceData, $application_id)) {
+                if (!$assistance->renew($assistanceData, $application_id, $scholar_id)) {
                     throw new \Exception('Failed to save assistance');
                 }
             }
@@ -199,14 +207,14 @@ class RenewalController
         if (isset($data['character_reference']) && is_array($data['character_reference'])) {
             $character = new CharacterReferenceModel($this->pdo);
             foreach ($data['character_reference'] as $characterData) {
-                if (!$character->create($characterData, $application_id)) {
+                if (!$character->renew($characterData, $application_id, $scholar_id)) {
                     throw new \Exception('Failed to save character');
                 }
             }
         }
     }
 
-    private function updateApplicationData($data, $applicationId)
+    private function updateApplicationData($data, $applicationId, $scholar_id)
     {
         // Process personal information
         $personal = new PersonalModel($this->pdo);
@@ -236,8 +244,12 @@ class RenewalController
         // // // Process family members
         if (isset($data['family_members']) && is_array($data['family_members'])) {
             $familyMember = new FamilyMemberModel($this->pdo);
+            if (!$familyMember->deleteByApplicationId($applicationId)) {
+                throw new \Exception('Failed to delete existing family members');
+            }
+
             foreach ($data['family_members'] as $member) {
-                if (!$familyMember->update($member, $applicationId)) {
+                if (!$familyMember->create($member, $applicationId, $scholar_id)) {
                     throw new \Exception('Failed to save family member');
                 }
             }
@@ -246,8 +258,12 @@ class RenewalController
         // // // Process tzu chi scholars
         if (isset($data['tzu_chi_siblings']) && is_array($data['tzu_chi_siblings'])) {
             $scholar = new ScholarModel($this->pdo);
+            if (!$scholar->deleteByApplicationId($applicationId)) {
+                throw new \Exception('Failed to delete existing scholars');
+            }
+
             foreach ($data['tzu_chi_siblings'] as $scholarData) {
-                if (!$scholar->update($scholarData, $applicationId)) {
+                if (!$scholar->create($scholarData, $applicationId, $scholar_id)) {
                     throw new \Exception('Failed to save scholar');
                 }
             }
@@ -256,8 +272,12 @@ class RenewalController
         // // // Process assistance list
         if (isset($data['other_assistance']) && is_array($data['other_assistance'])) {
             $assistance = new AssistanceModel($this->pdo);
+            if (!$assistance->deleteByApplicationId($applicationId)) {
+                throw new \Exception('Failed to delete existing assistance records');
+            }
+
             foreach ($data['other_assistance'] as $assistanceData) {
-                if (!$assistance->update($assistanceData, $applicationId)) {
+                if (!$assistance->create($assistanceData, $applicationId, $scholar_id)) {
                     throw new \Exception('Failed to save assistance');
                 }
             }
@@ -265,8 +285,12 @@ class RenewalController
 
         if (isset($data['character_reference']) && is_array($data['character_reference'])) {
             $character = new CharacterReferenceModel($this->pdo);
+            if (!$character->deleteByApplicationId($applicationId)) {
+                throw new \Exception('Failed to delete existing character references');
+            }
+
             foreach ($data['character_reference'] as $characterData) {
-                if (!$character->update($characterData, $applicationId)) {
+                if (!$character->create($characterData, $applicationId, $scholar_id)) {
                     throw new \Exception('Failed to save character');
                 }
             }

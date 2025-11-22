@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useSchedule } from "../../../hooks/useSchedule";
 import { manageApplication } from "../../../services/emailService";
-import SendEmailButton from "./SendEmailButtton";
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import InputModal from "../../../components/InputModal";
 
 export default function SetScheduleForm({
     applications,
@@ -23,7 +23,7 @@ export default function SetScheduleForm({
     const [isEmailSentToAll, setIsEmailSentToAll] = useState(false);
     const [isInputChanged, setIsInputChanged] = useState(false);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-    const { createSchedule } = useSchedule();
+    const { loading, createSchedule } = useSchedule();
     const { isLoading, sendSchedule } = manageApplication();
 
     // Use useEffect to set the initial schedule value when component mounts or selectedBatch changes
@@ -52,23 +52,27 @@ export default function SetScheduleForm({
         }
     }, [selectedBatch, batches]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
+    const handleSubmit = async () => {
         const batchToSet = batches.find(
             (batch) => batch.batch_name === selectedBatch
         );
 
-        await createSchedule(
+        const success = await createSchedule(
+            "entrance_examination",
             date,
             time,
             venue,
-            setDate,
-            setTime,
             batchToSet,
             onSuccess,
-            setIsOpen
+            setIsOpen,
+            batchId,
+            applications,
+            selectedBatch
         );
+
+        if (success) {
+            setIsOpen(false);
+        }
     };
 
     const handleSendSchedule = async () => {
@@ -98,6 +102,12 @@ export default function SetScheduleForm({
         setIsEmailSent(false);
     };
 
+    const resetFields = () => {
+        setDate("");
+        setTime("");
+        setVenue("");
+    };
+
     // Helper function to check if batch has schedule (no state updates)
     const hasSchedule = () => {
         if (!selectedBatch || !batches) return false;
@@ -119,133 +129,84 @@ export default function SetScheduleForm({
                     {hasSchedule() ? "Edit Schedule" : "Set Schedule"}
                 </button>
 
-                <div
-                    className={`fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-60 p-4 animate-in fade-in duration-200 ${
-                        isOpen ? "block" : "hidden"
-                    }`}
-                    // onKeyDown={handleKeyDown}
-                    // onClick={handleBackdropClick}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="modal-title"
+                <InputModal
+                    label={hasSchedule() ? "Edit Schedule" : "Set Schedule"}
+                    isOpen={isOpen}
+                    onClose={setIsOpen}
+                    buttonLabel={editing ? "Save Changes" : "Save"}
+                    onCancel={handleCancel}
+                    onSubmit={handleSubmit}
+                    isLoading={loading}
                 >
-                    <div className="relative w-full sm:w-[60%] md:[45%] lg:w-[40%] xl:w-[30%] bg-white rounded-xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200">
-                        {/* Header */}
-                        <div className="relative px-6 py-4 border-b border-slate-200">
-                            <h2
-                                id="modal-title"
-                                className="text-lg text-slate-700 pr-10 leading-tight"
-                            >
-                                {editing ? "Update Schedule" : "Set Schedule"}
-                            </h2>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setIsOpen(false);
-                                    setIsEmailSent(false);
-                                    setIsInputChanged(false);
-                                }}
-                                className="absolute top-3 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-100 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                aria-label="Close modal"
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
-
-                        {/* Content */}
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            {/* Start Date Input */}
-                            <div>
-                                <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
-                                    Batch
-                                    <input
-                                        readOnly
-                                        type="text"
-                                        value={selectedBatch}
-                                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none"
-                                    />
-                                </label>
-                                <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
-                                    Date
-                                    <input
-                                        required
-                                        type="date"
-                                        value={date}
-                                        onChange={(e) => {
-                                            setDate(e.target.value);
-                                            setIsInputChanged(true);
-                                        }}
-                                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    />
-                                </label>
-                                <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
-                                    Time
-                                    <input
-                                        required
-                                        type="time"
-                                        value={time}
-                                        onChange={(e) => {
-                                            setTime(e.target.value);
-                                            setIsInputChanged(true);
-                                        }}
-                                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    />
-                                </label>
-                                <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
-                                    Venue
-                                    <input
-                                        required
-                                        type="text"
-                                        placeholder="Enter venue"
-                                        value={venue}
-                                        onChange={(e) => {
-                                            setVenue(e.target.value);
-                                            setIsInputChanged(true);
-                                        }}
-                                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    />
-                                </label>
-
-                                <SendEmailButton
-                                    isFullWidth={true}
-                                    isEmailSent={isEmailSent}
-                                    isLoading={isLoading}
-                                    onSendSchedule={() => {
-                                        if (isEmailSentToAll) {
-                                            setIsFormModalOpen(true);
-                                        } else {
-                                            handleSendSchedule();
-                                        }
-                                    }}
+                    {/* Content */}
+                    <div className="p-6 space-y-4">
+                        {/* Start Date Input */}
+                        <div>
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                                Batch
+                                <input
+                                    readOnly
+                                    type="text"
+                                    value={selectedBatch}
+                                    className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none"
                                 />
-                            </div>
+                            </label>
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                                Date
+                                <input
+                                    required
+                                    type="date"
+                                    value={date}
+                                    onChange={(e) => {
+                                        setDate(e.target.value);
+                                        setIsInputChanged(true);
+                                    }}
+                                    className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                />
+                            </label>
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                                Time
+                                <input
+                                    required
+                                    type="time"
+                                    value={time}
+                                    onChange={(e) => {
+                                        setTime(e.target.value);
+                                        setIsInputChanged(true);
+                                    }}
+                                    className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                />
+                            </label>
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                                Venue
+                                <input
+                                    required
+                                    type="text"
+                                    placeholder="Enter venue"
+                                    value={venue}
+                                    onChange={(e) => {
+                                        setVenue(e.target.value);
+                                        setIsInputChanged(true);
+                                    }}
+                                    className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                />
+                            </label>
 
-                            {/* Action Buttons */}
-                            <div className="flex gap-2 text-sm">
-                                <button
-                                    type="button"
-                                    onClick={handleCancel}
-                                    className={`w-full py-2 px-4 rounded-lg shadow-sm focus:outline-none bg-gray-200 text-gray-500`}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className={`w-full py-2 px-4 rounded-lg shadow-sm focus:outline-none text-white ${
-                                        editing && isInputChanged
-                                            ? "bg-green-600 hover:bg-green-700"
-                                            : editing && !isInputChanged
-                                              ? "bg-green-400"
-                                              : "bg-green-600 hover:bg-green-700"
-                                    }`}
-                                    disabled={editing && !isInputChanged}
-                                >
-                                    {editing ? "Save Changes" : "Save"}
-                                </button>
-                            </div>
-                        </form>
+                            {/* <SendEmailButton
+                                isFullWidth={true}
+                                isEmailSent={isEmailSent}
+                                isLoading={isLoading}
+                                onSendSchedule={() => {
+                                    if (isEmailSentToAll) {
+                                        setIsFormModalOpen(true);
+                                    } else {
+                                        handleSendSchedule();
+                                    }
+                                }}
+                            /> */}
+                        </div>
                     </div>
-                </div>
+                </InputModal>
             </div>
 
             <ConfirmationModal

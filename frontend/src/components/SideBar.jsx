@@ -140,7 +140,7 @@ function SideBar({ items }) {
             )}
 
             <nav
-                className={`group lg:h-[91.5vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[400px] lg:hover:items-stretch z-20 overflow-hidden transition-all duration-200 ${
+                className={`group lg:h-[92vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[400px] lg:hover:items-stretch z-20 overflow-hidden transition-all duration-200 ${
                     isOpen ? "lg:w-[400px] w-[300px]" : "w-[0] lg:w-[70px]"
                 } ${!isOpen && "items-center"}`}
             >

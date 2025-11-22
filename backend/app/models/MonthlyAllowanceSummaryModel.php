@@ -27,7 +27,9 @@ class MonthlyAllowanceSummaryModel
 
     public function getMonthlyAllowanceSummary($year, $month)
     {
-        $query = 'SELECT * FROM ' . $this->table_name;
+        $query =
+            'SELECT id, cycle_month, allowance_month, cutoff_date, is_processed, processed_at, file_name FROM ' .
+            $this->table_name;
 
         if ($month !== 'all_months' && $year !== 'all_years') {
             $query .= " WHERE MONTH(cycle_month) = '$month' AND YEAR(cycle_month)  = '$year'";

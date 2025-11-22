@@ -9,16 +9,16 @@ import { usePdfActions } from "../../../hooks/usePdfActions";
 import { applicationButtons } from "../../../constant/tableToolbarButtons";
 import { useApplicationRecords } from "../../../hooks/useApplicationRecords";
 import TableToolbar from "../../../components/TableToolbar";
-import {
-    applicationRecordsTableHeaders,
-    approvedApplicationTableHeaders,
-} from "../../../constant/tableHeaders";
+import { applicationRecordsTableHeaders } from "../../../constant/tableHeaders";
 import Table from "../../../components/Table";
 import TableRow from "../../../components/TableRow";
 import PageContent from "../../../components/PageContent";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
+import ApplicantDetailsModal from "./ApplicantDetailsModal";
 
 export default function ApplicationRecordsPage() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedScholar, setSelectedScholar] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("new");
@@ -37,11 +37,16 @@ export default function ApplicationRecordsPage() {
         applications,
         "profile-picture"
     );
-    const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
+    const { viewPdf, downloadPdf } = usePdfActions(
+        activeTab,
+        fetchApplicantData
+    );
 
     useEffect(() => {
         fetchApplications();
     }, [activeTab, status, schoolYear, sortBy]);
+
+    console.log(profilePics);
 
     // Filter data based on search term
     const filteredApplications = applications.filter((applicant) => {
@@ -73,6 +78,7 @@ export default function ApplicationRecordsPage() {
 
     const handleRefresh = () => {
         fetchApplications();
+        setCurrentPage(1);
     };
 
     return (
@@ -109,69 +115,98 @@ export default function ApplicationRecordsPage() {
                         className="w-[100px] px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         {activeTab === "new" ? (
-                            <>
-                                <option value="all">All</option>
-                                <option value="approved">
-                                    Application Approved
-                                </option>
-                                <option value="rejected">
-                                    Entrance Examination Passed
-                                </option>
-                                <option value="pending">
-                                    Initial Interview Passed
-                                </option>
-                                <option value="pending">
-                                    Home Visitation Qualified
-                                </option>{" "}
-                                <option value="pending">
-                                    Final Interview Passed
-                                </option>
-                                <option value="approved">
-                                    Attended Orientation
-                                </option>
-                                <option value="approved">
-                                    Attended Awarding
-                                </option>
-                                <option value="approved">
-                                    Application Rejected
-                                </option>
-                                <option value="rejected">
-                                    Entrance Examination Failed
-                                </option>
-                                <option value="pending">
-                                    Initial Interview Failed
-                                </option>
-                                <option value="pending">
-                                    Home Visitation Not Qualified
-                                </option>{" "}
-                                <option value="pending">
-                                    Final Interview Failed
-                                </option>
-                                <option value="approved">
-                                    Not Attended Orientation
-                                </option>
-                                <option value="approved">
-                                    Not Attended Awarding
-                                </option>
-                            </>
+                            schoolYear === getCurrentSchoolYear() ? (
+                                <>
+                                    <option value="all">All</option>
+                                    <option value="fully_qualified">
+                                        Fully Qualified
+                                    </option>
+                                    <option value="application_approved">
+                                        Application Approved
+                                    </option>
+                                    <option value="entrance_examination_passed">
+                                        Entrance Examination Passed
+                                    </option>
+                                    <option value="initial_interview_passed">
+                                        Initial Interview Passed
+                                    </option>
+                                    <option value="home_visitation_qualified">
+                                        Home Visitation Qualified
+                                    </option>{" "}
+                                    <option value="final_interview_passed">
+                                        Final Interview Passed
+                                    </option>
+                                    <option value="attended_orientation">
+                                        Attended Orientation
+                                    </option>
+                                    {/* <option value="attended_awarding">
+                                        Attended Awarding
+                                    </option> */}
+                                    <option value="application_rejected">
+                                        Application Rejected
+                                    </option>
+                                    <option value="entrance_examination_failed">
+                                        Entrance Examination Failed
+                                    </option>
+                                    <option value="initial_interview_failed">
+                                        Initial Interview Failed
+                                    </option>
+                                    <option value="home_visitation_not_qualified">
+                                        Home Visitation Not Qualified
+                                    </option>{" "}
+                                    <option value="final_interview_failed">
+                                        Final Interview Failed
+                                    </option>
+                                    <option value="not_attended_orientation">
+                                        Not Attended Orientation
+                                    </option>
+                                    <option value="not_attended_awarding">
+                                        Not Attended Awarding
+                                    </option>
+                                </>
+                            ) : (
+                                <>
+                                    <option value="all">All</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="fully_qualified">
+                                        Fully Qualified
+                                    </option>
+                                    <option value="application_rejected">
+                                        Application Rejected
+                                    </option>
+                                    <option value="entrance_examination_failed">
+                                        Entrance Examination Failed
+                                    </option>
+                                    <option value="initial_interview_failed">
+                                        Initial Interview Failed
+                                    </option>
+                                    <option value="home_visitation_not_qualified">
+                                        Home Visitation Not Qualified
+                                    </option>{" "}
+                                    <option value="final_interview_failed">
+                                        Final Interview Failed
+                                    </option>
+                                    <option value="not_attended_orientation">
+                                        Not Attended Orientation
+                                    </option>
+                                    <option value="not_attended_awarding">
+                                        Not Attended Awarding
+                                    </option>
+                                </>
+                            )
                         ) : (
                             <>
                                 <option value="all">All</option>
-                                <option value="approved">Approved</option>
-                                <option value="rejected">Rejected</option>
+                                <option value="application_approved">
+                                    Approved
+                                </option>
+                                <option value="application_rejected">
+                                    Rejected
+                                </option>
                                 <option value="pending">Pending</option>
                             </>
                         )}
                     </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg
-                            className="fill-current h-4 w-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                        >
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                        </svg>
-                    </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-600">School Year:</span>
@@ -226,101 +261,139 @@ export default function ApplicationRecordsPage() {
                             <td className="py-2 whitespace-nowrap">
                                 {info.school_year}
                             </td>
-                            {/* <td className="py-1 whitespace-nowrap text-xs">
-                                <span
-                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
-                                        info.is_final_interview_passed
-                                            ? "bg-green-100 text-green-800"
-                                            : info.is_home_visitation_not_qualified
-                                              ? "bg-red-100 text-red-800"
-                                              : info.is_interview_failed
-                                                ? "bg-red-100 text-red-800"
-                                                : info.is_examination_failed
-                                                  ? "bg-red-100 text-red-800"
-                                                  : info.is_application_rejected
-                                                    ? "bg-red-100 text-red-800"
-                                                    : "bg-yellow-100 text-yellow-800"
-                                    }`}
-                                >
-                                    {info.is_final_interview_passed
-                                        ? "Fully Qualified"
-                                        : info.is_home_visitation_not_qualified
-                                          ? "Home Visitation Not Qualified"
-                                          : info.is_interview_failed
-                                            ? "Initial Interview Failed"
-                                            : info.is_examination_failed
-                                              ? "Exam Failed"
-                                              : info.is_application_rejected
-                                                ? "Application Rejected"
-                                                : "Pending"}
-                                </span>
-                            </td> */}
 
-                            <td className="py-2 whitespace-nowrap text-xs">
-                                <span
-                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
-                                        info.is_attended_awarding
-                                            ? "bg-green-100 text-green-800"
-                                            : info.is_not_attended_awarding
-                                              ? "bg-red-100 text-red-800"
-                                              : info.is_attended_orientation
-                                                ? "bg-green-100 text-green-800"
-                                                : info.is_not_attended_orientation
-                                                  ? "bg-red-100 text-red-800"
-                                                  : info.is_final_interview_passed
-                                                    ? "bg-green-100 text-green-800"
-                                                    : info.is_final_interview_failed
-                                                      ? "bg-red-100 text-red-800"
-                                                      : info.is_home_visitation_qualified
+                            {activeTab === "new" ? (
+                                <>
+                                    {schoolYear === getCurrentSchoolYear() ? (
+                                        <td className="py-2 whitespace-nowrap text-xs">
+                                            <span
+                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
+                                                    info.is_attended_awarding
                                                         ? "bg-green-100 text-green-800"
-                                                        : info.is_home_visitation_not_qualified
+                                                        : info.is_not_attended_awarding
                                                           ? "bg-red-100 text-red-800"
-                                                          : info.is_initial_interview_passed
+                                                          : info.is_attended_orientation
                                                             ? "bg-green-100 text-green-800"
-                                                            : info.is_initial_interview_failed
+                                                            : info.is_not_attended_orientation
                                                               ? "bg-red-100 text-red-800"
-                                                              : info.is_examination_passed
+                                                              : info.is_final_interview_passed
                                                                 ? "bg-green-100 text-green-800"
-                                                                : info.is_examination_failed
+                                                                : info.is_final_interview_failed
                                                                   ? "bg-red-100 text-red-800"
-                                                                  : info.is_application_approved
+                                                                  : info.is_home_visitation_qualified
                                                                     ? "bg-green-100 text-green-800"
+                                                                    : info.is_home_visitation_not_qualified
+                                                                      ? "bg-red-100 text-red-800"
+                                                                      : info.is_initial_interview_passed
+                                                                        ? "bg-green-100 text-green-800"
+                                                                        : info.is_initial_interview_failed
+                                                                          ? "bg-red-100 text-red-800"
+                                                                          : info.is_examination_passed
+                                                                            ? "bg-green-100 text-green-800"
+                                                                            : info.is_examination_failed
+                                                                              ? "bg-red-100 text-red-800"
+                                                                              : info.is_application_approved
+                                                                                ? "bg-green-100 text-green-800"
+                                                                                : info.is_application_rejected
+                                                                                  ? "bg-red-100 text-red-800"
+                                                                                  : "bg-yellow-100 text-yellow-800"
+                                                }`}
+                                            >
+                                                {info.is_attended_awarding
+                                                    ? "Fully Qualified"
+                                                    : info.is_not_attended_awarding
+                                                      ? "Not Attended Awarding"
+                                                      : info.is_attended_orientation
+                                                        ? "Attended Orientation"
+                                                        : info.is_not_attended_orientation
+                                                          ? "Not Attended Orientation"
+                                                          : info.is_final_interview_passed
+                                                            ? "Final Interview Passed"
+                                                            : info.is_final_interview_failed
+                                                              ? "Final Interview Failed"
+                                                              : info.is_home_visitation_qualified
+                                                                ? "Home Visitation Qualified"
+                                                                : info.is_home_visitation_not_qualified
+                                                                  ? "Home Visitation Not Qualified"
+                                                                  : info.is_initial_interview_passed
+                                                                    ? "Initial Interview Passed"
+                                                                    : info.is_initial_interview_failed
+                                                                      ? "Initial Interview Failed"
+                                                                      : info.is_examination_passed
+                                                                        ? "Entrance Examination Passed"
+                                                                        : info.is_examination_failed
+                                                                          ? "Entrance Examination Failed"
+                                                                          : info.is_application_approved
+                                                                            ? "Application Approved"
+                                                                            : info.is_application_rejected
+                                                                              ? "Application Rejected"
+                                                                              : "Pending"}
+                                            </span>
+                                        </td>
+                                    ) : (
+                                        <td className="py-1 whitespace-nowrap text-xs">
+                                            <span
+                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
+                                                    info.is_attended_awarding
+                                                        ? "bg-green-100 text-green-800"
+                                                        : info.is_not_attended_awarding
+                                                          ? "bg-red-100 text-red-800"
+                                                          : info.is_not_attended_orientation
+                                                            ? "bg-red-100 text-red-800"
+                                                            : info.is_final_interview_failed
+                                                              ? "bg-red-100 text-red-800"
+                                                              : info.is_home_visitation_not_qualified
+                                                                ? "bg-red-100 text-red-800"
+                                                                : info.is_interview_failed
+                                                                  ? "bg-red-100 text-red-800"
+                                                                  : info.is_examination_failed
+                                                                    ? "bg-red-100 text-red-800"
                                                                     : info.is_application_rejected
                                                                       ? "bg-red-100 text-red-800"
                                                                       : "bg-yellow-100 text-yellow-800"
-                                    }`}
-                                >
-                                    {info.is_attended_awarding
-                                        ? "Fully Qualified"
-                                        : info.is_not_attended_awarding
-                                          ? "Not Attended Awarding"
-                                          : info.is_attended_orientation
-                                            ? "Attended Orientation"
-                                            : info.is_not_attended_orientation
-                                              ? "Not Attended Orientation"
-                                              : info.is_final_interview_passed
-                                                ? "Final Interview Passed"
-                                                : info.is_final_interview_failed
-                                                  ? "Final Interview Failed"
-                                                  : info.is_home_visitation_qualified
-                                                    ? "Home Visitation Qualified"
-                                                    : info.is_home_visitation_not_qualified
-                                                      ? "Home Visitation Not Qualified"
-                                                      : info.is_initial_interview_passed
-                                                        ? "Initial Interview Passed"
-                                                        : info.is_initial_interview_failed
-                                                          ? "Initial Interview Failed"
-                                                          : info.is_examination_passed
-                                                            ? "Exam Passed"
-                                                            : info.is_examination_failed
-                                                              ? "Exam Failed"
-                                                              : info.is_application_approved
-                                                                ? "Application Approved"
+                                                }`}
+                                            >
+                                                {info.is_attended_awarding
+                                                    ? "Fully Qualified"
+                                                    : info.is_not_attended_awarding
+                                                      ? "Not Attended Awarding"
+                                                      : info.is_not_attended_orientation
+                                                        ? "Not Attended Orientation"
+                                                        : info.is_final_interview_failed
+                                                          ? "Final Interview Failed"
+                                                          : info.is_home_visitation_not_qualified
+                                                            ? "Home Visitation Not Qualified"
+                                                            : info.is_initial_interview_failed
+                                                              ? "Initial Interview Failed"
+                                                              : info.is_examination_failed
+                                                                ? "Entrance Examination Failed"
                                                                 : info.is_application_rejected
                                                                   ? "Application Rejected"
                                                                   : "Pending"}
-                                </span>
-                            </td>
+                                            </span>
+                                        </td>
+                                    )}
+                                </>
+                            ) : (
+                                <td className="py-1 whitespace-nowrap text-xs">
+                                    <span
+                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
+                                            info.is_application_approved
+                                                ? "bg-red-100 text-red-800"
+                                                : info.is_application_rejected
+                                                  ? "bg-red-100 text-red-800"
+                                                  : "bg-yellow-100 text-yellow-800"
+                                        }`}
+                                    >
+                                        {info.is_application_approved
+                                            ? "Application Approved"
+                                            : info.is_application_rejected
+                                              ? "Application Rejected"
+                                              : "Pending"}
+                                    </span>
+                                </td>
+                            )}
+
                             <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
                                 {formatDateTime(info.created_at)}
                             </td>
@@ -331,12 +404,14 @@ export default function ApplicationRecordsPage() {
                             <td className="py-2 text-left whitespace-nowrap font-medium">
                                 <div className="flex items-center justify-center">
                                     <button
-                                        onClick={() =>
-                                            viewPdf(
-                                                info.application_id ||
-                                                    info.scholar_id
-                                            )
-                                        }
+                                        onClick={() => {
+                                            // viewPdf(
+                                            //     info.application_id ||
+                                            //         info.scholar_id
+                                            // )
+                                            setSelectedScholar(info);
+                                            setIsModalOpen(true);
+                                        }}
                                         className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                                         title="View PDF"
                                     >
@@ -408,6 +483,15 @@ export default function ApplicationRecordsPage() {
                     />
                 </div>
             )}
+
+            <ApplicantDetailsModal
+                label={"Applicant Details"}
+                isOpen={isModalOpen}
+                onClose={setIsModalOpen}
+                applicant={selectedScholar}
+                viewPdf={viewPdf}
+                downloadPdf={downloadPdf}
+            />
         </PageContent>
     );
 }

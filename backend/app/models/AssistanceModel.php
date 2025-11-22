@@ -50,6 +50,38 @@ class AssistanceModel
         return $stmt->execute();
     }
 
+    public function renew($assistance, $application_id, $scholar_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
+                  SET application_id = :application_id,
+                    scholar_id = :scholar_id,
+                      organization_name = :organization_name,
+                      support_type = :support_type,
+                      amount = :amount";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize inputs
+        $this->application_id = $application_id;
+        $this->organization = htmlspecialchars(strip_tags($assistance['organization_name']));
+        $this->type = htmlspecialchars(strip_tags($assistance['support_type']));
+        $this->amount = htmlspecialchars(strip_tags($assistance['amount'] ?? '0'));
+
+        $scholarId = $scholar_id === 'null' ? null : $scholar_id;
+
+        // Bind values
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':scholar_id', $scholar_d, \PDO::PARAM_INT);
+        $stmt->bindParam(':organization_name', $this->organization);
+        $stmt->bindParam(':support_type', $this->type);
+        $stmt->bindParam(':amount', $this->amount);
+
+        return $stmt->execute();
+    }
+
     public function update($assistance, $id)
     {
         $query =
@@ -75,6 +107,14 @@ class AssistanceModel
         $stmt->bindParam(':support_type', $this->type);
         $stmt->bindParam(':amount', $this->amount);
 
+        return $stmt->execute();
+    }
+
+    public function deleteByApplicationId($applicationId)
+    {
+        $query = 'DELETE FROM ' . $this->table_name . ' WHERE application_id = :application_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':application_id', $applicationId, \PDO::PARAM_INT);
         return $stmt->execute();
     }
 

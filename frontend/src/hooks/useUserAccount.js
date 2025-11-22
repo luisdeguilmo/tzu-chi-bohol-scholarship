@@ -8,14 +8,14 @@ export const useUserAccount = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const updateScholarAccountStatus = async (scholarId, action) => {
+    const updateScholarAccountStatus = async (userId, action) => {
         try {
             setLoading(true);
 
             const response = await axios.put(
-                `${BASE_URL}app/views/scholar-accounts.php?action=${action}`,
+                `${BASE_URL}app/views/user-account.php?action=${action}`,
                 {
-                    scholarId: scholarId,
+                    userId: userId,
                 }
             );
 

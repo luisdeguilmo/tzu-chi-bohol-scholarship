@@ -41,6 +41,15 @@ class CollegeUniversityManagementModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function getAllCollegesAndUniversitiesAlphabetically()
+    {
+        $query = 'SELECT * FROM ' . $this->table_name . ' ORDER BY name ASC';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getCollegeOrUniversityById($id)
     {
         $query = 'SELECT * FROM ' . $this->table_name . ' WHERE id = :id';

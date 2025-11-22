@@ -1,4 +1,4 @@
-import { Check, CirclePlus, Plus, User } from "lucide-react";
+import { Check } from "lucide-react";
 
 const PendingScholarsRow = ({
     currentItems,
@@ -14,7 +14,7 @@ const PendingScholarsRow = ({
                     key={scholar.application_id}
                     className={`transition-colors text-center border-b border-gray-200 ${
                         selectedScholars.includes(scholar.application_id)
-                            ? "bg-green-50"
+                            ? "bg-gray-50"
                             : ""
                     } text-xs`}
                 >

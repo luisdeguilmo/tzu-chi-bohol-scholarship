@@ -7,6 +7,30 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [strands, setStrands] = useState([]);
+
+    const fetchStrands = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `${BASE_URL}/app/views/strands.php`
+            );
+
+            const decodedStrands =
+                response.data.data?.map((strand) => ({
+                    ...strand,
+                    strand: decodeHTMLEntities(strand.strand),
+                })) || [];
+
+            // Fix 2: Access the correct property in the response
+            setStrands(decodedStrands);
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching strands data:", err);
+            setError("Failed to load strands data. Please try again.");
+            setLoading(false);
+        }
+    };
 
     const fetchItems = async () => {
         try {
@@ -14,7 +38,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
             const response = await axios.get(
                 `${BASE_URL}app/views/${endpoint}.php`
             );
-            
+
             setItems(response.data.data || []);
             setLoading(false);
         } catch (err) {
@@ -27,7 +51,8 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
     const updateItem = async (id, endpoint, updateData) => {
         try {
             const data = {
-                [endpoint]: { // Remove 's' from endpoint (strands -> strand)
+                [endpoint]: {
+                    // Remove 's' from endpoint (strands -> strand)
                     id: id,
                     ...updateData,
                 },
@@ -37,7 +62,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
             console.log(data);
 
             const response = await fetch(
-                `${BASE_URL}app/views/${endpoint+"s"}.php`,
+                `${BASE_URL}app/views/${endpoint + "s"}.php`,
                 {
                     method: "PUT",
                     headers: {
@@ -68,9 +93,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
 
     const deleteItem = async (id) => {
         try {
-            await axios.delete(
-                `${BASE_URL}app/views/${endpoint}.php?id=${id}`
-            );
+            await axios.delete(`${BASE_URL}app/views/${endpoint}.php?id=${id}`);
 
             const updatedItems = items.filter((item) => item.id !== id);
             setItems(updatedItems);
@@ -84,15 +107,21 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
     };
 
     useEffect(() => {
+        fetchStrands();
+    }, []);
+
+    useEffect(() => {
         fetchItems();
     }, [endpoint]);
 
     return {
         items,
+        strands,
         loading,
         error,
         fetchItems,
         updateItem,
         deleteItem,
+        fetchStrands,
     };
 };

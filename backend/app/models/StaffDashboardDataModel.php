@@ -35,6 +35,19 @@ class StaffDashboardDataModel
         return null;
     }
 
+    public function getNumberOfActiveScholars()
+    {
+        $query = "SELECT COUNT(*) AS scholar_count FROM scholars s JOIN users u
+                  ON u.account_id = s.account_id WHERE u.status = 'active' AND u.type = 'scholar'";
+
+        $stmt = $this->pdo->prepare($query);
+
+        $stmt->execute();
+
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['scholar_count'] ?? 0;
+    }
+
     public function getNumberOfAllApplications()
     {
         $query = "SELECT COUNT(*) AS application_count FROM application_info
@@ -240,6 +253,149 @@ class StaffDashboardDataModel
 
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result['community_service_count'] ?? 0;
+    }
+
+    public function getApplicationData($school_year)
+    {
+        $query = "SELECT 
+            (SELECT COUNT(*) FROM application_info) AS application,
+            (SELECT COUNT(*) FROM application_info WHERE is_eligible_for_exam = 1 AND school_year = :school_year) AS exam,
+            (SELECT COUNT(*) FROM application_info WHERE is_for_initial_interview = 1 AND school_year = :school_year) AS interview,
+            (SELECT COUNT(*) FROM application_info WHERE is_for_home_visitation = 1 AND school_year = :school_year) AS home_visit,
+            (SELECT COUNT(*) FROM application_info WHERE is_for_final_interview = 1 AND school_year = :school_year) AS final_interview,
+            (SELECT COUNT(*) FROM application_info WHERE is_for_orientation = 1 AND school_year = :school_year) AS orientation,
+            (SELECT COUNT(*) FROM application_info WHERE is_for_awarding = 1 AND school_year = :school_year) AS awarding
+        ";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':school_year', $school_year);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    // public function getOrientationAndAwardingData()
+    // {
+    //     $query = "SELECT
+    //         (SELECT COUNT(*) FROM application_info WHERE is_for_orientation = 1) AS orientation,
+    //         (SELECT COUNT(*) FROM application_info WHERE is_for_awarding = 1) AS awarding
+    //     ";
+
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute();
+    //     $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+    //     return $result;
+    // }
+
+    public function getMonthlyAllowanceDistributionData()
+    {
+        $query = "SELECT allowance_month,
+            amount
+          FROM allowance_cycles
+          WHERE YEAR(allowance_month) = :current_year
+          ORDER BY cutoff_date";
+
+        $stmt = $this->pdo->prepare($query);
+
+        $currentYear = 2025;
+
+        $stmt->bindParam(':current_year', $currentYear, \PDO::PARAM_INT);
+
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getTenScholarsByHighestDutyHours()
+    {
+        $query = "SELECT s.first_name, s.last_name, s.rendered_hours
+                  FROM scholars s
+                  JOIN users u ON s.account_id = u.account_id
+                  WHERE u.status = 'active'
+                  ORDER BY s.rendered_hours DESC LIMIT 10";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getEventAttendanceData()
+    {
+        $query = "SELECT 
+                m.month_name,
+                COALESCE(attendance.attended, 0) AS scholars_attended,
+                COALESCE(attendance.percent, 0) AS attendance_percent
+            FROM 
+            (
+                SELECT 1 AS month_num, 'January' AS month_name UNION
+                SELECT 2, 'February' UNION
+                SELECT 3, 'March' UNION
+                SELECT 4, 'April' UNION
+                SELECT 5, 'May' UNION
+                SELECT 6, 'June' UNION
+                SELECT 7, 'July' UNION
+                SELECT 8, 'August' UNION
+                SELECT 9, 'September' UNION
+                SELECT 10, 'October' UNION
+                SELECT 11, 'November' UNION
+                SELECT 12, 'December'
+            ) AS m
+            LEFT JOIN 
+            (
+                SELECT 
+                    MONTH(e.date) AS month_num,
+                    COUNT(DISTINCT ep.account_id) AS attended,
+                    (COUNT(DISTINCT ep.account_id) / 
+                        (SELECT COUNT(*) FROM users WHERE type='scholar' AND status='active')
+                    ) * 100 AS percent
+                FROM events e
+                JOIN event_participants ep 
+                    ON ep.event_id = e.id
+                WHERE ep.is_attended = 1 AND YEAR(ep.created_at) = :current_year
+                GROUP BY MONTH(e.date)
+            ) AS attendance
+            ON m.month_num = attendance.month_num
+            ORDER BY m.month_num";
+
+        $stmt = $this->pdo->prepare($query);
+
+        $stmt->bindParam(':current_year', $this->currentYear, \PDO::PARAM_INT);
+
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getCommunityServiceHoursCompletion()
+    {
+        $query = "SELECT 
+                        m.month_name,
+                        COALESCE(SUM(cs.hours_earned), 0) AS hours_earned,
+                        (COALESCE(SUM(cs.hours_earned), 0) / 
+                            ((SELECT COUNT(*) FROM users WHERE type='scholar' AND status='active') * 20)
+                        ) * 100 AS completion_percent
+                    FROM (
+                        SELECT 1 AS month_num, 'January' AS month_name UNION
+                        SELECT 2, 'February' UNION
+                        SELECT 3, 'March' UNION
+                        SELECT 4, 'April' UNION
+                        SELECT 5, 'May' UNION
+                        SELECT 6, 'June' UNION
+                        SELECT 7, 'July' UNION
+                        SELECT 8, 'August' UNION
+                        SELECT 9, 'September' UNION
+                        SELECT 10, 'October' UNION
+                        SELECT 11, 'November' UNION
+                        SELECT 12, 'December'
+                    ) m
+                    LEFT JOIN community_service_entries cs
+                        ON MONTH(cs.date_served) = m.month_num AND YEAR(cs.created_at) = :current_year
+                    GROUP BY m.month_num;
+                    ";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':current_year', $this->currentYear, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
 ?>

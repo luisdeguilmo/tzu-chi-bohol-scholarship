@@ -64,6 +64,7 @@ class StaffDashboardDataController
             $scholarModel = new ScholarAccountModel();
 
             $id = $_GET['id'] ?? null;
+            $school_year = $_GET['school_year'] ?? null;
 
             $userName = $dashboardData->getUserName($id);
             $numberOfAllApplications = $dashboardData->getNumberOfAllApplications();
@@ -71,7 +72,7 @@ class StaffDashboardDataController
             $numberOfOldApplications = $dashboardData->getNumberOfOldApplications();
             $numberOfApprovedApplications = $dashboardData->getNumberOfApprovedApplications();
             $numberOfRejectedApplications = $dashboardData->getNumberOfRejectedApplications();
-            $numberOfAllScholars = $dashboardData->getNumberOfAllScholars();
+            $numberOfActiveScholars = $dashboardData->getNumberOfActiveScholars();
             $numberOfNewScholars = $dashboardData->getNumberOfNewScholars();
             $numberOfOldScholars = $dashboardData->getNumberOfOldScholars();
             $numberOfApplicantsEligibleForExam = $dashboardData->getNumberOfApplicantsEligibleForExam();
@@ -82,6 +83,12 @@ class StaffDashboardDataController
             $numberOfApplicantsForAwarding = $dashboardData->getNumberOfApplicantsForAwarding();
             $numberOfUpcomingEvents = $dashboardData->getNumberOfUpcomingEvents();
             $numberOfNewCommunityServices = $dashboardData->getNumberOfNewCommunityServices();
+            $applicationData = $dashboardData->getApplicationData($school_year);
+            $monthlyAllowanceDistributionData = $dashboardData->getMonthlyAllowanceDistributionData();
+            $tenScholarsByHighestDutyHours = $dashboardData->getTenScholarsByHighestDutyHours();
+            $eventAttendanceData = $dashboardData->getEventAttendanceData();
+            $communityServiceHoursCompletionData = $dashboardData->getCommunityServiceHoursCompletion();
+            // $orientationAndAwardingData = $dashboardData->getOrientationAndAwardingData();
 
             $data = [
                 'userName' => $userName,
@@ -90,7 +97,7 @@ class StaffDashboardDataController
                 'numberOfOldApplications' => $numberOfOldApplications,
                 'numberOfApprovedApplications' => $numberOfApprovedApplications,
                 'numberOfRejectedApplications' => $numberOfRejectedApplications,
-                'numberOfAllScholars' => $numberOfAllScholars,
+                'numberOfActiveScholars' => $numberOfActiveScholars,
                 'numberOfNewScholars' => $numberOfNewScholars,
                 'numberOfOldScholars' => $numberOfOldScholars,
                 'numberOfApplicationsSubmitted' =>
@@ -105,6 +112,12 @@ class StaffDashboardDataController
                 'numberOfApplicantsForAwarding' => $numberOfApplicantsForAwarding,
                 'numberOfUpcomingEvents' => $numberOfUpcomingEvents,
                 'numberOfNewCommunityServices' => $numberOfNewCommunityServices,
+                'applicationData' => $applicationData,
+                'monthlyAllowanceDistributionData' => $monthlyAllowanceDistributionData,
+                'tenScholarsByHighestDutyHours' => $tenScholarsByHighestDutyHours,
+                'eventAttendanceData' => $eventAttendanceData,
+                'communityServiceHoursCompletionData' => $communityServiceHoursCompletionData,
+                // 'orientationAndAwardingData' => $orientationAndAwardingData,
             ];
 
             // preg_match('/\d+/', $pendingScholarNotification['message'], $matches);

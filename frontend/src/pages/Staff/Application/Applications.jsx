@@ -34,7 +34,10 @@ export default function Applications() {
         useApplications(activeTab);
     const { fetchApplicantData } = useApplicantData();
     const { profilePics } = useProfilePicture(applications, "profile-picture");
-    const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
+    const { viewPdf, downloadPdf } = usePdfActions(
+        activeTab,
+        fetchApplicantData
+    );
 
     const {
         isLoading,
@@ -240,9 +243,15 @@ export default function Applications() {
                                         <button
                                             onClick={() =>
                                                 viewPdf(
-                                                    info.type === "Old"
-                                                        ? info.scholar_id
-                                                        : info.application_id
+                                                    // info.type === "Old"
+                                                    //     ? info.scholar_id
+                                                    //     : info.application_id
+                                                    {
+                                                        applicationId:
+                                                            info.application_id,
+                                                        scholarId:
+                                                            info.scholar_id,
+                                                    }
                                                 )
                                             }
                                             className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
@@ -252,11 +261,11 @@ export default function Applications() {
                                         </button>
                                         <button
                                             onClick={() =>
-                                                downloadPdf(
-                                                    info.type === "Old"
-                                                        ? info.scholar_id
-                                                        : info.application_id
-                                                )
+                                                downloadPdf({
+                                                    applicationId:
+                                                        info.application_id,
+                                                    scholarId: info.scholar_id,
+                                                })
                                             }
                                             className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"
                                             title="Download PDF"

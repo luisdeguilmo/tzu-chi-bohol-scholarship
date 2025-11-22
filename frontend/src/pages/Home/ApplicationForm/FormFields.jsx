@@ -10,11 +10,10 @@ const FormFields = ({
     formData,
     handleInputChange,
     errors,
+    isRenewal = false,
 }) => {
     const [selectedCollegeOrUniversity, setSelectedCollegeOrUniversity] =
         useState(formData?.educational_background?.selected_school_id || 0);
-
-    console.log(selectedCollegeOrUniversity);
 
     const { collegesAndUniversities } = useCollegesUniversities();
     const { coursesAccepted, fetchCoursesAccepted, resetCoursesAccepted } =
@@ -50,7 +49,31 @@ const FormFields = ({
         section === FORM_SECTIONS.EDUCATION ? fields.slice(0, 5) : [];
     const present = section === FORM_SECTIONS.EDUCATION ? fields.slice(6) : [];
 
-    console.log(formData);
+    const filteredPresent = present.filter((field) => {
+        if (!isRenewal) {
+            return field.name !== "year_level";
+        } else if (isRenewal) {
+            return field.name !== "present_course2";
+        } else {
+            return field;
+        }
+    });
+
+    if (!isRenewal) {
+        present.forEach((present) => {
+            if (present.name === "year_level") {
+                present.required = false;
+            }
+        });
+    }
+
+    if (isRenewal) {
+        present.forEach((present) => {
+            if (present.name === "present_course1") {
+                present.label = "Course";
+            }
+        });
+    }
 
     // Memoize mapped arrays
     const collegesAndUniversitiesArray = useMemo(
@@ -95,10 +118,10 @@ const FormFields = ({
                         Previous
                     </h2>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4">
-                        {previous.map((field) => (
-                            <div className="relative">
+                        {previous.map((field, index) => (
+                            <div key={index} className="relative">
                                 <label className="block mb-1 text-gray-500 text-xs">
-                                    {field.label}
+                                    {field.label} {field.required ? "*" : ""}
                                 </label>
                                 <input
                                     type={field.type}
@@ -107,15 +130,13 @@ const FormFields = ({
                                     onChange={(e) =>
                                         handleInputChange(inputSection, e)
                                     }
-                                    placeholder={`${field.label}${
-                                        field.required ? "*" : ""
-                                    }`}
+                                    placeholder={`${field.placeholder}`}
                                     // className={`w-full outline-none border-b-[2px] ${
                                     //     errors && errors[field.name]
                                     //         ? "border-red-500"
                                     //         : "border-gray-400"
                                     // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
-                                    className="w-full border text-xs text-slate-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    className="w-full border text-xs text-slate-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                     required
                                 />
                                 {errors && errors[field.name] && (
@@ -131,7 +152,7 @@ const FormFields = ({
                         Present
                     </h2>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4">
-                        {present.map((field) => (
+                        {filteredPresent.map((field) => (
                             <div
                                 key={field.name}
                                 className={`${
@@ -144,6 +165,7 @@ const FormFields = ({
                                     <div className="block w-full relative">
                                         <label className="block mb-1 text-gray-500 text-xs">
                                             {field.label}
+                                            {field.required ? "*" : ""}
                                         </label>
                                         <select
                                             id={field.name}
@@ -179,25 +201,60 @@ const FormFields = ({
                                             //         ? "border-red-500"
                                             //         : "border-gray-400"
                                             // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
-                                            className="w-full border text-gray-800 text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                            className="w-full border text-gray-800 text-xs border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                             required={field.required}
                                         >
-                                            {field.options.map(
-                                                (option, index) => (
-                                                    <option
-                                                        key={index}
-                                                        data-id={option.key}
-                                                        value={option.name}
-                                                        disabled={
-                                                            option.name === ""
-                                                        }
-                                                        className="text-gray-800 disabled:text-gray-400"
-                                                    >
-                                                        {option.name === ""
-                                                            ? "-- Select --"
-                                                            : option.name}
-                                                    </option>
-                                                )
+                                            {field.name === "present_school" ||
+                                            field.name === "present_course1" ||
+                                            field.name === "present_course2" ? (
+                                                <>
+                                                    {field.options.map(
+                                                        (option, index) => (
+                                                            <option
+                                                                key={index}
+                                                                data-id={
+                                                                    option.key
+                                                                }
+                                                                value={
+                                                                    option.name
+                                                                }
+                                                                disabled={
+                                                                    option.name ===
+                                                                    ""
+                                                                }
+                                                                className="text-gray-800 disabled:text-gray-400"
+                                                            >
+                                                                {option.name ===
+                                                                ""
+                                                                    ? "-- Select --"
+                                                                    : option.name}
+                                                            </option>
+                                                        )
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {field.options.map(
+                                                        (option, index) => (
+                                                            <option
+                                                                key={index}
+                                                                value={
+                                                                    option.value
+                                                                }
+                                                                disabled={
+                                                                    option.name ===
+                                                                    ""
+                                                                }
+                                                                className="text-gray-800 disabled:text-gray-400"
+                                                            >
+                                                                {option.value ===
+                                                                ""
+                                                                    ? "-- Select --"
+                                                                    : option.name}
+                                                            </option>
+                                                        )
+                                                    )}
+                                                </>
                                             )}
                                         </select>
                                         {errors && errors[field.name] && (
@@ -210,6 +267,7 @@ const FormFields = ({
                                     <div className="relative">
                                         <label className="block mb-1 text-gray-500 text-xs">
                                             {field.label}
+                                            {field.required ? "*" : ""}
                                         </label>
                                         <input
                                             type={field.type}
@@ -225,15 +283,13 @@ const FormFields = ({
                                                     e
                                                 )
                                             }
-                                            placeholder={`${field.label}${
-                                                field.required ? "*" : ""
-                                            }`}
+                                            placeholder={`${field.placeholder}`}
                                             // className={`w-full outline-none border-b-[2px] ${
                                             //     errors && errors[field.name]
                                             //         ? "border-red-500"
                                             //         : "border-gray-400"
                                             // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
-                                            className="w-full border text-xs text-slate-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                            className="w-full border text-xs text-slate-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                             required
                                         />
                                         {errors && errors[field.name] && (
@@ -248,7 +304,7 @@ const FormFields = ({
                     </div>
                 </>
             ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {fields.map((field) => (
                         <div
                             key={field.name}
@@ -258,8 +314,9 @@ const FormFields = ({
                         >
                             {field.type === "select" ? (
                                 <div className="block w-full relative">
-                                    <label className="block mb-1 text-gray-500 text-xs">
+                                    <label className="block mb-1 text-gray-600 text-xs">
                                         {field.label}
+                                        {field.required ? "*" : ""}
                                     </label>
                                     <select
                                         id={field.name}
@@ -273,7 +330,7 @@ const FormFields = ({
                                         //         ? "border-red-500"
                                         //         : "border-gray-400"
                                         // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
-                                        className="w-full border text-gray-800 text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        className="w-full border text-gray-800 text-xs border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required={field.required}
                                     >
                                         {field.options.map((option) => (
@@ -299,6 +356,7 @@ const FormFields = ({
                                 <div className="relative">
                                     <label className="block mb-1 text-gray-600 text-xs">
                                         {field.label}
+                                        {field.required ? "*" : ""}
                                     </label>
                                     <textarea
                                         rows={5}
@@ -309,10 +367,8 @@ const FormFields = ({
                                         onChange={(e) =>
                                             handleInputChange(inputSection, e)
                                         }
-                                        placeholder={`${field.label}${
-                                            field.required ? "*" : ""
-                                        }`}
-                                        className="w-full resize-none border text-xs text-slate-700 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        placeholder={`${field.placeholder}`}
+                                        className="w-full resize-none border text-xs text-slate-700 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required={field.required}
                                     ></textarea>
 
@@ -324,8 +380,9 @@ const FormFields = ({
                                 </div>
                             ) : (
                                 <div className="relative">
-                                    <label className="block mb-1 text-gray-500 text-xs">
+                                    <label className="block mb-1 text-gray-600 text-xs">
                                         {field.label}
+                                        {field.required ? "*" : ""}
                                     </label>
                                     <input
                                         type={field.type}
@@ -336,15 +393,13 @@ const FormFields = ({
                                         onChange={(e) =>
                                             handleInputChange(inputSection, e)
                                         }
-                                        placeholder={`${field.label}${
-                                            field.required ? "*" : ""
-                                        }`}
+                                        placeholder={`${field.placeholder}`}
                                         // className={`w-full outline-none border-b-[2px] ${
                                         //     errors && errors[field.name]
                                         //         ? "border-red-500"
                                         //         : "border-gray-400"
                                         // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
-                                        className="w-full border text-xs text-slate-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        className="w-full border text-xs text-slate-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required
                                     />
                                     {errors && errors[field.name] && (

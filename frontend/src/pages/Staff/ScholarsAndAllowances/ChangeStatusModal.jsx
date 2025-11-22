@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import InputModal from "../../../components/InputModal";
+import { formatCurrency } from "../../../utils/formatCurrency";
 
 function ChangeStatusModal({
     scholar,
@@ -12,12 +13,24 @@ function ChangeStatusModal({
     onRefreshAllowanceData,
     isLoading,
 }) {
-    const [allowance, setAllowance] = useState(scholar?.allowance || 0);
+    const [allowance, setAllowance] = useState(scholar?.allowance || 0.0);
     const [transportAllowance, setTransportAllowance] = useState(0);
-    const [loadAllowance, setLoadAllowance] = useState(0);
+    const [loadAllowance, setLoadAllowance] = useState(0.0);
     const [allowanceStatus, setAllowanceStatus] = useState(
-        scholar?.allowance_status || 0
+        scholar?.allowance_status || 0.0
     );
+    const [totalAllowance, setTotalAllowance] = useState(0.0);
+
+    const toNumber = (value) => parseFloat(value) || 0.0;
+
+    useEffect(() => {
+        const total =
+            toNumber(allowance) +
+            toNumber(transportAllowance) +
+            toNumber(loadAllowance);
+
+        setTotalAllowance(total);
+    }, [allowance, transportAllowance, loadAllowance]);
 
     useEffect(() => {
         if (scholar) {
@@ -124,10 +137,7 @@ function ChangeStatusModal({
                         Total
                     </label>
                     <div className="w-full border text-xs bg-gray-100 border-gray-200 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500">
-                        ₱{" "}
-                        {parseFloat(allowance) +
-                            parseFloat(transportAllowance) +
-                            parseFloat(loadAllowance)}
+                        {formatCurrency(totalAllowance)}
                     </div>
                 </div>
 
@@ -140,7 +150,7 @@ function ChangeStatusModal({
                         value={allowanceStatus}
                         onChange={(e) =>
                             handleAllowanceStatusChange(e.target.value)
-                        } // <-- change handler
+                        } 
                         className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     >
@@ -148,7 +158,6 @@ function ChangeStatusModal({
                             Select
                         </option>
                         <option value="not_received">Not Received</option>
-                        <option value="pending">Pending</option>
                         <option value="received">Received</option>
                     </select>
                 </div> */}

@@ -170,6 +170,10 @@ class RenderedHoursController
                         throw new \Exception('Failed to record hours');
                     }
 
+                    if (!$renderedHours->addCommunityServiceEntry($data)) {
+                        throw new \Exception('Failed to add community service hours');
+                    }
+
                     $activity->updateActivityStatus($data);
                     $notification->createActivityNotification($data);
                     $recentActivity->createRecentCommunityService($data);
@@ -199,6 +203,7 @@ class RenderedHoursController
                     $activity->markAsNotRecordedWithFeedback($data);
                     $notification->createActivityNotification($data);
                     $recentActivity->removeRecentActivityById($data['id']);
+                    $renderedHours->removeCommunityServiceEntry($data['id']);
                 }
             } elseif ($dutyType === 'event') {
                 foreach ($data['selected_scholars'] as $scholarId) {

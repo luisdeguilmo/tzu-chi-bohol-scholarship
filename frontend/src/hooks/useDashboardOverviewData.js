@@ -7,7 +7,7 @@ export const useDashboardOverviewData = (id, userType, schoolYear) => {
     const fetchStaffDashboardData = async () => {
         try {
             const response = await fetch(
-                `${BASE_URL}app/views/staff-dashboard-data.php?id=${id}`,
+                `${BASE_URL}app/views/staff-dashboard-data.php?id=${id}&school_year=${schoolYear}`,
                 {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
@@ -24,7 +24,7 @@ export const useDashboardOverviewData = (id, userType, schoolYear) => {
     const fetchAdminDashboardData = async () => {
         try {
             const response = await fetch(
-                `${BASE_URL}app/views/admin-dashboard-data.php?id=${id}`,
+                `${BASE_URL}app/views/admin-dashboard-data.php?id=${id}&school_year=${schoolYear}`,
                 {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
@@ -65,5 +65,9 @@ export const useDashboardOverviewData = (id, userType, schoolYear) => {
         }
     }, [userType, schoolYear]);
 
-    return { dashboardData, fetchStaffDashboardData, fetchScholarDashboardData };
+    return {
+        dashboardData,
+        fetchStaffDashboardData,
+        fetchScholarDashboardData,
+    };
 };

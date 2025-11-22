@@ -3,31 +3,31 @@ const scholarsInputFields = [
         label: "Name",
         name: "name",
         type: "text",
-        placeholder: "Name",
+        placeholder: "Enter name",
     },
     {
         label: "Year Level",
         name: "year_level",
         type: "text",
-        placeholder: "Year Level",
+        placeholder: "e.g., 1st Year",
     },
     {
         label: "School",
         name: "school",
         type: "text",
-        placeholder: "School",
+        placeholder: "School name",
     },
     {
         label: "Course",
         name: "course",
         type: "text",
-        placeholder: "Course",
+        placeholder: "Course name",
     },
     {
         label: "School Year Last Attended",
         name: "school_year",
         type: "text",
-        placeholder: "School Year",
+        placeholder: "e.g., 2024-2025",
     },
 ];
 

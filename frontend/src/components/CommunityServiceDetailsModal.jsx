@@ -95,6 +95,8 @@ const CommunityServiceDetailsModal = React.memo(
             setRenderedHours("");
         };
 
+        console.log(filePreviews);
+
         const handleSubmit = (e) => {
             e.preventDefault();
             if (action === "approve") {

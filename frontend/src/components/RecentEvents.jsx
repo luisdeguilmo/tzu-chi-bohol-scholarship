@@ -4,7 +4,7 @@ import { formatTime } from "../utils/formatTime";
 
 const RecentEvents = ({ events }) => {
     return (
-        <div className="mb-6 p-6 bg-white shadow-sm border  rounded-lg">
+        <div className="p-6 bg-white shadow-sm border  rounded-lg">
             <div className="flex justify-between">
                 <h2 className="font-bold text-gray-700">Recent Events</h2>
                 <Calendar className="w-5 h-5 text-gray-500" />

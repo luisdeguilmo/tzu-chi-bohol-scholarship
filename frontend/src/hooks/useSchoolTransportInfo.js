@@ -28,6 +28,9 @@ export const useSchoolTransportInfo = (id) => {
 
     const addTransportInfo = async (
         scholarId,
+        type,
+        university,
+        course,
         stayType,
         address,
         dailyTransportCost,
@@ -35,6 +38,9 @@ export const useSchoolTransportInfo = (id) => {
     ) => {
         const data = {
             scholar_id: scholarId,
+            type: type,
+            university: university,
+            course: course,
             stay_type: stayType,
             address: address,
             daily_transport_cost: dailyTransportCost,

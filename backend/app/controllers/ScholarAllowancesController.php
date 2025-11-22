@@ -9,6 +9,7 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Models\CollegeUniversityManagementModel;
 use App\Models\ScholarModel;
 use App\Models\ScholarsModel;
 use Config\Database;
@@ -49,23 +50,35 @@ class ScholarAllowancesController
     {
         try {
             $model = new ScholarsModel();
+            $school = new CollegeUniversityManagementModel();
 
-            $scholarAllowances = $model->getAllScholarAllowances();
+            $school_year = $_GET['school_year'] ?? null;
 
-            // Format results
-            $results = array_map(function ($scholar) {
-                return [
-                    'Name' => $scholar['first_name'] . ' ' . $scholar['last_name'],
-                    'Allowance' => $scholar['allowance'],
-                    'Transport Allowance' => $scholar['transport_allowance'],
-                    'Load Allowance' => $scholar['load_allowance'],
-                ];
-            }, $scholarAllowances);
+            $collegesAndUniversities = $school->getAllCollegesAndUniversitiesAlphabetically();
+
+            $result = [];
+
+            foreach ($collegesAndUniversities as $school) {
+                $scholarAllowances = $model->getAllScholarAllowances($school_year, $school['name']);
+
+                $formattedScholars = array_map(function ($scholar) {
+                    return [
+                        'YR. Level' => $scholar['year_level'],
+                        'Last Name' => $scholar['last_name'],
+                        'First Name' => $scholar['first_name'],
+                        'Allowance' => $scholar['allowance'],
+                        'Internet Allowance' => $scholar['load_allowance'],
+                        'Transportation Allowance' => $scholar['transport_allowance'],
+                    ];
+                }, $scholarAllowances);
+
+                $result[] = ['School' => $school['name'], 'Scholar' => $formattedScholars];
+            }
 
             http_response_code(200);
             echo json_encode([
                 'success' => true,
-                'data' => $results,
+                'data' => $result,
             ]);
         } catch (\Exception $e) {
             http_response_code(500);

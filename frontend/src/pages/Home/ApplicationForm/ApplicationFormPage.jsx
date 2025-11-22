@@ -24,7 +24,7 @@ const generateInitialState = (fieldsConfig) => {
     const initialState = {};
     fieldsConfig.forEach((field) => {
         initialState[field.name] =
-            field.type === "select" ? field.defaultValue || "" : "s";
+            field.type === "select" ? field.defaultValue || "s" : "s";
     });
     return initialState;
 };
@@ -94,10 +94,10 @@ function ApplicationForm({ includeRequirements = true }) {
         uploaded_files: [],
     });
 
-    const { coursesAccepted, fetchCoursesAccepted, resetCoursesAccepted } =
-        useCoursesAccepted(
-            applicantInformation?.educationalInfo?.present_school
-        );
+    // const { coursesAccepted, fetchCoursesAccepted, resetCoursesAccepted } =
+    //     useCoursesAccepted(
+    //         applicantInformation?.educationalInfo?.present_school
+    //     );
 
     // Initialize personal information from API
     useEffect(() => {
@@ -158,6 +158,7 @@ function ApplicationForm({ includeRequirements = true }) {
                     present_location: educationalInfo?.present_location || "",
                     present_course1: educationalInfo?.present_course1 || "",
                     present_course2: educationalInfo?.present_course2 || "",
+                    year_level: educationalInfo?.year_level || "",
                     selected_school_id:
                         educationalInfo?.selected_school_id || "",
                 },
@@ -239,8 +240,6 @@ function ApplicationForm({ includeRequirements = true }) {
         }
     }, [applicantInformation]);
 
-    console.log(formData);
-
     // Generic handler for input changes
     const handleInputChange = (section, e) => {
         const { name, value } = e.target;
@@ -277,10 +276,12 @@ function ApplicationForm({ includeRequirements = true }) {
     const handleRenewSubmit = async (e) => {
         e.preventDefault();
         formData.application_info.school_year = getCurrentSchoolYear();
+        formData.application_info.application_type = "renew";
         formData.application_info.status = "Old";
         formData.application_info.scholar_id = user.user_id;
         formData.personal_information.scholar_id = user.user_id;
         formData.educational_background.scholar_id = user.user_id;
+        formData.parents_guardian.scholar_id = user.user_id;
 
         try {
             const formDataToSend = new FormData();
@@ -308,8 +309,9 @@ function ApplicationForm({ includeRequirements = true }) {
             toast.success("Application submitted successfully!");
             setLoading(false);
             setTimeout(() => {
-                navigate("/scholar/renew");
+                navigate("/scholar/dashboard");
             }, 1000);
+            setActiveTab("dashboard")
         } catch (error) {
             console.log("Error: ", error);
             alert("Failed: ", error);
@@ -317,16 +319,14 @@ function ApplicationForm({ includeRequirements = true }) {
         console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
     };
 
-    const handleReSubmit = async (e) => {
+    const handleReSubmitRenew = async (e) => {
         e.preventDefault();
         formData.application_info.school_year = getCurrentSchoolYear();
-        formData.application_info.application_status = "renew";
+        formData.application_info.application_type = "resubmit";
         // formData.application_info.status = "Old";
         formData.application_info.scholar_id = user.user_id;
         // formData.personal_information.scholar_id = user.user_id;
         // formData.educational_background.scholar_id = user.user_id;
-
-        console.log("HUHUHUHHUHUH");
 
         try {
             const formDataToSend = new FormData();
@@ -369,7 +369,7 @@ function ApplicationForm({ includeRequirements = true }) {
         e.preventDefault();
         formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.status = "New";
-        formData.educational_background.year_level = user.user_id;
+        formData.educational_background.year_level = 1;
         console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
 
         const submitStudentData = async () => {
@@ -464,6 +464,7 @@ function ApplicationForm({ includeRequirements = true }) {
                         handleInputChange={handleInputChange}
                         prevStep={prevStep}
                         nextStep={nextStep}
+                        isRenewal={!includeRequirements}
                     />
                 );
             case 3:
@@ -474,6 +475,12 @@ function ApplicationForm({ includeRequirements = true }) {
                         handleInputChange={handleInputChange}
                         prevStep={prevStep}
                         nextStep={nextStep}
+                        isTzuChiSiblingsExisted={
+                            applicantInformation?.tzuChiSiblings?.length > 0
+                        }
+                        isOtherAssistanceExisted={
+                            applicantInformation?.assistanceInfo?.length > 0
+                        }
                     />
                 );
             case 4:
@@ -503,8 +510,20 @@ function ApplicationForm({ includeRequirements = true }) {
                         formData={formData}
                         prevStep={prevStep}
                         nextStep={nextStep}
+                        // handleSubmit={
+                        //     !includeRequirements
+                        //         ? handleRenewSubmit
+                        //         : handleSubmit
+                        // }
                         handleSubmit={
-                            !includeRequirements ? handleReSubmit : handleSubmit
+                            !includeRequirements &&
+                            !applicantInformation?.applicationInfo?.scholar_id
+                                ? handleRenewSubmit
+                                : !includeRequirements &&
+                                    applicantInformation?.applicationInfo
+                                        ?.scholar_id === user.user_id
+                                  ? handleReSubmitRenew
+                                  : handleSubmit
                         }
                         isLast={true}
                     />

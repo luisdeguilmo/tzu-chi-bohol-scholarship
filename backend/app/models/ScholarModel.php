@@ -28,6 +28,19 @@ class ScholarModel
         $this->pdo = $db->getConnection();
     }
 
+    public function getScholarType($id, $school_year)
+    {
+        $query =
+            "SELECT type FROM application_info WHERE status = 'scholar' AND (scholar_id = :id OR application_id = :id) AND school_year = :school_year LIMIT 1";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindParam(':school_year', $school_year);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['type'] ?? null;
+    }
+
     public function getAllScholars()
     {
         $query =
@@ -83,6 +96,42 @@ class ScholarModel
         return $stmt->execute();
     }
 
+    public function renew($scholar, $application_id, $scholar_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
+                  SET application_id = :application_id,
+                    scholar_id = :scholar_id,
+                      name = :name,
+                      year_level = :year_level,
+                      school = :school,
+                      course = :course,
+                      school_year = :school_year";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize inputs
+        $this->application_id = $application_id;
+        $this->name = htmlspecialchars(strip_tags($scholar['name']));
+        $this->year_level = htmlspecialchars(strip_tags($scholar['year_level']));
+        $this->school = htmlspecialchars(strip_tags($scholar['school']));
+        $this->course = htmlspecialchars(strip_tags($scholar['course']));
+        $this->school_year = htmlspecialchars(strip_tags($scholar['school_year']));
+
+        // Bind values
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':scholar_id', $scholar_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':year_level', $this->year_level);
+        $stmt->bindParam(':school', $this->school);
+        $stmt->bindParam(':course', $this->course);
+        $stmt->bindParam(':school_year', $this->school_year);
+
+        return $stmt->execute();
+    }
+
     public function update($scholar, $id)
     {
         $query =
@@ -114,6 +163,14 @@ class ScholarModel
         $stmt->bindParam(':course', $this->course);
         $stmt->bindParam(':school_year', $this->school_year);
 
+        return $stmt->execute();
+    }
+
+    public function deleteByApplicationId($applicationId)
+    {
+        $query = 'DELETE FROM ' . $this->table_name . ' WHERE application_id = :application_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':application_id', $applicationId, \PDO::PARAM_INT);
         return $stmt->execute();
     }
 

@@ -13,6 +13,8 @@ import useMonthlyAllowanceSummary from "../../../hooks/useMonthlyAllowanceSummar
 import { formatDate } from "../../../utils/formatDate";
 import { DownloadIcon } from "lucide-react";
 import { formatMonth } from "../../../utils/formatMonth";
+import { useDownloadExcel } from "../../../hooks/useDownloadExcel";
+import { toast } from "react-toastify";
 
 export default function MonthlyAllowanceSummaryPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -24,6 +26,7 @@ export default function MonthlyAllowanceSummaryPage() {
 
     const { loading, allowanceCycles, fetchAllowanceCycles } =
         useMonthlyAllowanceSummary(month, year);
+    const { downloadExcel } = useDownloadExcel();
 
     useEffect(() => {
         fetchAllowanceCycles();
@@ -52,6 +55,17 @@ export default function MonthlyAllowanceSummaryPage() {
     const handleChangeTab = (tab) => {
         setActiveTab(tab);
         setCurrentPage(1);
+    };
+
+    const handleDownloadExcel = (item) => {
+        if (!item.is_processed) {
+            toast.warn(
+                `No file available for this month. Allowance was not processed.`
+            );
+            return;
+        }
+
+        downloadExcel(item.id, item.file_name);
     };
 
     const handleRefresh = () => {
@@ -138,12 +152,20 @@ export default function MonthlyAllowanceSummaryPage() {
                                     className={`py-1 px-3 rounded-full ${
                                         item.is_processed
                                             ? "bg-green-100 text-green-800"
-                                            : "bg-yellow-100 text-yellow-800"
+                                            : !item.is_processed &&
+                                                date.getCurrentYearMonth() >
+                                                    item.cycle_month.slice(0, 7)
+                                              ? "bg-orange-100 text-orange-800"
+                                              : "bg-yellow-100 text-yellow-800"
                                     }`}
                                 >
                                     {item.is_processed
                                         ? "Processed"
-                                        : "Pending"}
+                                        : !item.is_processed &&
+                                            date.getCurrentYearMonth() >
+                                                item.cycle_month.slice(0, 7)
+                                          ? "Skipped"
+                                          : "Pending"}
                                 </span>
                             </td>
                             <td className="py-3 whitespace-nowrap text-xs">
@@ -152,6 +174,9 @@ export default function MonthlyAllowanceSummaryPage() {
                             <td className="py-1 whitespace-nowrap text-right font-medium">
                                 <div className="flex items-center justify-center">
                                     <button
+                                        onClick={() =>
+                                            handleDownloadExcel(item)
+                                        }
                                         className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"
                                         title="Download File"
                                     >

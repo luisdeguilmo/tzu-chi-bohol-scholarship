@@ -3,10 +3,38 @@
 @tailwind utilities;
 
 * {
-    font-family: 'Poppins-Regular';
+    font-family: "Poppins-Regular";
 }
 
 @font-face {
-    font-family: 'Poppins-Regular';
-    src: url('./assets/Poppins-Regular.ttf');
+    font-family: "Poppins-Regular";
+    src: url("./assets/Poppins-Regular.ttf");
+}
+
+.title {
+    font-family: "Times New Roman", serif;
+}
+
+.quote {
+    font-family: "Times New Roman", serif;
+    font-size: 24px;
+    font-style: italic;
+    line-height: 1.5;
+    margin: 40px;
+}
+.author {
+    font-family: "Times New Roman", serif;
+    font-size: 22px;
+    text-align: right;
+    margin-right: 60px;
+}
+
+.mobile-menu {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .7s ease;
+}
+
+.mobile-menu.open {
+    max-height: 500px; /* bigger than actual content */
 }

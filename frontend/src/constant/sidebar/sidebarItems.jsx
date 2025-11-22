@@ -33,12 +33,12 @@ export const scholarSidebarItems = [
         icon: <Calendar className="w-5 h-5 text-slate-600" />,
         navigate: "/scholar/events",
     },
-    {
-        itemName: "recent",
-        text: "Recent Activities",
-        icon: <BookOpen className="w-5 h-5 text-slate-600" />,
-        navigate: "/scholar/recent-activities",
-    },
+    // {
+    //     itemName: "recent",
+    //     text: "Recent Activities",
+    //     icon: <BookOpen className="w-5 h-5 text-slate-600" />,
+    //     navigate: "/scholar/recent-activities",
+    // },
     {
         itemName: "archive",
         text: "Archived Activities",
@@ -92,11 +92,12 @@ export const staffSidebarItems = [
         itemName: "records",
         icon: <Layers className="w-5 h-5 text-slate-600" />,
         subItems: [
-            { text: "Scholars", navigate: "/staff/scholars" },
+            { text: "Scholars and Allowances", navigate: "/staff/scholars-and-allowances" },
             {
                 text: "Monthly Allowance Summary",
                 navigate: "/staff/monthly-allowance-summary",
             },
+            { text: "Scholars", navigate: "/staff/scholars" },
             { text: "Applications", navigate: "/staff/application-records" },
         ],
     },
@@ -152,23 +153,23 @@ export const adminSidebarItems = [
         icon: <LayoutDashboard className="w-5 h-5 text-slate-600" />,
         navigate: "/admin/dashboard",
     },
+    // {
+    //     text: "Users",
+    //     itemName: "users",
+    //     icon: <Users className="w-5 h-5 text-slate-600" />,
+    //     navigate: "/admin/users",
+    // },
     {
-        text: "Users",
-        itemName: "users",
-        icon: <Users className="w-5 h-5 text-slate-600" />,
-        navigate: "/admin/users",
-    },
-    {
-        text: "Manage Accounts",
+        text: "Users & Accounts",
         itemName: "manage_accounts",
         icon: <UserCog className="w-5 h-5 text-slate-600" />,
         subItems: [
             {
-                text: "Scholar Accounts",
+                text: "Scholars",
                 navigate: "/admin/scholar-account-management",
             },
             {
-                text: "Staff Accounts",
+                text: "Staff",
                 navigate: "/admin/staff-account-management",
             },
         ],

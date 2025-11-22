@@ -10,7 +10,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
-// The controller instantiation and execution are handled within QualificationController.php
-
 ?>

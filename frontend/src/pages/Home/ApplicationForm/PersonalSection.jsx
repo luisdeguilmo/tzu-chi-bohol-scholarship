@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormFields from "./FormFields";
 import NavigationButtons from "./NavigationButtons";
 import FORM_SECTIONS from "../../../constant/application/formSections";
 import formConfig from "../../../constant/application/formConfig";
+import { useLocation } from "react-router-dom";
 
 const PersonalSection = ({
     formData,
@@ -11,10 +12,21 @@ const PersonalSection = ({
     nextStep,
 }) => {
     const [errors, setErrors] = useState({});
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        // Scrolls to the top-left corner of the document
+        window.scrollTo(0, 0);
+    }, [pathname]);
 
     return (
         <form className="w-[85%] sm:w-[80%] xl:w-[70%] mx-auto">
-            <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">Personal Information</h2>
+            {/* <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">
+                Personal Information
+            </h2> */}
+            <h2 className="mb-12 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 md:text-lg text-sm">
+                Personal Information
+            </h2>
             <FormFields
                 fields={formConfig[FORM_SECTIONS.PERSONAL]}
                 section={FORM_SECTIONS.PERSONAL}
@@ -29,7 +41,7 @@ const PersonalSection = ({
                 nextStep={nextStep}
                 formData={formData}
                 formConfig={formConfig}
-                section={'Personal'}
+                section={"Personal"}
                 sections={[FORM_SECTIONS.PERSONAL]}
             />
         </form>

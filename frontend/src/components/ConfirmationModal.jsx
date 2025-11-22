@@ -16,6 +16,7 @@ function ConfirmationModal({
     setFeedback,
     deactivationReason,
     setDeactivationReason,
+    isScholarAccount = false,
 }) {
     const resetFields = () => {
         if (action === "reject") {
@@ -60,7 +61,7 @@ function ConfirmationModal({
                             ></textarea>
                         </label>
                     )}
-                    {action === "deactivate" && (
+                    {isScholarAccount && action === "deactivate" && (
                         <div className="mt-2 block w-full relative">
                             <label className="block mb-1 text-gray-600 text-xs">
                                 Reason for Deactivation
@@ -80,7 +81,7 @@ function ConfirmationModal({
                                 {/* <option value="pending">Pending</option> */}
                                 <option value="graduated">Graduated</option>
                                 <option value="terminated">Terminated</option>
-                                <option value="terminated">Other</option>
+                                {/* <option value="terminated">Other</option> */}
                             </select>
                         </div>
                     )}

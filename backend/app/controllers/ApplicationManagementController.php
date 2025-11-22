@@ -23,6 +23,7 @@ use App\Models\ApplicantModel;
 use App\Models\BatchModel;
 use App\Models\EmailMessageModel;
 use App\Models\ScholarsModel;
+use App\Models\SettingsModel;
 use App\Services\PHPMailerBrevoService; // Update this line
 use Config\Database;
 
@@ -107,7 +108,7 @@ class ApplicationManagementController
                     'reject',
                     'reject_renew',
                     'send_schedule',
-                    'examination_passed',
+                    'examination_result',
                     'examination_failed',
                     'interview_passed',
                     'interview_failed',
@@ -189,6 +190,34 @@ class ApplicationManagementController
 
                 if (!$batchModel->updateBatch($data['batch_id'])) {
                     throw new \Exception('Failed to update');
+                }
+            } elseif ($action === 'examination_result') {
+                $passingScoreModel = new SettingsModel();
+
+                $passedExaminationMessage = $messageModel->getPassedMessage('entrance_examination');
+                $failedExaminationMessage = $messageModel->getFailedMessage('entrance_examination');
+                $passingScore = $passingScoreModel->getPassingScore();
+
+                foreach ($data['applicants'] as $applicant) {
+                    if ($applicant['score'] >= $passingScore) {
+                        if (
+                            !$emailService->sendExaminationPassedEmail(
+                                $applicant,
+                                $passedExaminationMessage,
+                            )
+                        ) {
+                            throw new \Exception('Failed to send email');
+                        }
+                    } else {
+                        if (
+                            !$emailService->sendExaminationFailedEmail(
+                                $applicant,
+                                $failedExaminationMessage,
+                            )
+                        ) {
+                            throw new \Exception('Failed to send email');
+                        }
+                    }
                 }
             } elseif ($action === 'examination_passed') {
                 $message = $messageModel->getPassedMessage('entrance_examination');

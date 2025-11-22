@@ -1,20 +1,19 @@
 import { useState } from "react";
 import { generatePDF } from "../utils/generatePdf";
 
-export const usePdfActions = (fetchApplicantData) => {
+export const usePdfActions = (type, fetchApplicantData) => {
     const [applicationId, setApplicationId] = useState(null);
 
-    const viewPdf = async (id) => {
+    const viewPdf = async ({ applicationId, scholarId }) => {
         try {
             // Set the application ID first
-            setApplicationId(id);
 
             // Fetch applicant data and wait for it to complete
-            const data = await fetchApplicantData(id);
+            const data = await fetchApplicantData(applicationId);
 
             // Use the returned data directly instead of relying on state
             if (data) {
-                await generatePDF("view", id, data);
+                await generatePDF(type, "view", applicationId, scholarId, data);
             } else {
                 console.error("No applicant data received");
                 alert("Unable to generate PDF: No applicant data found");
@@ -25,17 +24,22 @@ export const usePdfActions = (fetchApplicantData) => {
         }
     };
 
-    const downloadPdf = async (id) => {
+    const downloadPdf = async ({ applicationId, scholarId }) => {
         try {
             // Set the application ID first
-            setApplicationId(id);
 
             // Fetch applicant data and wait for it to complete
-            const data = await fetchApplicantData(id);
+            const data = await fetchApplicantData(applicationId);
 
             // Use the returned data directly instead of relying on state
             if (data) {
-                await generatePDF("download", id, data);
+                await generatePDF(
+                    type,
+                    "download",
+                    applicationId,
+                    scholarId,
+                    data
+                );
             } else {
                 console.error("No applicant data received");
                 alert("Unable to generate PDF: No applicant data found");
@@ -46,5 +50,5 @@ export const usePdfActions = (fetchApplicantData) => {
         }
     };
 
-    return { applicationId, viewPdf, downloadPdf };
+    return { viewPdf, downloadPdf };
 };

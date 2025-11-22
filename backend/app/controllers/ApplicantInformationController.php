@@ -32,7 +32,7 @@ class ApplicantInformationController
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
-        $this->currentYear = 2024;
+        $this->currentYear = date('Y');
     }
 
     public function processRequest()

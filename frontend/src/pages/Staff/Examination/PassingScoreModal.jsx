@@ -2,19 +2,21 @@ import { X } from "lucide-react";
 import { useSettings } from "../../../hooks/useSettings";
 import { useEffect, useState } from "react";
 
-const PassingScoreModal = ({ isOpen, onClose, onRefresh }) => {
-    const { passingScore, createPassingScore } = useSettings();
+const PassingScoreModal = ({
+    passingScore,
+    onSetPassingScore,
+    isOpen,
+    onClose,
+    onRefresh,
+}) => {
     const [newPassingScore, setNewPassingScore] = useState(0);
 
     useEffect(() => {
         setNewPassingScore(passingScore);
     }, [passingScore]);
 
-    console.log(passingScore);
-    console.log(newPassingScore);
-
     const handleCreatePassingScore = async () => {
-        await createPassingScore(newPassingScore);
+        await onSetPassingScore(newPassingScore);
         await onRefresh();
         onClose(false);
     };
@@ -60,7 +62,7 @@ const PassingScoreModal = ({ isOpen, onClose, onRefresh }) => {
                             value={newPassingScore}
                             required
                             onChange={(e) => setNewPassingScore(e.target.value)}
-                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         />
                     </label>
                     <button

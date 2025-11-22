@@ -231,6 +231,7 @@ class ScholarAccountController
 
             $data = json_decode(file_get_contents('php://input'), true);
             $action = $_GET['action'] ?? null;
+            $reason = $_GET['reason'] ?? null;
 
             if (!$data || !isset($data['scholarId'])) {
                 throw new \Exception('Missing required field: scholar_id');
@@ -243,8 +244,14 @@ class ScholarAccountController
                     throw new \Exception('Failed to activate account');
                 }
             } elseif ($action === 'deactivate') {
-                if (!$model->updateAccountStatus($data['scholarId'], 'deactivated')) {
-                    throw new \Exception('Failed to deactivate account');
+                if ($reason === 'graduated') {
+                    if (!$model->updateAccountStatus($data['scholarId'], 'graduated')) {
+                        throw new \Exception('Failed to deactivate account');
+                    }
+                } elseif ($reason === 'terminated') {
+                    if (!$model->updateAccountStatus($data['scholarId'], 'terminated')) {
+                        throw new \Exception('Failed to deactivate account');
+                    }
                 }
             }
 

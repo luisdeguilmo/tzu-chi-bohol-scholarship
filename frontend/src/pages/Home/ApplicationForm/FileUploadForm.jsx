@@ -186,14 +186,6 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
         setPicturePreview(null);
     };
 
-    console.log(
-        "---------------------------------------------------------------------"
-    );
-    console.log(formData);
-    console.log(
-        "---------------------------------------------------------------------"
-    );
-
     return (
         <>
             <h2 className="font-bold text-sm text-gray-700 mt-6 mb-4">

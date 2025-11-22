@@ -7,12 +7,22 @@ import UpcomingEvents from "./UpcomingEvents";
 import { useEvents } from "../hooks/useEvents";
 import RecentActivities from "./RecentActivities";
 import { useRecentActivities } from "../hooks/useRecentActivities";
-import RecentEvents from "./RecentEvents";
 import LivingInfoFormModal from "./LivingInfoFormModal";
 import { useEffect, useRef, useState } from "react";
 import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
 import { useNavigate } from "react-router-dom";
 import { useSidebar } from "../context/SidebarContext";
+import FunnelChart from "./FunnelChart";
+import ScholarEngagementChart from "./ScholarEngagementChart";
+import AllowanceChart from "./AllowanceChart";
+import DutyHoursChart from "./DutyHoursChart";
+import { Download } from "lucide-react";
+
+import ScholarsByProgramChart from "./ScholarsByProgramChart";
+import ApplicationTrendsChart from "./ApplicationTrendsChart";
+import ApprovalRejectionChart from "./ApprovalRejectionChart";
+import { exportStaffDashboardWorkbook } from "../utils/exportStaffDashboardWorkbook";
+import { exportAdminDashboardWorkbook } from "../utils/exportAdminDashboardWorkbook";
 
 function QuickOverview() {
     const { user } = useAuth();
@@ -31,6 +41,8 @@ function QuickOverview() {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const hasInitialized = useRef(false);
 
+    console.log(dashboardData);
+
     useEffect(() => {
         if (
             !hasInitialized.current &&
@@ -45,22 +57,57 @@ function QuickOverview() {
 
     return (
         <>
-            <div className="w-full p-6">
+            <div className="w-full px-6 pt-6 pb-2">
                 {/* <h2 className="text-xl font-bold text-slate-600 mb-4">Dashboard</h2> */}
                 <div className="p-6 mb-6 shadow-lg bg-gradient-to-r from-green-600 to-green-700 rounded-lg">
-                    <h2 className="text-2xl font-bold text-white mb-1">
-                        Welcome back,{" "}
-                        {user.type === "admin"
-                            ? "Admin"
-                            : dashboardData.userName}
-                        !
-                    </h2>
-                    <p className="text-xs text-white">
-                        Today is {date.getCurrentDay()},{" "}
-                        {formatDate(date.getCurrentDateAndTime())}
-                    </p>
+                    <div className="flex flex-col gap-4 md:flex-row justify-between md:items-center">
+                        <div>
+                            <h2 className="text-2xl font-bold text-white mb-1">
+                                Welcome back,{" "}
+                                {user.type === "admin"
+                                    ? user.name
+                                    : dashboardData.userName}
+                                !
+                            </h2>
+                            <p className="text-xs text-white">
+                                Today is {date.getCurrentDay()},{" "}
+                                {formatDate(date.getCurrentDateAndTime())}
+                            </p>
+                        </div>
+
+                        {/* {user.type !== "scholar" && (
+                            <button
+                                onClick={() => {
+                                    if (user.type === "staff") {
+                                        exportStaffDashboardWorkbook(
+                                            dashboardData?.applicationData,
+                                            dashboardData?.tenScholarsByHighestDutyHours,
+                                            dashboardData?.monthlyAllowanceDistributionData,
+                                            dashboardData?.eventAttendanceData,
+                                            dashboardData?.communityServiceHoursCompletionData
+                                        );
+                                    } else {
+                                        exportAdminDashboardWorkbook(
+                                            dashboardData?.scholarsByProgram,
+                                            dashboardData?.applicationsSubmittedAndApplicationsApproved,
+                                            dashboardData?.approvedAndRejectedByStage,
+                                            dashboardData?.eventAttendanceData,
+                                            dashboardData?.communityServiceHoursCompletionData
+                                        );
+                                    }
+                                }}
+                                className="flex md:m-0 mx-auto items-center gap-2 text-sm text-white 
+                                border border-white/40 px-4 py-2 rounded-lg
+                                hover:bg-white/20 cursor-pointer transition"
+                            >
+                                <Download className="w-4 h-4" />
+                                Export Dashboard Data
+                            </button>
+                        )} */}
+                    </div>
                 </div>
-                <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+
+                <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                     <OverviewDataCard
                         overviewData={
                             user.type === "staff"
@@ -83,16 +130,156 @@ function QuickOverview() {
                 )}
 
                 {user.type === "staff" && (
-                    <div>
-                        <UpcomingEvents events={events} />
-                        <RecentEvents events={recentEvents} />
-                    </div>
+                    <>
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                            <div className="col-span-5 p-6 border bg-white rounded-lg">
+                                <h2 className="mb-4 font-bold">
+                                    Application Funnel
+                                </h2>
+                                <FunnelChart
+                                    applicationData={
+                                        dashboardData?.applicationData
+                                    }
+                                />
+                            </div>
+
+                            {/* <div className="col-span-3 lg:col-span-2 p-6 border bg-white rounded-lg">
+                                <h2 className="mb-4 font-bold">
+                                    Orientation & Awarding Attendance
+                                </h2>
+                                <AttendanceChart />
+                            </div> */}
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                            <div className="col-span-3 lg:col-span-2 mt-6 p-6 border bg-white rounded-lg">
+                                <h2 className="mb-4 font-bold">
+                                    Duty Hours Chart (Top 10)
+                                </h2>
+                                <DutyHoursChart
+                                    scholars={
+                                        dashboardData?.tenScholarsByHighestDutyHours
+                                    }
+                                />
+                            </div>
+
+                            <div className="col-span-3 lg:mt-6 p-6 border bg-white rounded-lg">
+                                <h2 className="mb-4 font-bold">
+                                    Monthly Allowance Distribution
+                                </h2>
+                                <AllowanceChart
+                                    monthlyAllowanceDistributionData={
+                                        dashboardData?.monthlyAllowanceDistributionData
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        <div className="w-[100%] mt-6 p-6 border bg-white rounded-lg">
+                            <h2 className="mb-4 font-bold">
+                                Scholar Engagement Trends
+                            </h2>
+                            <ScholarEngagementChart
+                                eventAttendanceData={
+                                    dashboardData?.eventAttendanceData
+                                }
+                                communityServiceHoursCompletionData={
+                                    dashboardData?.communityServiceHoursCompletionData
+                                }
+                            />
+                        </div>
+
+                        {/* <div className="mt-6 border">
+                            <UpcomingEvents events={events} />
+                            <RecentEvents events={recentEvents} />
+                        </div> */}
+                    </>
+                )}
+
+                {user.type === "admin" && (
+                    <>
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                            <div className="col-span-2 p-6 border bg-white rounded-lg">
+                                <h2 className="font-bold">
+                                    Scholars by Program
+                                </h2>
+                                <ScholarsByProgramChart
+                                    scholarData={
+                                        dashboardData?.scholarsByProgram
+                                    }
+                                />
+                            </div>
+
+                            <div className="col-span-3 p-6 border bg-white rounded-lg">
+                                <h2 className="font-bold">
+                                    Application Trends
+                                </h2>
+                                <ApplicationTrendsChart
+                                    trendData={
+                                        dashboardData?.applicationsSubmittedAndApplicationsApproved
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                            <div className="col-span-2 mt-6 p-6 border bg-white rounded-lg">
+                                <h2 className="font-bold">
+                                    Approval vs Rejection by Stage
+                                </h2>
+                                <ApprovalRejectionChart
+                                    stageData={
+                                        dashboardData?.approvedAndRejectedByStage
+                                    }
+                                />
+                            </div>
+
+                            <div className="col-span-3 mt-6 p-6 border bg-white rounded-lg">
+                                <h2 className="mb-4 font-bold">
+                                    Scholar Engagement Trends
+                                </h2>
+                                <ScholarEngagementChart
+                                    eventAttendanceData={
+                                        dashboardData?.eventAttendanceData
+                                    }
+                                    communityServiceHoursCompletionData={
+                                        dashboardData?.communityServiceHoursCompletionData
+                                    }
+                                />
+                            </div>
+
+                            {/* <div className="col-span-3 lg:mt-6 p-6 border bg-white rounded-lg">
+                                <h2 className="mb-4 font-bold">
+                                    Monthly Allowance Distribution
+                                </h2>
+                                <AllowanceChart
+                                    monthlyAllowanceDistributionData={
+                                        dashboardData?.monthlyAllowanceDistributionData
+                                    }
+                                />
+                            </div> */}
+                        </div>
+
+                        {/* <div className="w-[100%] mt-6 p-6 border bg-white rounded-lg">
+                            <h2 className="mb-4 font-bold">
+                                Scholar Engagement Trends
+                            </h2>
+                            <ScholarEngagementChart
+                                eventAttendanceData={
+                                    dashboardData?.eventAttendanceData
+                                }
+                                communityServiceHoursCompletionData={
+                                    dashboardData?.communityServiceHoursCompletionData
+                                }
+                            />
+                        </div> */}
+                    </>
                 )}
             </div>
 
             {!dashboardData.hasSubmittedLivingInfo && (
                 <LivingInfoFormModal
-                    label={`🎉 Congratulations, ${dashboardData.userName}!`}
+                    label={`Scholar Information Form`}
                     isOpen={isFormModalOpen}
                     onClose={setIsFormModalOpen}
                 />

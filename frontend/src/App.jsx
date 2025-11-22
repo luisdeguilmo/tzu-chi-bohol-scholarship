@@ -30,7 +30,6 @@ import Scholars from "./pages/Staff/Scholars/Scholars";
 import ApplicationRecordsPage from "./pages/Staff/ApplicationRecords/ApplicationRecordsPage";
 import StaffAccounts from "./pages/Admin/StaffAccounts/StaffAccounts";
 import ReviewedApplications from "./pages/Staff/ReviewedApplications/ReviewedApplications";
-import ReviewPage from "./pages/Home/ApplicationForm/ReviewPage";
 import UserAccountPage from "./components/UserAccountPage";
 import CommunityServices from "./pages/Scholar/CommunityServices/CommunityServices";
 import Events from "./pages/Scholar/Events/Events";
@@ -42,6 +41,9 @@ import OrientationAndAwarding from "./pages/Staff/OrientationAndAwarding/Orienta
 import MonthlyAllowanceSummaryPage from "./pages/Staff/MonthlyAllowanceSummary/MonthlyAllowanceSummaryPage";
 import StaffAccount from "./components/StaffAccountPage";
 import AdminAccount from "./components/AdminAccountPage";
+import AboutSection from "./pages/Home/About";
+import OurMission from "./pages/Home/OurMission";
+import ScholarsAndAllowances from "./pages/Staff/ScholarsAndAllowances/ScholarsAndAllowances";
 
 // Component for role-specific login forms
 const RoleSpecificLoginForm = ({ role }) => {
@@ -55,10 +57,8 @@ export function App() {
                 {/* Public Routes - HomePageLayout */}
                 <Route element={<HomePageLayout />}>
                     <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<ReviewPage />} />
-
-                    {/* Generic login route */}
-                    {/* <Route path="/login" element={<LoginForm />} /> */}
+                    <Route path="/about" element={<AboutSection />} />
+                    <Route path="/our-mission" element={<OurMission />} />
 
                     {/* Role-specific login routes */}
                     <Route
@@ -137,6 +137,7 @@ export function App() {
                         element={<CollegeUniversityManagement />}
                     />
                     <Route path="/staff/scholars" element={<Scholars />} />
+                    <Route path="/staff/scholars-and-allowances" element={<ScholarsAndAllowances />} />
                     <Route
                         path="/staff/application-records"
                         element={<ApplicationRecordsPage />}
@@ -208,7 +209,7 @@ export function App() {
             </Routes>
 
             <ToastContainer
-                toastClassName={"md:text-sm text-xs text-gray-700 text-center"}
+                toastClassName={"md:text-xs text-xs text-gray-700 text-center"}
                 position="top-center"
                 autoClose={3000}
             />

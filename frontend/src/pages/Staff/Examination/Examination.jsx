@@ -27,6 +27,8 @@ import PassingScoreModal from "./PassingScoreModal";
 import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 import FileUploadFormModal from "../../../components/FileUploadFormModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import { useSettings } from "../../../hooks/useSettings";
 
 export default function Examination() {
     const [isEmailSent, setIsEmailSent] = useState(false);
@@ -39,6 +41,8 @@ export default function Examination() {
 
     const [isOpen, setIsOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+        useState(false);
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [isDocumentFormModalOpen, setIsDocumentFormModalOpen] =
         useState(false);
@@ -52,7 +56,6 @@ export default function Examination() {
     const [batchName, setBatchName] = useState("");
 
     const {
-        pageNum,
         setPageNum,
         selectedApplicants,
         setSelectedApplicants,
@@ -73,8 +76,17 @@ export default function Examination() {
         applications,
         "profile-picture"
     );
-    const { isLoading, sendExaminationPassed, sendExaminationFailed } =
-        manageApplication();
+    const { isLoading, sendExaminationResult } = manageApplication();
+
+    const { passingScore, createPassingScore } = useSettings();
+
+    const passedApplicants = applications.filter(
+        (application) => application.score >= passingScore
+    );
+
+    const failedApplicants = applications.filter(
+        (application) => application.score < passingScore
+    );
 
     useEffect(() => {
         fetchBatches();
@@ -193,16 +205,16 @@ export default function Examination() {
     };
 
     const handleSendEmail = async () => {
-        let success = null;
+        const success = await sendExaminationResult(applications);
 
-        if (status === "passed") {
-            success = sendExaminationPassed(applications);
-        } else if (status === "failed") {
-            success = sendExaminationFailed(applications);
-        }
+        // if (status === "passed") {
+        //     success = sendExaminationPassed(applications);
+        // } else if (status === "failed") {
+        //     success = sendExaminationFailed(applications);
+        // }
 
         if (success) {
-            setIsEmailSent(true);
+            setIsConfirmationModalOpen(false);
         }
     };
 
@@ -240,6 +252,7 @@ export default function Examination() {
                 onChangeCurrentPage={setCurrentPage}
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
+                passingScore={passingScore}
                 addButton={status === "passed" || status === "failed"}
                 buttonLabel={
                     status === "passed" || status === "failed"
@@ -382,14 +395,53 @@ export default function Examination() {
                     />
                 )}
 
-                {activeTab === "Result" &&
+                {/* {activeTab === "Result" &&
                     (status === "passed" || status === "failed") && (
                         <SendEmailButton
                             isEmailSent={isEmailSent}
                             isLoading={isLoading}
                             onSendSchedule={handleSendEmail}
                         />
-                    )}
+                    )} */}
+
+                {activeTab === "Result" && (
+                    <div className="flex items-center gap-2">
+                        {/* <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-600">
+                                Notify Applicants:
+                            </span>
+                            <select
+                                // value={status}
+                                // onChange={(e) => setStatus(e.target.value)}
+                                className="px-3 py-1 accent-green-700 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            >
+                                <option
+                                    className="hover:bg-green-700 accent-green-700"
+                                    value="all"
+                                >
+                                    Notify Passed Applicants
+                                </option>
+                                <option
+                                    className="hover:bg-green-700"
+                                    value="attended"
+                                >
+                                    Notify Failed Applicants
+                                </option>
+                                <option
+                                    className="hover:bg-green-700"
+                                    value="not_attended"
+                                >
+                                    Notify All
+                                </option>
+                            </select>
+                        </div> */}
+                        <SendEmailButton
+                            onClick={() => setIsConfirmationModalOpen(true)}
+                            isLoading={isLoading}
+                            onSendSchedule={handleSendEmail}
+                        />
+                    </div>
+                )}
 
                 {filteredApplications.length > 0 && activeTab !== "Result" && (
                     <ManageApplicants
@@ -422,6 +474,20 @@ export default function Examination() {
                 )}
             </div>
 
+            <ConfirmationModal
+                label={"Send Results Notifications"}
+                isOpen={isConfirmationModalOpen}
+                onClose={setIsConfirmationModalOpen}
+                message={
+                    passedApplicants.length > 0 && failedApplicants.length > 0
+                        ? `You’re about to email ${passedApplicants.length} passed and ${failedApplicants.length} failed applicants.`
+                        : `You’re about to email ${passedApplicants.length} passed applicants.`
+                }
+                onClick={handleSendEmail}
+                buttonLabel={"Confirm"}
+                isLoading={isLoading}
+            />
+
             <CreateBatchModal
                 batchName={batchName}
                 isOpen={isCreateBatchModalOpen}
@@ -430,6 +496,8 @@ export default function Examination() {
             />
 
             <PassingScoreModal
+                passingScore={passingScore}
+                onSetPassingScore={createPassingScore}
                 isOpen={isPassingScoreModalOpen}
                 onClose={setIsPassingScoreModalOpen}
                 onRefresh={fetchApplicationsOnResultTab}

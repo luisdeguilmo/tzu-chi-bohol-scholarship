@@ -47,13 +47,20 @@ const ScholarAccountsRow = ({
             return;
         }
 
-        if (action === "deactivate" && accountStatus === "deactivated") {
+        if (
+            action === "deactivate" &&
+            (accountStatus === "graduated" || accountStatus === "terminated")
+        ) {
             toast.error("Account is already deactivated.");
             return;
         }
 
         try {
-            const success = await onUpdateAccountStatus(accountId, action);
+            const success = await onUpdateAccountStatus(
+                accountId,
+                action,
+                deactivationReason
+            );
             if (success) {
                 toast.success(
                     `Account ${
@@ -120,16 +127,20 @@ const ScholarAccountsRow = ({
                             className={`px-2 py-1 rounded-full ${
                                 account.status === "active"
                                     ? "text-green-800 bg-green-100"
-                                    : account.status === "deactivated"
-                                      ? "text-red-800 bg-red-100"
-                                      : "text-yellow-800 bg-yellow-100"
+                                    : account.status === "graduated"
+                                      ? "text-blue-800 bg-blue-100"
+                                      : account.status === "terminated"
+                                        ? "text-red-800 bg-red-100"
+                                        : "text-yellow-800 bg-yellow-100"
                             }`}
                         >
                             {account.status === "active"
                                 ? "Active"
-                                : account.status === "deactivated"
-                                  ? "Deactivated"
-                                  : "Not Renewed"}
+                                : account.status === "graduated"
+                                  ? "Graduated"
+                                  : account.status === "terminated"
+                                    ? "Terminated"
+                                    : "Not Renewed"}
                         </span>
                     </td>
                     <td className="py-2 whitespace-nowrap text-gray-500">
@@ -212,6 +223,7 @@ const ScholarAccountsRow = ({
                         action
                     )
                 }
+                isScholarAccount={true}
                 deactivationReason={deactivationReason}
                 setDeactivationReason={setDeactivationReason}
             />

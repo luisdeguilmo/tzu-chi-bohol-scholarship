@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import BASE_URL from "../../config";
 
 function Accordion() {
     const [loading, setLoading] = useState(true);
@@ -24,7 +25,7 @@ function Accordion() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/strands.php`
+                `${BASE_URL}/app/views/strands.php`
             );
 
             const decodedStrands =
@@ -162,7 +163,7 @@ function Accordion() {
         }
     };
 
-    const tableStyle = "border-[1px] border-gray-300 p-2";
+    const tableStyle = "border-[1px] border-gray-300 p-3";
 
     const accordionData = [
         {
@@ -175,12 +176,12 @@ function Accordion() {
                     </h3>
                     <ul className="my-6 list-none list-inside columns-2 text-sm space-y-2">
                         {strands.map((strand, index) => (
-                            <li key={index} className="text-xs">
+                            <li key={index} className="text-xs md:text-sm">
                                 <span className="font-bold text-gray-800">
                                     {strand.strand}
                                 </span>{" "}
                                 -{" "}
-                                <span className="text-gray-700">
+                                <span className="text-gray-600">
                                     {strand.description}
                                 </span>
                             </li>
@@ -190,16 +191,19 @@ function Accordion() {
                         List of Courses Accepted for College
                     </h3>
                     <ul
-                        className={`mt-6 mb-4 list-none list-inside text-xs space-y-2 text-gray-700 ${
+                        className={`mt-6 mb-4 list-none list-inside text-xs md:text-sm space-y-2 text-gray-600 ${
                             courseLength <= 10
                                 ? "columns-1"
                                 : courseLength <= 20
-                                ? "columns-2"
-                                : "columns-3"
+                                  ? "columns-2"
+                                  : "columns-3"
                         }`}
                     >
                         {courses.map((course, index) => (
-                            <li key={index}>{course.course}</li>
+                            <li key={index} className="flex items-center gap-2">
+                                <div className="w-[5px] h-[5px] rounded-full bg-green-600"></div>
+                                {course.course}
+                            </li>
                         ))}
                     </ul>
                 </>
@@ -209,7 +213,7 @@ function Accordion() {
             id: 2,
             title: "Qualifications",
             content: (
-                <ul className="list-decimal list-inside text-sm space-y-2 text-gray-800">
+                <ul className="list-decimal list-inside text-xs md:text-sm space-y-2 text-gray-600">
                     {qualifications.map((qualification, index) => (
                         <li key={index}>{qualification.qualification}</li>
                     ))}
@@ -221,7 +225,7 @@ function Accordion() {
             title: "Requirements",
             content: (
                 <table className={`w-full ${tableStyle} text-gray-800`}>
-                    <thead>
+                    <thead className="text-sm">
                         <tr className={tableStyle}>
                             <th colSpan={3} className={tableStyle}>
                                 Requirements
@@ -233,9 +237,9 @@ function Accordion() {
                             <th className={tableStyle}>Submit During</th>
                         </tr>
                     </thead>
-                    <tbody className="text-sm">
+                    <tbody className="text-sm text-gray-600">
                         {requirements.map((requirement, index) => (
-                            <tr key={index} className={tableStyle}>
+                            <tr key={index} className={`text-xs md:text-sm ${tableStyle}`}>
                                 <td className={`${tableStyle} text-center`}>
                                     {requirement.quantity}
                                 </td>
@@ -255,7 +259,7 @@ function Accordion() {
             id: 4,
             title: "Procedure",
             content: (
-                <ul className="list-decimal list-inside text-sm space-y-2 text-gray-800">
+                <ul className="list-decimal list-inside text-xs md:text-sm space-y-2 text-gray-600">
                     {procedure.map((pro, index) => (
                         <li key={index}>{pro.procedure}</li>
                     ))}
@@ -266,7 +270,7 @@ function Accordion() {
             id: 5,
             title: "Instruction",
             content: (
-                <ul className="list-decimal list-inside text-sm space-y-2 text-gray-800">
+                <ul className="list-decimal list-inside text-xs md:text-sm space-y-2 text-gray-600">
                     {instructions.map((instruction, index) => (
                         <li key={index}>{instruction.instruction}</li>
                     ))}
@@ -283,7 +287,7 @@ function Accordion() {
                     className="border-b border-gray-300 last:border-0"
                 >
                     <button
-                        className={`w-full flex items-center justify-between p-5 text-left font-medium text-gray-800 ${
+                        className={`w-full flex items-center justify-between px-4 py-6 text-left font-medium text-gray-800 ${
                             openAccordionIndex === index
                                 ? "bg-green-50 border-l-4 border-green-500"
                                 : "hover:bg-gray-50"

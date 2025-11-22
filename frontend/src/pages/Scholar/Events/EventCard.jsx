@@ -3,6 +3,7 @@ import { formatDate } from "../../../utils/formatDate";
 import { formatTime } from "../../../utils/formatTime";
 import { useArchive } from "../../../hooks/useArchive";
 import { toast } from "react-toastify";
+import { date } from "../../../utils/getDateAndTime";
 
 const EventCard = ({
     userId,
@@ -192,6 +193,39 @@ const EventCard = ({
                     Upcoming
                 </p>
             )}
+
+            {/* //      ${
+                //     isArchived
+                //         ? "bg-slate-300 text-slate-700 border border-slate-400"
+                //         : "bg-green-200 text-green-900"
+                // } */}
+
+            <p
+                className={`py-2 px-4 rounded-xl absolute bottom-6 text-xs right-6
+               
+                ${
+                    date.getCurrentDateAndTime() <
+                    event.date + " " + event.start_time
+                        ? "bg-yellow-100 text-yellow-800"
+                        : event.date + " " + event.start_time <=
+                                date.getCurrentDateAndTime() &&
+                            date.getCurrentDateAndTime() <=
+                                event.date + " " + event.end_time
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                }
+                `}
+            >
+                {date.getCurrentDateAndTime() <
+                event.date + " " + event.start_time
+                    ? "Upcoming"
+                    : event.date + " " + event.start_time <=
+                            date.getCurrentDateAndTime() &&
+                        date.getCurrentDateAndTime() <=
+                            event.date + " " + event.end_time
+                      ? "Ongoing"
+                      : "Ended"}
+            </p>
 
             {/* Archived stamp/watermark effect */}
             {/* {isArchived && (

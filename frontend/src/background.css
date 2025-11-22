@@ -1,8 +1,183 @@
-.hero {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
+/* .hero {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
         url("assets/img.jpg");
     background-position: center;
     background-size: cover;
-    background-attachment: fixed;
+    background-attachment: scroll;
     position: relative;
+} */
+
+/* Modern Hero Section Styles */
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animated gradient overlay for depth */
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8));
+    z-index: 1;
+    animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Background carousel images */
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition:
+        opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(1);
+}
+
+.hero-bg.hidden {
+    opacity: 0;
+    transform: scale(1.05);
+}
+
+/* .hero-bg.visible {
+    opacity: 1;
+    transform: scale(1);
+    animation: kenBurns 12s ease-out infinite alternate;
+} */
+
+/* Ken Burns zoom effect */
+/* @keyframes kenBurns {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.08);
+    }
+} */
+
+/* Modern navigation arrows */
+.hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border-radius: 50%; */
+    /* background: rgba(255, 255, 255, 0.1); */
+    /* backdrop-filter: blur(10px); */
+    /* border: 1px solid rgba(255, 255, 255, 0.2); */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    opacity: 0.7;
+}
+
+.hero-arrow:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.hero-arrow:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.hero-arrow.left {
+    left: 30px;
+}
+
+.hero-arrow.right {
+    right: 30px;
+}
+
+/* Carousel indicators */
+.hero-indicators {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    gap: 12px;
+}
+
+.hero-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.hero-indicator.active {
+    background: white;
+    width: 32px;
+    border-radius: 5px;
+}
+
+.hero-indicator:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(1.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+
+    .hero-arrow.left {
+        left: 15px;
+    }
+
+    .hero-arrow.right {
+        right: 15px;
+    }
+
+    .hero-indicators {
+        bottom: 20px;
+        gap: 8px;
+    }
+
+    .hero-indicator {
+        width: 8px;
+        height: 8px;
+    }
+
+    .hero-indicator.active {
+        width: 24px;
+    }
 }

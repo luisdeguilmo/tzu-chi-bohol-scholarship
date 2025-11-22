@@ -26,7 +26,7 @@ class ScholarsController
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
-        $this->currentYear = 2024;
+        $this->currentYear = date('Y');
     }
 
     public function processRequest()
@@ -67,6 +67,9 @@ class ScholarsController
             $tab = $_GET['tab'] ?? null;
             $status = $_GET['status'] ?? null;
             $school_year = $_GET['school_year'] ?? null;
+            $school = $_GET['school'] ?? null;
+            $course = $_GET['course'] ?? null;
+            $year_level = $_GET['year_level'] ?? null;
             $sort = $_GET['sort'] ?? null;
 
             $results = [];
@@ -85,24 +88,40 @@ class ScholarsController
                         [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
                         $scholar->unProcessScholarsAllowance($scholarId['account_id'], $allowance);
                     }
-                } else {
-                    // foreach ($scholarIds as $scholarId) {
-                    //     $renderedHours = $scholar->getScholarRenderedHours(
-                    //         $scholarId['account_id'],
-                    //     );
-                    //     [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
-                    //     $scholar->unProcessScholarsAllowance($scholarId['account_id'], 0);
-                    // }
                 }
 
-                $newScholars = $scholar->getNewActiveScholars($status, $school_year, $sort);
-                $oldScholars = $scholar->getOldActiveScholars($status, $school_year, $sort);
+                // else {
+                //     foreach ($scholarIds as $scholarId) {
+                //         $renderedHours = $scholar->getScholarRenderedHours(
+                //             $scholarId['account_id'],
+                //         );
+                //         [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
+                //         $scholar->unProcessScholarsAllowance($scholarId['account_id'], 0);
+                //     }
+                // }
+
+                $newScholars = $scholar->getNewActiveScholars(
+                    $status,
+                    $school_year,
+                    $school,
+                    $year_level,
+                    $course,
+                );
+                $oldScholars = $scholar->getOldActiveScholars(
+                    $status,
+                    $school_year,
+                    $school,
+                    $year_level,
+                    $course,
+                );
 
                 $results = [...$newScholars, ...$oldScholars];
-            } elseif ($tab === 'deactivated') {
-                $results = $scholar->getDeactivatedScholars($status, $school_year, $sort);
+            } elseif ($tab === 'graduated') {
+                $results = $scholar->getGraduatedScholars($status, $school_year, $school, $course);
+            } elseif ($tab === 'terminated') {
+                $results = $scholar->getTerminatedScholars($status, $school_year, $school, $course);
             } elseif ($tab === 'not_renewed') {
-                $results = $scholar->getNotRenewedScholars($status, $school_year, $sort);
+                $results = $scholar->getNotRenewedScholars($status, $school_year, $school, $course);
             }
 
             $cycleModel = new AllowanceCycleModel();

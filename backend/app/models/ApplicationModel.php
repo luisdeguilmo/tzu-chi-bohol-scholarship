@@ -37,20 +37,48 @@ class ApplicationModel
             'INSERT INTO ' .
             $this->table_name .
             " 
-                  SET application_id = :application_id, school_year = :school_year, type = :status, status = 'pending', scholar_id = :scholar_id,expectation = :expectation, is_application_approved = 0, is_application_rejected = 0, created_at = NOW()";
+                  SET application_id = :application_id, school_year = :school_year, type = :status, status = 'pending', expectation = :expectation, is_application_approved = '0', is_application_rejected = '0', created_at = NOW()";
 
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize and bind
         $school_year = htmlspecialchars(strip_tags($data['school_year']));
         $status = htmlspecialchars(strip_tags($data['status']));
-        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id'] ?? 'null'));
         $expectation = htmlspecialchars(strip_tags($other['expectation']));
 
-        $scholarId = $scholar_id === 'null' ? null : $scholar_id;
+        $stmt->bindParam(':application_id', $application_id);
+        $stmt->bindParam(':school_year', $school_year);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':expectation', $expectation);
+
+        if ($stmt->execute()) {
+            return $application_id;
+        }
+
+        return false;
+    }
+
+    public function renew($data, $other)
+    {
+        // Generate a unique random application_id`
+        $application_id = $this->generateUniqueApplicationId();
+
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
+                  SET application_id = :application_id, school_year = :school_year, type = :status, status = 'pending', scholar_id = :scholar_id, expectation = :expectation, is_application_approved = '0', is_application_rejected = '0', created_at = NOW()";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize and bind
+        $school_year = htmlspecialchars(strip_tags($data['school_year']));
+        $status = htmlspecialchars(strip_tags($data['status']));
+        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id']));
+        $expectation = htmlspecialchars(strip_tags($other['expectation']));
 
         $stmt->bindParam(':application_id', $application_id);
-        $stmt->bindParam(':scholar_id', $scholarId);
+        $stmt->bindParam(':scholar_id', $scholar_id, \PDO::PARAM_INT);
         $stmt->bindParam(':school_year', $school_year);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':expectation', $expectation);
@@ -68,22 +96,18 @@ class ApplicationModel
             'UPDATE ' .
             $this->table_name .
             " 
-                  SET expectation = :expectation, is_application_approved = 0, is_application_rejected = 0, created_at = NOW() WHERE scholar_id = :scholar_id AND school_year = :school_year";
+                  SET expectation = :expectation, is_application_approved = 0, status = 'pending', is_application_rejected = 0, created_at = NOW() WHERE scholar_id = :scholar_id AND school_year = :school_year";
 
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize and bind
         $school_year = htmlspecialchars(strip_tags($data['school_year']));
-        // $status = htmlspecialchars(strip_tags($data['status']));
-        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id'] ?? 'null'));
+        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id']));
         $expectation = htmlspecialchars(strip_tags($other['expectation']));
 
-        $scholarId = $scholar_id === 'null' ? null : $scholar_id;
-
         // $stmt->bindParam(':application_id', $application_id);
-        $stmt->bindParam(':scholar_id', $scholarId);
+        $stmt->bindParam(':scholar_id', $scholar_id, \PDO::PARAM_INT);
         $stmt->bindParam(':school_year', $school_year);
-        // $stmt->bindParam(':status', $status);
         $stmt->bindParam(':expectation', $expectation);
 
         if ($stmt->execute()) {
@@ -93,7 +117,7 @@ class ApplicationModel
                 $this->table_name .
                 ' WHERE scholar_id = :scholar_id AND school_year = :school_year';
             $selectStmt = $this->pdo->prepare($selectQuery);
-            $selectStmt->bindParam(':scholar_id', $scholarId);
+            $selectStmt->bindParam(':scholar_id', $scholar_id, \PDO::PARAM_INT);
             $selectStmt->bindParam(':school_year', $school_year);
             $selectStmt->execute();
             $row = $selectStmt->fetch(\PDO::FETCH_ASSOC); // return full row as associative array

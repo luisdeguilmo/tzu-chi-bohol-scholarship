@@ -9,8 +9,18 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/BatchModel.php';
+require_once __DIR__ . '/../Services/PHPMailerBrevoService.php'; // Add this line
+
+// Load environment variables
+try {
+    $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
+    $dotenv->safeLoad();
+} catch (\Exception $e) {
+    error_log('Could not load .env file: ' . $e->getMessage());
+}
 
 use App\Models\BatchModel;
+use App\Services\PHPMailerBrevoService;
 use Config\Database;
 
 class ScheduleController
@@ -54,6 +64,33 @@ class ScheduleController
 
     private function handlePost()
     {
+        $requiredEnvVars = [
+            'BREVO_EMAIL',
+            'BREVO_SMTP_KEY',
+            'ORG_NAME',
+            'ORG_ADDRESS',
+            'ORG_CONTACT',
+        ];
+
+        foreach ($requiredEnvVars as $var) {
+            if (empty($_ENV[$var])) {
+                http_response_code(500);
+                echo json_encode([
+                    'success' => false,
+                    'message' => "Missing required environment variable: $var",
+                ]);
+                return;
+            }
+        }
+
+        $emailService = new PHPMailerBrevoService(
+            $_ENV['BREVO_EMAIL'],
+            $_ENV['BREVO_SMTP_KEY'],
+            $_ENV['ORG_NAME'],
+            $_ENV['ORG_ADDRESS'],
+            $_ENV['ORG_CONTACT'],
+        );
+
         try {
             // Clear any previous output
             ob_clean();
@@ -78,12 +115,26 @@ class ScheduleController
                 throw new \Exception('Failed to save schedule information');
             }
 
+            foreach ($data['applicants'] as $applicant) {
+                if (
+                    !$emailService->sendExaminationScheduleEmail(
+                        $applicant,
+                        $data['batch'],
+                        $data['date'],
+                        $data['time'],
+                        $data['venue'],
+                    )
+                ) {
+                    throw new \Exception('Failed to send examination schedule email');
+                }
+            }
+
             $this->pdo->commit();
 
             http_response_code(201);
             echo json_encode([
                 'success' => true,
-                'message' => 'Schedule created successfully',
+                'message' => 'Schedule Created Successfully',
             ]);
         } catch (\Exception $e) {
             if ($this->pdo->inTransaction()) {

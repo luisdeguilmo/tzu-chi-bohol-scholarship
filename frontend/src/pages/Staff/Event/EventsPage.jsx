@@ -4,14 +4,14 @@ import { formatTime } from "../../../utils/formatTime";
 import EmptyState from "../../../components/EmptyState";
 import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
-import AddEventFormModal from "./AddEventFormModal";
 import { useEventsOnStaff } from "../../../hooks/useEventsOnStaff";
 import EventDetailsModal from "../../../components/EventDetailsModal";
 import { date } from "../../../utils/getDateAndTime";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { eventTableHeaders } from "../../../constant/tableHeaders";
-import { ClipboardEdit } from "lucide-react";
+import { ClipboardEdit, Eye, PenLine } from "lucide-react";
+import EventFormModal from "./EventFormModal";
 
 export default function EventsPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +23,7 @@ export default function EventsPage() {
         useState(false);
     const [year, setYear] = useState("2025");
     const [status, setStatus] = useState("all");
+    const [action, setAction] = useState("create");
 
     const { events, fetchEvents } = useEventsOnStaff(year, status, sortBy);
 
@@ -34,6 +35,10 @@ export default function EventsPage() {
     const filteredEvents = events.filter((event) =>
         event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    // const participated = selectedEvent?.participants.filter(
+    //     (participant) => participant.is_attended
+    // );
 
     const sortedApplications = [...filteredEvents].sort((a, b) => {
         switch (sortBy) {
@@ -71,12 +76,10 @@ export default function EventsPage() {
 
     const handleRefresh = () => {
         fetchEvents();
-        // setSelectedItems([]);
     };
 
     return (
         <div className="lg:p-6">
-            {/* <EventForm onSuccess={fetchEvents} /> */}
             <div className="w-[100%] mx-auto bg-white rounded-md shadow p-6">
                 <TableToolbar
                     items={events}
@@ -157,23 +160,72 @@ export default function EventsPage() {
                                                     event.end_time >
                                                 date.getCurrentDateAndTime()
                                                     ? "bg-green-100 text-green-800"
-                                                    : "bg-red-100 text-red-900"
+                                                    : "bg-red-100 text-red-800"
+                                            } ${
+                                                date.getCurrentDateAndTime() <
+                                                event.date +
+                                                    " " +
+                                                    event.start_time
+                                                    ? "bg-yellow-100 text-yellow-800"
+                                                    : event.date +
+                                                            " " +
+                                                            event.start_time <=
+                                                            date.getCurrentDateAndTime() &&
+                                                        date.getCurrentDateAndTime() <=
+                                                            event.date +
+                                                                " " +
+                                                                event.end_time
+                                                      ? "bg-green-100 text-green-800"
+                                                      : "bg-red-100 text-red-800"
                                             }`}
                                     >
-                                        {event.date + " " + event.end_time >
-                                        date.getCurrentDateAndTime()
+                                        {date.getCurrentDateAndTime() <
+                                        event.date + " " + event.start_time
                                             ? "Upcoming"
-                                            : "Ended"}
+                                            : event.date +
+                                                    " " +
+                                                    event.start_time <=
+                                                    date.getCurrentDateAndTime() &&
+                                                date.getCurrentDateAndTime() <=
+                                                    event.date +
+                                                        " " +
+                                                        event.end_time
+                                              ? "Ongoing"
+                                              : "Ended"}
                                     </span>
                                 </td>
                                 <td className="py-3 text-center whitespace-nowrap font-medium">
                                     <button
-                                        onClick={() =>
-                                            handleOpenDetailsModal(event)
-                                        }
+                                        onClick={() => {
+                                            handleOpenDetailsModal(event);
+                                            setAction("view_and_record");
+                                        }}
                                         className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
                                     >
-                                        <ClipboardEdit className="w-4 h-4 text-blue-600" />
+                                        {date.getCurrentDateAndTime() >
+                                        event.date + " " + event.end_time ? (
+                                            event?.participants.filter(
+                                                (participant) =>
+                                                    participant.is_attended
+                                            ).length !==
+                                            event.numberOfParticipants ? (
+                                                <ClipboardEdit className="w-4 h-4 text-blue-600" />
+                                            ) : (
+                                                <Eye className="w-4 h-4 text-blue-600" />
+                                            )
+                                        ) : (
+                                            <Eye className="w-4 h-4 text-blue-600" />
+                                        )}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsOpenFormModal(true);
+                                            setAction("edit");
+                                            setSelectedEvent(event);
+                                        }}
+                                        className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                    >
+                                        <PenLine className="w-4 h-4 text-green-600" />
                                     </button>
                                 </td>
                             </tr>
@@ -205,18 +257,22 @@ export default function EventsPage() {
                 </div>
             </div>
 
-            <AddEventFormModal
+            <EventFormModal
                 isOpen={isOpenFormModal}
                 onClose={setIsOpenFormModal}
                 onSuccess={fetchEvents}
                 onRefresh={fetchEvents}
+                event={selectedEvent}
+                action={action}
+                setAction={setAction}
             />
 
             <EventDetailsModal
-                isOpen={isOpenEventDetailsModal}
+                isOpen={isOpenEventDetailsModal && action === "view_and_record"}
                 onClose={setIsOpenEventDetailsModal}
                 event={selectedEvent}
                 isStaff={true}
+                fetchEvents={handleRefresh}
             />
         </div>
     );

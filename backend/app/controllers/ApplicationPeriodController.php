@@ -204,6 +204,7 @@ class ApplicationPeriodController
                 }
 
                 $applicationModel->setApplicationStatusAsNotRenewed();
+                $scholarsModel->resetLivingInfoAndTransportInfoSubmission();
             }
 
             $this->pdo->commit();

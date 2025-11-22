@@ -62,6 +62,47 @@ class ContactPersonModel
         return $stmt->execute();
     }
 
+    public function renew($data, $application_id, $scholar_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
+                  SET application_id = :application_id,
+                        scholar_id = :scholar_id,
+                      emergency_contact_name = :emergency_contact_name,
+                      emergency_contact_relationship = :emergency_contact_relationship,
+                      emergency_contact_address = :emergency_contact_address,
+                      emergency_contact_number = :emergency_contact_number";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize inputs
+        $this->application_id = $application_id;
+        $this->emergency_contact_name = htmlspecialchars(
+            strip_tags($data['emergency_contact_name'] ?? ''),
+        );
+        $this->emergency_contact_relationship = htmlspecialchars(
+            strip_tags($data['emergency_contact_relationship'] ?? ''),
+        );
+        $this->emergency_contact_address = htmlspecialchars(
+            strip_tags($data['emergency_contact_address'] ?? ''),
+        );
+        $this->emergency_contact_number = htmlspecialchars(
+            strip_tags($data['emergency_contact_number'] ?? ''),
+        );
+
+        // Bind values
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':scholar_id', $scholar_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':emergency_contact_name', $this->emergency_contact_name);
+        $stmt->bindParam(':emergency_contact_relationship', $this->emergency_contact_relationship);
+        $stmt->bindParam(':emergency_contact_address', $this->emergency_contact_address);
+        $stmt->bindParam(':emergency_contact_number', $this->emergency_contact_number);
+
+        return $stmt->execute();
+    }
+
     public function update($data, $id)
     {
         $query =

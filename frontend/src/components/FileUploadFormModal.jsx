@@ -14,13 +14,14 @@ function FileUploadFormModal({
     isLoading,
     onRefresh,
 }) {
+    const URL = `${BASE_URL}public/`;
+
     const [files, setFiles] = useState([]);
     const [filePreviews, setFilePreviews] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef(null);
     const [existingFiles, setExistingFiles] = useState([]);
     const [existingFilesRemoved, setExistingFilesRemoved] = useState([]);
-
 
     useEffect(() => {
         if (applicationFiles[0]?.files?.length > 0) {
@@ -32,6 +33,7 @@ function FileUploadFormModal({
                 name: file.file_name,
                 size: file.file_size,
                 type: file.file_type,
+                file_path: file.file_path,
                 preview: file.file_type.startsWith("image/")
                     ? `${BASE_URL}public/${file.file_path}`
                     : null,
@@ -102,6 +104,8 @@ function FileUploadFormModal({
         setFilePreviews(newPreviews);
     };
 
+    const isImage = (type) => type && type.startsWith("image/");
+
     const handleCancel = (e) => {
         e.preventDefault();
 
@@ -159,7 +163,7 @@ function FileUploadFormModal({
         }
     };
 
-    console.log(isSubmitting);
+    console.log(filePreviews);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -346,7 +350,20 @@ function FileUploadFormModal({
                                         )}
                                         <div>
                                             <div className="w-full md:w-[150px] lg:w-[100px] font-medium text-gray-700 flex items-center text-[10px]">
-                                                <p className="truncate">{filePreview.name}</p>
+                                                <p className="truncate">
+                                                    {filePreview.name}
+                                                </p>
+                                                {isImage(
+                                                    filePreview.file_type
+                                                ) && (
+                                                    <img
+                                                        src={`${URL}/${filePreview.file_path}`}
+                                                        alt={
+                                                            filePreview.file_name
+                                                        }
+                                                        className="w-12 h-12 object-cover rounded mr-2"
+                                                    />
+                                                )}
                                                 {/* {filePreview.isExisting && (
                                                     <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
                                                         Saved
@@ -359,6 +376,21 @@ function FileUploadFormModal({
                                                 ).toFixed(2)}{" "}
                                                 KB
                                             </div> */}
+                                            {isImage(filePreview.type) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        window.open(
+                                                            URL +
+                                                                filePreview.file_path,
+                                                            "_blank"
+                                                        )
+                                                    }
+                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1"
+                                                >
+                                                    Click to view image
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                     <button

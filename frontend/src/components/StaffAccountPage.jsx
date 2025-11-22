@@ -88,14 +88,10 @@ const StaffAccount = ({ staffId = false, isModal = false }) => {
 
                                 <div className="flex-1">
                                     <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
-                                        {
-                                            staffInfo?.basic_information
-                                                ?.first_name
-                                        }{" "}
-                                        {
-                                            staffInfo?.basic_information
-                                                ?.last_name
-                                        }
+                                        {staffInfo?.basic_information
+                                            ?.first_name || ""}{" "}
+                                        {staffInfo?.basic_information
+                                            ?.last_name || ""}
                                     </h2>
                                     <div className="inline-flex items-center bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-xs font-medium">
                                         Staff ID: {staffId ? staffId : userId}
@@ -122,10 +118,12 @@ const StaffAccount = ({ staffId = false, isModal = false }) => {
                                         label="Full Name"
                                         value={
                                             staffInfo?.basic_information
-                                                ?.first_name +
-                                            " " +
-                                            staffInfo?.basic_information
-                                                ?.last_name
+                                                ?.first_name ||
+                                            "" +
+                                                " " +
+                                                staffInfo?.basic_information
+                                                    ?.last_name ||
+                                            ""
                                         }
                                         mobileClass={info}
                                     />
@@ -133,21 +131,23 @@ const StaffAccount = ({ staffId = false, isModal = false }) => {
                                         label="Contact Number"
                                         value={
                                             staffInfo?.basic_information
-                                                ?.contact_number
+                                                ?.contact_number || ""
                                         }
                                         mobileClass={info}
                                     />
                                     <InfoField
                                         label="Age"
                                         value={
-                                            staffInfo?.basic_information?.age
+                                            staffInfo?.basic_information?.age ||
+                                            ""
                                         }
                                         mobileClass={info}
                                     />
                                     <InfoField
                                         label="Gender"
                                         value={
-                                            staffInfo?.basic_information?.gender
+                                            staffInfo?.basic_information
+                                                ?.gender || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -155,7 +155,7 @@ const StaffAccount = ({ staffId = false, isModal = false }) => {
                                         label="Address"
                                         value={
                                             staffInfo?.basic_information
-                                                ?.address
+                                                ?.address || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -163,7 +163,7 @@ const StaffAccount = ({ staffId = false, isModal = false }) => {
                                         label="Email Address"
                                         value={
                                             staffInfo?.basic_information
-                                                ?.email_address
+                                                ?.email_address || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -171,7 +171,7 @@ const StaffAccount = ({ staffId = false, isModal = false }) => {
                                         label="Facebook"
                                         value={
                                             staffInfo?.basic_information
-                                                ?.facebook
+                                                ?.facebook || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -179,46 +179,51 @@ const StaffAccount = ({ staffId = false, isModal = false }) => {
 
                                 <div className="hidden md:block space-y-4">
                                     <ValueField
+                                        value={`
+                                            ${
+                                                staffInfo?.basic_information
+                                                    ?.first_name || ""
+                                            } 
+                                                ${
+                                                    staffInfo?.basic_information
+                                                        ?.last_name || ""
+                                                }
+                                        `}
+                                    />
+                                    <ValueField
                                         value={
                                             staffInfo?.basic_information
-                                                ?.first_name +
-                                            " " +
-                                            staffInfo?.basic_information
-                                                ?.last_name
+                                                ?.contact_number || ""
+                                        }
+                                    />
+                                    <ValueField
+                                        value={
+                                            staffInfo?.basic_information?.age ||
+                                            ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             staffInfo?.basic_information
-                                                ?.contact_number
-                                        }
-                                    />
-                                    <ValueField
-                                        value={
-                                            staffInfo?.basic_information?.age
-                                        }
-                                    />
-                                    <ValueField
-                                        value={
-                                            staffInfo?.basic_information?.gender
+                                                ?.gender || ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             staffInfo?.basic_information
-                                                ?.address
+                                                ?.address || ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             staffInfo?.basic_information
-                                                ?.email_address
+                                                ?.email_address || ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             staffInfo?.basic_information
-                                                ?.facebook
+                                                ?.facebook || ""
                                         }
                                     />
                                 </div>

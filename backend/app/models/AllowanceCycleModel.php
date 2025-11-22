@@ -20,7 +20,64 @@ class AllowanceCycleModel
         // Get previous month in Y-m format
         $this->previousYearAndMonth = date('Y-m', strtotime('-1 month'));
     }
-    
+
+    public function getById($id)
+    {
+        // Add parameter $id to the method signature
+        $query = "SELECT id, file_name, file_data, created_at FROM {$this->table_name} WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        // Return the entire row or null if not found
+        return $result ?: null;
+    }
+
+    public function storeExcelFile($fileName, $fileData)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            " SET file_name = :file_name, file_data = :file_data WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Bind parameters
+        $stmt->bindParam(':file_name', $fileName);
+        $stmt->bindParam(':file_data', $fileData, \PDO::PARAM_LOB);
+        $stmt->bindParam(':cycle_month', $this->previousYearAndMonth);
+
+        if ($stmt->execute()) {
+            return [
+                'success' => true,
+                'id' => $this->pdo->lastInsertId(),
+                'message' => 'File uploaded successfully',
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => 'Failed to upload file',
+        ];
+    }
+
+    public function storeTotalAmount($amount)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            " SET amount = :amount WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Bind parameters
+        $stmt->bindParam(':amount', $amount);
+        $stmt->bindParam(':cycle_month', $this->previousYearAndMonth);
+
+        return $stmt->execute();
+    }
+
     public function getPendingCycles()
     {
         $query = "SELECT * FROM {$this->table_name} 
@@ -53,24 +110,22 @@ class AllowanceCycleModel
     {
         // Process the PREVIOUS month's cycle
         $query = "UPDATE {$this->table_name} 
-                  SET allowance_month = :allowance_month, is_processed = 1, processed_at = NOW() 
+                  SET is_processed = 1, processed_at = NOW() 
                   WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :cycle_month
                   AND is_processed = 0";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':cycle_month', $this->previousYearAndMonth);
-        $stmt->bindParam(':allowance_month', $this->currentYearAndMonth);
         $result = $stmt->execute();
-        
+
         // Return the cycle month that was processed
         if ($result && $stmt->rowCount() > 0) {
             return [
                 'success' => true,
                 'rendered_month' => $this->previousYearAndMonth,
-                'allowance_month' => $this->currentYearAndMonth
             ];
         }
-        
+
         return ['success' => false];
     }
 
@@ -96,6 +151,54 @@ class AllowanceCycleModel
      * Create yearly cycles
      * Each cycle represents a RENDERED month
      */
+
+    // public function createYearlyCycles($year = null)
+    // {
+    //     if ($year === null) {
+    //         $year = date('Y');
+    //     }
+
+    //     $cycles = [];
+
+    //     for ($month = 1; $month <= 12; $month++) {
+    //         // Cycle month: first day of the rendered month
+    //         $cycleMonth = sprintf('%d-%02d-01', $year, $month);
+
+    //         // Cutoff: last day of the rendered month
+    //         $lastDay = date('t', strtotime($cycleMonth));
+    //         $cutoffDate = sprintf('%d-%02d-%d', $year, $month, $lastDay);
+
+    //         // Check if cycle already exists
+    //         $checkQuery = "SELECT id FROM {$this->table_name}
+    //                       WHERE cycle_month = :cycle_month";
+    //         $stmt = $this->pdo->prepare($checkQuery);
+    //         $stmt->bindParam(':cycle_month', $cycleMonth);
+    //         $stmt->execute();
+
+    //         if (!$stmt->fetch()) {
+    //             // Insert new cycle
+    //             $insertQuery = "INSERT INTO {$this->table_name}
+    //                            (cycle_month, cutoff_date)
+    //                            VALUES (:cycle_month, :cutoff_date)";
+    //             $insertStmt = $this->pdo->prepare($insertQuery);
+    //             $insertStmt->bindParam(':cycle_month', $cycleMonth);
+    //             $insertStmt->bindParam(':cutoff_date', $cutoffDate);
+    //             $insertStmt->execute();
+
+    //             $cycles[] = [
+    //                 'rendered_month' => $cycleMonth,
+    //                 'cutoff' => $cutoffDate,
+    //                 'allowance_month' => date(
+    //                     'Y-m-01',
+    //                     strtotime('+1 month', strtotime($cycleMonth)),
+    //                 ),
+    //             ];
+    //         }
+    //     }
+
+    //     return $cycles;
+    // }
+
     public function createYearlyCycles($year = null)
     {
         if ($year === null) {
@@ -107,6 +210,8 @@ class AllowanceCycleModel
         for ($month = 1; $month <= 12; $month++) {
             // Cycle month: first day of the rendered month
             $cycleMonth = sprintf('%d-%02d-01', $year, $month);
+
+            $allowanceMonth = date('Y-m-01', strtotime('+1 month', strtotime($cycleMonth)));
 
             // Cutoff: last day of the rendered month
             $lastDay = date('t', strtotime($cycleMonth));
@@ -122,17 +227,21 @@ class AllowanceCycleModel
             if (!$stmt->fetch()) {
                 // Insert new cycle
                 $insertQuery = "INSERT INTO {$this->table_name} 
-                               (cycle_month, cutoff_date) 
-                               VALUES (:cycle_month, :cutoff_date)";
+                               (cycle_month, allowance_month, cutoff_date) 
+                               VALUES (:cycle_month, :allowance_month, :cutoff_date)";
                 $insertStmt = $this->pdo->prepare($insertQuery);
                 $insertStmt->bindParam(':cycle_month', $cycleMonth);
+                $insertStmt->bindParam(':allowance_month', $allowanceMonth);
                 $insertStmt->bindParam(':cutoff_date', $cutoffDate);
                 $insertStmt->execute();
 
                 $cycles[] = [
-                    'rendered_month' => $cycleMonth, 
+                    'rendered_month' => $cycleMonth,
                     'cutoff' => $cutoffDate,
-                    'allowance_month' => date('Y-m-01', strtotime('+1 month', strtotime($cycleMonth)))
+                    'allowance_month' => date(
+                        'Y-m-01',
+                        strtotime('+1 month', strtotime($cycleMonth)),
+                    ),
                 ];
             }
         }
@@ -154,7 +263,7 @@ class AllowanceCycleModel
     public function cyclesExistForYear($year)
     {
         $stmt = $this->pdo->prepare(
-            'SELECT COUNT(*) FROM allowance_cycles WHERE YEAR(cycle_month) = ?'
+            'SELECT COUNT(*) FROM allowance_cycles WHERE YEAR(cycle_month) = ?',
         );
         $stmt->execute([$year]);
         return $stmt->fetchColumn() > 0;
@@ -202,7 +311,7 @@ class AllowanceCycleModel
                   WHERE DATE_FORMAT(cycle_month, '%Y-%m') = :previous_month
                   AND is_processed = 0
                   AND is_reset = 0";
-        
+
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':previous_month', $this->previousYearAndMonth);
         $stmt->execute();
@@ -247,7 +356,7 @@ class AllowanceCycleModel
                   FROM {$this->table_name}
                   WHERE YEAR(cycle_month) = :year
                   ORDER BY cycle_month DESC";
-        
+
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':year', $year);
         $stmt->execute();

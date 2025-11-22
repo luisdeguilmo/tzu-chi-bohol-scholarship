@@ -11,6 +11,15 @@ export const applicationPeriodTableHeaders = [
 export const scholarTableHeaders = [
     { name: "Scholar ID", style: "text-center" },
     { name: "Scholar", style: "text-center" },
+    { name: "Year Level", style: "text-center" },
+    { name: "School", style: "text-center" },
+    { name: "Course", style: "text-center" },
+    { name: "Action", style: "text-center" },
+];
+
+export const scholarsAndAllowancesTableHeaders = [
+    { name: "Scholar ID", style: "text-center" },
+    { name: "Scholar", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Rendered Hours", style: "text-center" },
     // { name: "Allowance Status", style: "text-center" },

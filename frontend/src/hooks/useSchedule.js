@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import BASE_URL from "../config";
 
 export const useSchedule = () => {
-    // const [schedule, setSchedule] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const createSchedule = async (
         purpose,
@@ -12,15 +12,24 @@ export const useSchedule = () => {
         venue,
         batchToSet,
         onSuccess,
-        setIsOpen
+        setIsOpen,
+        batchId,
+        applicants,
+        selectedBatch
     ) => {
         const data = {
             purpose: purpose,
             schedule: date + " " + time,
             venue: venue,
+            batch_id: batchId,
+            applicants: applicants,
+            date: date,
+            time: time,
+            batch: selectedBatch,
         };
 
         try {
+            setLoading(true);
             const response = await fetch(
                 `${BASE_URL}app/views/schedule.php?id=${batchToSet.batch_name}`,
                 {
@@ -38,19 +47,22 @@ export const useSchedule = () => {
                 toast.success(result.message + ".");
                 setIsOpen(false);
                 onSuccess();
+                setLoading(false);
                 return true;
             } else {
                 alert("Error: " + result.message);
+                setLoading(false);
             }
 
             return false;
         } catch (error) {
             console.error("Submission error:", error);
             alert("Failed to submit the form. Please try again.");
+            setLoading(false);
 
             return false;
         }
     };
 
-    return { createSchedule };
+    return { loading, createSchedule };
 };

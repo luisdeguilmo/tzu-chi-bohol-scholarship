@@ -5,9 +5,12 @@ import formConfig from "../../../constant/application/formConfig";
 const PersonalInformation = ({ personal }) => {
     return (
         <>
-            <h3 className="text-gray-700 py-8 font-bold md:text-lg text-sm">
+            {/* <h3 className="text-gray-700 py-8 font-bold md:text-lg text-sm">
                 Personal Information
-            </h3>
+            </h3> */}
+            <h2 className="mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+                Personal Information
+            </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-4">
                 {formConfig[FORM_SECTIONS.PERSONAL].map((item, index) => (
                     <div key={index}>
@@ -28,9 +31,9 @@ const EducationalBackground = ({ education }) => {
     console.log(education);
     return (
         <>
-            <h3 className="text-gray-700 py-8 font-bold md:text-lg text-sm">
+            <h2 className="mt-10 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
                 Educational Background
-            </h3>
+            </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-4">
                 {formConfig[FORM_SECTIONS.EDUCATION].map((item, index) => (
                     <div key={index}>
@@ -57,13 +60,16 @@ const FamilyInformation = ({
 
     return (
         <>
-            <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
+            {/* <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
                 Family Information
-            </h3>
+            </h3> */}
+            <h2 className="mt-10 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+                Family Information
+            </h2>
 
-            <h4 className="text-gray-700 font-bold pb-10  md:text-sm text-xs">
+            {/* <h4 className="text-gray-700 font-bold pb-10  md:text-sm text-xs">
                 Parent/Guardian
-            </h4>
+            </h4> */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-4">
                 {formConfig[FORM_SECTIONS.FAMILY].map((item, index) => (
                     <div key={index}>
@@ -77,9 +83,12 @@ const FamilyInformation = ({
                 ))}
             </div>
 
-            <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
+            {/* <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
                 Contact Person In Case Of Emergency
-            </h4>
+            </h4> */}
+            <h2 className="mt-10 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-[10px] md:text-xs">
+                Contact Person In Case Of Emergency
+            </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                 {formConfig[FORM_SECTIONS.CONTACT_PERSON].map((item, index) => (
                     <div key={index}>
@@ -93,113 +102,167 @@ const FamilyInformation = ({
                 ))}
             </div>
 
-            <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
+            {/* <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
                 Family Member
-            </h4>
-            <div className="overflow-y-auto">
-                {sortedFamily.length > 0 && (
-                    <table className="w-full lg:w-[100%] min-w-[1000px]">
-                        <thead>
-                            <tr className="p-2 bg-gray-50 text-xs font-light text-slate-700">
-                                {[
-                                    "Name",
-                                    "Relationship",
-                                    "Age",
-                                    "Gender",
-                                    "Civil Status",
-                                    "Living w/ Family or Not?",
-                                    "Education/Job",
-                                    "Income",
-                                ].map((header) => (
-                                    <th
-                                        key={header}
-                                        className="py-4 font-semibold text-xs"
-                                    >
-                                        {header}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {sortedFamily.map((member, index) => (
-                                <tr
-                                    key={index}
-                                    className="text-center text-xs border-y border-gray-200 text-gray-500"
-                                >
-                                    <td className="py-5">{member.name}</td>
-                                    <td className="py-2">
+            </h4> */}
+            <h2 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-[10px] md:text-xs">
+                Family Member
+            </h2>
+
+            <div className="space-y-4">
+                {sortedFamily.length > 0 ? (
+                    sortedFamily.map((member, index) => (
+                        <div
+                            key={index}
+                            className="border border-gray-200 rounded-md p-4 bg-white shadow-sm"
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                <p>
+                                    <span className="text-gray-600">Name:</span>{" "}
+                                    <span className="text-gray-800">
+                                        {member.name}
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-600">
+                                        Relationship:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.relationship}
-                                    </td>
-                                    <td className="py-2">{member.age}</td>
-                                    <td className="py-2">{member.gender}</td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-600">Age:</span>{" "}
+                                    <span className="text-gray-800">
+                                        {member.age}
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-600">
+                                        Gender:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
+                                        {member.gender}
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-600">
+                                        Civil Status:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.civil_status}
-                                    </td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-600">
+                                        Living with Family:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.living_with_family}
-                                    </td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p className="md:col-span-2">
+                                    <span className="text-gray-600">
+                                        Education/Job:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.education_occupation}
-                                    </td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-600">
+                                        Income:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {member.monthly_income}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-xs text-gray-500">
+                        No family members added yet.
+                    </p>
                 )}
             </div>
 
             {scholars.length > 0 && (
                 <>
-                    <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
-                        Siblings Enjoying/Enjoyed Tzu Chi Educational
-                        Assistance
+                    {/* <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
+                        Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
+                    </h4> */}
+                    <h4 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+                        Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
                     </h4>
-                    <div className="overflow-y-auto">
-                        <table className="w-full lg:w-[100%] min-w-[1000px]">
-                            <thead>
-                                <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
-                                    {[
-                                        "Name",
-                                        "Year Level",
-                                        "School",
-                                        "Course",
-                                        "School Year",
-                                    ].map((header) => (
-                                        <th
-                                            key={header}
-                                            className="py-4 font-semibold text-xs"
-                                        >
-                                            {header}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {scholars.map((scholar, index) => (
-                                    <tr
-                                        key={index}
-                                        className="text-center text-xs border-y border-gray-200 text-gray-500"
-                                    >
-                                        <td className="py-5">{scholar.name}</td>
-                                        <td className="p-2">
-                                            {scholar.year_level}
-                                        </td>
-                                        <td className="p-2">
-                                            {scholar.school}
-                                        </td>
-                                        <td className="p-2">
-                                            {scholar.course}
-                                        </td>
-                                        <td className="p-2">
-                                            {scholar.school_year}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+
+                    <div className="space-y-4">
+                        {scholars.length > 0 ? (
+                            scholars.map((scholar, index) => (
+                                <div
+                                    key={index}
+                                    className="border border-gray-200 rounded-md p-4 bg-white shadow-sm"
+                                >
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Name:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {scholar.name}
+                                            </span>
+                                        </p>
+
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Year Level:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {scholar.year_level}
+                                            </span>
+                                        </p>
+
+                                        <p>
+                                            <span className="text-gray-600">
+                                                School:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {scholar.school}
+                                            </span>
+                                        </p>
+
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Course:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {scholar.course}
+                                            </span>
+                                        </p>
+
+                                        <p className="md:col-span-2">
+                                            <span className="text-gray-600">
+                                                School Year:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {scholar.school_year}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-xs text-gray-500">
+                                No scholars added yet.
+                            </p>
+                        )}
                     </div>
                 </>
             )}
@@ -212,47 +275,56 @@ const Assistance = ({ assistance }) => {
         <>
             {assistance.length > 0 && (
                 <>
-                    <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
+                    {/* <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
+                        Assistance from Other Association, Organization, School
+                        Discount, etc.
+                    </h3> */}
+                    <h3 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
                         Assistance from Other Association, Organization, School
                         Discount, etc.
                     </h3>
-                    <div className="overflow-y-auto">
-                        <table className="w-full mb-6 lg:w-[100%] min-w-[1000px]">
-                            <thead>
-                                <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
-                                    {[
-                                        "Organization",
-                                        "Type of Support",
-                                        "Amount",
-                                    ].map((header) => (
-                                        <th
-                                            key={header}
-                                            className="py-4 font-semibold text-xs"
-                                        >
-                                            {header}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {assistance.map((assistance, index) => (
-                                    <tr
-                                        key={index}
-                                        className="text-center text-xs border-y border-gray-200 text-gray-500"
-                                    >
-                                        <td className="py-5">
-                                            {assistance.organization_name}
-                                        </td>
-                                        <td className="py-2">
-                                            {assistance.support_type}
-                                        </td>
-                                        <td className="py-2">
-                                            {assistance.amount}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="space-y-4">
+                        {assistance.length > 0 ? (
+                            assistance.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="border border-gray-200 rounded-md p-4 bg-white shadow-sm"
+                                >
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Organization:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {item.organization_name}
+                                            </span>
+                                        </p>
+
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Type of Support:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {item.support_type}
+                                            </span>
+                                        </p>
+
+                                        <p className="md:col-span-2">
+                                            <span className="text-gray-600">
+                                                Amount:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {item.amount}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-xs text-gray-500">
+                                No assistance records added yet.
+                            </p>
+                        )}
                     </div>
                 </>
             )}
@@ -263,62 +335,78 @@ const Assistance = ({ assistance }) => {
 const OtherInformation = ({ expectation, character_reference }) => {
     return (
         <>
-            <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
+            {/* <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
+                Other Information
+            </h3> */}
+            <h3 className="mt-16 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
                 Other Information
             </h3>
             <div>
                 <p className="text-xs text-gray-700">Expectation</p>
-                <p className="text-sm font-bold text-gray-800">{expectation}</p>
+                <p className="text-sm mt-1 text-gray-800">{expectation}</p>
             </div>
 
-            <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
+            <h4 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-[10px] md:text-xs">
                 Character Reference
             </h4>
 
-            <div className="overflow-y-auto">
-                {character_reference.length > 0 && (
-                    <table className="w-full mb-6 lg:w-[100%] min-w-[1000px]">
-                        <thead>
-                            <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
-                                {[
-                                    "Name",
-                                    "Address",
-                                    "Company",
-                                    "Position",
-                                    "Contact #",
-                                ].map((header) => (
-                                    <th
-                                        key={header}
-                                        className="py-4 font-semibold text-xs"
-                                    >
-                                        {header}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {character_reference.map((character, index) => (
-                                <tr
-                                    key={index}
-                                    className="text-center text-xs border-y border-gray-200 text-gray-500"
-                                >
-                                    <td className="py-5">{character.name}</td>
-                                    <td className="py-2">
+            <div className="space-y-4">
+                {character_reference.length > 0 ? (
+                    character_reference.map((character, index) => (
+                        <div
+                            key={index}
+                            className="border border-gray-200 rounded-md p-4 bg-white shadow-sm"
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                <p>
+                                    <span className="text-gray-600">Name:</span>{" "}
+                                    <span className="text-gray-800">
+                                        {character.name}
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-600">
+                                        Address:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {character.address}
-                                    </td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-600">
+                                        Company:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {character.company}
-                                    </td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p>
+                                    <span className="text-gray-600">
+                                        Position:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {character.position}
-                                    </td>
-                                    <td className="py-2">
+                                    </span>
+                                </p>
+
+                                <p className="md:col-span-2">
+                                    <span className="text-gray-600">
+                                        Contact #:
+                                    </span>{" "}
+                                    <span className="text-gray-800">
                                         {character.contact_number}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-xs text-gray-500">
+                        No character references added yet.
+                    </p>
                 )}
             </div>
         </>

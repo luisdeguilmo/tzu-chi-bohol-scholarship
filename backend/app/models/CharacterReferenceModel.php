@@ -58,6 +58,42 @@ class CharacterReferenceModel
         return $stmt->execute();
     }
 
+    public function renew($scholar, $application_id, $scholar_id)
+    {
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
+                  SET application_id = :application_id,
+                    scholar_id = :scholar_id,
+                      name = :name,
+                      address = :address,
+                      company = :company,
+                      position = :position,
+                      contact_number = :contact_number";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize inputs
+        $this->application_id = $application_id;
+        $this->name = htmlspecialchars(strip_tags($scholar['name']));
+        $this->address = htmlspecialchars(strip_tags($scholar['address']));
+        $this->company = htmlspecialchars(strip_tags($scholar['company']));
+        $this->position = htmlspecialchars(strip_tags($scholar['position']));
+        $this->contact_number = htmlspecialchars(strip_tags($scholar['contact_number']));
+
+        // Bind values
+        $stmt->bindParam(':application_id', $this->application_id);
+        $stmt->bindParam(':scholar_id', $scholar_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':address', $this->address);
+        $stmt->bindParam(':company', $this->company);
+        $stmt->bindParam(':position', $this->position);
+        $stmt->bindParam(':contact_number', $this->contact_number);
+
+        return $stmt->execute();
+    }
+
     public function update($scholar, $id)
     {
         $query =
@@ -89,6 +125,14 @@ class CharacterReferenceModel
         $stmt->bindParam(':position', $this->position);
         $stmt->bindParam(':contact_number', $this->contact_number);
 
+        return $stmt->execute();
+    }
+
+    public function deleteByApplicationId($id)
+    {
+        $query = 'DELETE FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         return $stmt->execute();
     }
 

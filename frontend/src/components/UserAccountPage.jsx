@@ -58,14 +58,10 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                 </div>
                                 <div className="flex-1">
                                     <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
-                                        {
-                                            scholarInfo?.basic_information
-                                                ?.first_name
-                                        }{" "}
-                                        {
-                                            scholarInfo?.basic_information
-                                                ?.last_name
-                                        }
+                                        {scholarInfo?.basic_information
+                                            ?.first_name || ""}{" "}
+                                        {scholarInfo?.basic_information
+                                            ?.last_name || ""}
                                     </h2>
                                     <div className="inline-flex items-center bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-xs font-medium">
                                         Scholar ID:{" "}
@@ -93,10 +89,12 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                         label="Full Name"
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.first_name +
-                                            " " +
-                                            scholarInfo?.basic_information
-                                                ?.last_name
+                                                ?.first_name ||
+                                            "" +
+                                                " " +
+                                                scholarInfo?.basic_information
+                                                    ?.last_name ||
+                                            ""
                                         }
                                         mobileClass={info}
                                     />
@@ -104,14 +102,15 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                         label="Contact Number"
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.contact_number
+                                                ?.contact_number || ""
                                         }
                                         mobileClass={info}
                                     />
                                     <InfoField
                                         label="Age"
                                         value={
-                                            scholarInfo?.basic_information?.age
+                                            scholarInfo?.basic_information
+                                                ?.age || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -119,7 +118,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                         label="Gender"
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.gender
+                                                ?.gender || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -127,7 +126,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                         label="Address"
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.home_address
+                                                ?.home_address || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -135,7 +134,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                         label="Email Address"
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.email
+                                                ?.email || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -143,7 +142,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                         label="Facebook"
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.facebook
+                                                ?.facebook || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -151,47 +150,52 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
 
                                 <div className="hidden md:block space-y-4">
                                     <ValueField
+                                        value={`
+                                            ${
+                                                scholarInfo?.basic_information
+                                                    ?.first_name || ""
+                                            }
+                                                ${
+                                                    scholarInfo
+                                                        ?.basic_information
+                                                        ?.last_name || ""
+                                                }
+                                        `}
+                                    />
+                                    <ValueField
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.first_name +
-                                            " " +
-                                            scholarInfo?.basic_information
-                                                ?.last_name
+                                                ?.contact_number || ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.contact_number
-                                        }
-                                    />
-                                    <ValueField
-                                        value={
-                                            scholarInfo?.basic_information?.age
+                                                ?.age || ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.gender
+                                                ?.gender || ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.home_address
+                                                ?.home_address || ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.email
+                                                ?.email || ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.facebook
+                                                ?.facebook || ""
                                         }
                                     />
                                 </div>
@@ -213,7 +217,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                         label="Academic Year"
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.school_year
+                                                ?.school_year || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -232,7 +236,9 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                     />
                                     <InfoField
                                         label="Rendered Hours"
-                                        value={scholarInfo?.rendered_hours}
+                                        value={
+                                            scholarInfo?.rendered_hours || ""
+                                        }
                                         mobileClass={info}
                                     />
                                 </div>
@@ -241,7 +247,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                     <ValueField
                                         value={
                                             scholarInfo?.basic_information
-                                                ?.school_year
+                                                ?.school_year || ""
                                         }
                                     />
                                     <ValueField
@@ -250,22 +256,30 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                             "active"
                                                 ? "Active"
                                                 : scholarInfo?.scholar_status ===
-                                                    "deactivated"
-                                                  ? "Deactivated"
-                                                  : "Not Renewed"
+                                                    "graduated"
+                                                  ? "Graduated"
+                                                  : scholarInfo?.scholar_status ===
+                                                      "terminated"
+                                                    ? "Terminated"
+                                                    : "Not Renewed"
                                         }
                                         badge={
                                             scholarInfo?.scholar_status ===
                                             "active"
                                                 ? "green"
                                                 : scholarInfo?.scholar_status ===
-                                                    "deactivated"
-                                                  ? "red"
-                                                  : "yellow"
+                                                    "graduated"
+                                                  ? "blue"
+                                                  : scholarInfo?.scholar_status ===
+                                                      "terminated"
+                                                    ? "red"
+                                                    : "orange"
                                         }
                                     />
                                     <ValueField
-                                        value={scholarInfo?.rendered_hours}
+                                        value={
+                                            scholarInfo?.rendered_hours || ""
+                                        }
                                     />
                                 </div>
                             </div>
@@ -286,7 +300,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                         label="School"
                                         value={
                                             scholarInfo?.academic_information
-                                                ?.present_school
+                                                ?.present_school || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -294,7 +308,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                         label="Course"
                                         value={
                                             scholarInfo?.academic_information
-                                                ?.present_course1
+                                                ?.present_course1 || ""
                                         }
                                         mobileClass={info}
                                     />
@@ -326,13 +340,13 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                     <ValueField
                                         value={
                                             scholarInfo?.academic_information
-                                                ?.present_school
+                                                ?.present_school || ""
                                         }
                                     />
                                     <ValueField
                                         value={
                                             scholarInfo?.academic_information
-                                                ?.present_course1
+                                                ?.present_course1 || ""
                                         }
                                     />
                                     <ValueField
@@ -364,7 +378,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                             <div className="flex items-center gap-2 mb-6">
                                 <Bus className="w-4 h-4 text-gray-600" />
                                 <h3 className="text-sm font-semibold text-gray-900">
-                                    Transport Details
+                                    Living and Transport Details
                                 </h3>
                             </div>
 
@@ -511,12 +525,16 @@ const ValueField = ({ value, badge }) => (
             <span className="inline-flex items-center bg-green-50 text-green-700 text-sm px-3 py-1 rounded-md">
                 {value}
             </span>
+        ) : badge === "blue" ? (
+            <span className="inline-flex items-center bg-blue-50 text-blue-700 text-sm px-3 py-1 rounded-md">
+                {value}
+            </span>
         ) : badge === "red" ? (
             <span className="inline-flex items-center bg-red-50 text-red-700 text-sm px-3 py-1 rounded-md">
                 {value}
             </span>
-        ) : badge === "yellow" ? (
-            <span className="inline-flex items-center bg-yellow-50 text-yellow-700 text-sm px-3 py-1 rounded-md">
+        ) : badge === "orange" ? (
+            <span className="inline-flex items-center bg-orange-50 text-orange-700 text-sm px-3 py-1 rounded-md">
                 {value}
             </span>
         ) : (

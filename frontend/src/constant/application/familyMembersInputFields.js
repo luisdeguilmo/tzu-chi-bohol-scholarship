@@ -3,12 +3,13 @@ const familyMembersInputFields = [
         label: "Name",
         name: "name",
         type: "text",
-        placeholder: "Name",
+        placeholder: "Enter name",
     },
     {
         label: "Relationship",
         name: "relationship",
-        type: "text",
+        type: "select",
+        options: ["", "Father", "Mother", "Brother", "Sister", "Other"],
         placeholder: "Relationship",
     },
     {
@@ -27,26 +28,27 @@ const familyMembersInputFields = [
     {
         label: "Civil Status",
         name: "civil_status",
-        type: "text",
+        type: "select",
+        options: ["", "Single", "Married", "Divorced", "Widowed", "Separated"],
         placeholder: "Civil Status",
     },
     {
         label: "Education/Occupation",
         name: "education_occupation",
         type: "text",
-        placeholder: "Education Attainment/Occupation & Company Name",
+        placeholder: "Enter details",
     },
     {
         label: "Monthly Income",
         name: "monthly_income",
-        type: "number",
-        placeholder: "Monthly Income",
+        type: "text",
+        placeholder: "Enter amount",
     },
     {
-        label: "Living w/ Family or Not?",
+        label: "Living with Family",
         name: "living_with_family",
         type: "select",
-        options: ["", "Living with family", "Not living with family"],
+        options: ["", "Yes", "No"],
     },
 ];
 

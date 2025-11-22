@@ -81,12 +81,12 @@ export const useScholarAccounts = (tab) => {
         }
     };
 
-    const updateScholarAccountStatus = async (scholarId, action) => {
+    const updateScholarAccountStatus = async (scholarId, action, reason) => {
         try {
             setLoading(true);
 
             const response = await axios.put(
-                `${BASE_URL}app/views/scholar-accounts.php?action=${action}`,
+                `${BASE_URL}app/views/scholar-accounts.php?action=${action}&reason=${reason}`,
                 {
                     scholarId: scholarId,
                 }

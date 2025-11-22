@@ -54,27 +54,15 @@ class ScholarController
         try {
             $scholar = new ScholarModel();
 
-            // Get ID parameter if it exists
-            // $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+            $schoolYear = $_GET['school_year'] ?? null;
 
-            // if ($id) {
-            //     $results = $scholar->getScholarById($id);
-            // } else {
-            //     $results = $scholar->getAllScholars();
-            // }
-
-            // $model = new ApplicationModel();
-
-            // $results = $model->getNewScholarsFromPreviousSchoolYear();
-
-            $model = new ApplicantModel();
-
-            $results = $model->getAllApplicants();
+            $type = $scholar->getScholarType($id, $schoolYear);
 
             http_response_code(200);
             echo json_encode([
                 'success' => true,
-                'data' => $results,
+                'data' => $type,
             ]);
         } catch (\Exception $e) {
             http_response_code(500);

@@ -10,6 +10,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/BatchModel.php';
 
+use App\Models\EducationModel;
 use App\Models\ScholarsModel;
 use App\Models\SchoolTransportInfoModel;
 use Config\Database;
@@ -90,6 +91,7 @@ class SchoolTransportInfoController
 
             $transportModel = new SchoolTransportInfoModel();
             $scholarModel = new ScholarsModel();
+            $educationModel = new EducationModel();
 
             $isExist = $transportModel->checkTransportInfoRecord($data['scholar_id']);
 
@@ -100,6 +102,10 @@ class SchoolTransportInfoController
             } else {
                 if (!$transportModel->create($data)) {
                     throw new \Exception('Failed to save school transport information');
+                }
+
+                if (!$educationModel->updateSchoolAndCourse($data)) {
+                    throw new \Exception('Failed to update school and course');
                 }
             }
 

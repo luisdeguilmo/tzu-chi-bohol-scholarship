@@ -19,6 +19,13 @@ const LoginForm = ({ role }) => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        // Scrolls to the top-left corner of the document
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
     // Get the intended destination from location state, or use default based on role
     const from =
         location.state?.from?.pathname || getDefaultDestination(role, user);
@@ -214,9 +221,50 @@ const LoginForm = ({ role }) => {
         }
     };
 
+    const images = [
+        "/src/assets/img.jpg",
+        "/src/assets/img1.jpg",
+        "/src/assets/img3.jpg",
+    ];
+
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIsTransitioning(true);
+            setCurrentIndex((prev) => (prev + 1) % images.length);
+            setTimeout(() => setIsTransitioning(false), 300);
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const handlePrevSlide = () => {
+        if (isTransitioning) return;
+        setIsTransitioning(true);
+        setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+        setTimeout(() => setIsTransitioning(false), 300);
+    };
+
+    const handleNextSlide = () => {
+        if (isTransitioning) return;
+        setIsTransitioning(true);
+        setCurrentIndex((prev) => (prev + 1) % images.length);
+        setTimeout(() => setIsTransitioning(false), 300);
+    };
+
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="bg-white p-10 rounded-xl shadow-lg absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-100%] w-[80%] sm:max-w-[400px] border border-gray-200">
+        <div className="hero flex items-center justify-center min-h-screen">
+            {images.map((img, index) => (
+                <div
+                    key={index}
+                    className={`hero-bg ${index === currentIndex ? "visible" : "hidden"}`}
+                    style={{ backgroundImage: `url(${img})` }}
+                />
+            ))}
+
+            <div className="bg-white p-10 rounded-md shadow-lg absolute z-30 top-[75%] md:top-[70%] left-[50%] translate-x-[-50%] translate-y-[-100%] w-[80%] sm:max-w-[400px] border border-gray-200">
                 <div className="text-center mb-4">
                     <h2 className="text-2xl font-bold text-gray-800">
                         {isResetPassword

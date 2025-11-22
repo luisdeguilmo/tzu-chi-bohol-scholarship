@@ -9,7 +9,13 @@ import FormLogo from "/src/assets/form_logo.png";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
-export const generatePDF = async (action, applicationId, applicantData) => {
+export const generatePDF = async (
+    type,
+    action,
+    applicationId,
+    scholarId,
+    applicantData
+) => {
     if (!applicantData) {
         alert("No student data available");
         return;
@@ -24,20 +30,39 @@ export const generatePDF = async (action, applicationId, applicantData) => {
 
         // Get profile picture as base64 using existing endpoint
         let profilePictureBase64 = null;
-        if (applicationId) {
-            console.log(
-                "Getting profile picture for student ID:",
-                applicationId
-            );
-            profilePictureBase64 = await getProfilePicture(
-                applicationId,
-                "profile-picture"
-            );
-
-            if (!profilePictureBase64) {
-                console.warn(
-                    "Failed to get profile picture, PDF will be generated without it"
+        if (type === "new") {
+            if (applicationId) {
+                console.log(
+                    "Getting profile picture for student ID:",
+                    applicationId
                 );
+                profilePictureBase64 = await getProfilePicture(
+                    applicationId,
+                    "profile-picture"
+                );
+
+                if (!profilePictureBase64) {
+                    console.warn(
+                        "Failed to get profile picture, PDF will be generated without it"
+                    );
+                }
+            }
+        } else {
+            if (scholarId) {
+                console.log(
+                    "Getting profile picture for student ID:",
+                    scholarId
+                );
+                profilePictureBase64 = await getProfilePicture(
+                    scholarId,
+                    "profile-picture"
+                );
+
+                if (!profilePictureBase64) {
+                    console.warn(
+                        "Failed to get profile picture, PDF will be generated without it"
+                    );
+                }
             }
         }
 
@@ -232,7 +257,7 @@ export const generatePDF = async (action, applicationId, applicantData) => {
                         margin: [0, 0, 0, 0],
                     },
                     {
-                        text: "Status: " + applicationInfo.status,
+                        text: "Status: " + applicationInfo?.type,
                         fontSize: 10,
                         bold: true,
                         decoration: "underline",
@@ -547,14 +572,24 @@ export const generatePDF = async (action, applicationId, applicantData) => {
                                 fontSize: 10,
                             },
                             {
-                                text: "Incoming Grade/Year Level",
+                                text:
+                                    applicationInfo?.type === "New"
+                                        ? "Incoming Grade/Year Level"
+                                        : "Year Level",
                                 bold: true,
                                 fontSize: 7,
                             },
                             {
                                 text:
-                                    educationalBackground?.incoming_grade || "",
+                                    applicationInfo?.type === "New"
+                                        ? educationalBackground?.incoming_grade ||
+                                          ""
+                                        : educationalBackground?.year_level ||
+                                          "",
                                 fontSize: 10,
+                                // text:
+                                //     educationalBackground?.incoming_grade || "",
+                                // fontSize: 10,
                             },
                         ],
                         [

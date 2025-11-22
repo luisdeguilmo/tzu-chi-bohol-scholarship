@@ -14,14 +14,12 @@ class NotificationsModel
     public $id;
     public $batch_name;
     public $schedule;
-    private $currentYear;
     private $pdo;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
-        $this->currentYear = 2024;
     }
 
     public function getAllNotifications($id)

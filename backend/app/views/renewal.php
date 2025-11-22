@@ -17,13 +17,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode($_POST['applicationData'], true);
+    // $data = json_decode($_POST['applicationData'], true);
 
-    if ($data['application_info']['application_status'] === 'renew') {
-        $controller->updateApplication();
-        exit();
+    // $data = [];
+
+    if (isset($_POST['applicationData'])) {
+        $data = json_decode($_POST['applicationData'], true);
     } else {
+        $data = json_decode(file_get_contents('php://input'), true);
+    }
+
+    if ($data['application_info']['application_type'] === 'renew') {
         $controller->createApplication();
+        exit();
+    } elseif ($data['application_info']['application_type'] === 'resubmit') {
+        $controller->updateApplication();
         exit();
     }
 }
