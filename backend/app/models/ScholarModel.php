@@ -183,6 +183,17 @@ class ScholarModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function getCurrentYearLevel($id)
+    {
+        $query =
+            'SELECT year_level FROM educational_background WHERE (application_id = :scholar_id OR scholar_id = :scholar_id) ORDER BY created_at DESC LIMIT 1';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':scholar_id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $row['year_level'] ?? null;
+    }
+
     public function updateAllowanceStatus($data)
     {
         $query =

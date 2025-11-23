@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
-import { applicationButtons } from "../../../constant/tableToolbarButtons";
 import TableToolbar from "../../../components/TableToolbar";
 import { allowanceCyclesTableHeaders } from "../../../constant/tableHeaders";
 import Table from "../../../components/Table";

@@ -104,7 +104,7 @@ export const dashboardOverviewData = (data) => {
             title: "Active Scholars",
             status: data?.numberOfActiveScholars ?? 0,
             color: "bg-orange-300 text-gray-900",
-            icon: <ClipboardEdit className="w-5 h-5 text-slate-600" />,
+            icon: <Users className="w-5 h-5 text-slate-600" />,
             navigate: "/staff/entrance-examination",
             sidebarTabName: "applications",
         },

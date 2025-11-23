@@ -8,7 +8,7 @@ import { useScholars } from "../../../hooks/useScholars";
 import { scholarTableHeaders } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import { Eye } from "lucide-react";
+import { Eye, FileText } from "lucide-react";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import ScholarProfileModal from "../../../components/UserProfileModal";
 import { date } from "../../../utils/getDateAndTime";
@@ -16,12 +16,15 @@ import { generateExcel } from "../../../utils/generateExcel";
 import { useScholarInformation } from "../../../hooks/useScholarInformation";
 import { useCollegesUniversities } from "../../../hooks/useCollegesUniversities";
 import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
+import CoaGradesModal from "./CoaGradesModal";
+import { useSubmissions } from "../../../hooks/useSubmissions";
 
 export default function Scholars() {
     const [searchTerm, setSearchTerm] = useState("");
     const [scholarId, setScholarId] = useState(null);
     const [selectedItems, setSelectedItems] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCoeGradeModalOpen, setIsCoeGradeModalOpen] = useState(false);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("active");
     const [school, setSchool] = useState("all");
@@ -44,6 +47,10 @@ export default function Scholars() {
     const { collegesAndUniversities } = useCollegesUniversities();
     const { items: courses } = useScholarshipCriteria("courses", "Courses");
 
+    // useEffect(() => {
+    //     fetchSubmissions();
+    // }, [scholarId]);
+
     const { scholarsInformation, fetchScholarsInformation } =
         useScholarInformation(
             status,
@@ -54,19 +61,20 @@ export default function Scholars() {
             sortBy
         );
 
-    const { exportScholarInformationToExcel } = generateExcel();
+    const { exportScholars } = generateExcel();
 
     const { profilePics } = useProfilePicture(scholars, "profile-picture");
 
     useEffect(() => {
         fetchScholars();
+        fetchScholarsInformation();
     }, [activeTab, status, schoolYear, school, course, yearLevel, sortBy]);
 
     const handleExport = async () => {
         const fileName = `Scholar_Information_${date.getCurrentMonthFormatted()}_${date.getCurrentYear()}`;
 
         // Step 1: Export to Excel
-        await exportScholarInformationToExcel(scholarsInformation, fileName);
+        await exportScholars(scholarsInformation, fileName);
     };
 
     // Filter data based on search term
@@ -81,7 +89,7 @@ export default function Scholars() {
             applicant?.created_at?.includes(searchTerm)
     );
 
-    console.log(scholars);
+    console.log(scholarsInformation);
 
     const {
         currentItems,
@@ -291,6 +299,18 @@ export default function Scholars() {
                                         >
                                             <Eye className="w-4 h-4" />
                                         </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsCoeGradeModalOpen(true);
+                                                setScholarId(
+                                                    scholar.account_id
+                                                );
+                                            }}
+                                            className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"
+                                            title="COE and Grades"
+                                        >
+                                            <FileText className="w-4 h-4" />
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -324,6 +344,12 @@ export default function Scholars() {
                     isOpen={isModalOpen}
                     setIsOpen={setIsModalOpen}
                     isScholar={true}
+                />
+
+                <CoaGradesModal
+                    scholarId={scholarId}
+                    isOpen={isCoeGradeModalOpen}
+                    onClose={setIsCoeGradeModalOpen}
                 />
             </div>
         </div>

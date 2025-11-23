@@ -122,7 +122,7 @@ try {
         exit();
     }
 
-    if ($user['status'] === 'deactivated') {
+    if ($user['status'] === 'graduated' || $user['status'] === 'terminated') {
         echo json_encode([
             'success' => false,
             'message' => 'Your account has been deactivated. Please contact the administrator.',

@@ -52,7 +52,6 @@ const ReviewedApplications = () => {
             return applicant.is_application_rejected === 1;
         }
 
-        // General search by name or date
         return (
             applicant.last_name.toLowerCase().includes(term) ||
             applicant.middle_name.toLowerCase().includes(term) ||
@@ -60,8 +59,6 @@ const ReviewedApplications = () => {
             applicant.created_at.includes(term)
         );
     });
-
-    console.log(filteredApplications);
 
     const sortedApplications = [...filteredApplications].sort((a, b) => {
         switch (sortBy) {

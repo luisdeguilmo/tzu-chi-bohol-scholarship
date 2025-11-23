@@ -12,6 +12,7 @@ import {
     UserCog,
     BookOpen,
     Users,
+    FileText,
 } from "lucide-react";
 
 export const scholarSidebarItems = [
@@ -20,6 +21,12 @@ export const scholarSidebarItems = [
         text: "Dashboard",
         icon: <LayoutDashboard className="w-5 h-5 text-slate-600" />,
         navigate: "/scholar/dashboard",
+    },
+    {
+        itemName: "coe_grades",
+        text: "COE and Grades",
+        icon: <FileText className="w-5 h-5 text-slate-600" />,
+        navigate: "/scholar/coe-grades",
     },
     {
         itemName: "activities",
@@ -92,7 +99,10 @@ export const staffSidebarItems = [
         itemName: "records",
         icon: <Layers className="w-5 h-5 text-slate-600" />,
         subItems: [
-            { text: "Scholars and Allowances", navigate: "/staff/scholars-and-allowances" },
+            {
+                text: "Scholars and Allowances",
+                navigate: "/staff/scholars-and-allowances",
+            },
             {
                 text: "Monthly Allowance Summary",
                 navigate: "/staff/monthly-allowance-summary",

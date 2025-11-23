@@ -44,6 +44,7 @@ import AdminAccount from "./components/AdminAccountPage";
 import AboutSection from "./pages/Home/About";
 import OurMission from "./pages/Home/OurMission";
 import ScholarsAndAllowances from "./pages/Staff/ScholarsAndAllowances/ScholarsAndAllowances";
+import CoeGrades from "./pages/Scholar/COEAndGrades/COEAndGrades";
 
 // Component for role-specific login forms
 const RoleSpecificLoginForm = ({ role }) => {
@@ -104,6 +105,10 @@ export function App() {
                         path="/scholar/community-services"
                         element={<CommunityServices />}
                     />
+                    <Route
+                        path="/scholar/coe-grades"
+                        element={<CoeGrades />}
+                    />
                     <Route path="/scholar/events" element={<Events />} />
                     <Route
                         path="/scholar/archived-activities"
@@ -137,7 +142,10 @@ export function App() {
                         element={<CollegeUniversityManagement />}
                     />
                     <Route path="/staff/scholars" element={<Scholars />} />
-                    <Route path="/staff/scholars-and-allowances" element={<ScholarsAndAllowances />} />
+                    <Route
+                        path="/staff/scholars-and-allowances"
+                        element={<ScholarsAndAllowances />}
+                    />
                     <Route
                         path="/staff/application-records"
                         element={<ApplicationRecordsPage />}

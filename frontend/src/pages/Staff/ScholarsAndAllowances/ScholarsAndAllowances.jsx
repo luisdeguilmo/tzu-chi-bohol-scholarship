@@ -74,20 +74,8 @@ export default function ScholarsAndAllowances() {
 
     console.log(scholarAllowances);
 
-    const { scholarsInformation, fetchScholarsInformation } =
-        useScholarInformation(
-            status,
-            schoolYear,
-            school,
-            course,
-            yearLevel,
-            sortBy
-        );
-
     const { exportAllowancesToExcel, exportScholarInformationToExcel } =
         generateExcel();
-
-    console.log(scholarsInformation);
 
     const { profilePics } = useProfilePicture(scholars, "profile-picture");
 
@@ -127,13 +115,6 @@ export default function ScholarsAndAllowances() {
             setIsConfirmationModalOpen(false);
             // Consider showing an error message to the user here
         }
-    };
-
-    const handleExport = async () => {
-        const fileName = `Scholar_Information_${date.getCurrentMonthFormatted()}_${date.getCurrentYear()}`;
-
-        // Step 1: Export to Excel
-        await exportScholarInformationToExcel(scholarsInformation, fileName);
     };
 
     const handleStartNewCycle = async () => {

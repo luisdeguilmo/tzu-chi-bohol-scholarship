@@ -9,6 +9,7 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Models\CollegeUniversityManagementModel;
 use App\Models\ScholarModel;
 use App\Models\ScholarsModel;
 use Config\Database;
@@ -50,7 +51,7 @@ class ScholarInformationController
         try {
             $tab = $_GET['tab'] ?? null;
             $status = $_GET['status'] ?? null;
-            $school = $_GET['school'] ?? null;
+            $schoolFilter = $_GET['school'] ?? null;
             $course = $_GET['course'] ?? null;
             $current_school_year = $_GET['current_school_year'] ?? null;
             $year_level = $_GET['year_level'] ?? null;
@@ -58,45 +59,64 @@ class ScholarInformationController
             $sort = $_GET['sort'] ?? null;
 
             $model = new ScholarsModel();
+            $schoolModel = new CollegeUniversityManagementModel();
+            $result = [];
 
-            $newScholars = $model->getNewActiveScholars(
-                $status,
-                $school_year,
-                $school,
-                $year_level,
-                $course,
-                $current_school_year,
-            );
-            $oldScholars = $model->getOldActiveScholars(
-                $status,
-                $school_year,
-                $school,
-                $year_level,
-                $course,
-                $current_school_year,
-            );
+            // Determine which schools to process
+            if ($schoolFilter === 'all') {
+                $schools = $schoolModel->getAllCollegesAndUniversitiesAlphabetically();
+            } else {
+                $schools[] = $schoolFilter;
+            }
 
-            // Format results
-            $newScholarsArr = array_map(function ($scholar) {
-                return [
-                    'Name' => $scholar['first_name'] . ' ' . $scholar['last_name'],
-                    'Status' => $scholar['type'],
+            foreach ($schools as $schoolData) {
+                $schoolName = $schoolData['name'] ?? $schoolData;
+
+                $newScholars = $model->getNewActiveScholars(
+                    $status,
+                    $school_year,
+                    $schoolName,
+                    $year_level,
+                    $course,
+                    $current_school_year,
+                );
+
+                $oldScholars = $model->getOldActiveScholars(
+                    $status,
+                    $school_year,
+                    $schoolName,
+                    $year_level,
+                    $course,
+                    $current_school_year,
+                );
+
+                // Combine and map scholars
+                $allScholars = array_merge($newScholars, $oldScholars);
+
+                $scholarsArr = array_map(function ($scholar) {
+                    return [
+                        'YR. Level' => $scholar['year_level'],
+                        'Last Name' => $scholar['last_name'],
+                        'First Name' => $scholar['first_name'],
+                        'Course' => $scholar['present_course1'],
+                    ];
+                }, $allScholars);
+
+                // // Apply sorting if specified
+                if ($sort) {
+                    $scholarsArr = $this->applySorting($scholarsArr, $sort);
+                }
+
+                $result[] = [
+                    'School' => $schoolName,
+                    'Scholars' => $scholarsArr,
                 ];
-            }, $newScholars);
-
-            $oldScholarsArr = array_map(function ($scholar) {
-                return [
-                    'Name' => $scholar['first_name'] . ' ' . $scholar['last_name'],
-                    'Status' => $scholar['type'],
-                ];
-            }, $oldScholars);
-
-            $results = [...$newScholarsArr, ...$oldScholarsArr];
+            }
 
             http_response_code(200);
             echo json_encode([
                 'success' => true,
-                'data' => $results,
+                'data' => $result,
             ]);
         } catch (\Exception $e) {
             http_response_code(500);
@@ -105,6 +125,32 @@ class ScholarInformationController
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    private function applySorting(array $scholars, string $sort): array
+    {
+        $sortMap = [
+            'lastname_asc' => function ($a, $b) {
+                $lastNameCmp = strcasecmp($a['Last Name'], $b['Last Name']);
+                if ($lastNameCmp !== 0) {
+                    return $lastNameCmp;
+                }
+                return strcasecmp($a['First Name'], $b['First Name']);
+            },
+            'firstname_asc' => function ($a, $b) {
+                $firstNameCmp = strcasecmp($a['First Name'], $b['First Name']);
+                if ($firstNameCmp !== 0) {
+                    return $firstNameCmp;
+                }
+                return strcasecmp($a['Last Name'], $b['Last Name']);
+            },
+        ];
+
+        if (isset($sortMap[$sort])) {
+            usort($scholars, $sortMap[$sort]);
+        }
+
+        return $scholars;
     }
 }
 

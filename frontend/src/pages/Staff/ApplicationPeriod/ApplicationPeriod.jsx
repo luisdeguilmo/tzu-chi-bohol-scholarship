@@ -12,7 +12,6 @@ import { usePeriod } from "../../../context/PeriodContext";
 
 const ApplicationPeriod = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    // const [isModalOpen, setIsModalOpen] = useState(false);
     const [sortBy, setSortBy] = useState("newest");
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [selectedApplicationPeriod, setSelectedApplicationPeriod] =
@@ -88,28 +87,6 @@ const ApplicationPeriod = () => {
         goToPreviousPage,
         goToNextPage,
     } = usePagination(sortedApplicationPeriods, itemsPerPage);
-
-    const handleChangeTab = (tab) => {
-        setActiveTab(tab);
-        fetchApplicationPeriods(tab);
-        setCurrentPage(1);
-    };
-
-    const handleSelectAll = (e) => {
-        if (e.target.checked) {
-            setSelectedItems(currentItems.map((item) => item.application_id));
-        } else {
-            setSelectedItems([]);
-        }
-    };
-
-    const handleSelectItem = (id) => {
-        setSelectedItems((prev) =>
-            prev.includes(id)
-                ? prev.filter((item) => item !== id)
-                : [...prev, id]
-        );
-    };
 
     const handleRefresh = () => {
         fetchApplicationPeriods();

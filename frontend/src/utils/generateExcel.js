@@ -499,8 +499,12 @@ export const generateExcel = () => {
         let internetTotal = 0;
         let transportTotal = 0;
 
+        // Filter out schools with no scholars
+        const schoolsWithScholars =
+            data?.filter((school) => school.Scholar?.length > 0) || [];
+
         // Process each school
-        data?.forEach((school, schoolIndex) => {
+        schoolsWithScholars.forEach((school, schoolIndex) => {
             // Add school name as header using addRow
             const schoolRow = worksheet.addRow([school.School]);
             schoolRow.getCell(1).font = {
@@ -552,110 +556,101 @@ export const generateExcel = () => {
             let lastDataRow = firstDataRow;
 
             // Add scholars data
-            if (school.Scholar?.length === 0) {
-                // Add empty row for schools with no scholars
-                const emptyRow = worksheet.addRow(["No scholars"]);
-                worksheet.mergeCells(emptyRow.number, 1, emptyRow.number, 9);
-                tableRows.push(emptyRow.number);
-            } else {
-                school.Scholar?.forEach((scholar) => {
-                    const total =
-                        (scholar["Allowance"] || 0) +
-                        (scholar["Internet Allowance"] || 0) +
-                        (scholar["Transportation Allowance"] || 0);
-                    ++index;
+            school.Scholar?.forEach((scholar) => {
+                const total =
+                    (scholar["Allowance"] || 0) +
+                    (scholar["Internet Allowance"] || 0) +
+                    (scholar["Transportation Allowance"] || 0);
+                ++index;
 
-                    // Accumulate totals for grand total calculation
-                    allowanceTotal += scholar["Allowance"] || 0;
-                    internetTotal += scholar["Internet Allowance"] || 0;
-                    transportTotal += scholar["Transportation Allowance"] || 0;
+                // Accumulate totals for grand total calculation
+                allowanceTotal += scholar["Allowance"] || 0;
+                internetTotal += scholar["Internet Allowance"] || 0;
+                transportTotal += scholar["Transportation Allowance"] || 0;
 
-                    const dataRow = worksheet.addRow([
-                        index,
-                        "C" + scholar["YR. Level"],
-                        scholar["Last Name"],
-                        scholar["First Name"],
-                        scholar["Allowance"],
-                        scholar["Internet Allowance"],
-                        scholar["Transportation Allowance"],
-                        total,
-                        "", // Signature/Date
-                    ]);
-
-                    lastDataRow = dataRow.number;
-                    allAllowanceRows.push(dataRow.number);
-
-                    // Center align and set fonts for data cells
-                    for (let col = 1; col <= 8; col++) {
-                        const cell = dataRow.getCell(col);
-
-                        // Set alignment based on column
-                        if (col >= 2 && col <= 4) {
-                            // Yr. Level, Last Name, First Name: left align
-                            cell.alignment = {
-                                horizontal: "left",
-                            };
-                        } else {
-                            // Other columns: center align
-                            cell.alignment = {
-                                horizontal: "center",
-                            };
-                        }
-
-                        // Set font based on column
-                        if (col === 1) {
-                            // No. column: Arial Narrow, size 11
-                            cell.font = { name: "Arial Narrow", size: 11 };
-                        } else if (col >= 2 && col <= 4) {
-                            // Yr. Level to TOTAL: Arial, size 9
-                            cell.font = { name: "Arial", size: 9 };
-                        } else if (col >= 2 && col <= 4) {
-                            // Yr. Level to TOTAL: Arial, size 11
-                            cell.font = { name: "Arial Narrow", size: 11 };
-                        }
-                    }
-
-                    // Mark data row for borders
-                    tableRows.push(dataRow.number);
-                });
-            }
-
-            // Add TOTAL row at the end of each school's table (outside the table, no borders)
-            if (school.Scholar?.length > 0) {
-                const totalRow = worksheet.addRow([
-                    "", // No.
-                    "", // Yr. Level
-                    "", // Last Name
-                    "TOTAL", // First Name
-                    { formula: `SUM(E${firstDataRow}:E${lastDataRow})` }, // Allowance
-                    { formula: `SUM(F${firstDataRow}:F${lastDataRow})` }, // Internet Allowance
-                    { formula: `SUM(G${firstDataRow}:G${lastDataRow})` }, // Transportation Allowance
-                    { formula: `SUM(H${firstDataRow}:H${lastDataRow})` }, // TOTAL
+                const dataRow = worksheet.addRow([
+                    index,
+                    "C" + scholar["YR. Level"],
+                    scholar["Last Name"],
+                    scholar["First Name"],
+                    scholar["Allowance"],
+                    scholar["Internet Allowance"],
+                    scholar["Transportation Allowance"],
+                    total,
                     "", // Signature/Date
                 ]);
 
-                // Track this TOTAL row for grand total calculation
-                schoolTotalRows.push(totalRow.number);
+                lastDataRow = dataRow.number;
+                allAllowanceRows.push(dataRow.number);
 
-                // Style the TOTAL row
-                totalRow.getCell(4).font = {
-                    name: "Arial Narrow",
-                    size: 11,
-                    bold: true,
-                };
-                totalRow.getCell(4).alignment = { horizontal: "left" };
+                // Center align and set fonts for data cells
+                for (let col = 1; col <= 8; col++) {
+                    const cell = dataRow.getCell(col);
 
-                for (let col = 5; col <= 8; col++) {
-                    const cell = totalRow.getCell(col);
-                    cell.font = { name: "Arial Narrow", size: 11, bold: true };
-                    cell.alignment = { horizontal: "center" };
+                    // Set alignment based on column
+                    if (col >= 2 && col <= 4) {
+                        // Yr. Level, Last Name, First Name: left align
+                        cell.alignment = {
+                            horizontal: "left",
+                        };
+                    } else {
+                        // Other columns: center align
+                        cell.alignment = {
+                            horizontal: "center",
+                        };
+                    }
+
+                    // Set font based on column
+                    if (col === 1) {
+                        // No. column: Arial Narrow, size 11
+                        cell.font = { name: "Arial Narrow", size: 11 };
+                    } else if (col >= 2 && col <= 4) {
+                        // Yr. Level to TOTAL: Arial, size 9
+                        cell.font = { name: "Arial", size: 9 };
+                    } else if (col >= 2 && col <= 4) {
+                        // Yr. Level to TOTAL: Arial Narrow, size 11
+                        cell.font = { name: "Arial Narrow", size: 11 };
+                    }
                 }
 
-                // NOTE: TOTAL row is NOT added to tableRows, so it won't have borders
+                // Mark data row for borders
+                tableRows.push(dataRow.number);
+            });
+
+            // Add TOTAL row at the end of each school's table (outside the table, no borders)
+            const totalRow = worksheet.addRow([
+                "", // No.
+                "", // Yr. Level
+                "", // Last Name
+                "TOTAL", // First Name
+                { formula: `SUM(E${firstDataRow}:E${lastDataRow})` }, // Allowance
+                { formula: `SUM(F${firstDataRow}:F${lastDataRow})` }, // Internet Allowance
+                { formula: `SUM(G${firstDataRow}:G${lastDataRow})` }, // Transportation Allowance
+                { formula: `SUM(H${firstDataRow}:H${lastDataRow})` }, // TOTAL
+                "", // Signature/Date
+            ]);
+
+            // Track this TOTAL row for grand total calculation
+            schoolTotalRows.push(totalRow.number);
+
+            // Style the TOTAL row
+            totalRow.getCell(4).font = {
+                name: "Arial Narrow",
+                size: 11,
+                bold: true,
+            };
+            totalRow.getCell(4).alignment = { horizontal: "left" };
+
+            for (let col = 5; col <= 8; col++) {
+                const cell = totalRow.getCell(col);
+                cell.font = { name: "Arial Narrow", size: 11, bold: true };
+                cell.alignment = { horizontal: "center" };
             }
 
+            // NOTE: TOTAL row is NOT added to tableRows, so it won't have borders
+
             // Add blank row between schools (except after the last school)
-            if (schoolIndex < data.length - 1) {
+            if (schoolIndex < schoolsWithScholars.length - 1) {
                 worksheet.addRow([]);
             }
         });
@@ -794,5 +789,189 @@ export const generateExcel = () => {
         return true;
     };
 
-    return { exportAllowancesToExcel, exportScholarInformationToExcel };
+    const exportScholars = async (data, fileName) => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Allowances");
+        console.log(data);
+
+        // Define table headers
+        const headers = [
+            "No.",
+            "Yr. Level",
+            "Last Name",
+            "First Name",
+            "Course",
+        ];
+
+        // Track rows that should have borders (table headers and data rows)
+        const tableRows = [];
+        const header1Row = worksheet.addRow(["SCHOLARS LIST"]);
+        const header2Row = worksheet.addRow([
+            "BY SCHOOL / COURSE / YEAR LEVEL",
+        ]);
+        const header3Row = worksheet.addRow(["S.Y. " + getCurrentSchoolYear()]);
+
+        header1Row.getCell(1).font = {
+            name: "Arial Narrow",
+            bold: true,
+            size: 12,
+        };
+        header2Row.getCell(1).font = {
+            name: "Arial Narrow",
+            bold: true,
+            size: 12,
+        };
+        header3Row.getCell(1).font = {
+            name: "Arial Narrow",
+            bold: true,
+            size: 12,
+        };
+
+        worksheet.mergeCells(header1Row.number, 1, header1Row.number, 5);
+        worksheet.mergeCells(header2Row.number, 1, header2Row.number, 5);
+        worksheet.mergeCells(header3Row.number, 1, header3Row.number, 5);
+
+        header1Row.getCell(1).alignment = {
+            horizontal: "center",
+            vertical: "middle",
+        };
+        header2Row.getCell(1).alignment = {
+            horizontal: "center",
+            vertical: "middle",
+        };
+        header3Row.getCell(1).alignment = {
+            horizontal: "center",
+            vertical: "middle",
+        };
+
+        worksheet.addRow([]);
+
+        let index = 0;
+
+        // Filter out schools with no scholars - FIXED: Changed Scholar to Scholars
+        const schoolsWithScholars =
+            data?.filter((school) => school.Scholars?.length > 0) || [];
+
+        // Process each school
+        schoolsWithScholars.forEach((school, schoolIndex) => {
+            // Add school name as header using addRow
+            const schoolRow = worksheet.addRow([school.School]);
+            schoolRow.getCell(1).font = {
+                name: "Arial Narrow",
+                bold: true,
+                size: 12,
+                underline: true,
+            };
+            worksheet.mergeCells(schoolRow.number, 1, schoolRow.number, 5);
+
+            // Add column headers
+            const headerRow = worksheet.addRow(headers);
+            headerRow.eachCell((cell, colNumber) => {
+                // Set font - all headers use Aharoni
+                cell.font = {
+                    name: "Aharoni",
+                    bold: true,
+                    size: 10,
+                };
+                cell.alignment = {
+                    horizontal: "center",
+                    vertical: "middle",
+                    wrapText: colNumber === 2, // Wrap text for Yr. Level
+                };
+                cell.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: "FFFF00" }, // Yellow
+                };
+            });
+
+            // Mark header row for borders
+            tableRows.push(headerRow.number);
+
+            // Add scholars data - FIXED: Changed Scholar to Scholars
+            school.Scholars?.forEach((scholar) => {
+                ++index;
+
+                const dataRow = worksheet.addRow([
+                    index,
+                    "C" + scholar["YR. Level"],
+                    scholar["Last Name"],
+                    scholar["First Name"],
+                    scholar["Course"],
+                ]);
+
+                // Set alignment and fonts for data cells
+                for (let col = 1; col <= 5; col++) {
+                    const cell = dataRow.getCell(col);
+
+                    // Set alignment based on column
+                    if (col >= 2 && col <= 5) {
+                        // Yr. Level, Last Name, First Name, Course: left align
+                        cell.alignment = {
+                            horizontal: "left",
+                        };
+                    } else {
+                        // No. column: center align
+                        cell.alignment = {
+                            horizontal: "center",
+                        };
+                    }
+
+                    // Set font based on column
+                    if (col === 1) {
+                        // No. column: Arial Narrow, size 11
+                        cell.font = { name: "Arial Narrow", size: 11 };
+                    } else if (col >= 2 && col <= 5) {
+                        // Yr. Level, Last Name, First Name, Course: Arial, size 9
+                        cell.font = { name: "Arial", size: 9 };
+                    }
+                }
+
+                // Mark data row for borders
+                tableRows.push(dataRow.number);
+            });
+
+            // Add blank row between schools (except after the last school)
+            if (schoolIndex < schoolsWithScholars.length - 1) {
+                worksheet.addRow([]);
+            }
+        });
+
+        // Set column widths
+        worksheet.columns = [
+            { width: 6 }, // No.
+            { width: 7 }, // Yr. Level
+            { width: 10 }, // Last Name
+            { width: 14 }, // First Name
+            { width: 40 }, // Course
+        ];
+
+        // Add borders only to table rows (header + data rows for each school)
+        worksheet.eachRow((row, rowNumber) => {
+            if (tableRows.includes(rowNumber)) {
+                row.eachCell((cell) => {
+                    cell.border = {
+                        top: { style: "thin" },
+                        left: { style: "thin" },
+                        bottom: { style: "thin" },
+                        right: { style: "thin" },
+                    };
+                });
+            }
+        });
+
+        // Generate and download Excel file (no database upload since no grand total)
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(blob, `${fileName}.xlsx`);
+        return true;
+    };
+
+    return {
+        exportAllowancesToExcel,
+        exportScholars,
+        exportScholarInformationToExcel,
+    };
 };

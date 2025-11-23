@@ -196,9 +196,6 @@ export default function Applications() {
                                 key={info.application_id}
                                 className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50 `}
                             >
-                                {/* <td className="text-gray-500">{`${
-                                    numberOfItemsPerPage + index + 1
-                                }.`}</td> */}
                                 <td className="py-1 whitespace-nowrap text-gray-600">
                                     {info.application_id}
                                 </td>
@@ -243,9 +240,6 @@ export default function Applications() {
                                         <button
                                             onClick={() =>
                                                 viewPdf(
-                                                    // info.type === "Old"
-                                                    //     ? info.scholar_id
-                                                    //     : info.application_id
                                                     {
                                                         applicationId:
                                                             info.application_id,

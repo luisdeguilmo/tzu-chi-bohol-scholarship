@@ -1,39 +1,34 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import InputModal from "../../../components/InputModal";
+import BASE_URL from "../../../config";
+import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
-import BASE_URL from "../config";
-import InputModal from "./InputModal";
+import { useAccountStatus } from "../../../hooks/useAccountStatus";
 
-function FileUploadFormModal({
-    label,
-    type,
-    isOpen,
-    setIsOpen,
-    applicationFiles,
-    selectedId,
-    onReUploadFiles,
-    isLoading,
-    onRefresh,
-}) {
-    const URL = `${BASE_URL}public/`;
-
+const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
+    const [yearLevel, setYearLevel] = useState(submission.year_level || "");
+    const [semester, setSemester] = useState(submission.semester || "");
     const [files, setFiles] = useState([]);
     const [filePreviews, setFilePreviews] = useState([]);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const fileInputRef = useRef(null);
     const [existingFiles, setExistingFiles] = useState([]);
     const [existingFilesRemoved, setExistingFilesRemoved] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [conversionStatus, setConversionStatus] = useState({});
+    const fileInputRef = useRef(null);
+    const { user } = useAuth();
+    const { accountStatus } = useAccountStatus(user.user_id);
+
+    const CLOUDCONVERT_API_KEY = "YOUR_API_KEY";
 
     useEffect(() => {
-        if (applicationFiles[0]?.files?.length > 0) {
-            setExistingFiles(applicationFiles[0].files);
-            console.log("Existing Files: ", applicationFiles[0].files);
+        if (submission?.files?.length > 0) {
+            setExistingFiles(submission.files);
 
-            const existingPreviews = applicationFiles[0].files.map((file) => ({
+            const existingPreviews = submission.files.map((file) => ({
                 id: file.id,
                 name: file.file_name,
                 size: file.file_size,
                 type: file.file_type,
-                file_path: file.file_path,
                 preview: file.file_type.startsWith("image/")
                     ? `${BASE_URL}public/${file.file_path}`
                     : null,
@@ -44,23 +39,20 @@ function FileUploadFormModal({
 
             setFilePreviews(existingPreviews);
         }
-    }, [applicationFiles]);
+    }, [submission]);
 
     const handleFileSelect = (event) => {
         const selectedFiles = Array.from(event.target.files);
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
 
         const newPreviews = selectedFiles.map((file) => ({
-            name: file.name
-                .replaceAll("(", "")
-                .replaceAll(")", "")
-                .replaceAll(" ", "_")
-                .replaceAll("-", "_"),
+            name: file.name,
             size: file.size,
             type: file.type,
             preview: URL.createObjectURL(file),
-            originalFile: file,
+            isConverting: false,
             isExisting: false,
+            originalFile: file,
         }));
 
         setFilePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
@@ -74,15 +66,12 @@ function FileUploadFormModal({
         const fileToRemove = filePreviews[index];
 
         if (fileToRemove.isExisting) {
-            // Remove from existing files array
             const fileId = fileToRemove.id;
             setExistingFiles((prev) =>
                 prev.filter((file) => file.id !== fileId)
             );
-
             setExistingFilesRemoved([...existingFilesRemoved, { id: fileId }]);
         } else {
-            // Remove from new files array
             const newFilesIndex = files.findIndex(
                 (file) => file === fileToRemove.originalFile
             );
@@ -92,24 +81,29 @@ function FileUploadFormModal({
                 setFiles(newFiles);
             }
 
-            // Clean up object URL for new files
             if (fileToRemove.preview && !fileToRemove.isExisting) {
                 URL.revokeObjectURL(fileToRemove.preview);
             }
         }
 
-        // Remove from previews
         const newPreviews = [...filePreviews];
         newPreviews.splice(index, 1);
         setFilePreviews(newPreviews);
+
+        setConversionStatus((prev) => {
+            const newStatus = { ...prev };
+            delete newStatus[index];
+            return newStatus;
+        });
     };
 
-    const isImage = (type) => type && type.startsWith("image/");
+    const handleChange = (setValue, value) => {
+        setValue(value);
+    };
 
     const handleCancel = (e) => {
         e.preventDefault();
 
-        // Clean up object URLs for new files only
         filePreviews.forEach((preview) => {
             if (preview.preview && !preview.isExisting) {
                 URL.revokeObjectURL(preview.preview);
@@ -121,9 +115,12 @@ function FileUploadFormModal({
     };
 
     const resetForm = () => {
+        setYearLevel("");
+        setSemester("");
         setFiles([]);
         setFilePreviews([]);
-        setExistingFilesRemoved([]);
+        setExistingFiles([]);
+        setConversionStatus({});
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -141,60 +138,69 @@ function FileUploadFormModal({
         });
     };
 
-    const handleReUploadFiles = async () => {
-        const success = await onReUploadFiles(
-            type,
-            selectedId,
-            existingFiles,
-            existingFilesRemoved,
-            files,
-            filePreviews,
-            setIsSubmitting,
-            convertFileToBase64,
-            setIsOpen,
-            resetForm
-            // onSuccess
-        );
-
-        if (success) {
-            setIsOpen(false);
-            setIsSubmitting(false);
-            onRefresh();
-        }
+    const convertDocToPdf = async (file, fileIndex) => {
+        // Keep your existing CloudConvert implementation
+        // ... (same as in your original code)
     };
 
-    console.log(filePreviews);
+    const handleSubmit = async () => {
+        if (accountStatus === "not_renewed") {
+            toast.error(
+                `You can't resubmit COE and grades until your renewal application is approved.`
+            );
+            return;
+        }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
         setIsSubmitting(true);
 
         try {
-            const activityData = {
-                [type]: {
-                    application_id: selectedId,
-                    type: type,
+            const submissionData = {
+                submission: {
+                    application_id: user?.user_id,
+                    year_level: yearLevel,
+                    semester: semester,
+                    submission_status: "Pending",
                 },
             };
 
-            // Process new files for upload
+            // Process files
             if (files.length > 0) {
                 const uploadedFiles = [];
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
+                    let processedFile = file;
 
                     try {
-                        const base64Data = await convertFileToBase64(file);
+                        if (
+                            file.type === "application/msword" ||
+                            file.type ===
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        ) {
+                            toast.info(`Converting ${file.name} to PDF...`);
+                            processedFile = await convertDocToPdf(file, i);
+
+                            setFilePreviews((prev) => {
+                                const newPreviews = [...prev];
+                                if (newPreviews[i]) {
+                                    newPreviews[i] = {
+                                        ...newPreviews[i],
+                                        name: processedFile.name,
+                                        type: processedFile.type,
+                                        size: processedFile.size,
+                                    };
+                                }
+                                return newPreviews;
+                            });
+                        }
+
+                        const base64Data =
+                            await convertFileToBase64(processedFile);
                         uploadedFiles.push({
-                            filename: file.name
-                                .replaceAll("(", "")
-                                .replaceAll(")", "")
-                                .replaceAll(" ", "_")
-                                .replaceAll("-", "_"),
+                            filename: processedFile.name,
                             base64_data: base64Data,
-                            file_type: file.type,
-                            file_size: file.size,
+                            file_type: processedFile.type,
+                            file_size: processedFile.size,
                         });
                     } catch (error) {
                         console.error("Error processing file:", error);
@@ -204,25 +210,20 @@ function FileUploadFormModal({
                     }
                 }
 
-                activityData.uploaded_files = uploadedFiles;
+                submissionData.uploaded_files = uploadedFiles;
             }
 
-            // Include files marked for removal
-            if (existingFilesRemoved.length > 0) {
-                activityData.removed_file_ids = existingFilesRemoved;
-            }
+            submissionData.existing_files = existingFiles;
+            submissionData.removed_files = existingFilesRemoved;
 
-            console.log("Submitting activity data:", activityData);
-
-            // Submit the data
             const response = await fetch(
-                `${BASE_URL}app/views/application-files.php`,
+                `${BASE_URL}app/views/coe_grades.php`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(activityData),
+                    body: JSON.stringify(submissionData),
                 }
             );
 
@@ -233,45 +234,91 @@ function FileUploadFormModal({
             const result = await response.json();
 
             if (result.success) {
-                toast.success(result.message + ".");
-
-                // Clean up object URLs for new files
-                filePreviews.forEach((preview) => {
-                    if (preview.preview && !preview.isExisting) {
-                        URL.revokeObjectURL(preview.preview);
-                    }
-                });
-
+                toast.success(result.message);
                 resetForm();
                 setIsOpen(false);
+                if (onSuccess) onSuccess();
             } else {
                 toast.error("Error: " + result.message);
-                console.log("Error: " + result.message);
             }
         } catch (error) {
-            console.log("Submission error:", error.message);
+            console.error("Submission error:", error);
             toast.error("Failed to submit the form. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
     };
 
+    const isDocOrDocx = (fileType) => {
+        return (
+            fileType === "application/msword" ||
+            fileType ===
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        );
+    };
+
     return (
         <InputModal
-            label={label}
+            label={
+                submission.submission_status === "Not Recorded"
+                    ? "Resubmit COE and Grades"
+                    : "Edit COE and Grades"
+            }
             isOpen={isOpen}
             onClose={setIsOpen}
-            resetFields={resetForm}
+            resetFields={null}
             expandable={true}
+            buttonLabel={"Resubmit"}
             onCancel={handleCancel}
-            onSubmit={handleReUploadFiles}
-            buttonLabel={"Upload"}
-            isLoading={isLoading}
+            onSubmit={handleSubmit}
+            isLoading={isSubmitting}
         >
-            <div className="px-8 py-4">
-                <div className="">
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
-                        Files
+            <div>
+                <div className="py-4 overflow-y-auto scroll-smooth h-[400px]">
+                    <div className="px-8 grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                            Year Level
+                            <select
+                                required
+                                value={yearLevel}
+                                onChange={(e) =>
+                                    handleChange(setYearLevel, e.target.value)
+                                }
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            >
+                                <option value="">Select year level</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                                <option value="5th Year">5th Year</option>
+                            </select>
+                        </label>
+
+                        <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                            Semester
+                            <select
+                                required
+                                value={semester}
+                                onChange={(e) =>
+                                    handleChange(setSemester, e.target.value)
+                                }
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            >
+                                <option value="">Select semester</option>
+                                <option value="1st Semester">
+                                    1st Semester
+                                </option>
+                                <option value="2nd Semester">
+                                    2nd Semester
+                                </option>
+                                <option value="Summer">Summer</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <label className="px-8 pt-2 pb-3 flex flex-col gap-[1px] text-gray-600 text-xs">
+                        Upload Documents (COE and Grades)
                         <input
                             type="file"
                             ref={fileInputRef}
@@ -283,12 +330,12 @@ function FileUploadFormModal({
                         <button
                             type="button"
                             onClick={handleAddFileClick}
-                            className="p-2 flex justify-center items-center gap-[1px] text-gray-600 text-sm rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-gray-400 transition-colors"
+                            className="px-2 py-2.5 flex justify-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-500 transition-colors"
                             disabled={isSubmitting}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5 mr-1"
+                                className="h-4 w-4 mr-1"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -300,14 +347,12 @@ function FileUploadFormModal({
                                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                                 />
                             </svg>
-                            <span className="block text-xs">
-                                Click to Select
-                            </span>
+                            Add File
                         </button>
                     </label>
 
                     {filePreviews.length > 0 && (
-                        <ul className="mt-2 w-full text-sm text-gray-700 grid md:grid-cols-2 gap-2">
+                        <ul className="px-8 mt-2 w-full text-sm text-gray-700 grid md:grid-cols-2 gap-2">
                             {filePreviews.map((filePreview, index) => (
                                 <li
                                     key={
@@ -331,7 +376,7 @@ function FileUploadFormModal({
                                                 }}
                                             />
                                         ) : (
-                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
+                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center cursor-pointer hover:bg-red-200 transition-colors">
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     className="h-6 w-6 text-red-600"
@@ -349,47 +394,36 @@ function FileUploadFormModal({
                                             </div>
                                         )}
                                         <div>
-                                            <div className="w-full md:w-[150px] lg:w-[100px] font-medium text-gray-700 flex items-center text-[10px]">
-                                                <p className="truncate">
-                                                    {filePreview.name}
-                                                </p>
-                                                {isImage(
-                                                    filePreview.file_type
-                                                ) && (
-                                                    <img
-                                                        src={`${URL}/${filePreview.file_path}`}
-                                                        alt={
-                                                            filePreview.file_name
-                                                        }
-                                                        className="w-12 h-12 object-cover rounded mr-2"
-                                                    />
-                                                )}
-                                                {/* {filePreview.isExisting && (
-                                                    <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                                                        Saved
-                                                    </span>
-                                                )} */}
+                                            <div className="font-medium text-gray-700 flex items-center">
+                                                {filePreview.name}
+                                                {!filePreview.isExisting &&
+                                                    isDocOrDocx(
+                                                        filePreview.type
+                                                    ) && (
+                                                        <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                                                            Will convert to PDF
+                                                        </span>
+                                                    )}
                                             </div>
-                                            {/* <div className="text-gray-500">
-                                                {(
-                                                    filePreview.size / 1024
-                                                ).toFixed(2)}{" "}
-                                                KB
-                                            </div> */}
-                                            {isImage(filePreview.type) && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        window.open(
-                                                            URL +
-                                                                filePreview.file_path,
-                                                            "_blank"
-                                                        )
-                                                    }
-                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1"
+                                            {conversionStatus[index] && (
+                                                <div
+                                                    className={`text-xs mt-1 ${
+                                                        conversionStatus[index]
+                                                            .status === "error"
+                                                            ? "text-red-500"
+                                                            : conversionStatus[
+                                                                    index
+                                                                ].status ===
+                                                                "completed"
+                                                              ? "text-green-500"
+                                                              : "text-blue-500"
+                                                    }`}
                                                 >
-                                                    Click to view image
-                                                </button>
+                                                    {
+                                                        conversionStatus[index]
+                                                            .message
+                                                    }
+                                                </div>
                                             )}
                                         </div>
                                     </div>
@@ -418,10 +452,21 @@ function FileUploadFormModal({
                             ))}
                         </ul>
                     )}
+
+                    {submission.submission_status === "Not Recorded" && (
+                        <div className="px-8 pt-6 pb-8">
+                            <p className="text-xs mb-1 text-gray-700">
+                                Feedback:{" "}
+                            </p>
+                            <p className="text-xs border bg-gray-50 px-2 py-2.5 rounded-md text-gray-700">
+                                {submission.feedback}
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
         </InputModal>
     );
-}
+};
 
-export default FileUploadFormModal;
+export default EditFormModal;

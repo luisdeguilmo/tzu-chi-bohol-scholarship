@@ -354,7 +354,8 @@ class ScholarsModel
             pi.email, 
             eb.incoming_grade, 
             eb.present_school, 
-            eb.present_course1 
+            eb.present_course1,
+            eb.year_level
         FROM ' .
             $this->table_name .
             ' s
