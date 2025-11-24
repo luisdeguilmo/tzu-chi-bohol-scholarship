@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSubmissions } from "../../../hooks/useSubmissions"; // Changed from useActivities
 import { useAuth } from "../../../context/AuthContext";
-import { useScholarOverviewData } from "../../../hooks/useScholarOverviewData";
 import { Plus } from "lucide-react";
 import EmptyState from "../EmptyState";
 import EditFormModal from "./EditFormModal";
@@ -13,6 +12,7 @@ import TabNavigation from "../TabNavigation";
 import CoeGradesDetailsModal from "../../../components/CoeGradesDetailsModal";
 import { useCurrentYearLevel } from "../../../hooks/useCurrentYearLevel";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
+import { useLocation } from "react-router-dom";
 
 export default function CoeGrades() {
     const [activeTab, setActiveTab] = useState("all");
@@ -25,6 +25,12 @@ export default function CoeGrades() {
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isEditFormModalOpen, setIsEditFormModalOpen] = useState(false);
     const [selectedSubmission, setSelectedSubmission] = useState(null); // Changed from selectedActivity
+
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, -5);
+    }, [pathname]);
 
     const { user } = useAuth();
 
@@ -43,6 +49,8 @@ export default function CoeGrades() {
     useEffect(() => {
         fetchSubmissions(activeTab, user.user_id); // Changed
     }, [activeTab, user.user_id]);
+
+    console.log(submissions);
 
     // Close dropdown when clicking outside
     useEffect(() => {

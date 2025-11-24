@@ -94,12 +94,17 @@ const NotificationPage = React.forwardRef(
                                     }`}
                                 >
                                     <h3
-                                        className={`text-sm font-semibold  leading-tight ${notification.is_read ? "text-gray-600" : "text-gray-900"
-                                            }`}
+                                        className={`text-sm font-semibold  leading-tight ${
+                                            notification.is_read
+                                                ? "text-gray-600"
+                                                : "text-gray-900"
+                                        }`}
                                     >
                                         {notification.title}
                                     </h3>
-                                    <p className="mt-4 text-xs leading-relaxed text-gray-600 text-justify">
+                                    <p
+                                        className={`mt-4 text-xs leading-relaxed text-justify ${notification.is_read ? "text-gray-500" : "text-gray-600"}`}
+                                    >
                                         {notification.message}
                                     </p>
 

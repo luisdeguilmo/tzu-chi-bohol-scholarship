@@ -239,7 +239,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                             filePreview.id ||
                                                             index
                                                         }
-                                                        className="p-2 bg-gray-50 rounded-lg flex justify-between text-xs items-center text-gray-500 border"
+                                                        className="p-2 bg-gray-50 rounded-md flex justify-between text-xs items-center text-gray-500 border"
                                                     >
                                                         <div className="flex items-center">
                                                             {/* PDF Preview */}
@@ -379,34 +379,38 @@ const CommunityServiceDetailsModal = React.memo(
                                     <div
                                         className={`${!isRevoked && isStaff && activity?.status === "Pending" ? "block" : "hidden"}`}
                                     >
-                                        <h3 className="text-xs mb-2 text-gray-700">
-                                            Choose Action:
-                                        </h3>
-                                        <div className="block mb-2 relative p-4 border rounded-lg bg-gray-50/50 border-gray-200">
-                                            <label className="mb-1 text-xs text-slate-600 flex gap-2 items-center">
-                                                <input
-                                                    value={action}
-                                                    onChange={() => {
-                                                        setAction("approve");
-                                                    }}
-                                                    name="action"
-                                                    type="radio"
-                                                    className="accent-green-600"
-                                                />
-                                                Approve
-                                            </label>
-                                            <label className="text-xs text-slate-600 flex gap-2 items-center">
-                                                <input
-                                                    value={action}
-                                                    onChange={() => {
-                                                        setAction("reject");
-                                                    }}
-                                                    name="action"
-                                                    type="radio"
-                                                    className="accent-green-600"
-                                                />
-                                                Reject
-                                            </label>
+                                        <div className="block mb-2 relative border rounded-md border-gray-200">
+                                            <h3 className="bg-gray-50 rounded-tl-md rounded-tr-md px-4 py-4 border-b text-xs text-gray-700">
+                                                Choose Action:
+                                            </h3>
+                                            <div className="p-4">
+                                                <label className="mb-1 text-xs text-slate-600 flex gap-2 items-center">
+                                                    <input
+                                                        value={action}
+                                                        onChange={() => {
+                                                            setAction(
+                                                                "approve"
+                                                            );
+                                                        }}
+                                                        name="action"
+                                                        type="radio"
+                                                        className="accent-green-600"
+                                                    />
+                                                    Approve
+                                                </label>
+                                                <label className="text-xs text-slate-600 flex gap-2 items-center">
+                                                    <input
+                                                        value={action}
+                                                        onChange={() => {
+                                                            setAction("reject");
+                                                        }}
+                                                        name="action"
+                                                        type="radio"
+                                                        className="accent-green-600"
+                                                    />
+                                                    Reject
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -419,16 +423,16 @@ const CommunityServiceDetailsModal = React.memo(
                                                 : "hidden"
                                         } relative`}
                                     >
-                                        <h3
-                                            className={`${action === "approve" || (isRevoked && activity?.status === "Not Recorded") ? "block" : "hidden"} text-xs mb-2 text-gray-700`}
-                                        >
-                                            Rendered Hours:
-                                        </h3>
                                         <div
-                                            className={`${action === "approve" || (isRevoked && activity?.status === "Not Recorded") ? "block" : "hidden"} p-4 border rounded-lg bg-gray-50/50 border-gray-200`}
+                                            className={`${action === "approve" || (isRevoked && activity?.status === "Not Recorded") ? "block" : "hidden"} border rounded-md border-gray-200`}
                                         >
+                                            <h3
+                                                className={`bg-gray-50 rounded-tl-md rounded-tr-md px-4 py-4 border-b ${action === "approve" || (isRevoked && activity?.status === "Not Recorded") ? "block" : "hidden"} text-xs text-gray-700`}
+                                            >
+                                                Rendered Hours:
+                                            </h3>
                                             <div
-                                                className={`block relative ${method === "manual" ? "mb-4" : "mb-0"}`}
+                                                className={`p-4 block relative ${method === "manual" ? "-mb-4" : "mb-0"}`}
                                             >
                                                 <label className="mb-1 text-xs text-slate-600 flex gap-2 items-center">
                                                     <input
@@ -461,7 +465,7 @@ const CommunityServiceDetailsModal = React.memo(
                                             </div>
 
                                             {method === "manual" && (
-                                                <div className="block mb-2 relative">
+                                                <div className="block p-4 mb-2 relative">
                                                     <label className="block mb-1 text-gray-600 text-xs">
                                                         Rendered Hours
                                                     </label>

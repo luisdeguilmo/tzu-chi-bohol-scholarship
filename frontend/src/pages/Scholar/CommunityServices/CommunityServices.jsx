@@ -11,6 +11,7 @@ import OverviewCard from "../OverviewCard";
 import { scholarOverviewData } from "../../../config/scholarOverviewData";
 import ActivityFormModal from "./FormModal";
 import BackgroundLoadingIndicator from "../../../components/BackgroundLoadingIndicator";
+import { useLocation } from "react-router-dom";
 
 export default function CommunityServices() {
     const [activeTab, setActiveTab] = useState("all");
@@ -23,6 +24,12 @@ export default function CommunityServices() {
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isEditFormModalOpen, setIsEditFormModalOpen] = useState(false);
     const [selectedActivity, setSelectedActivity] = useState(null);
+
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
 
     const { user } = useAuth();
 

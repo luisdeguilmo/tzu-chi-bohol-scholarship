@@ -9,6 +9,7 @@ import CommunityServiceDetailsModal from "../../../components/CommunityServiceDe
 import CommunityServiceCard from "../CommunityServices/CommunityServiceCard";
 import EventCard from "../Events/EventCard";
 import BackgroundLoadingIndicator from "../../../components/BackgroundLoadingIndicator";
+import { useLocation } from "react-router-dom";
 
 export default function ArchivedActivities() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -18,6 +19,12 @@ export default function ArchivedActivities() {
     const itemsPerPage = 6;
     const [isDotMenuOpen, setIsDotMenuOpen] = useState(false);
     const [itemIndex, setItemIndex] = useState(-1);
+
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
 
     const { loading, archivedActivities, fetchArchivedActivities } = useArchive(
         activeTab,

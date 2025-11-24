@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useAccountStatus } from "../../../hooks/useAccountStatus";
 
 const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
-    const [yearLevel, setYearLevel] = useState(submission.year_level || "");
+    // const [yearLevel, setYearLevel] = useState(submission.year_level || "");
     const [semester, setSemester] = useState(submission.semester || "");
     const [files, setFiles] = useState([]);
     const [filePreviews, setFilePreviews] = useState([]);
@@ -17,8 +17,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
     const fileInputRef = useRef(null);
     const { user } = useAuth();
     const { accountStatus } = useAccountStatus(user.user_id);
-
-    const CLOUDCONVERT_API_KEY = "YOUR_API_KEY";
 
     useEffect(() => {
         if (submission?.files?.length > 0) {
@@ -115,7 +113,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
     };
 
     const resetForm = () => {
-        setYearLevel("");
         setSemester("");
         setFiles([]);
         setFilePreviews([]);
@@ -156,8 +153,10 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
         try {
             const submissionData = {
                 submission: {
-                    application_id: user?.user_id,
-                    year_level: yearLevel,
+                    id: submission?.id,
+                    scholar_id: user?.user_id,
+                    year_level: submission?.year_level,
+                    current_semester: submission?.semester,
                     semester: semester,
                     submission_status: "Pending",
                 },
@@ -217,9 +216,9 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
             submissionData.removed_files = existingFilesRemoved;
 
             const response = await fetch(
-                `${BASE_URL}app/views/coe_grades.php`,
+                `${BASE_URL}app/views/coe-grades.php`,
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -239,8 +238,10 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                 setIsOpen(false);
                 if (onSuccess) onSuccess();
             } else {
-                toast.error("Error: " + result.message);
+                toast.error(result.message);
             }
+
+            console.log(submissionData);
         } catch (error) {
             console.error("Submission error:", error);
             toast.error("Failed to submit the form. Please try again.");
@@ -257,12 +258,14 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
         );
     };
 
+    const isImage = (type) => type && type.startsWith("image/");
+
     return (
         <InputModal
             label={
                 submission.submission_status === "Not Recorded"
-                    ? "Resubmit COE and Grades"
-                    : "Edit COE and Grades"
+                    ? "Resubmit Certificate of Enrollment and Grades"
+                    : "Edit Certificate of Enrollment and Grades"
             }
             isOpen={isOpen}
             onClose={setIsOpen}
@@ -275,8 +278,8 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
         >
             <div>
                 <div className="py-4 overflow-y-auto scroll-smooth h-[400px]">
-                    <div className="px-8 grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                    <div className="px-8 grid grid-cols-1 gap-2">
+                        {/* <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                             Year Level
                             <select
                                 required
@@ -293,7 +296,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                                 <option value="4th Year">4th Year</option>
                                 <option value="5th Year">5th Year</option>
                             </select>
-                        </label>
+                        </label> */}
 
                         <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                             Semester
@@ -303,16 +306,15 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                                 onChange={(e) =>
                                     handleChange(setSemester, e.target.value)
                                 }
-                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
-                                <option value="">Select semester</option>
+                                <option value="" disabled>-- Select --</option>
                                 <option value="1st Semester">
                                     1st Semester
                                 </option>
                                 <option value="2nd Semester">
                                     2nd Semester
                                 </option>
-                                <option value="Summer">Summer</option>
                             </select>
                         </label>
                     </div>
@@ -330,7 +332,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                         <button
                             type="button"
                             onClick={handleAddFileClick}
-                            className="px-2 py-2.5 flex justify-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-500 transition-colors"
+                            className="px-2 py-2.5 flex justify-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
                             disabled={isSubmitting}
                         >
                             <svg
@@ -360,9 +362,10 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                                             ? `existing-${filePreview.id}`
                                             : `new-${index}`
                                     }
+                                    title={filePreview.name}
                                     className="p-2 bg-gray-50 rounded-lg flex justify-between text-xs items-center text-gray-500 border"
                                 >
-                                    <div className="flex items-center">
+                                    <div className="flex truncate items-center">
                                         {filePreview.type &&
                                         filePreview.type.startsWith("image/") &&
                                         filePreview.preview ? (
@@ -393,6 +396,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                                                 </svg>
                                             </div>
                                         )}
+
                                         <div>
                                             <div className="font-medium text-gray-700 flex items-center">
                                                 {filePreview.name}
@@ -427,6 +431,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                                             )}
                                         </div>
                                     </div>
+
                                     <button
                                         onClick={() => removeFile(index)}
                                         className="hover:text-red-700 text-red-500 p-1"

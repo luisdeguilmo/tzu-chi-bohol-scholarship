@@ -73,50 +73,28 @@ class CoeGradesModel
         return false;
     }
 
-    public function updateActivity($activity_data, $batch_id)
+    public function updateSubmission($activity_data)
     {
         $query =
             'UPDATE ' .
             $this->table_name .
-            " 
-            SET account_id = :account_id,
-                    activity_name = :activity_name,
-                    activity_location = :activity_location,
-                activity_date = :activity_date,
-                start_time = :start_time,
-                end_time = :end_time,
-                activity_status = :activity_status,
-                batch_id = :batch_id,
-                updated_at = NOW() WHERE id = :id";
+            " SET year_level = :year_level, semester = :semester WHERE id = :id";
 
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->account_id = htmlspecialchars(strip_tags($activity_data['application_id']));
-        $this->activity_id = htmlspecialchars(strip_tags($activity_data['activity_id']));
-        $this->activity_name = htmlspecialchars(strip_tags($activity_data['activity_name']));
-        $this->activity_location = htmlspecialchars(
-            strip_tags($activity_data['activity_location']),
-        );
-        $this->activity_date = htmlspecialchars(strip_tags($activity_data['activity_date']));
-        $this->start_time = htmlspecialchars(strip_tags($activity_data['start_time']));
-        $this->end_time = htmlspecialchars(strip_tags($activity_data['end_time']));
-        $this->activity_status = htmlspecialchars(strip_tags($activity_data['activity_status']));
-        $batch_id = $batch_id;
+        $this->account_id = htmlspecialchars(strip_tags($activity_data['scholar_id']));
+        $this->year_level = htmlspecialchars(strip_tags($activity_data['year_level']));
+        $this->semester = htmlspecialchars(strip_tags($activity_data['semester']));
+        $this->id = htmlspecialchars(strip_tags($activity_data['id']));
 
         // Bind values
-        $stmt->bindParam(':account_id', $this->account_id);
-        $stmt->bindParam(':id', $this->activity_id);
-        $stmt->bindParam(':activity_name', $this->activity_name);
-        $stmt->bindParam(':activity_location', $this->activity_location);
-        $stmt->bindParam(':activity_date', $this->activity_date);
-        $stmt->bindParam(':start_time', $this->start_time);
-        $stmt->bindParam(':end_time', $this->end_time);
-        $stmt->bindParam(':activity_status', $this->activity_status);
-        $stmt->bindParam(':batch_id', $batch_id);
+        $stmt->bindParam(':year_level', $this->year_level);
+        $stmt->bindParam(':semester', $this->semester);
+        $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {
-            return $this->account_id;
+            return $this->id;
         }
 
         return false;
@@ -125,7 +103,7 @@ class CoeGradesModel
     public function checkSubmission($data)
     {
         $query =
-            'SELECT id FROM coe_and_grade_files WHERE scholar_id = :scholar_id AND year_level = :year_level AND semester = :semester';
+            'SELECT id FROM coe_and_grades WHERE scholar_id = :scholar_id AND year_level = :year_level AND semester = :semester';
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':scholar_id', $data['scholar_id']);

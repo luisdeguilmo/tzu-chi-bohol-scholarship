@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import InputModal from "../../../components/InputModal";
-import { Calendar, Download, FileText, Hash, User } from "lucide-react";
+import { Calendar, Download, FileText, Hash, Loader, User } from "lucide-react";
 import { formatDate } from "../../../utils/formatDate";
 
 function ApplicantDetailsModal({
@@ -184,17 +184,24 @@ function ApplicantDetailsModal({
                     <h2 className="text-xs font-semibold text-gray-700 mb-4 flex items-center gap-2">
                         Application Status
                     </h2>
-                    {filteredStages.map((stage, index) => (
-                        <li key={index} className="text-xs text-gray-600">
-                            {stage.stage.includes("Passed") ||
-                            stage.stage.includes("Approved") ||
-                            stage.stage.includes("Qualified") ||
-                            stage.stage.includes("Attended")
-                                ? "✅"
-                                : "❌"}{" "}
-                            {stage.stage}
+                    {filteredStages.length === 0 ? (
+                        <li className="text-xs flex gap-2 text-gray-600">
+                            <Loader className="w-4 h-4" />
+                            Pending
                         </li>
-                    ))}
+                    ) : (
+                        filteredStages.map((stage, index) => (
+                            <li key={index} className="text-xs text-gray-600">
+                                {stage.stage.includes("Passed") ||
+                                stage.stage.includes("Approved") ||
+                                stage.stage.includes("Qualified") ||
+                                stage.stage.includes("Attended")
+                                    ? "✅"
+                                    : "❌"}{" "}
+                                {stage.stage}
+                            </li>
+                        ))
+                    )}
                 </ul>
 
                 <div className="mt-6 flex items-center gap-3">

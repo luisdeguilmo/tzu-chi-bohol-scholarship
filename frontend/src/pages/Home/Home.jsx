@@ -7,7 +7,6 @@ export default function Home() {
     const { pathname } = useLocation();
 
     useEffect(() => {
-        // Scrolls to the top-left corner of the document
         window.scrollTo(0, 0);
     }, [pathname]);
 

@@ -23,7 +23,7 @@ const CoeGradesCard = ({
         userId
     );
 
-    console.log(submission.files[0].uploaded_at);
+    console.log(submission.files[0]?.uploaded_at);
 
     const handleArchiveToggle = async (e) => {
         e.stopPropagation();
@@ -178,14 +178,14 @@ const CoeGradesCard = ({
                             className={`text-[10px] ${isArchived ? "italic" : ""}`}
                         >
                             Date Submitted:{" "}
-                            {formatDate(submission.files[0].uploaded_at)}
+                            {formatDate(submission.files[0]?.uploaded_at)}
                         </span>
                     </div>
                 </div>
             </div>
 
             {/* Dropdown Menu Button */}
-            {/* <button
+            <button
                 onClick={(e) => handleOpenDotMenu(e, index)}
                 className={`absolute top-4 right-4 p-2 rounded-xl transition-all duration-200 ${
                     isArchived
@@ -207,23 +207,22 @@ const CoeGradesCard = ({
                         d="M12 5.25a.75.75 0 110 1.5.75.75 0 010-1.5zm0 6a.75.75 0 110 1.5.75.75 0 010-1.5zm0 6a.75.75 0 110 1.5.75.75 0 010-1.5z"
                     />
                 </svg>
-            </button> */}
+            </button>
 
             {/* Dropdown Menu */}
             {isDotMenuOpen && index === itemIndex && (
                 <div className="dropdown-menu absolute top-12 right-4 bg-white rounded-xl shadow-lg border border-slate-200 z-50 min-w-[120px] p-1">
-                    {submission.submission_status === "Pending" && (
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsEditFormModalOpen(true);
-                                handleSelectSubmission(submission);
-                            }}
-                            className="w-full text-left rounded-lg px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors duration-150"
-                        >
-                            Edit
-                        </button>
-                    )}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsEditFormModalOpen(true);
+                            handleSelectSubmission(submission);
+                        }}
+                        className="w-full text-left rounded-lg px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors duration-150"
+                    >
+                        Edit
+                    </button>
+
                     <button
                         onClick={handleArchiveToggle}
                         className={`${

@@ -72,8 +72,6 @@ export default function ScholarsAndAllowances() {
         getCurrentSchoolYear()
     );
 
-    console.log(scholarAllowances);
-
     const { exportAllowancesToExcel, exportScholarInformationToExcel } =
         generateExcel();
 
@@ -190,13 +188,11 @@ export default function ScholarsAndAllowances() {
                     onOpen={setIsConfirmationModalOpen}
                 >
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">
-                            Filtered by type:
-                        </span>
+                        <span className="text-xs text-gray-600">Status:</span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value="new">New</option>
@@ -211,7 +207,7 @@ export default function ScholarsAndAllowances() {
                             <select
                                 value={schoolYear}
                                 onChange={(e) => setSchoolYear(e.target.value)}
-                                className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
                                 <option value="all_years">All Years</option>
                                 <option value="2025-2026">2025-2026</option>

@@ -103,7 +103,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
+                            className={`text-xs ${isArchived ? "italic" : ""}`}
                         >
                             {formatDate(activity.activity_date)}
                         </span>
@@ -120,7 +120,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                           className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
+                           className={`text-xs ${isArchived ? "italic" : ""}`}
                         >
                             {formatTime(activity.start_time)} -{" "}
                             {formatTime(activity.end_time)}
@@ -138,7 +138,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
+                            className={`text-xs ${isArchived ? "italic" : ""}`}
                         >
                             {activity.activity_location}
                         </span>

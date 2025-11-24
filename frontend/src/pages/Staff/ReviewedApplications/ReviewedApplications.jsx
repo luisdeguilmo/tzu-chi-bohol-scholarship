@@ -199,6 +199,7 @@ const ReviewedApplications = () => {
             {/* Pagination */}
             {filteredApplications.length > 0 && (
                 <div className="flex justify-between items-center mt-6">
+                    
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

@@ -67,7 +67,9 @@ class CoeAndGradesService
                 'file_size' => $file['size'],
             ];
 
-            if (!$this->documentModel->createCoeGradeFile($fileData, $submissionData, $submissionId)) {
+            if (
+                !$this->documentModel->createCoeGradeFile($fileData, $submissionData, $submissionId)
+            ) {
                 throw new \Exception('Failed to save file info: ' . $file['original_name']);
             }
         }
@@ -82,12 +84,13 @@ class CoeAndGradesService
         $files = null,
         $base64Files = null,
     ) {
-        $batch_id = $this->generateBatchId();
+        // $batch_id = $this->generateBatchId();
         // Validate submission data
-        $this->validateSubmissionData($submissionData);
+        // $this->validateSubmissionData($submissionData);
 
         // Update submission
-        $submissionId = $this->coeGradesModel->updateSubmission($submissionData, $batch_id);
+        $submissionId = $submissionData['id'];
+        $this->coeGradesModel->updateSubmission($submissionData);
 
         if (!$submissionId) {
             throw new \Exception('Failed to update COE and grades submission');
@@ -99,7 +102,11 @@ class CoeAndGradesService
         if ($files) {
             $uploadedFiles = array_merge(
                 $uploadedFiles,
-                $this->fileUploadService->handleFormDataFiles('coe_grades', $files, $submissionId),
+                $this->fileUploadService->handleFormDataFiles(
+                    'coe_grades',
+                    $files,
+                    $submissionData['scholar_id'],
+                ),
             );
         }
 
@@ -109,28 +116,23 @@ class CoeAndGradesService
                 $this->fileUploadService->handleBase64Files(
                     'coe_grades',
                     $base64Files,
-                    $submissionId,
+                    $submissionData['scholar_id'],
                 ),
             );
         }
 
-        if (
-            !$this->documentModel->deleteDocument(
-                $submissionData['submission_id'],
-                $submissionData['batch_id'],
-            )
-        ) {
-            throw new \Exception('Unable to delete existing documents');
-        }
+        // if (!$this->documentModel->deleteCoeGradeFile($submissionId)) {
+        //     throw new \Exception('Unable to delete existing documents');
+        // }
 
-        foreach ($existingFiles as $file) {
-            if (!$this->documentModel->updateDocumentBatchId($file['id'], $batch_id)) {
-                throw new \Exception('Unable to update existing file');
-            }
-        }
+        // foreach ($existingFiles as $file) {
+        //     if (!$this->documentModel->updateDocumentBatchId($file['id'], $batch_id)) {
+        //         throw new \Exception('Unable to update existing file');
+        //     }
+        // }
 
         foreach ($removedExistingFiles as $file) {
-            if (!$this->documentModel->deleteDocument($file['id'])) {
+            if (!$this->documentModel->deleteCoeGradeFile($file['id'])) {
                 throw new \Exception('Unable to delete existing file');
             }
         }
@@ -142,10 +144,15 @@ class CoeAndGradesService
                 'file_path' => $file['path'],
                 'file_type' => $file['type'],
                 'file_size' => $file['size'],
-                'requirement_type' => 'coe_grades_document',
             ];
 
-            if (!$this->documentModel->createDocument($fileData, $submissionId, $batch_id)) {
+            if (
+                !$this->documentModel->createCoeGradeFile(
+                    $fileData,
+                    $submissionData,
+                    $submissionData['scholar_id'],
+                )
+            ) {
                 throw new \Exception('Failed to save file info: ' . $file['original_name']);
             }
         }
@@ -155,11 +162,7 @@ class CoeAndGradesService
 
     private function validateSubmissionData($data)
     {
-        $required = [
-            'scholar_id',
-            'year_level',
-            'semester',
-        ];
+        $required = ['scholar_id', 'year_level', 'semester'];
 
         foreach ($required as $field) {
             if (!isset($data[$field]) || empty(trim($data[$field]))) {

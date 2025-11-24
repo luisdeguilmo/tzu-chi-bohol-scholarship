@@ -1,6 +1,7 @@
 import { CheckCircle, Download, Pen, PenLine, Plus } from "lucide-react";
 import SearchInput from "./SearchInput";
 import { date } from "../utils/getDateAndTime";
+import { FilterDropdown } from "./FilterDropdown";
 
 const TableToolbar = ({
     isProcessed = false,
@@ -17,6 +18,7 @@ const TableToolbar = ({
     onChangeItemsPerPage,
     onChangeCurrentPage,
     onChangeNumberOfItemsPerPage = false,
+    scholarList = false,
     onSort,
     onSearchChange,
     onRefresh,
@@ -26,11 +28,17 @@ const TableToolbar = ({
     lastIndex,
     addButton = false,
     buttonExport = false,
+    disabledButtonExport = false,
     onExport,
+    exportLoading,
     addCreateBatchButton = false,
     passingScore,
     children,
 }) => {
+    const handleSort = (e) => {
+        onSort(e.target.value);
+        onChangeCurrentPage(1);
+    };
     return (
         <>
             <div className="flex justify-between items-center mb-6">
@@ -110,10 +118,35 @@ const TableToolbar = ({
                     {buttonExport && (
                         <button
                             onClick={onExport}
-                            className="px-4 py-2 text-sm rounded-lg flex items-center gap-2 transition-colors duration-200 
-             text-white bg-green-600 hover:bg-green-700"
+                            disabled={disabledButtonExport}
+                            className={`px-4 py-2 text-sm rounded-lg flex items-center gap-2 transition-colors duration-200 
+             text-white  ${disabledButtonExport ? "bg-green-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
                         >
-                            <Download className="w-4 h-4 text-white" /> Export
+                            {exportLoading ? (
+                                <svg
+                                    className="w-4 h-4 animate-spin text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                    ></path>
+                                </svg>
+                            ) : (
+                                <Download className="w-4 h-4 text-white" />
+                            )}
+                            {exportLoading ? "Exporting..." : "Export"}
                         </button>
                     )}
                     {addCreateBatchButton &&
@@ -187,7 +220,7 @@ const TableToolbar = ({
                 </div>
 
                 {/* Bottom Row - Controls */}
-                <div className="flex justify-between items-center">
+                <div className="mt-4 flex justify-between items-end">
                     {/* Left side - Selection info and actions */}
                     <div className="flex items-center gap-3">
                         <p className="text-xs text-slate-700">
@@ -198,24 +231,33 @@ const TableToolbar = ({
                     {/* Right side - Sort and view options */}
                     <div className="flex items-center gap-6">
                         {children}
+                        {/* <FilterDropdown
+                            label={"Sort"}
+                            value={sortBy}
+                            onChange={(e) => {
+                                onSort(e.target.value);
+                                onChangeCurrentPage(1);
+                            }}
+                            options={[
+                                { name: "Newest First", value: "newest" },
+                                { name: "Oldest First", value: "oldest" },
+                            ]}
+                        /> */}
                         <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-600">
-                                Sort by:
-                            </span>
+                            <span className="text-xs text-gray-600">Sort:</span>
                             <select
                                 value={sortBy}
                                 onChange={(e) => {
                                     onSort(e.target.value);
                                     onChangeCurrentPage(1);
                                 }}
-                                className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
                                 <option value="newest">Newest First</option>
                                 <option value="oldest">Oldest First</option>
                                 <option value="name">Name (A-Z)</option>
                             </select>
                         </div>
-
                         <div className="flex items-center gap-2">
                             <span className="text-xs text-gray-600">Show:</span>
                             <select
@@ -229,7 +271,7 @@ const TableToolbar = ({
                                         onChangeNumberOfItemsPerPage(0);
                                     }
                                 }}
-                                className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
                                 <option value={5}>5</option>
                                 <option value={10}>10</option>

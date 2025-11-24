@@ -9,6 +9,7 @@ import EventDetailsModal from "../../../components/EventDetailsModal";
 import OverviewCard from "../OverviewCard";
 import { scholarOverviewData } from "../../../config/scholarOverviewData";
 import BackgroundLoadingIndicator from "../../../components/BackgroundLoadingIndicator";
+import { useLocation } from "react-router-dom";
 
 export default function Events() {
     const [activeTab, setActiveTab] = useState("all");
@@ -19,6 +20,12 @@ export default function Events() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isDotMenuOpen, setIsDotMenuOpen] = useState(false);
     const [itemIndex, setItemIndex] = useState(null);
+
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
 
     const { user } = useAuth();
 

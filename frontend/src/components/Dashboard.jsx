@@ -10,21 +10,23 @@ import { useRecentActivities } from "../hooks/useRecentActivities";
 import LivingInfoFormModal from "./LivingInfoFormModal";
 import { useEffect, useRef, useState } from "react";
 import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSidebar } from "../context/SidebarContext";
 import FunnelChart from "./FunnelChart";
 import ScholarEngagementChart from "./ScholarEngagementChart";
 import AllowanceChart from "./AllowanceChart";
 import DutyHoursChart from "./DutyHoursChart";
-import { Download } from "lucide-react";
-
 import ScholarsByProgramChart from "./ScholarsByProgramChart";
 import ApplicationTrendsChart from "./ApplicationTrendsChart";
 import ApprovalRejectionChart from "./ApprovalRejectionChart";
-import { exportStaffDashboardWorkbook } from "../utils/exportStaffDashboardWorkbook";
-import { exportAdminDashboardWorkbook } from "../utils/exportAdminDashboardWorkbook";
 
 function QuickOverview() {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
     const { user } = useAuth();
     const { dashboardData } = useDashboardOverviewData(
         user.user_id,

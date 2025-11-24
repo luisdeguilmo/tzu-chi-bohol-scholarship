@@ -48,7 +48,7 @@ class CoeAndGradesController
                 $this->createSubmission();
                 break;
             case 'PUT':
-                // $this->updateSubmission();
+                $this->updateSubmission();
                 break;
             case 'DELETE':
                 // $this->handleDelete();
@@ -117,7 +117,7 @@ class CoeAndGradesController
                 $this->sendResponse(201, [
                     'success' => false,
                     'message' =>
-                        'You already submitted your Certificate of Enrollment and Grades for this semester.',
+                        'You already submitted your Certificate of Enrollment and grades for this semester.',
                 ]);
                 exit();
             }
@@ -148,46 +148,60 @@ class CoeAndGradesController
         }
     }
 
-    // public function updateSubmission()
-    // {
-    //     $this->pdo->beginTransaction();
+    public function updateSubmission()
+    {
+        $this->pdo->beginTransaction();
 
-    //     try {
-    //         // Parse input data
-    //         $data = $this->parseInputData();
+        try {
+            // Parse input data
+            $data = $this->parseInputData();
 
-    //         if (!$data || !isset($data['submission'])) {
-    //             throw new \Exception('No submission data provided');
-    //         }
+            if (!$data || !isset($data['submission'])) {
+                throw new \Exception('No submission data provided');
+            }
 
-    //         // Extract files
-    //         $files = $_FILES['files'] ?? null;
-    //         $base64Files = $data['uploaded_files'] ?? null;
+            $coeGradesModel = new CoeGradesModel();
 
-    //         // Update submission with files
-    //         $submissionId = $this->coeGradesService->updateSubmissionWithFiles(
-    //             $data['submission'],
-    //             $data['existing_files'],
-    //             $data['existing_files_removed'],
-    //             $files,
-    //             $base64Files,
-    //         );
+            // Extract files
+            $files = $_FILES['files'] ?? null;
+            $base64Files = $data['uploaded_files'] ?? null;
 
-    //         $this->pdo->commit();
+            if (
+                $coeGradesModel->checkSubmission($data['submission']) &&
+                $data['submission']['semester'] !== $data['submission']['current_semester']
+            ) {
+                $this->sendResponse(201, [
+                    'success' => false,
+                    'message' =>
+                        'You already submitted your Certificate of Enrollment and grades for this semester.',
+                ]);
+                exit();
+            }
 
-    //         $this->sendResponse(201, [
-    //             'success' => true,
-    //             'message' => 'COE and grades updated successfully',
-    //             'submission_id' => $submissionId,
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         $this->pdo->rollBack();
-    //         $this->sendResponse(400, [
-    //             'success' => false,
-    //             'message' => $e->getMessage(),
-    //         ]);
-    //     }
-    // }
+            // Update submission with files
+            $submissionId = $this->coeGradesService->updateSubmissionWithFiles(
+                $data['submission'],
+                $data['existing_files'],
+                $data['removed_files'],
+                $files,
+                $base64Files,
+            );
+
+            $this->pdo->commit();
+
+            $this->sendResponse(201, [
+                'success' => true,
+                'message' => 'COE and grades updated successfully',
+                'submission_id' => $submissionId,
+            ]);
+        } catch (\Exception $e) {
+            $this->pdo->rollBack();
+            $this->sendResponse(400, [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 
     private function parseInputData()
     {

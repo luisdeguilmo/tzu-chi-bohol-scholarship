@@ -8,7 +8,7 @@ import { useScholars } from "../../../hooks/useScholars";
 import { scholarTableHeaders } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import { Eye, FileText } from "lucide-react";
+import { Eye, FileText, Loader2 } from "lucide-react";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import ScholarProfileModal from "../../../components/UserProfileModal";
 import { date } from "../../../utils/getDateAndTime";
@@ -17,7 +17,8 @@ import { useScholarInformation } from "../../../hooks/useScholarInformation";
 import { useCollegesUniversities } from "../../../hooks/useCollegesUniversities";
 import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
 import CoaGradesModal from "./CoaGradesModal";
-import { useSubmissions } from "../../../hooks/useSubmissions";
+import { DataListView } from "../../../components/DataListView";
+import { FilterDropdown } from "../../../components/FilterDropdown";
 
 export default function Scholars() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -47,12 +48,9 @@ export default function Scholars() {
     const { collegesAndUniversities } = useCollegesUniversities();
     const { items: courses } = useScholarshipCriteria("courses", "Courses");
 
-    // useEffect(() => {
-    //     fetchSubmissions();
-    // }, [scholarId]);
-
     const { scholarsInformation, fetchScholarsInformation } =
         useScholarInformation(
+            activeTab,
             status,
             schoolYear,
             school,
@@ -61,9 +59,10 @@ export default function Scholars() {
             sortBy
         );
 
-    const { exportScholars } = generateExcel();
+    const { exportActiveScholars, exportGraduatedScholars } = generateExcel();
 
     const { profilePics } = useProfilePicture(scholars, "profile-picture");
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetchScholars();
@@ -71,10 +70,31 @@ export default function Scholars() {
     }, [activeTab, status, schoolYear, school, course, yearLevel, sortBy]);
 
     const handleExport = async () => {
+        setIsLoading(true);
         const fileName = `Scholar_Information_${date.getCurrentMonthFormatted()}_${date.getCurrentYear()}`;
 
         // Step 1: Export to Excel
-        await exportScholars(scholarsInformation, fileName);
+
+        if (activeTab === "active") {
+            const success = await exportActiveScholars(
+                scholarsInformation,
+                fileName
+            );
+
+            if (success) {
+                setIsLoading(false);
+            }
+        } else {
+            const success = await exportGraduatedScholars(
+                scholarsInformation,
+                fileName,
+                schoolYear
+            );
+
+            if (success) {
+                setIsLoading(false);
+            }
+        }
     };
 
     // Filter data based on search term
@@ -88,8 +108,6 @@ export default function Scholars() {
                 .includes(searchTerm.toLowerCase()) ||
             applicant?.created_at?.includes(searchTerm)
     );
-
-    console.log(scholarsInformation);
 
     const {
         currentItems,
@@ -114,119 +132,180 @@ export default function Scholars() {
     };
 
     return (
-        <div className="bg-gray-50 lg:p-6">
-            <div className="w-[100%] mx-auto bg-white rounded-md shadow p-6">
-                {/* Header */}
-                <TableToolbar
-                    items={scholars}
-                    label={"Scholars"}
-                    placeholder={"scholars"}
-                    tab={activeTab}
-                    buttons={scholarButtons}
-                    searchTerm={searchTerm}
-                    itemsPerPage={itemsPerPage}
-                    sortBy={sortBy}
-                    sortedItems={filteredScholars}
-                    onRefresh={handleRefresh}
-                    onSort={setSortBy}
-                    onSearchChange={setSearchTerm}
-                    onChangeTab={handleChangeTab}
-                    onChangeItemsPerPage={setItemsPerPage}
-                    onChangeCurrentPage={setCurrentPage}
-                    firstIndex={indexOfFirstItem}
-                    lastIndex={indexOfLastItem}
-                    buttonExport={true}
-                    onExport={handleExport}
-                >
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">School:</span>
-                        <select
-                            value={school}
-                            onChange={(e) => setSchool(e.target.value)}
-                            className="w-[100px] px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
-                        >
-                            <option value="all">All</option>
-                            {collegesAndUniversities.map((item, index) => (
-                                <option key={index} value={item.name}>
-                                    {item.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">Course:</span>
-                        <select
-                            value={course}
-                            onChange={(e) => setCourse(e.target.value)}
-                            className="w-[100px] px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
-                        >
-                            <option value="all">All</option>
-                            {courses.map((item, index) => (
-                                <option
-                                    key={index}
-                                    value={item.course
-                                        .replaceAll("*", "")
-                                        .trim()}
-                                >
-                                    {item.course.replaceAll("*", "").trim()}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    {activeTab === "active" && (
-                        <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-600">
-                                Year Level:
-                            </span>
-                            <select
-                                value={yearLevel}
-                                onChange={(e) => setYearLevel(e.target.value)}
-                                className="w-[100px] px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+        <DataListView>
+            <TableToolbar
+                items={scholars}
+                label={"Scholars"}
+                placeholder={"scholars"}
+                tab={activeTab}
+                buttons={scholarButtons}
+                searchTerm={searchTerm}
+                itemsPerPage={itemsPerPage}
+                sortBy={sortBy}
+                sortedItems={filteredScholars}
+                onRefresh={handleRefresh}
+                onSort={setSortBy}
+                onSearchChange={setSearchTerm}
+                onChangeTab={handleChangeTab}
+                onChangeItemsPerPage={setItemsPerPage}
+                onChangeCurrentPage={setCurrentPage}
+                firstIndex={indexOfFirstItem}
+                lastIndex={indexOfLastItem}
+                buttonExport={true}
+                onExport={handleExport}
+                exportLoading={isLoading}
+                disabledButtonExport={scholars.length === 0}
+            >
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-700">School:</span>
+                    <select
+                        value={school}
+                        onChange={(e) => setSchool(e.target.value)}
+                        className="w-[100px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                    >
+                        <option value="all">All</option>
+                        {collegesAndUniversities.map((item, index) => (
+                            <option key={index} value={item.name}>
+                                {item.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                {/* <FilterDropdown
+                    label={"School"}
+                    value={school}
+                    onChange={(e) => setSchool(e.target.value)}
+                    options={collegesAndUniversities}
+                /> */}
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-600">Course:</span>
+                    <select
+                        value={course}
+                        onChange={(e) => setCourse(e.target.value)}
+                        className="w-[100px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                    >
+                        <option value="all">All</option>
+                        {courses.map((item, index) => (
+                            <option
+                                key={index}
+                                value={item.course.replaceAll("*", "").trim()}
                             >
-                                <option value="all">All</option>
-                                <option value={1}>1st Year</option>
-                                <option value={2}>2nd Year</option>
-                                <option value={3}>3rd Year</option>
-                                <option value={4}>4th Year</option>
-                                <option value={5}>5th Year</option>
-                            </select>
-                        </div>
-                    )}
-                    {activeTab !== "graduated" && (
-                        <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-600">Type:</span>
-                            <select
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                                className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
-                            >
-                                <option value="all">All</option>
-                                <option value="new">New</option>
-                                <option value="old">Old</option>
-                            </select>
-                        </div>
-                    )}
-                    {activeTab !== "active" && (
-                        <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-600">
-                                School Year:
-                            </span>
-                            <select
-                                value={schoolYear}
-                                onChange={(e) => setSchoolYear(e.target.value)}
-                                className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
-                            >
-                                <option value="all_years">All Years</option>
-                                <option value="2025-2026">2025-2026</option>
-                                <option value="2024-2025">2024-2025</option>
-                            </select>
-                        </div>
-                    )}
-                </TableToolbar>
+                                {item.course.replaceAll("*", "").trim()}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-                <div className="overflow-x-auto rounded-[4px]">
-                    <Table tableHeaders={scholarTableHeaders}>
-                        {currentItems.map((scholar, index) => (
+                {/* <FilterDropdown
+                    label={"Course"}
+                    value={course}
+                    onChange={(e) => setCourse(e.target.value)}
+                    options={courses}
+                /> */}
+
+                {activeTab === "active" && (
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-600">
+                            Year Level:
+                        </span>
+                        <select
+                            value={yearLevel}
+                            onChange={(e) => setYearLevel(e.target.value)}
+                            className="w-[100px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value="all">All</option>
+                            <option value={1}>1st Year</option>
+                            <option value={2}>2nd Year</option>
+                            <option value={3}>3rd Year</option>
+                            <option value={4}>4th Year</option>
+                            <option value={5}>5th Year</option>
+                        </select>
+                    </div>
+                )}
+
+                {/* <FilterDropdown
+                    label={"Year Level"}
+                    value={yearLevel}
+                    onChange={(e) => setYearLevel(e.target.value)}
+                    options={[
+                        { name: "1st Year", value: 1 },
+                        { name: "2nd Year", value: 2 },
+                        { name: "3rd Year", value: 3 },
+                        { name: "4th Year", value: 4 },
+                        { name: "5th Year", value: 5 },
+                    ]}
+                /> */}
+
+                {activeTab !== "graduated" && (
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-600">Status:</span>
+                        <select
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                            className="w-[100px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value="all">All</option>
+                            <option value="new">New Scholars</option>
+                            <option value="old">Old Scholars</option>
+                        </select>
+                    </div>
+                )}
+
+                {/* <FilterDropdown
+                    label={"Type"}
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    options={[
+                        { name: "New Scholars", value: "new" },
+                        { name: "Old Scholars", value: "old" },
+                    ]}
+                /> */}
+
+                {activeTab !== "active" && (
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-600">
+                            School Year:
+                        </span>
+                        <select
+                            value={schoolYear}
+                            onChange={(e) => setSchoolYear(e.target.value)}
+                            className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value="all_years">All Years</option>
+                            <option value="2025-2026">2025-2026</option>
+                            <option value="2024-2025">2024-2025</option>
+                        </select>
+                    </div>
+                )}
+
+                {/* <FilterDropdown
+                    label={"Type"}
+                    value={schoolYear}
+                    onChange={(e) => setSchoolYear(e.target.value)}
+                    options={[
+                        { name: "2025-2026", value: "2025-2026" },
+                        { name: "2024-2025", value: "2024-2025" },
+                    ]}
+                /> */}
+            </TableToolbar>
+
+            <div className="overflow-x-auto rounded-[4px]">
+                <Table tableHeaders={scholarTableHeaders}>
+                    {loading && (
+                        <tr>
+                            <td colSpan={6} className="p-6">
+                                <div className="flex pt-4 items-center justify-center">
+                                    <Loader2 className="w-6 h-6 animate-spin text-green-600" />
+                                    <span className="ml-2 text-[16px] text-gray-600">
+                                        Loading...
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    )}
+
+                    {!loading &&
+                        currentItems.map((scholar, index) => (
                             <tr
                                 key={index}
                                 className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50 ${
@@ -315,43 +394,58 @@ export default function Scholars() {
                                 </td>
                             </tr>
                         ))}
-                    </Table>
+                </Table>
 
-                    {/* Empty state */}
-                    {currentItems.length === 0 && (
-                        <EmptyState message="No scholars found." />
-                    )}
-                </div>
-
-                {/* Pagination */}
-                {filteredScholars.length > 0 && (
-                    <div className="flex justify-between items-center mt-6">
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            onPrevious={goToPreviousPage}
-                            onNext={goToNextPage}
-                            indexOfFirstItem={indexOfFirstItem}
-                            indexOfLastItem={indexOfLastItem}
-                            totalItems={filteredScholars.length}
-                            itemLabel={"applications"}
-                        />
-                    </div>
+                {/* Empty state */}
+                {currentItems.length === 0 && !loading && (
+                    <EmptyState message="No scholars found." />
                 )}
-
-                <ScholarProfileModal
-                    userId={scholarId}
-                    isOpen={isModalOpen}
-                    setIsOpen={setIsModalOpen}
-                    isScholar={true}
-                />
-
-                <CoaGradesModal
-                    scholarId={scholarId}
-                    isOpen={isCoeGradeModalOpen}
-                    onClose={setIsCoeGradeModalOpen}
-                />
             </div>
-        </div>
+
+            {/* Pagination */}
+            {filteredScholars.length > 0 && (
+                <div className="flex justify-between items-center mt-6">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-600">Show:</span>
+                        <select
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                                setItemsPerPage(Number(e.target.value));
+                                setCurrentPage(1);
+                            }}
+                            className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPrevious={goToPreviousPage}
+                        onNext={goToNextPage}
+                        indexOfFirstItem={indexOfFirstItem}
+                        indexOfLastItem={indexOfLastItem}
+                        totalItems={filteredScholars.length}
+                        itemLabel={"applications"}
+                    />
+                </div>
+            )}
+
+            <ScholarProfileModal
+                userId={scholarId}
+                isOpen={isModalOpen}
+                setIsOpen={setIsModalOpen}
+                isScholar={true}
+            />
+
+            <CoaGradesModal
+                scholarId={scholarId}
+                isOpen={isCoeGradeModalOpen}
+                onClose={setIsCoeGradeModalOpen}
+            />
+        </DataListView>
     );
 }

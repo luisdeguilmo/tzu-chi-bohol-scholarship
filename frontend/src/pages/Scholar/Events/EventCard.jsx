@@ -101,11 +101,11 @@ const EventCard = ({
                             className={`w-4 h-4 mr-3 flex-shrink-0 ${
                                 isArchived
                                     ? "text-slate-400"
-                                    : "text-emerald-500"
+                                    : "text-gray-600"
                             }`}
                         />
                         <span
-                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
+                            className={`text-xs ${isArchived ? "italic" : ""}`}
                         >
                             {formatDate(event.date)}
                         </span>
@@ -120,11 +120,11 @@ const EventCard = ({
                             className={`w-4 h-4 mr-3 flex-shrink-0 ${
                                 isArchived
                                     ? "text-slate-400"
-                                    : "text-emerald-500"
+                                    : "text-gray-600"
                             }`}
                         />
                         <span
-                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
+                            className={`text-xs ${isArchived ? "italic" : ""}`}
                         >
                             {formatTime(event.start_time)} -{" "}
                             {formatTime(event.end_time)}
@@ -140,11 +140,11 @@ const EventCard = ({
                             className={`w-4 h-4 mr-3 flex-shrink-0 ${
                                 isArchived
                                     ? "text-slate-400"
-                                    : "text-emerald-500"
+                                    : "text-gray-600"
                             }`}
                         />
                         <span
-                            className={`text-xs sm:text-sm truncate ${isArchived ? "italic" : ""}`}
+                            className={`text-xs truncate ${isArchived ? "italic" : ""}`}
                         >
                             {event.event_location}
                         </span>
@@ -159,11 +159,11 @@ const EventCard = ({
                             className={`w-4 h-4 mr-2 ${
                                 isArchived
                                     ? "text-slate-400"
-                                    : "text-emerald-500"
+                                    : "text-gray-600"
                             }`}
                         />
                         <span
-                            className={`text-xs sm:text-sm ${isArchived ? "italic" : ""}`}
+                            className={`text-xs ${isArchived ? "italic" : ""}`}
                         >
                             {/* {event.numberOfParticipants}{" "}
                             {event.date > dateToday &&

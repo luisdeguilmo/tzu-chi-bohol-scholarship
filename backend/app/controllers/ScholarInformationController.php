@@ -69,48 +69,80 @@ class ScholarInformationController
                 $schools[] = $schoolFilter;
             }
 
-            foreach ($schools as $schoolData) {
-                $schoolName = $schoolData['name'] ?? $schoolData;
+            if ($tab === 'active') {
+                foreach ($schools as $schoolData) {
+                    $schoolName = $schoolData['name'] ?? $schoolData;
 
-                $newScholars = $model->getNewActiveScholars(
-                    $status,
-                    $school_year,
-                    $schoolName,
-                    $year_level,
-                    $course,
-                    $current_school_year,
-                );
+                    $newScholars = $model->getNewActiveScholars(
+                        $status,
+                        $school_year,
+                        $schoolName,
+                        $year_level,
+                        $course,
+                        $current_school_year,
+                    );
 
-                $oldScholars = $model->getOldActiveScholars(
-                    $status,
-                    $school_year,
-                    $schoolName,
-                    $year_level,
-                    $course,
-                    $current_school_year,
-                );
+                    $oldScholars = $model->getOldActiveScholars(
+                        $status,
+                        $school_year,
+                        $schoolName,
+                        $year_level,
+                        $course,
+                        $current_school_year,
+                    );
 
-                // Combine and map scholars
-                $allScholars = array_merge($newScholars, $oldScholars);
+                    // Combine and map scholars
+                    $allScholars = array_merge($newScholars, $oldScholars);
 
-                $scholarsArr = array_map(function ($scholar) {
-                    return [
-                        'YR. Level' => $scholar['year_level'],
-                        'Last Name' => $scholar['last_name'],
-                        'First Name' => $scholar['first_name'],
-                        'Course' => $scholar['present_course1'],
+                    $scholarsArr = array_map(function ($scholar) {
+                        return [
+                            'YR. Level' => $scholar['year_level'],
+                            'Last Name' => $scholar['last_name'],
+                            'First Name' => $scholar['first_name'],
+                            'Course' => $scholar['present_course1'],
+                        ];
+                    }, $allScholars);
+
+                    // // Apply sorting if specified
+                    if ($sort) {
+                        $scholarsArr = $this->applySorting($scholarsArr, $sort);
+                    }
+
+                    $result[] = [
+                        'School' => $schoolName,
+                        'Scholars' => $scholarsArr,
                     ];
-                }, $allScholars);
-
-                // // Apply sorting if specified
-                if ($sort) {
-                    $scholarsArr = $this->applySorting($scholarsArr, $sort);
                 }
+            } elseif ($tab === 'graduated') {
+                foreach ($schools as $schoolData) {
+                    $schoolName = $schoolData['name'] ?? $schoolData;
 
-                $result[] = [
-                    'School' => $schoolName,
-                    'Scholars' => $scholarsArr,
-                ];
+                    $scholars = $model->getGraduatedScholars(
+                        $status,
+                        $school_year,
+                        $schoolName,
+                        $course,
+                    );
+
+                    $scholarsArr = array_map(function ($scholar) {
+                        return [
+                            'YR. Level' => $scholar['year_level'],
+                            'Last Name' => $scholar['last_name'],
+                            'First Name' => $scholar['first_name'],
+                            'Course' => $scholar['present_course1'],
+                        ];
+                    }, $scholars);
+
+                    // // Apply sorting if specified
+                    if ($sort) {
+                        $scholarsArr = $this->applySorting($scholarsArr, $sort);
+                    }
+
+                    $result[] = [
+                        'School' => $schoolName,
+                        'Scholars' => $scholarsArr,
+                    ];
+                }
             }
 
             http_response_code(200);
