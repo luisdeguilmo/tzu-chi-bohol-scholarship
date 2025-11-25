@@ -82,12 +82,33 @@ function SideBar({ items }) {
         }
     };
 
-    const handleLogout = () => {
+    // const handleLogout = () => {
+    //     try {
+    //         const userType = user.type || "scholar";
+    //         toast.success("Logged out successfully");
+    //         logout();
+
+    //         if (userType === "scholar") {
+    //             navigate("/login/scholar");
+    //         } else if (userType === "staff") {
+    //             navigate("/login/staff");
+    //         } else if (userType === "admin") {
+    //             navigate("/login/admin");
+    //         }
+    //     } catch (error) {
+    //         console.error("Logout error:", error);
+    //         toast.error("Failed to log out. Please try again.");
+    //     }
+    // };
+
+    const handleLogout = async () => {
         try {
             const userType = user.type || "scholar";
-            toast.success("Logged out successfully");
-            logout();
+            toast.success("Logging out...");
 
+            await logout();
+
+            // Navigate to appropriate login page
             if (userType === "scholar") {
                 navigate("/login/scholar");
             } else if (userType === "staff") {

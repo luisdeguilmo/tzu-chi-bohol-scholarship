@@ -1,5 +1,78 @@
+// import React, { createContext, useContext, useState, useEffect } from "react";
+// import axios from "axios";
+
+// const AuthContext = createContext();
+
+// export const useAuth = () => {
+//     const context = useContext(AuthContext);
+//     if (!context) {
+//         throw new Error("useAuth must be used within an AuthProvider");
+//     }
+//     return context;
+// };
+
+// export const AuthProvider = ({ children }) => {
+//     const [user, setUser] = useState(null);
+//     const [loading, setLoading] = useState(true);
+//     const [token, setToken] = useState(localStorage.getItem("token"));
+
+//     useEffect(() => {
+//         if (token) {
+//             try {
+//                 // Decode JWT token to get user info
+//                 const payload = JSON.parse(atob(token.split(".")[1]));
+
+//                 // Check if token is expired
+//                 if (payload.exp * 1000 > Date.now()) {
+//                     setUser(payload);
+//                     // Set default axios header
+//                     axios.defaults.headers.common[
+//                         "Authorization"
+//                     ] = `Bearer ${token}`;
+//                 } else {
+//                     // Token expired
+//                     logout();
+//                 }
+//             } catch (error) {
+//                 console.error("Invalid token:", error);
+//                 logout();
+//             }
+//         }
+//         setLoading(false);
+//     }, [token]);
+
+//     const login = (token, userData) => {
+//         localStorage.setItem("token", token);
+//         setToken(token);
+//         setUser(userData);
+//         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+//     };
+
+//     const logout = () => {
+//         localStorage.removeItem("token");
+//         setToken(null);
+//         setUser(null);
+//         delete axios.defaults.headers.common["Authorization"];
+//     };
+
+//     const value = {
+//         user,
+//         token,
+//         login,
+//         logout,
+//         loading,
+//         isAuthenticated: !!user,
+//     };
+
+//     return (
+//         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+//     );
+// };
+
+
 import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../services/axiosConfig";
+import BASE_URL from "../config";
 
 const AuthContext = createContext();
 
@@ -14,54 +87,71 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [token, setToken] = useState(localStorage.getItem("token"));
 
+    // Check session on mount and periodically
     useEffect(() => {
-        if (token) {
-            try {
-                // Decode JWT token to get user info
-                const payload = JSON.parse(atob(token.split(".")[1]));
+        checkSession();
 
-                // Check if token is expired
-                if (payload.exp * 1000 > Date.now()) {
-                    setUser(payload);
-                    // Set default axios header
-                    axios.defaults.headers.common[
-                        "Authorization"
-                    ] = `Bearer ${token}`;
-                } else {
-                    // Token expired
-                    logout();
+        // Optional: Check session every 5 minutes to keep it alive
+        const interval = setInterval(() => {
+            checkSession();
+        }, 5 * 60 * 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const checkSession = async () => {
+        try {
+            const response = await axios.get(
+                `${BASE_URL}app/views/check-session.php`,
+                {
+                    withCredentials: true // Important for sending cookies
                 }
-            } catch (error) {
-                console.error("Invalid token:", error);
-                logout();
-            }
-        }
-        setLoading(false);
-    }, [token]);
+            );
 
-    const login = (token, userData) => {
-        localStorage.setItem("token", token);
-        setToken(token);
-        setUser(userData);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            if (response.data.authenticated && response.data.user) {
+                setUser(response.data.user);
+            } else {
+                setUser(null);
+            }
+        } catch (error) {
+            console.error("Session check failed:", error);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const logout = () => {
-        localStorage.removeItem("token");
-        setToken(null);
-        setUser(null);
-        delete axios.defaults.headers.common["Authorization"];
+    const login = async (userData) => {
+        // No need to store token - session is managed by server
+        setUser(userData);
+        // Optionally recheck session to ensure sync
+        await checkSession();
+    };
+
+    const logout = async () => {
+        try {
+            await axios.post(
+                `${BASE_URL}app/views/logout.php`,
+                {},
+                {
+                    withCredentials: true
+                }
+            );
+        } catch (error) {
+            console.error("Logout error:", error);
+        } finally {
+            setUser(null);
+        }
     };
 
     const value = {
         user,
-        token,
         login,
         logout,
         loading,
         isAuthenticated: !!user,
+        checkSession,
     };
 
     return (

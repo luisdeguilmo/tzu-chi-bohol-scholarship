@@ -1,5 +1,0 @@
-{"strand":{"strand":"TVLd","description":"Technical - Vocational - Livelihood\nSpecialization: choose your own specialization related to the course you want to take in college."}}
-{"instruction":""}
-{"applicantIds":[8620690],"batch":"Batch 1"}
-{"applicantIds":[9453192],"batch":"Batch 1"}
-{"applicantIds":[8507859],"batch":"Batch 1"}

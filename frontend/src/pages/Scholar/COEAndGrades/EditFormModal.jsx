@@ -140,12 +140,12 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
     };
 
     const handleSubmit = async () => {
-        if (accountStatus === "not_renewed") {
-            toast.error(
-                `You can't resubmit COE and grades until your renewal application is approved.`
-            );
-            return;
-        }
+        // if (accountStatus === "not_renewed") {
+        //     toast.error(
+        //         `You can't resubmit COE and grades until your renewal application is approved.`
+        //     );
+        //     return;
+        // }
 
         setIsSubmitting(true);
 

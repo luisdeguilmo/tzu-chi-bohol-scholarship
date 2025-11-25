@@ -27,7 +27,7 @@ function QuickOverview() {
         window.scrollTo(0, 0);
     }, [pathname]);
 
-    const { user } = useAuth();
+    const { isAuthenticated, user, loading } = useAuth();
     const { dashboardData } = useDashboardOverviewData(
         user.user_id,
         user.type,
@@ -43,7 +43,7 @@ function QuickOverview() {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const hasInitialized = useRef(false);
 
-    console.log(dashboardData);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (

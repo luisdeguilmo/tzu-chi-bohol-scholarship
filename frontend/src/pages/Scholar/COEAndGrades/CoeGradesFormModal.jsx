@@ -92,12 +92,12 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
     };
 
     const handleSubmit = async () => {
-        if (accountStatus === "not_renewed") {
-            toast.error(
-                `You can't submit COE and grades until your renewal application is approved.`
-            );
-            return;
-        }
+        // if (accountStatus === "not_renewed") {
+        //     toast.error(
+        //         `You can't submit COE and grades until your renewal application is approved.`
+        //     );
+        //     return;
+        // }
 
         setIsSubmitting(true);
         setIsLoading(true);
