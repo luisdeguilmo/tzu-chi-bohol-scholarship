@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { useAccountStatus } from "../../../hooks/useAccountStatus";
 
 const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
-    // const [yearLevel, setYearLevel] = useState(submission.year_level || "");
     const [semester, setSemester] = useState(submission.semester || "");
     const [files, setFiles] = useState([]);
     const [filePreviews, setFilePreviews] = useState([]);
@@ -260,6 +259,8 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
 
     const isImage = (type) => type && type.startsWith("image/");
 
+    console.log(filePreviews);
+
     return (
         <InputModal
             label={
@@ -308,7 +309,9 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                                 }
                                 className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
-                                <option value="" disabled>-- Select --</option>
+                                <option value="" disabled>
+                                    -- Select --
+                                </option>
                                 <option value="1st Semester">
                                     1st Semester
                                 </option>

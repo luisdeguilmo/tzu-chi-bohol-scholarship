@@ -4,9 +4,6 @@ require_once __DIR__ . '/../../config/Database.php';
 
 date_default_timezone_set('Asia/Manila');
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -89,16 +86,6 @@ class ScholarsController
                         $scholar->unProcessScholarsAllowance($scholarId['account_id'], $allowance);
                     }
                 }
-
-                // else {
-                //     foreach ($scholarIds as $scholarId) {
-                //         $renderedHours = $scholar->getScholarRenderedHours(
-                //             $scholarId['account_id'],
-                //         );
-                //         [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
-                //         $scholar->unProcessScholarsAllowance($scholarId['account_id'], 0);
-                //     }
-                // }
 
                 $newScholars = $scholar->getNewActiveScholars(
                     $status,
@@ -204,59 +191,6 @@ class ScholarsController
             ]);
         }
     }
-
-    // private function handlePut()
-    // {
-    //     try {
-    //         $this->pdo->beginTransaction();
-
-    //         $model = new ScholarsModel();
-    //         $service = new AllowanceService();
-    //         $allowanceCycleModel = new AllowanceCycleModel();
-
-    //         if ($allowanceCycleModel->isCycleProcessed()) {
-    //             http_response_code(200);
-    //             echo json_encode([
-    //                 'success' => false,
-    //             ]);
-    //             return;
-    //         }
-
-    //         $scholarIds = $model->getAllScholarsId();
-
-    //         foreach ($scholarIds as $scholarId) {
-    //             $renderedHours = $model->getScholarRenderedHours($scholarId['account_id']);
-    //             [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
-    //             $model->processScholarsAllowance(
-    //                 $scholarId['account_id'],
-    //                 $allowance,
-    //                 $newRenderedHours,
-    //             );
-    //         }
-
-    //         $allowanceCycleModel->processAllowanceCycle();
-
-    //         $this->pdo->commit();
-
-    //         // Return success response
-    //         http_response_code(200);
-    //         echo json_encode([
-    //             'success' => true,
-    //             'message' => 'Scholars allowance processed successfully',
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         // Roll back transaction on error
-    //         if ($this->pdo->inTransaction()) {
-    //             $this->pdo->rollBack();
-    //         }
-
-    //         http_response_code(400);
-    //         echo json_encode([
-    //             'success' => false,
-    //             'message' => $e->getMessage(),
-    //         ]);
-    //     }
-    // }
 }
 
 // Create and execute controller

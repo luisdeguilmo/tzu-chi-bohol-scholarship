@@ -2,9 +2,6 @@
 namespace App\Controllers;
 require_once __DIR__ . '/../../config/Database.php';
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -43,9 +40,6 @@ class EmailMessageController
                 break;
             case 'PUT':
                 $this->handlePut();
-                break;
-            case 'DELETE':
-                $this->handleDelete();
                 break;
             default:
                 http_response_code(405);
@@ -118,7 +112,7 @@ class EmailMessageController
             http_response_code(201);
             echo json_encode([
                 'success' => true,
-                'message' => 'College/University created successfully',
+                'message' => 'Email messages created successfully',
             ]);
         } catch (\Exception $e) {
             // Roll back transaction on error
@@ -170,54 +164,7 @@ class EmailMessageController
             http_response_code(200);
             echo json_encode([
                 'success' => true,
-                'message' => 'College/University updated successfully',
-            ]);
-        } catch (\Exception $e) {
-            // Roll back transaction on error
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
-    }
-
-    private function handleDelete()
-    {
-        try {
-            $this->pdo->beginTransaction();
-
-            // Get ID parameter
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-            if (!$id) {
-                throw new \Exception('ID is required for delete');
-            }
-
-            // Process delete
-            $model = new CollegeUniversityManagementModel();
-
-            // Check if qualification exists
-            $isExisted = $model->getCollegeOrUniversityById($id);
-            if (!$isExisted) {
-                throw new \Exception('Course not found');
-            }
-
-            if (!$model->delete($id)) {
-                throw new \Exception('Failed to delete course');
-            }
-
-            $this->pdo->commit();
-
-            // Return success response
-            http_response_code(200);
-            echo json_encode([
-                'success' => true,
-                'message' => 'College/University deleted successfully',
+                'message' => 'Email messages updated successfully',
             ]);
         } catch (\Exception $e) {
             // Roll back transaction on error

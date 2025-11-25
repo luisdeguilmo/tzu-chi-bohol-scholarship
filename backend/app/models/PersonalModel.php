@@ -69,25 +69,25 @@ class PersonalModel
 
         // Sanitize inputs
         $application_id = $application_id;
-        $last_name = htmlspecialchars(strip_tags($data['last_name']));
-        $first_name = htmlspecialchars(strip_tags($data['first_name']));
-        $middle_name = htmlspecialchars(strip_tags($data['middle_name'] ?? ''));
-        $suffix = htmlspecialchars(strip_tags($data['suffix'] ?? ''));
-        $gender = htmlspecialchars(strip_tags($data['gender']));
-        $age = htmlspecialchars(strip_tags($data['age']));
-        $birthdate = htmlspecialchars(strip_tags($data['birthdate']));
-        $birthplace = htmlspecialchars(strip_tags($data['birthplace']));
-        $home_address = htmlspecialchars(strip_tags($data['home_address']));
-        $subdivision_village = htmlspecialchars(strip_tags($data['subdivision'] ?? ''));
-        $barangay = htmlspecialchars(strip_tags($data['barangay']));
-        $city_municipality = htmlspecialchars(strip_tags($data['city']));
-        $zipcode = htmlspecialchars(strip_tags($data['zip_code']));
-        $personal_contact = htmlspecialchars(strip_tags($data['contact_number']));
-        $secondary_contact = htmlspecialchars(strip_tags($data['secondary_contact'] ?? ''));
-        $religion = htmlspecialchars(strip_tags($data['religion']));
-        $civil_status = htmlspecialchars(strip_tags($data['civil_status']));
-        $facebook = htmlspecialchars(strip_tags($data['facebook'] ?? ''));
-        $email_address = htmlspecialchars(strip_tags($data['email']));
+        $last_name = strip_tags($data['last_name']);
+        $first_name = strip_tags($data['first_name']);
+        $middle_name = strip_tags($data['middle_name'] ?? '');
+        $suffix = strip_tags($data['suffix'] ?? '');
+        $gender = strip_tags($data['gender']);
+        $age = strip_tags($data['age']);
+        $birthdate = strip_tags($data['birthdate']);
+        $birthplace = strip_tags($data['birthplace']);
+        $home_address = strip_tags($data['home_address']);
+        $subdivision_village = strip_tags($data['subdivision'] ?? '');
+        $barangay = strip_tags($data['barangay']);
+        $city_municipality = strip_tags($data['city']);
+        $zipcode = strip_tags($data['zip_code']);
+        $personal_contact = strip_tags($data['contact_number']);
+        $secondary_contact = strip_tags($data['secondary_contact'] ?? '');
+        $religion = strip_tags($data['religion']);
+        $civil_status = strip_tags($data['civil_status']);
+        $facebook = strip_tags($data['facebook'] ?? '');
+        $email_address = strip_tags($data['email']);
 
         // Bind values
         $stmt->bindParam(':application_id', $application_id);
@@ -146,25 +146,25 @@ class PersonalModel
 
         // Sanitize inputs
         $application_id = $application_id;
-        $last_name = htmlspecialchars(strip_tags($data['last_name']));
-        $first_name = htmlspecialchars(strip_tags($data['first_name']));
-        $middle_name = htmlspecialchars(strip_tags($data['middle_name'] ?? ''));
-        $suffix = htmlspecialchars(strip_tags($data['suffix'] ?? ''));
-        $gender = htmlspecialchars(strip_tags($data['gender']));
-        $age = htmlspecialchars(strip_tags($data['age']));
-        $birthdate = htmlspecialchars(strip_tags($data['birthdate']));
-        $birthplace = htmlspecialchars(strip_tags($data['birthplace']));
-        $home_address = htmlspecialchars(strip_tags($data['home_address']));
-        $subdivision_village = htmlspecialchars(strip_tags($data['subdivision'] ?? ''));
-        $barangay = htmlspecialchars(strip_tags($data['barangay']));
-        $city_municipality = htmlspecialchars(strip_tags($data['city']));
-        $zipcode = htmlspecialchars(strip_tags($data['zip_code']));
-        $personal_contact = htmlspecialchars(strip_tags($data['contact_number']));
-        $secondary_contact = htmlspecialchars(strip_tags($data['secondary_contact'] ?? ''));
-        $religion = htmlspecialchars(strip_tags($data['religion']));
-        $civil_status = htmlspecialchars(strip_tags($data['civil_status']));
-        $facebook = htmlspecialchars(strip_tags($data['facebook'] ?? ''));
-        $email_address = htmlspecialchars(strip_tags($data['email']));
+        $last_name = strip_tags($data['last_name']);
+        $first_name = strip_tags($data['first_name']);
+        $middle_name = strip_tags($data['middle_name'] ?? '');
+        $suffix = strip_tags($data['suffix'] ?? '');
+        $gender = strip_tags($data['gender']);
+        $age = strip_tags($data['age']);
+        $birthdate = strip_tags($data['birthdate']);
+        $birthplace = strip_tags($data['birthplace']);
+        $home_address = strip_tags($data['home_address']);
+        $subdivision_village = strip_tags($data['subdivision'] ?? '');
+        $barangay = strip_tags($data['barangay']);
+        $city_municipality = strip_tags($data['city']);
+        $zipcode = strip_tags($data['zip_code']);
+        $personal_contact = strip_tags($data['contact_number']);
+        $secondary_contact = strip_tags($data['secondary_contact'] ?? '');
+        $religion = strip_tags($data['religion']);
+        $civil_status = strip_tags($data['civil_status']);
+        $facebook = strip_tags($data['facebook'] ?? '');
+        $email_address = strip_tags($data['email']);
 
         // Bind values
         $stmt->bindParam(':application_id', $application_id);
@@ -224,25 +224,25 @@ class PersonalModel
 
         // Sanitize inputs
 
-        $last_name = htmlspecialchars(strip_tags($data['last_name']));
-        $first_name = htmlspecialchars(strip_tags($data['first_name']));
-        $middle_name = htmlspecialchars(strip_tags($data['middle_name'] ?? ''));
-        $suffix = htmlspecialchars(strip_tags($data['suffix'] ?? ''));
-        $gender = htmlspecialchars(strip_tags($data['gender']));
-        $age = htmlspecialchars(strip_tags($data['age']));
-        $birthdate = htmlspecialchars(strip_tags($data['birthdate']));
-        $birthplace = htmlspecialchars(strip_tags($data['birthplace']));
-        $home_address = htmlspecialchars(strip_tags($data['home_address']));
-        $subdivision_village = htmlspecialchars(strip_tags($data['subdivision'] ?? ''));
-        $barangay = htmlspecialchars(strip_tags($data['barangay']));
-        $city_municipality = htmlspecialchars(strip_tags($data['city']));
-        $zipcode = htmlspecialchars(strip_tags($data['zip_code']));
-        $personal_contact = htmlspecialchars(strip_tags($data['contact_number']));
-        $secondary_contact = htmlspecialchars(strip_tags($data['secondary_contact'] ?? ''));
-        $religion = htmlspecialchars(strip_tags($data['religion']));
-        $civil_status = htmlspecialchars(strip_tags($data['civil_status']));
-        $facebook = htmlspecialchars(strip_tags($data['facebook'] ?? ''));
-        $email_address = htmlspecialchars(strip_tags($data['email']));
+        $last_name = strip_tags($data['last_name']);
+        $first_name = strip_tags($data['first_name']);
+        $middle_name = strip_tags($data['middle_name'] ?? '');
+        $suffix = strip_tags($data['suffix'] ?? '');
+        $gender = strip_tags($data['gender']);
+        $age = strip_tags($data['age']);
+        $birthdate = strip_tags($data['birthdate']);
+        $birthplace = strip_tags($data['birthplace']);
+        $home_address = strip_tags($data['home_address']);
+        $subdivision_village = strip_tags($data['subdivision'] ?? '');
+        $barangay = strip_tags($data['barangay']);
+        $city_municipality = strip_tags($data['city']);
+        $zipcode = strip_tags($data['zip_code']);
+        $personal_contact = strip_tags($data['contact_number']);
+        $secondary_contact = strip_tags($data['secondary_contact'] ?? '');
+        $religion = strip_tags($data['religion']);
+        $civil_status = strip_tags($data['civil_status']);
+        $facebook = strip_tags($data['facebook'] ?? '');
+        $email_address = strip_tags($data['email']);
 
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':last_name', $last_name);

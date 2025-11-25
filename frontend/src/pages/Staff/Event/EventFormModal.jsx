@@ -255,23 +255,25 @@ const EventFormModal = React.memo(
                         />
                     </div>
 
-                    <div className="block mb-2 relative">
-                        <label className="block mb-1 text-gray-600 text-xs">
-                            Participant Limit
-                        </label>
-                        <input
-                            type="number"
-                            min={1}
-                            value={participantLimit}
-                            onChange={(e) =>
-                                setParticipantLimit(e.target.value)
-                            }
-                            placeholder="Enter participant limit"
-                            className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
-                            required
-                            disabled={disabled}
-                        />
-                    </div>
+                    {eventType === "optional" && (
+                        <div className="block mb-2 relative">
+                            <label className="block mb-1 text-gray-600 text-xs">
+                                Participant Limit
+                            </label>
+                            <input
+                                type="number"
+                                min={1}
+                                value={participantLimit}
+                                onChange={(e) =>
+                                    setParticipantLimit(e.target.value)
+                                }
+                                placeholder="Enter participant limit"
+                                className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                required
+                                disabled={disabled}
+                            />
+                        </div>
+                    )}
 
                     <div className="block mb-2">
                         <label className="text-gray-600 text-xs block mt-[-2px] mb-1">

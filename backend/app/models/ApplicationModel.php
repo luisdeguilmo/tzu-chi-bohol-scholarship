@@ -42,9 +42,9 @@ class ApplicationModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize and bind
-        $school_year = htmlspecialchars(strip_tags($data['school_year']));
-        $status = htmlspecialchars(strip_tags($data['status']));
-        $expectation = htmlspecialchars(strip_tags($other['expectation']));
+        $school_year = strip_tags($data['school_year']);
+        $status = strip_tags($data['status']);
+        $expectation = strip_tags($other['expectation']);
 
         $stmt->bindParam(':application_id', $application_id);
         $stmt->bindParam(':school_year', $school_year);
@@ -72,10 +72,10 @@ class ApplicationModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize and bind
-        $school_year = htmlspecialchars(strip_tags($data['school_year']));
-        $status = htmlspecialchars(strip_tags($data['status']));
-        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id']));
-        $expectation = htmlspecialchars(strip_tags($other['expectation']));
+        $school_year = strip_tags($data['school_year']);
+        $status = strip_tags($data['status']);
+        $scholar_id = strip_tags($data['scholar_id']);
+        $expectation = strip_tags($other['expectation']);
 
         $stmt->bindParam(':application_id', $application_id);
         $stmt->bindParam(':scholar_id', $scholar_id, \PDO::PARAM_INT);
@@ -101,9 +101,9 @@ class ApplicationModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize and bind
-        $school_year = htmlspecialchars(strip_tags($data['school_year']));
-        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id']));
-        $expectation = htmlspecialchars(strip_tags($other['expectation']));
+        $school_year = strip_tags($data['school_year']);
+        $scholar_id = strip_tags($data['scholar_id']);
+        $expectation = strip_tags($other['expectation']);
 
         // $stmt->bindParam(':application_id', $application_id);
         $stmt->bindParam(':scholar_id', $scholar_id, \PDO::PARAM_INT);

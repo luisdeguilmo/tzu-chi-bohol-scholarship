@@ -39,9 +39,9 @@ class SchoolTransportInfoModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->scholarId = htmlspecialchars(strip_tags($data['scholar_id']));
-        $this->stayType = htmlspecialchars(strip_tags($data['stay_type']));
-        $this->address = htmlspecialchars(strip_tags($data['address']));
+        $this->scholarId = strip_tags($data['scholar_id']);
+        $this->stayType = strip_tags($data['stay_type']);
+        $this->address = strip_tags($data['address']);
         $this->dailyTransportCost = strip_tags($data['daily_transport_cost']);
         $this->routeExplanation = strip_tags($data['route_explanation']);
 
@@ -71,9 +71,9 @@ class SchoolTransportInfoModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->scholarId = htmlspecialchars(strip_tags($data['scholar_id']));
-        $this->stayType = htmlspecialchars(strip_tags($data['stay_type']));
-        $this->address = htmlspecialchars(strip_tags($data['address']));
+        $this->scholarId = strip_tags($data['scholar_id']);
+        $this->stayType = strip_tags($data['stay_type']);
+        $this->address = strip_tags($data['address']);
         $this->dailyTransportCost = strip_tags($data['daily_transport_cost']);
         $this->routeExplanation = strip_tags($data['route_explanation']);
 

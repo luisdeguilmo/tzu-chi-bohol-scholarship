@@ -55,18 +55,18 @@ class EducationModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->selected_school_id = htmlspecialchars(strip_tags($data['selected_school_id']));
-        $this->last_school_attended = htmlspecialchars(strip_tags($data['previous_school']));
-        $this->last_school_location = htmlspecialchars(strip_tags($data['previous_location']));
-        $this->honor_award = htmlspecialchars(strip_tags($data['previous_honor'] ?? ''));
-        $this->gwa = htmlspecialchars(strip_tags($data['previous_gwa']));
-        $this->course_taken = htmlspecialchars(strip_tags($data['previous_course'] ?? ''));
-        $this->incoming_grade = htmlspecialchars(strip_tags($data['incoming_grade']));
-        $this->year_level = htmlspecialchars(strip_tags($data['year_level']));
-        $this->school = htmlspecialchars(strip_tags($data['present_school']));
-        $this->new_school_location = htmlspecialchars(strip_tags($data['present_location']));
-        $this->first_course = htmlspecialchars(strip_tags($data['present_course1'] ?? ''));
-        $this->second_course = htmlspecialchars(strip_tags($data['present_course2'] ?? ''));
+        $this->selected_school_id = strip_tags($data['selected_school_id']);
+        $this->last_school_attended = strip_tags($data['previous_school']);
+        $this->last_school_location = strip_tags($data['previous_location']);
+        $this->honor_award = strip_tags($data['previous_honor'] ?? '');
+        $this->gwa = strip_tags($data['previous_gwa']);
+        $this->course_taken = strip_tags($data['previous_course'] ?? '');
+        $this->incoming_grade = strip_tags($data['incoming_grade']);
+        $this->year_level = strip_tags($data['year_level']);
+        $this->school = strip_tags($data['present_school']);
+        $this->new_school_location = strip_tags($data['present_location']);
+        $this->first_course = strip_tags($data['present_course1'] ?? '');
+        $this->second_course = strip_tags($data['present_course2'] ?? '');
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -111,18 +111,18 @@ class EducationModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->selected_school_id = htmlspecialchars(strip_tags($data['selected_school_id']));
-        $this->last_school_attended = htmlspecialchars(strip_tags($data['previous_school']));
-        $this->last_school_location = htmlspecialchars(strip_tags($data['previous_location']));
-        $this->honor_award = htmlspecialchars(strip_tags($data['previous_honor'] ?? ''));
-        $this->gwa = htmlspecialchars(strip_tags($data['previous_gwa']));
-        $this->course_taken = htmlspecialchars(strip_tags($data['previous_course'] ?? ''));
-        $this->incoming_grade = htmlspecialchars(strip_tags($data['incoming_grade']));
-        $this->year_level = htmlspecialchars(strip_tags($data['year_level']));
-        $this->school = htmlspecialchars(strip_tags($data['present_school']));
-        $this->new_school_location = htmlspecialchars(strip_tags($data['present_location']));
-        $this->first_course = htmlspecialchars(strip_tags($data['present_course1'] ?? ''));
-        $this->second_course = htmlspecialchars(strip_tags($data['present_course2'] ?? ''));
+        $this->selected_school_id = strip_tags($data['selected_school_id']);
+        $this->last_school_attended = strip_tags($data['previous_school']);
+        $this->last_school_location = strip_tags($data['previous_location']);
+        $this->honor_award = strip_tags($data['previous_honor'] ?? '');
+        $this->gwa = strip_tags($data['previous_gwa']);
+        $this->course_taken = strip_tags($data['previous_course'] ?? '');
+        $this->incoming_grade = strip_tags($data['incoming_grade']);
+        $this->year_level = strip_tags($data['year_level']);
+        $this->school = strip_tags($data['present_school']);
+        $this->new_school_location = strip_tags($data['present_location']);
+        $this->first_course = strip_tags($data['present_course1'] ?? '');
+        $this->second_course = strip_tags($data['present_course2'] ?? '');
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -167,18 +167,18 @@ class EducationModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->selected_school_id = htmlspecialchars(strip_tags($data['selected_school_id']));
-        $this->last_school_attended = htmlspecialchars(strip_tags($data['previous_school']));
-        $this->last_school_location = htmlspecialchars(strip_tags($data['previous_location']));
-        $this->honor_award = htmlspecialchars(strip_tags($data['previous_honor'] ?? ''));
-        $this->gwa = htmlspecialchars(strip_tags($data['previous_gwa']));
-        $this->course_taken = htmlspecialchars(strip_tags($data['previous_course'] ?? ''));
-        $this->incoming_grade = htmlspecialchars(strip_tags($data['incoming_grade']));
-        $this->year_level = htmlspecialchars(strip_tags($data['year_level']));
-        $this->school = htmlspecialchars(strip_tags($data['present_school']));
-        $this->new_school_location = htmlspecialchars(strip_tags($data['present_location']));
-        $this->first_course = htmlspecialchars(strip_tags($data['present_course1'] ?? ''));
-        $this->second_course = htmlspecialchars(strip_tags($data['present_course2'] ?? ''));
+        $this->selected_school_id = strip_tags($data['selected_school_id']);
+        $this->last_school_attended = strip_tags($data['previous_school']);
+        $this->last_school_location = strip_tags($data['previous_location']);
+        $this->honor_award = strip_tags($data['previous_honor'] ?? '');
+        $this->gwa = strip_tags($data['previous_gwa']);
+        $this->course_taken = strip_tags($data['previous_course'] ?? '');
+        $this->incoming_grade = strip_tags($data['incoming_grade']);
+        $this->year_level = strip_tags($data['year_level']);
+        $this->school = strip_tags($data['present_school']);
+        $this->new_school_location = strip_tags($data['present_location']);
+        $this->first_course = strip_tags($data['present_course1'] ?? '');
+        $this->second_course = strip_tags($data['present_course2'] ?? '');
 
         // Bind values
         $stmt->bindParam(':id', $id);
@@ -203,13 +203,13 @@ class EducationModel
         $query =
             'UPDATE ' .
             $this->table_name .
-            " SET present_school = :present_school, present_course1 = :present_course1 WHERE application_id = :id";
+            ' SET present_school = :present_school, present_course1 = :present_course1 WHERE application_id = :id';
 
         $stmt = $this->pdo->prepare($query);
 
-        $scholar_id = htmlspecialchars(strip_tags($data['scholar_id']));
-        $this->school = htmlspecialchars(strip_tags($data['university']));
-        $this->first_course = htmlspecialchars(strip_tags($data['course'] ?? ''));
+        $scholar_id = strip_tags($data['scholar_id']);
+        $this->school = strip_tags($data['university']);
+        $this->first_course = strip_tags($data['course'] ?? '');
 
         // Bind values
         $stmt->bindParam(':id', $scholar_id, \PDO::PARAM_INT);

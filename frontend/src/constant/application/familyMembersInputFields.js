@@ -4,12 +4,13 @@ const familyMembersInputFields = [
         name: "name",
         type: "text",
         placeholder: "Enter name",
+        validate: "lettersOnly",
     },
     {
         label: "Relationship",
         name: "relationship",
         type: "select",
-        options: ["", "Father", "Mother", "Brother", "Sister", "Other"],
+        options: ["", "Brother", "Sister", "Other"],
         placeholder: "Relationship",
     },
     {
@@ -37,12 +38,14 @@ const familyMembersInputFields = [
         name: "education_occupation",
         type: "text",
         placeholder: "Enter details",
+        validate: "lettersOnly",
     },
     {
         label: "Monthly Income",
         name: "monthly_income",
-        type: "text",
+        type: "number",
         placeholder: "Enter amount",
+        validate: "numbersOnly",
     },
     {
         label: "Living with Family",

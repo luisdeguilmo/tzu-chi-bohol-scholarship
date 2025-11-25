@@ -1,6 +1,7 @@
 import { useState, useEffect, use } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import BASE_URL from "../config";
 
 export const useStrands = () => {
     const [strands, setStrands] = useState([]);
@@ -11,7 +12,7 @@ export const useStrands = () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/app/views/strands.php`
+                `${BASE_URL}app/views/strands.php`
             );
             // Decode HTML entities in the data when it's received
             const decodedStrands =
@@ -53,7 +54,7 @@ export const useStrands = () => {
 
             // Send the PUT request with the data in the body
             const response = await fetch(
-                `http://localhost:8000/app/views/strands.php`,
+                `${BASE_URL}app/views/strands.php`,
                 {
                     method: "PUT",
                     headers: {
@@ -96,7 +97,7 @@ export const useStrands = () => {
         try {
             // Make the API call to delete
             await axios.delete(
-                `http://localhost:8000/app/views/strands.php?id=${id}`
+                `${BASE_URL}app/views/strands.php?id=${id}`
             );
 
             // Update local state after successful deletion

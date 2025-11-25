@@ -196,15 +196,15 @@ export default function Applications() {
                                 key={info.application_id}
                                 className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50 `}
                             >
-                                <td className="py-1 whitespace-nowrap text-gray-600">
+                                <td className="py-2 whitespace-nowrap text-gray-600">
                                     {info.application_id}
                                 </td>
                                 {activeTab === "old" && (
-                                    <td className="py-1 whitespace-nowrap text-gray-600 font-bold">
+                                    <td className="py-2 whitespace-nowrap text-gray-600 font-bold">
                                         {info.scholar_id}
                                     </td>
                                 )}
-                                <td className="py-1 flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                <td className="py-2 flex justify-start whitespace-nowrap text-sm text-gray-700">
                                     <div className="w-[30%]"></div>
                                     <div className="w-[max-content] flex items-center text-left gap-2">
                                         <img
@@ -232,10 +232,10 @@ export default function Applications() {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="py-1 whitespace-nowrap text-gray-500">
+                                <td className="py-2 whitespace-nowrap text-gray-500">
                                     {formatDateTime(info.created_at)}
                                 </td>
-                                <td className="py-1 whitespace-nowrap text-right font-medium">
+                                <td className="py-2 whitespace-nowrap text-right font-medium">
                                     <div className="flex items-center justify-center">
                                         <button
                                             onClick={() =>

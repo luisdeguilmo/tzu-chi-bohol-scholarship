@@ -56,14 +56,18 @@ const StaffAccount = ({ staffId = false, isModal = false }) => {
                                             alt="Profile"
                                             className="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-gray-100 shadow-sm object-cover"
                                         />
-                                        <button
-                                            onClick={() => {
-                                                setIsOpenProfileUpload(true);
-                                            }}
-                                            className="absolute bottom-0 right-0 p-1 rounded-full bg-white border border-gray-200 hover:bg-gray-100 transition-colors"
-                                        >
-                                            <Camera className="w-4 h-4 text-gray-800" />
-                                        </button>
+                                        {user.type === "staff" && (
+                                            <button
+                                                onClick={() => {
+                                                    setIsOpenProfileUpload(
+                                                        true
+                                                    );
+                                                }}
+                                                className="absolute bottom-0 right-0 p-1 rounded-full bg-white border border-gray-200 hover:bg-gray-100 transition-colors"
+                                            >
+                                                <Camera className="w-4 h-4 text-gray-800" />
+                                            </button>
+                                        )}
                                     </div>
                                 ) : (
                                     <div className="relative w-20 h-20 md:w-24 md:h-24 mr-1 rounded-full text-white text-3xl bg-black flex justify-center items-center">

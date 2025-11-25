@@ -25,7 +25,10 @@ const ReviewedApplications = () => {
         applications,
         "profile-picture"
     );
-    const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
+    const { viewPdf, downloadPdf } = usePdfActions(
+        activeTab,
+        fetchApplicantData
+    );
 
     useEffect(() => {
         fetchAllPics();
@@ -172,14 +175,22 @@ const ReviewedApplications = () => {
                             </td>
                             <td className="py-2 whitespace-nowrap font-medium">
                                 <button
-                                    onClick={() => viewPdf(info.application_id)}
+                                    onClick={() =>
+                                        viewPdf({
+                                            applicationId: info.application_id,
+                                            scholarId: null,
+                                        })
+                                    }
                                     className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                                 >
                                     <Eye className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={() =>
-                                        downloadPdf(info.application_id)
+                                        downloadPdf({
+                                            applicationId: info.application_id,
+                                            scholarId: null,
+                                        })
                                     }
                                     className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
                                 >
@@ -199,7 +210,6 @@ const ReviewedApplications = () => {
             {/* Pagination */}
             {filteredApplications.length > 0 && (
                 <div className="flex justify-between items-center mt-6">
-                    
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

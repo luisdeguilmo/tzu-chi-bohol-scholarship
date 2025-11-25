@@ -1,4 +1,5 @@
 import axios from "axios";
+import BASE_URL from "../config";
 
 export const getProfilePicture = async (applicationId) => {
     try {
@@ -9,7 +10,7 @@ export const getProfilePicture = async (applicationId) => {
 
         // Use your existing profile picture endpoint
         const response = await axios.get(
-            `http://localhost:8000/backend/api/applications/${applicationId}/2x2-picture`
+            `${BASE_URL}backend/api/applications/${applicationId}/2x2-picture`
         );
 
         console.log("Profile picture endpoint response:", response.data);

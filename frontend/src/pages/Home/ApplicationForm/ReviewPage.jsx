@@ -105,100 +105,105 @@ const FamilyInformation = ({
             {/* <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
                 Family Member
             </h4> */}
-            <h2 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-[10px] md:text-xs">
-                Family Member
-            </h2>
+            {family_members.length > 0 && (
+                <>
+                    <h2 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-[10px] md:text-xs">
+                        Siblings
+                    </h2>
 
-            <div className="space-y-4">
-                {sortedFamily.length > 0 ? (
-                    sortedFamily.map((member, index) => (
-                        <div
-                            key={index}
-                            className="border border-gray-200 rounded-md p-4 bg-white shadow-sm"
-                        >
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
-                                <p>
-                                    <span className="text-gray-600">Name:</span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.name}
-                                    </span>
-                                </p>
+                    <div className="space-y-4">
+                        {sortedFamily.length > 0 ? (
+                            sortedFamily.map((member, index) => (
+                                <div
+                                    key={index}
+                                    className="border border-gray-200 rounded-md p-4 bg-white shadow-sm"
+                                >
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Name:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {member.name}
+                                            </span>
+                                        </p>
 
-                                <p>
-                                    <span className="text-gray-600">
-                                        Relationship:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.relationship}
-                                    </span>
-                                </p>
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Relationship:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {member.relationship}
+                                            </span>
+                                        </p>
 
-                                <p>
-                                    <span className="text-gray-600">Age:</span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.age}
-                                    </span>
-                                </p>
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Age:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {member.age}
+                                            </span>
+                                        </p>
 
-                                <p>
-                                    <span className="text-gray-600">
-                                        Gender:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.gender}
-                                    </span>
-                                </p>
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Gender:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {member.gender}
+                                            </span>
+                                        </p>
 
-                                <p>
-                                    <span className="text-gray-600">
-                                        Civil Status:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.civil_status}
-                                    </span>
-                                </p>
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Civil Status:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {member.civil_status}
+                                            </span>
+                                        </p>
 
-                                <p>
-                                    <span className="text-gray-600">
-                                        Living with Family:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.living_with_family}
-                                    </span>
-                                </p>
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Living with Family:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {member.living_with_family}
+                                            </span>
+                                        </p>
 
-                                <p className="md:col-span-2">
-                                    <span className="text-gray-600">
-                                        Education/Job:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.education_occupation}
-                                    </span>
-                                </p>
+                                        <p className="md:col-span-2">
+                                            <span className="text-gray-600">
+                                                Education/Job:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {member.education_occupation}
+                                            </span>
+                                        </p>
 
-                                <p>
-                                    <span className="text-gray-600">
-                                        Income:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.monthly_income}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-xs text-gray-500">
-                        No family members added yet.
-                    </p>
-                )}
-            </div>
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Income:
+                                            </span>{" "}
+                                            <span className="text-gray-800">
+                                                {member.monthly_income}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-xs text-gray-500">
+                                No / Not applicable
+                            </p>
+                        )}
+                    </div>
+                </>
+            )}
 
             {scholars.length > 0 && (
                 <>
-                    {/* <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
-                        Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
-                    </h4> */}
                     <h4 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
                         Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
                     </h4>
@@ -338,11 +343,11 @@ const OtherInformation = ({ expectation, character_reference }) => {
             {/* <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
                 Other Information
             </h3> */}
-            <h3 className="mt-16 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+            <h3 className="mt-12 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
                 Other Information
             </h3>
             <div>
-                <p className="text-xs text-gray-700">Expectation</p>
+                <p className="text-xs text-gray-500">Expectation</p>
                 <p className="text-sm mt-1 text-gray-800">{expectation}</p>
             </div>
 

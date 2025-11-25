@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import characterReferenceInputFields from "../../../constant/application/characterReferenceInputFields";
 import { Plus, TrashIcon } from "lucide-react";
+import {
+    lettersNumbers,
+    lettersOnly,
+    numbersOnly,
+} from "../../../utils/inputValidations";
 
 const CharacterReferenceForm = ({ formData, updateFormData }) => {
     // Initialize state from formData or use empty arrays if not present
@@ -28,12 +33,10 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
         updateData();
     }, [updateData]);
 
-    // Rest of the component remains the same...
-    // Handle input changes
-    const handleChange = (e) => {
+    const handleChange = (name, value) => {
         setNewCharacter({
             ...newCharacter,
-            [e.target.name]: e.target.value,
+            [name]: value,
         });
     };
 
@@ -58,6 +61,12 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
         setCharacterReference(updatedCharacterReference);
     };
 
+    const validators = {
+        lettersOnly,
+        numbersOnly,
+        lettersNumbers,
+    };
+
     return (
         <div>
             <h2 className="mt-12 mb-12 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
@@ -78,7 +87,16 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
                                 type={input.type}
                                 name={input.name}
                                 value={newCharacter[input.name]}
-                                onChange={handleChange}
+                                onChange={(e) => {
+                                    let value = e.target.value;
+
+                                    if (input.validate) {
+                                        value =
+                                            validators[input.validate](value);
+                                    }
+
+                                    handleChange(input.name, value);
+                                }}
                                 placeholder={input.placeholder}
                                 className="w-full border text-xs text-gray-700 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
@@ -100,60 +118,6 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
                     Add Character
                 </button>
             </div>
-            {/* Display Scholars in a Table */}
-            {/* <div className="overflow-y-auto">
-                {character_reference.length > 0 && (
-                    <table className="w-full mb-6 lg:w-[100%] min-w-[1000px]">
-                        <thead>
-                            <tr className="p-2 bg-gray-50 text-xs font-normal text-slate-800">
-                                {[
-                                    "Name",
-                                    "Address",
-                                    "Company",
-                                    "Position",
-                                    "Contact #",
-                                    "Action",
-                                ].map((header) => (
-                                    <th
-                                        key={header}
-                                        className="py-4 font-semibold text-xs"
-                                    >
-                                        {header}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {character_reference.map((character, index) => (
-                                <tr
-                                    key={index}
-                                    className="text-center text-xs border-y border-gray-200 text-gray-500"
-                                >
-                                    <td className="py-5">{character.name}</td>
-                                    <td className="p-2">{character.address}</td>
-                                    <td className="p-2">{character.company}</td>
-                                    <td className="p-2">
-                                        {character.position}
-                                    </td>
-                                    <td className="p-2">
-                                        {character.contact_number}
-                                    </td>
-                                    <td className="p-2">
-                                        <button
-                                            onClick={() =>
-                                                removeCharacter(index)
-                                            }
-                                            className="text-red-600 hover:text-red-700"
-                                        >
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
-            </div> */}
 
             <div className="space-y-4">
                 {character_reference.length > 0 ? (

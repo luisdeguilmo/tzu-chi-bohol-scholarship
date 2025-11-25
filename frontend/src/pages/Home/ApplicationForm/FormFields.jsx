@@ -3,6 +3,12 @@ import formConfig from "../../../constant/application/formConfig";
 import FORM_SECTIONS from "../../../constant/application/formSections";
 import { useCollegesUniversities } from "../../../hooks/useCollegesUniversities";
 import { useCoursesAccepted } from "../../../hooks/useCoursesAccepted";
+import { calculateAge } from "../../../utils/calculateAge";
+import {
+    lettersOnly,
+    lettersNumbers,
+    numbersOnly,
+} from "../../../utils/inputValidations";
 
 const FormFields = ({
     fields,
@@ -110,6 +116,13 @@ const FormFields = ({
             ...coursesAcceptedArr,
         ];
     }, [collegesAndUniversitiesArray, coursesAcceptedArr]);
+
+    const validators = {
+        lettersOnly,
+        numbersOnly,
+        lettersNumbers,
+    };
+
     return (
         <>
             {section === FORM_SECTIONS.EDUCATION ? (
@@ -127,9 +140,22 @@ const FormFields = ({
                                     type={field.type}
                                     name={field.name}
                                     value={formData[inputSection][field.name]}
-                                    onChange={(e) =>
-                                        handleInputChange(inputSection, e)
-                                    }
+                                    onChange={(e) => {
+                                        let value = e.target.value;
+
+                                        if (field.validate) {
+                                            value =
+                                                validators[field.validate](
+                                                    value
+                                                );
+                                        }
+
+                                        handleInputChange(
+                                            inputSection,
+                                            field.name,
+                                            value
+                                        );
+                                    }}
                                     placeholder={`${field.placeholder}`}
                                     // className={`w-full outline-none border-b-[2px] ${
                                     //     errors && errors[field.name]
@@ -174,7 +200,11 @@ const FormFields = ({
                                                 formData[section][field.name]
                                             }
                                             onChange={(e) => {
-                                                handleInputChange(section, e);
+                                                handleInputChange(
+                                                    inputSection,
+                                                    field.name,
+                                                    e.target.value
+                                                );
 
                                                 if (
                                                     field.name ===
@@ -277,12 +307,22 @@ const FormFields = ({
                                                     field.name
                                                 ]
                                             }
-                                            onChange={(e) =>
+                                            onChange={(e) => {
+                                                let value = e.target.value;
+
+                                                if (field.validate) {
+                                                    value =
+                                                        validators[
+                                                            field.validate
+                                                        ](value);
+                                                }
+
                                                 handleInputChange(
                                                     inputSection,
-                                                    e
-                                                )
-                                            }
+                                                    field.name,
+                                                    value
+                                                );
+                                            }}
                                             placeholder={`${field.placeholder}`}
                                             // className={`w-full outline-none border-b-[2px] ${
                                             //     errors && errors[field.name]
@@ -323,7 +363,11 @@ const FormFields = ({
                                         name={field.name}
                                         value={formData[section][field.name]}
                                         onChange={(e) =>
-                                            handleInputChange(section, e)
+                                            handleInputChange(
+                                                inputSection,
+                                                field.name,
+                                                e.target.value
+                                            )
                                         }
                                         // className={`w-full outline-none border-b-[2px] ${
                                         //     errors && errors[field.name]
@@ -365,7 +409,11 @@ const FormFields = ({
                                             formData[inputSection][field.name]
                                         }
                                         onChange={(e) =>
-                                            handleInputChange(inputSection, e)
+                                            handleInputChange(
+                                                inputSection,
+                                                field.name,
+                                                e.target.value
+                                            )
                                         }
                                         placeholder={`${field.placeholder}`}
                                         className="w-full resize-none border text-xs text-slate-700 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
@@ -388,17 +436,43 @@ const FormFields = ({
                                         type={field.type}
                                         name={field.name}
                                         value={
-                                            formData[inputSection][field.name]
+                                            field.name === "age"
+                                                ? (formData.personal_information
+                                                      .birthdate !== null &&
+                                                      calculateAge(
+                                                          formData
+                                                              .personal_information
+                                                              .birthdate
+                                                      )) ||
+                                                  formData[inputSection][
+                                                      field.name
+                                                  ]
+                                                : formData[inputSection][
+                                                      field.name
+                                                  ]
                                         }
-                                        onChange={(e) =>
-                                            handleInputChange(inputSection, e)
+                                        onChange={(e) => {
+                                            let value = e.target.value;
+
+                                            if (field.validate) {
+                                                value =
+                                                    validators[field.validate](
+                                                        value
+                                                    );
+                                            }
+
+                                            handleInputChange(
+                                                inputSection,
+                                                field.name,
+                                                value
+                                            );
+                                        }}
+                                        autoCapitalize={
+                                            field.type === "text" && "on"
                                         }
+                                        min={field.name === "age" && 1}
+                                        max={field.name === "age" && 100}
                                         placeholder={`${field.placeholder}`}
-                                        // className={`w-full outline-none border-b-[2px] ${
-                                        //     errors && errors[field.name]
-                                        //         ? "border-red-500"
-                                        //         : "border-gray-400"
-                                        // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
                                         className="w-full border text-xs text-slate-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required
                                     />

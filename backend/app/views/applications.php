@@ -1,8 +1,8 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
+$allowedMethods = ['GET', 'POST', 'OPTIONS'];
+$allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With'];
 
-require_once __DIR__ . "/../controllers/ApplicationsController.php";
+require_once __DIR__ . '/../../config/bootstrap.php';
+require_once __DIR__ . '/../controllers/ApplicationsController.php';
 ?>

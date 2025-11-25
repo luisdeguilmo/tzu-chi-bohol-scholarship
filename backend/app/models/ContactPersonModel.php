@@ -39,18 +39,12 @@ class ContactPersonModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->emergency_contact_name = htmlspecialchars(
-            strip_tags($data['emergency_contact_name'] ?? ''),
+        $this->emergency_contact_name = strip_tags($data['emergency_contact_name'] ?? '');
+        $this->emergency_contact_relationship = strip_tags(
+            $data['emergency_contact_relationship'] ?? '',
         );
-        $this->emergency_contact_relationship = htmlspecialchars(
-            strip_tags($data['emergency_contact_relationship'] ?? ''),
-        );
-        $this->emergency_contact_address = htmlspecialchars(
-            strip_tags($data['emergency_contact_address'] ?? ''),
-        );
-        $this->emergency_contact_number = htmlspecialchars(
-            strip_tags($data['emergency_contact_number'] ?? ''),
-        );
+        $this->emergency_contact_address = strip_tags($data['emergency_contact_address'] ?? '');
+        $this->emergency_contact_number = strip_tags($data['emergency_contact_number'] ?? '');
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -79,18 +73,12 @@ class ContactPersonModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->emergency_contact_name = htmlspecialchars(
-            strip_tags($data['emergency_contact_name'] ?? ''),
+        $this->emergency_contact_name = strip_tags($data['emergency_contact_name'] ?? '');
+        $this->emergency_contact_relationship = strip_tags(
+            $data['emergency_contact_relationship'] ?? '',
         );
-        $this->emergency_contact_relationship = htmlspecialchars(
-            strip_tags($data['emergency_contact_relationship'] ?? ''),
-        );
-        $this->emergency_contact_address = htmlspecialchars(
-            strip_tags($data['emergency_contact_address'] ?? ''),
-        );
-        $this->emergency_contact_number = htmlspecialchars(
-            strip_tags($data['emergency_contact_number'] ?? ''),
-        );
+        $this->emergency_contact_address = strip_tags($data['emergency_contact_address'] ?? '');
+        $this->emergency_contact_number = strip_tags($data['emergency_contact_number'] ?? '');
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -119,18 +107,12 @@ class ContactPersonModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->emergency_contact_name = htmlspecialchars(
-            strip_tags($data['emergency_contact_name'] ?? ''),
+        $this->emergency_contact_name = strip_tags($data['emergency_contact_name'] ?? '');
+        $this->emergency_contact_relationship = strip_tags(
+            $data['emergency_contact_relationship'] ?? '',
         );
-        $this->emergency_contact_relationship = htmlspecialchars(
-            strip_tags($data['emergency_contact_relationship'] ?? ''),
-        );
-        $this->emergency_contact_address = htmlspecialchars(
-            strip_tags($data['emergency_contact_address'] ?? ''),
-        );
-        $this->emergency_contact_number = htmlspecialchars(
-            strip_tags($data['emergency_contact_number'] ?? ''),
-        );
+        $this->emergency_contact_address = strip_tags($data['emergency_contact_address'] ?? '');
+        $this->emergency_contact_number = strip_tags($data['emergency_contact_number'] ?? '');
 
         // Bind values
         $stmt->bindParam(':id', $id);

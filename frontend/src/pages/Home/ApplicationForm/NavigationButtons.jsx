@@ -37,10 +37,14 @@ const NavigationButtons = ({
     section,
     isFirstFormApplicable = false,
     isSecondFormApplicable = false,
+    isThirdFormApplicable = false,
 }) => {
     const { user } = useAuth();
-    const { isTzuChiSiblingsApplicable, isOtherAssistanceApplicable } =
-        useApplicationForm();
+    const {
+        isSiblingsApplicable,
+        isTzuChiSiblingsApplicable,
+        isOtherAssistanceApplicable,
+    } = useApplicationForm();
 
     const { isEmailExist, refetch } = useCheckEmail(
         formData?.personal_information.email,
@@ -113,10 +117,8 @@ const NavigationButtons = ({
         }
 
         if (section === "Family") {
-            if (formData.family_members.length === 0) {
-                toast.error("Please fill in all required fields");
-
-                // You could also highlight the fields with errors here if needed
+            if (isSiblingsApplicable === null) {
+                toast.error("Please select whether you have siblings.");
                 return;
             }
         }
@@ -139,6 +141,17 @@ const NavigationButtons = ({
             }
         }
 
+        // Siblings
+        if (section === "Family") {
+            if (isThirdFormApplicable && formData.family_members.length === 0) {
+                toast.error(
+                    "Please provide information for all your siblings."
+                );
+                return;
+            }
+        }
+
+        // Sibling who enjoyed/enjoying
         if (section === "Family") {
             if (
                 isFirstFormApplicable &&
@@ -151,6 +164,7 @@ const NavigationButtons = ({
             }
         }
 
+        // Other assistance received
         if (section === "Family") {
             if (
                 isSecondFormApplicable &&

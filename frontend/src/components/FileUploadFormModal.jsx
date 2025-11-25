@@ -14,7 +14,7 @@ function FileUploadFormModal({
     isLoading,
     onRefresh,
 }) {
-    const URL = `${BASE_URL}public/`;
+    const BASE_PUBLIC_URL = `${BASE_URL}public/`;
 
     const [files, setFiles] = useState([]);
     const [filePreviews, setFilePreviews] = useState([]);
@@ -48,6 +48,7 @@ function FileUploadFormModal({
 
     const handleFileSelect = (event) => {
         const selectedFiles = Array.from(event.target.files);
+        console.log(selectedFiles);
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
 
         const newPreviews = selectedFiles.map((file) => ({
@@ -64,6 +65,8 @@ function FileUploadFormModal({
         }));
 
         setFilePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+
+        console.log(newPreviews);
     };
 
     const handleAddFileClick = () => {
@@ -256,6 +259,8 @@ function FileUploadFormModal({
         }
     };
 
+    console.log(filePreviews);
+
     return (
         <InputModal
             label={label}
@@ -357,7 +362,7 @@ function FileUploadFormModal({
                                                     filePreview.file_type
                                                 ) && (
                                                     <img
-                                                        src={`${URL}/${filePreview.file_path}`}
+                                                        src={`${BASE_PUBLIC_URL}/${filePreview.file_path}`}
                                                         alt={
                                                             filePreview.file_name
                                                         }
@@ -381,7 +386,7 @@ function FileUploadFormModal({
                                                     type="button"
                                                     onClick={() =>
                                                         window.open(
-                                                            URL +
+                                                            BASE_PUBLIC_URL +
                                                                 filePreview.file_path,
                                                             "_blank"
                                                         )

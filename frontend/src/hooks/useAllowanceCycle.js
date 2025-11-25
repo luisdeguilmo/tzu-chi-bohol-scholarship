@@ -36,40 +36,6 @@ export const useAllowanceCycle = () => {
         }
     };
 
-    const startNewCycle = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.post(
-                `${BASE_URL}app/views/allowance-cycles.php`,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            const data = response.data;
-
-            if (data.success) {
-                toast.success("New Cycle Started Successfully");
-                setLoading(false);
-                return true;
-            } else {
-                toast.error("A cycle has already been started for this month.");
-                setLoading(false);
-                return false;
-            }
-
-            setLoading(false);
-            return false;
-        } catch (error) {
-            console.log("Error: ", error);
-            alert("Failed: ", error);
-            setLoading(false);
-            return false;
-        }
-    };
-
     useEffect(() => {
         fetchStatus();
     }, []);
@@ -78,6 +44,5 @@ export const useAllowanceCycle = () => {
         loading,
         isProcessed,
         fetchStatus,
-        startNewCycle,
     };
 };

@@ -30,6 +30,8 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
         }));
 
         setFilePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+
+        console.log(filePreviews);
     };
 
     const handleAddFileClick = () => {
@@ -193,6 +195,8 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
         }
     };
 
+    console.log(filePreviews);
+
     return (
         <InputModal
             label={"Submit COE and Grades"}
@@ -253,7 +257,7 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
                             ref={fileInputRef}
                             onChange={handleFileSelect}
                             multiple
-                            accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
+                            accept=".jpeg,.jpg,.png"
                             style={{ display: "none" }}
                         />
                         <button

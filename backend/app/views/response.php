@@ -3,10 +3,10 @@
 require_once __DIR__ . '/../controllers/ApplicationController.php';
 
 use App\Controllers\ApplicationController;
+$allowedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'];
+$allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With'];
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+require_once __DIR__ . '/../../config/bootstrap.php';
 header('Content-Type: application/json');
 
 // Handle preflight OPTIONS request
@@ -21,20 +21,7 @@ $uri = explode('/', $uri);
 
 $controller = new ApplicationController();
 
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     $controller->createApplication();
-//     exit();
-// }
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Handle convert-image endpoint
-    // Expected URL: /backend/api/convert-image
-    // if (count($uri) >= 4 && $uri[3] === 'convert-image') {
-    //     // Instead of including a separate file, handle the logic here
-    //     handleImageConversion();
-    //     exit();
-    // }
-
     // Keep basic profile picture endpoint for other uses
     // Expected URL: /backend/api/applications/{applicationId}/profile-picture
     if (count($uri) >= 6 && $uri[5] === 'profile-picture') {

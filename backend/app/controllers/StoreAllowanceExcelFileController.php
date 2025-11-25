@@ -4,18 +4,10 @@ require_once __DIR__ . '/../../config/Database.php';
 
 date_default_timezone_set('Asia/Manila');
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-// header('Content-Type: application/json');
-
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Models\AllowanceCycleModel;
-use App\Models\ScholarsModel;
-use App\Services\AllowanceService;
 use Config\Database;
-use DateTime;
 
 class StoreAllowanceExcelFileController
 {
@@ -127,92 +119,6 @@ class StoreAllowanceExcelFileController
             ]);
         }
     }
-
-    // private function handlePost()
-    // {
-    //     try {
-    //         // Validate file upload first (before starting transaction)
-    //         if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
-    //             http_response_code(400);
-    //             echo json_encode([
-    //                 'success' => false,
-    //                 'message' => 'No file uploaded or upload error occurred',
-    //             ]);
-    //             return;
-    //         }
-
-    //         $file = $_FILES['file'];
-    //         $fileName = isset($_POST['file_name']) ? $_POST['file_name'] : $file['name'];
-    //         $total = isset($_POST['grand_total']) ?? null;
-
-    //         // Validate file type
-    //         $allowedTypes = [
-    //             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    //             'application/vnd.ms-excel',
-    //         ];
-
-    //         if (!in_array($file['type'], $allowedTypes)) {
-    //             http_response_code(400);
-    //             echo json_encode([
-    //                 'success' => false,
-    //                 'message' => 'Invalid file type. Only Excel files are allowed.',
-    //             ]);
-    //             return;
-    //         }
-
-    //         // Validate file size (max 16MB)
-    //         $maxSize = 16 * 1024 * 1024;
-    //         if ($file['size'] > $maxSize) {
-    //             http_response_code(400);
-    //             echo json_encode([
-    //                 'success' => false,
-    //                 'message' => 'File size exceeds maximum limit of 16MB',
-    //             ]);
-    //             return;
-    //         }
-
-    //         // Read file data
-    //         $fileData = file_get_contents($file['tmp_name']);
-
-    //         if ($fileData === false) {
-    //             http_response_code(500);
-    //             echo json_encode([
-    //                 'success' => false,
-    //                 'message' => 'Failed to read file data',
-    //             ]);
-    //             return;
-    //         }
-
-    //         // Now start transaction
-    //         $this->pdo->beginTransaction();
-
-    //         $allowanceCycleModel = new AllowanceCycleModel();
-
-    //         // Store to database
-    //         $allowanceCycleModel->storeTotalAmount($total);
-    //         $result = $allowanceCycleModel->storeExcelFile($fileName, $fileData);
-
-    //         if ($result['success']) {
-    //             $this->pdo->commit();
-    //             http_response_code(201);
-    //             echo json_encode($result);
-    //         } else {
-    //             $this->pdo->rollBack();
-    //             http_response_code(500);
-    //             echo json_encode($result);
-    //         }
-    //     } catch (\Exception $e) {
-    //         if ($this->pdo->inTransaction()) {
-    //             $this->pdo->rollBack();
-    //         }
-
-    //         http_response_code(500);
-    //         echo json_encode([
-    //             'success' => false,
-    //             'message' => $e->getMessage(),
-    //         ]);
-    //     }
-    // }
 
     private function handlePost()
     {

@@ -14,12 +14,14 @@ const FamilySection = ({
     nextStep,
     // handleRenewSubmit,
     isLast,
+    isSiblingsExisted,
     isTzuChiSiblingsExisted,
     isOtherAssistanceExisted,
 }) => {
     const [errors, setErrors] = useState({});
     const [isFirstFormApplicable, setIsFirstFormApplicable] = useState(false);
     const [isSecondFormApplicable, setIsSecondFormApplicable] = useState(false);
+    const [isThirdFormApplicable, setIsThirdFormApplicable] = useState(false);
     // Function to update the family-related data in the main form state
     // Use useCallback to prevent this from being recreated on every render
     const updateFamilyData = useCallback(
@@ -73,6 +75,8 @@ const FamilySection = ({
                     updateFormData={updateFamilyData}
                     setIsFirstFormApplicable={setIsFirstFormApplicable}
                     setIsSecondFormApplicable={setIsSecondFormApplicable}
+                    setIsThirdFormApplicable={setIsThirdFormApplicable}
+                    isSiblingsExisted={isSiblingsExisted}
                     isTzuChiSiblingsExisted={isTzuChiSiblingsExisted}
                     isOtherAssistanceExisted={isOtherAssistanceExisted}
                 />
@@ -88,6 +92,7 @@ const FamilySection = ({
                 section={"Family"}
                 isFirstFormApplicable={isFirstFormApplicable}
                 isSecondFormApplicable={isSecondFormApplicable}
+                isThirdFormApplicable={isThirdFormApplicable}
                 // handleRenewSubmit={handleRenewSubmit}
                 sections={[FORM_SECTIONS.FAMILY, FORM_SECTIONS.CONTACT_PERSON]}
             />

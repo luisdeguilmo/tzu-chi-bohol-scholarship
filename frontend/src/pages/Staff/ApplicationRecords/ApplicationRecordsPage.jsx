@@ -437,7 +437,11 @@ export default function ApplicationRecordsPage() {
                                     </button>
                                     <button
                                         onClick={() =>
-                                            downloadPdf(info.application_id)
+                                            downloadPdf({
+                                                applicationId:
+                                                    info.application_id,
+                                                scholarId: info.scholar_id,
+                                            })
                                         }
                                         className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"
                                         title="Download PDF"

@@ -79,11 +79,11 @@ class ScholarModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->name = htmlspecialchars(strip_tags($scholar['name']));
-        $this->year_level = htmlspecialchars(strip_tags($scholar['year_level']));
-        $this->school = htmlspecialchars(strip_tags($scholar['school']));
-        $this->course = htmlspecialchars(strip_tags($scholar['course']));
-        $this->school_year = htmlspecialchars(strip_tags($scholar['school_year']));
+        $this->name = strip_tags($scholar['name']);
+        $this->year_level = strip_tags($scholar['year_level']);
+        $this->school = strip_tags($scholar['school']);
+        $this->course = strip_tags($scholar['course']);
+        $this->school_year = strip_tags($scholar['school_year']);
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -114,11 +114,11 @@ class ScholarModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->name = htmlspecialchars(strip_tags($scholar['name']));
-        $this->year_level = htmlspecialchars(strip_tags($scholar['year_level']));
-        $this->school = htmlspecialchars(strip_tags($scholar['school']));
-        $this->course = htmlspecialchars(strip_tags($scholar['course']));
-        $this->school_year = htmlspecialchars(strip_tags($scholar['school_year']));
+        $this->name = strip_tags($scholar['name']);
+        $this->year_level = strip_tags($scholar['year_level']);
+        $this->school = strip_tags($scholar['school']);
+        $this->course = strip_tags($scholar['course']);
+        $this->school_year = strip_tags($scholar['school_year']);
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -149,11 +149,11 @@ class ScholarModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->name = htmlspecialchars(strip_tags($scholar['name']));
-        $this->year_level = htmlspecialchars(strip_tags($scholar['year_level']));
-        $this->school = htmlspecialchars(strip_tags($scholar['school']));
-        $this->course = htmlspecialchars(strip_tags($scholar['course']));
-        $this->school_year = htmlspecialchars(strip_tags($scholar['school_year']));
+        $this->name = strip_tags($scholar['name']);
+        $this->year_level = strip_tags($scholar['year_level']);
+        $this->school = strip_tags($scholar['school']);
+        $this->course = strip_tags($scholar['course']);
+        $this->school_year = strip_tags($scholar['school_year']);
 
         // Bind values
         $stmt->bindParam(':id', $id);

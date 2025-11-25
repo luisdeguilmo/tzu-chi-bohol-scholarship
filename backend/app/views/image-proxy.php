@@ -1,13 +1,14 @@
 <?php
 // Set CORS headers
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+$allowedMethods = ['GET', 'OPTIONS'];
+$allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With'];
+
+require_once __DIR__ . '/../../config/bootstrap.php';
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
-    exit;
+    exit();
 }
 
 // Get the image path from the query parameter
@@ -16,8 +17,8 @@ $imagePath = $_GET['path'] ?? null;
 // Basic security check to prevent directory traversal
 if (!$imagePath || strpos($imagePath, '..') !== false) {
     http_response_code(400);
-    echo "Invalid path";
-    exit;
+    echo 'Invalid path';
+    exit();
 }
 
 // Convert relative path to absolute if needed
@@ -30,20 +31,20 @@ if (strpos($imagePath, '/') === 0) {
 }
 
 // Debug - log the path for troubleshooting
-error_log("Accessing file: " . $fullPath);
+error_log('Accessing file: ' . $fullPath);
 
 // Check if file exists
 if (!file_exists($fullPath)) {
     http_response_code(404);
-    echo "File not found: " . $fullPath;
-    exit;
+    echo 'File not found: ' . $fullPath;
+    exit();
 }
 
 // Check if file is readable
 if (!is_readable($fullPath)) {
     http_response_code(403);
-    echo "File not readable";
-    exit;
+    echo 'File not readable';
+    exit();
 }
 
 // Get file extension
@@ -79,13 +80,13 @@ if (strpos($detectedType, 'image/') === 0) {
 }
 
 // Set cache control to improve performance
-header("Cache-Control: public, max-age=86400");
+header('Cache-Control: public, max-age=86400');
 
 // Set the content type header
 header("Content-Type: {$contentType}");
-header("Content-Length: " . filesize($fullPath));
+header('Content-Length: ' . filesize($fullPath));
 
 // Output the file
 readfile($fullPath);
-exit;
+exit();
 ?>

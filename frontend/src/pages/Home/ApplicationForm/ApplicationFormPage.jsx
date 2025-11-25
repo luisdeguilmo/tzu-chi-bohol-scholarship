@@ -16,8 +16,6 @@ import OtherInformationSection from "./OtherInformationSection";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import { useAuth } from "../../../context/AuthContext";
 import { useApplicantInformation } from "../../../hooks/useApplicantInformation";
-import { useCoursesAccepted } from "../../../hooks/useCoursesAccepted";
-import { useDashboardOverviewData } from "../../../hooks/useDashboardOverviewData";
 import { useSidebar } from "../../../context/SidebarContext";
 
 const generateInitialState = (fieldsConfig) => {
@@ -93,11 +91,6 @@ function ApplicationForm({ includeRequirements = true }) {
         character_reference: [],
         uploaded_files: [],
     });
-
-    // const { coursesAccepted, fetchCoursesAccepted, resetCoursesAccepted } =
-    //     useCoursesAccepted(
-    //         applicantInformation?.educationalInfo?.present_school
-    //     );
 
     // Initialize personal information from API
     useEffect(() => {
@@ -241,13 +234,24 @@ function ApplicationForm({ includeRequirements = true }) {
     }, [applicantInformation]);
 
     // Generic handler for input changes
-    const handleInputChange = (section, e) => {
-        const { name, value } = e.target;
+    // const handleInputChange = (section, e) => {
+    //     const { name, value } = e.target;
+    //     setFormData((prevData) => ({
+    //         ...prevData,
+    //         [section]: {
+    //             ...prevData[section],
+    //             [name]: value,
+    //         },
+    //     }));
+    // };
+
+    const handleInputChange = (section, fieldName, value) => {
+        // const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
             [section]: {
                 ...prevData[section],
-                [name]: value,
+                [fieldName]: value,
             },
         }));
     };
@@ -311,7 +315,7 @@ function ApplicationForm({ includeRequirements = true }) {
             setTimeout(() => {
                 navigate("/scholar/dashboard");
             }, 1000);
-            setActiveTab("dashboard")
+            setActiveTab("dashboard");
         } catch (error) {
             console.log("Error: ", error);
             alert("Failed: ", error);
@@ -475,6 +479,9 @@ function ApplicationForm({ includeRequirements = true }) {
                         handleInputChange={handleInputChange}
                         prevStep={prevStep}
                         nextStep={nextStep}
+                        isSiblingsExisted={
+                            applicantInformation?.familyMembers?.length > 0
+                        }
                         isTzuChiSiblingsExisted={
                             applicantInformation?.tzuChiSiblings?.length > 0
                         }

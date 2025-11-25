@@ -1,9 +1,6 @@
 <?php
 namespace App\Controllers;
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -161,11 +158,6 @@ class ApplicationPeriodController
 
             // Process application period data
             $applicationPeriod = new ApplicationPeriodModel();
-
-            if (!$applicationPeriod->createApplicationPeriod($data['application'])) {
-                throw new \Exception('Failed to save application period information');
-            }
-
             $scholarsModel = new ScholarsModel();
             $scholarModel = new ScholarModel();
             $applicationModel = new ApplicationModel();
@@ -205,6 +197,10 @@ class ApplicationPeriodController
 
                 $applicationModel->setApplicationStatusAsNotRenewed();
                 $scholarsModel->resetLivingInfoAndTransportInfoSubmission();
+            }
+
+            if (!$applicationPeriod->createApplicationPeriod($data['application'])) {
+                throw new \Exception('Failed to save application period information');
             }
 
             $this->pdo->commit();

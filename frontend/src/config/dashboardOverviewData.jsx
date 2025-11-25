@@ -1,88 +1,19 @@
 import {
-    Award,
-    AwardIcon,
     Calendar,
-    Calendar1,
     CheckCircle,
-    ClipboardEdit,
     Clock,
     GraduationCap,
     HandHeart,
     HandHeartIcon,
-    Home,
     Hourglass,
     ScrollText,
     UserCog,
     Users,
     XCircle,
-    XCircleIcon,
 } from "lucide-react";
 import { formatDate } from "../utils/formatDate";
 
 export const dashboardOverviewData = (data) => {
-    // const staffOverviewData = [
-    //     {
-    //         title: "Applications Submitted",
-    //         status: data?.numberOfAllApplications ?? 0,
-    //         color: "bg-green-300 text-gray-900",
-    //         icon: <ScrollText className="w-5 h-5 text-slate-600" />,
-    //     },
-    //     {
-    //         title: "New Applicants",
-    //         status: data?.numberOfNewApplications ?? 0,
-    //         color: "bg-yellow-300 text-gray-900",
-    //         icon: <Users className="w-5 h-5 text-slate-600" />,
-    //     },
-    //     {
-    //         title: "Renewal Applicants",
-    //         status: data?.numberOfOldApplications ?? 0,
-    //         color: "bg-blue-300 text-gray-900",
-    //         icon: <Users className="w-5 h-5 text-slate-600" />,
-    //     },
-    //     {
-    //         title: "Approved Applications",
-    //         status: data?.numberOfApprovedApplications ?? 0,
-    //         color: "bg-orange-300 text-gray-900",
-    //         icon: <CheckCircle className="w-5 h-5 text-slate-600" />,
-    //     },
-    //     {
-    //         title: "Rejected Applications",
-    //         status: data?.numberOfRejectedApplications ?? 0,
-    //         color: "bg-orange-300 text-gray-900",
-    //         icon: <XCircleIcon className="w-5 h-5 text-slate-600" />,
-    //     },
-    //     {
-    //         title: "All Scholars",
-    //         status: data?.numberOfAllScholars ?? 0,
-    //         color: "bg-orange-300 text-gray-900",
-    //         icon: <Users className="w-5 h-5 text-slate-600" />,
-    //     },
-    //     {
-    //         title: "New Scholars",
-    //         status: data?.numberOfNewScholars ?? 0,
-    //         color: "bg-orange-300 text-gray-900",
-    //         icon: <Users className="w-5 h-5 text-slate-600" />,
-    //     },
-    //     {
-    //         title: "Old Scholars",
-    //         status: data?.numberOfOldScholars ?? 0,
-    //         color: "bg-orange-300 text-gray-900",
-    //         icon: <Users className="w-5 h-5 text-slate-600" />,
-    //     },
-    //     {
-    //         title: "Upcoming Events",
-    //         status: data?.numberOfUpcomingEvents ?? 0,
-    //         color: "bg-orange-300 text-gray-900",
-    //         icon: <Calendar1 className="w-5 h-5 text-slate-600" />,
-    //     },
-    //     {
-    //         title: "New Community Services",
-    //         status: data?.numberOfNewCommunityServices ?? 0,
-    //         color: "bg-orange-300 text-gray-900",
-    //         icon: <HandHeartIcon className="w-5 h-5 text-slate-600" />,
-    //     },
-    // ];
-
     const staffOverviewData = [
         {
             title: "Pending Applications",
@@ -105,49 +36,9 @@ export const dashboardOverviewData = (data) => {
             status: data?.numberOfActiveScholars ?? 0,
             color: "bg-orange-300 text-gray-900",
             icon: <Users className="w-5 h-5 text-slate-600" />,
-            navigate: "/staff/entrance-examination",
+            navigate: "/staff/scholars",
             sidebarTabName: "applications",
         },
-        // {
-        //     title: "Initial Interview",
-        //     status: data?.numberOfApplicantsForInitialInterview ?? 0,
-        //     color: "bg-orange-300 text-gray-900",
-        //     icon: <Users className="w-5 h-5 text-slate-600" />,
-        //     navigate: "/staff/initial-interview",
-        //     sidebarTabName: "applications",
-        // },
-        // {
-        //     title: "Home Visitation",
-        //     status: data?.numberOfApplicantsForHomeVisitation ?? 0,
-        //     color: "bg-orange-300 text-gray-900",
-        //     icon: <Home className="w-5 h-5 text-slate-600" />,
-        //     navigate: "/staff/home-visitation",
-        //     sidebarTabName: "applications",
-        // },
-        // {
-        //     title: "Final Interview",
-        //     status: data?.numberOfApplicantsForFinalInterview ?? 0,
-        //     color: "bg-orange-300 text-gray-900",
-        //     icon: <Users className="w-5 h-5 text-slate-600" />,
-        //     navigate: "/staff/final-interview",
-        //     sidebarTabName: "applications",
-        // },
-        // {
-        //     title: "Orientation",
-        //     status: data?.numberOfApplicantsForOrientation ?? 0,
-        //     color: "bg-orange-300 text-gray-900",
-        //     icon: <Users className="w-5 h-5 text-slate-600" />,
-        //     navigate: "/staff/orientation-awarding-attendance",
-        //     sidebarTabName: "applications",
-        // },
-        // {
-        //     title: "Awarding",
-        //     status: data?.numberOfApplicantsForAwarding ?? 0,
-        //     color: "bg-orange-300 text-gray-900",
-        //     icon: <AwardIcon className="w-5 h-5 text-slate-600" />,
-        //     navigate: "/staff/orientation-awarding-attendance",
-        //     sidebarTabName: "applications",
-        // },
         {
             title: "Pending Community Services",
             status: data?.numberOfNewCommunityServices ?? 0,
@@ -156,14 +47,6 @@ export const dashboardOverviewData = (data) => {
             navigate: "/staff/community-services",
             sidebarTabName: "events_duty",
         },
-        // {
-        //     title: "Upcoming Events",
-        //     status: data?.numberOfNewCommunityServices ?? 0,
-        //     color: "bg-orange-300 text-gray-900",
-        //     icon: <Calendar1 className="w-5 h-5 text-slate-600" />,
-        //     navigate: "/staff/events",
-        //     sidebarTabName: "events_duty",
-        // },
     ];
 
     const adminOverviewData = [

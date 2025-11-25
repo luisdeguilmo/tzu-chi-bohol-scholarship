@@ -324,6 +324,8 @@
 
 import FORM_SECTIONS from "../application/formSections";
 
+// lettersOnly, numbersOnly, lettersNumbers
+
 const formConfig = {
     [FORM_SECTIONS.APPLICATION]: [
         {
@@ -332,6 +334,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "e.g., 2024-2025",
+            validate: "numbersOnly",
         },
         // { name: "caseNo", label: "Case Number", type: "text", required: true },
     ],
@@ -342,6 +345,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter your last name",
+            validate: "lettersOnly",
         },
         {
             name: "first_name",
@@ -349,6 +353,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter your first name",
+            validate: "lettersOnly",
         },
         {
             name: "middle_name",
@@ -356,6 +361,7 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "Enter your middle name",
+            validate: "lettersOnly",
         },
         {
             name: "suffix",
@@ -395,6 +401,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter your birthplace",
+            validate: "lettersNumbers",
         },
         {
             name: "home_address",
@@ -402,6 +409,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter your home address",
+            validate: "lettersNumbers",
         },
         {
             name: "subdivision",
@@ -409,6 +417,7 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "Enter village/subdivision",
+            validate: "lettersOnly",
         },
         {
             name: "barangay",
@@ -416,6 +425,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter barangay",
+            validate: "lettersOnly",
         },
         {
             name: "city",
@@ -423,6 +433,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter city/municipality",
+            validate: "lettersOnly",
         },
         {
             name: "zip_code",
@@ -430,6 +441,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter zipcode",
+            validate: "numbersOnly",
         },
         {
             name: "contact_number",
@@ -437,6 +449,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "e.g., 09123456789",
+            validate: "numbersOnly",
         },
         {
             name: "secondary_contact",
@@ -444,6 +457,7 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "e.g., 09123456789",
+            validate: "numbersOnly",
         },
         {
             name: "religion",
@@ -451,6 +465,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter your religion",
+            validate: "lettersOnly",
         },
         {
             name: "civil_status",
@@ -458,6 +473,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "e.g., Single, Married",
+            validate: "lettersOnly",
         },
         {
             name: "facebook",
@@ -465,6 +481,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter your Facebook profile name",
+            validate: "lettersOnly",
         },
         {
             name: "email",
@@ -481,6 +498,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter name of school",
+            validate: "lettersOnly",
         },
         {
             name: "previous_location",
@@ -488,6 +506,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter school location",
+            validate: "lettersNumbers",
         },
         {
             name: "previous_honor",
@@ -495,6 +514,7 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "e.g., With Honors, High Honors",
+            validate: "lettersOnly",
         },
         {
             name: "previous_gwa",
@@ -502,13 +522,15 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter GWA",
+            validate: "numbersOnly",
         },
         {
             name: "previous_course",
             label: "Track",
             type: "text",
-            required: false,
+            required: true,
             placeholder: "e.g., STEM, ABM, HUMSS",
+            validate: "lettersOnly",
         },
         {
             name: "incoming_grade",
@@ -534,6 +556,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter school location",
+            validate: "lettersNumbers",
         },
         {
             name: "present_course1",
@@ -577,6 +600,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter father's full name",
+            validate: "lettersOnly",
         },
         {
             name: "father_age",
@@ -584,6 +608,7 @@ const formConfig = {
             type: "number",
             required: true,
             placeholder: "Enter age",
+
         },
         {
             name: "father_education",
@@ -591,6 +616,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "e.g., College Graduate, High School",
+            validate: "lettersOnly",
         },
         {
             name: "father_occupation",
@@ -598,6 +624,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter occupation",
+            validate: "lettersOnly",
         },
         {
             name: "father_income",
@@ -612,6 +639,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "e.g., 09123456789",
+            validate: "numbersOnly",
         },
         // Mother's information
         {
@@ -620,6 +648,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter mother's full name",
+            validate: "lettersOnly",
         },
         {
             name: "mother_age",
@@ -634,6 +663,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "e.g., College Graduate, High School",
+            validate: "lettersOnly",
         },
         {
             name: "mother_occupation",
@@ -641,6 +671,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter occupation",
+            validate: "lettersOnly",
         },
         {
             name: "mother_income",
@@ -655,6 +686,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "e.g., 09123456789",
+            validate: "numbersOnly",
         },
         // Guardian's information
         {
@@ -663,13 +695,15 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "Enter guardian's full name (if applicable)",
+            validate: "lettersOnly",
         },
         {
             name: "guardian_age",
             label: "Age",
-            type: "text",
+            type: "number",
             required: false,
             placeholder: "Enter age",
+            // validate: "numbersOnly",
         },
         {
             name: "guardian_education",
@@ -677,6 +711,7 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "e.g., College Graduate, High School",
+            validate: "lettersOnly",
         },
         {
             name: "guardian_occupation",
@@ -684,13 +719,15 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "Enter occupation",
+            validate: "lettersOnly",
         },
         {
             name: "guardian_income",
             label: "Monthly Income",
-            type: "text",
+            type: "number",
             required: false,
             placeholder: "Enter monthly income",
+            // validate: "numbersOnly",
         },
         {
             name: "guardian_contact",
@@ -698,6 +735,7 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "e.g., 09123456789",
+            validate: "numbersOnly",
         },
     ],
     [FORM_SECTIONS.CONTACT_PERSON]: [
@@ -707,6 +745,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter emergency contact name",
+            validate: "lettersOnly",
         },
         {
             name: "emergency_contact_relationship",
@@ -714,6 +753,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "e.g., Father, Mother, Sibling",
+            validate: "lettersOnly",
         },
         // Aunt, Uncle, Sibling
         {
@@ -722,6 +762,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter complete address",
+            validate: "lettersNumbers",
         },
         {
             name: "emergency_contact_number",
@@ -729,6 +770,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "e.g., 09123456789",
+            validate: "numbersOnly",
         },
     ],
     [FORM_SECTIONS.OTHER_INFORMATION]: [

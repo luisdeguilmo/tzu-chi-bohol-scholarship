@@ -1,9 +1,6 @@
 <?php
 namespace App\Controllers;
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -59,12 +56,6 @@ class ScholarVolunteerActivityController
             $sort = $_GET['sort'] ?? null;
 
             $activities = [];
-
-            // if ($tab === 'pending') {
-            //     $activities = $activity->getActivitiesByTab($tab, $year, $month);
-            // } else if ($tab === 'recorded') {
-            //     $activities = $activity->getActivitiesByTab($tab, $year, $month);
-            // }
 
             $activities = $activity->getActivitiesByTab($year, $month, $status, $sort);
 

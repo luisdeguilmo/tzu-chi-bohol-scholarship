@@ -67,32 +67,24 @@ class FamilyModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->father_name = htmlspecialchars(strip_tags($data['father_name']));
-        $this->father_age = htmlspecialchars(strip_tags($data['father_age']));
-        $this->father_edu_attainment = htmlspecialchars(strip_tags($data['father_education']));
-        $this->father_occupation = htmlspecialchars(strip_tags($data['father_occupation']));
-        $this->father_monthly_income = htmlspecialchars(strip_tags($data['father_income']));
-        $this->father_contact_number = htmlspecialchars(strip_tags($data['father_contact']));
-        $this->mother_name = htmlspecialchars(strip_tags($data['mother_name']));
-        $this->mother_age = htmlspecialchars(strip_tags($data['mother_age']));
-        $this->mother_edu_attainment = htmlspecialchars(strip_tags($data['mother_education']));
-        $this->mother_occupation = htmlspecialchars(strip_tags($data['mother_occupation']));
-        $this->mother_monthly_income = htmlspecialchars(strip_tags($data['mother_income']));
-        $this->mother_contact_number = htmlspecialchars(strip_tags($data['mother_contact']));
-        $this->guardian_name = htmlspecialchars(strip_tags($data['guardian_name'] ?? ''));
-        $this->guardian_age = htmlspecialchars(strip_tags($data['guardian_age'] ?? ''));
-        $this->guardian_edu_attainment = htmlspecialchars(
-            strip_tags($data['guardian_education'] ?? ''),
-        );
-        $this->guardian_occupation = htmlspecialchars(
-            strip_tags($data['guardian_occupation'] ?? ''),
-        );
-        $this->guardian_monthly_income = htmlspecialchars(
-            strip_tags($data['guardian_income'] ?? ''),
-        );
-        $this->guardian_contact_number = htmlspecialchars(
-            strip_tags($data['guardian_contact'] ?? ''),
-        );
+        $this->father_name = strip_tags($data['father_name']);
+        $this->father_age = strip_tags($data['father_age']);
+        $this->father_edu_attainment = strip_tags($data['father_education']);
+        $this->father_occupation = strip_tags($data['father_occupation']);
+        $this->father_monthly_income = strip_tags($data['father_income']);
+        $this->father_contact_number = strip_tags($data['father_contact']);
+        $this->mother_name = strip_tags($data['mother_name']);
+        $this->mother_age = strip_tags($data['mother_age']);
+        $this->mother_edu_attainment = strip_tags($data['mother_education']);
+        $this->mother_occupation = strip_tags($data['mother_occupation']);
+        $this->mother_monthly_income = strip_tags($data['mother_income']);
+        $this->mother_contact_number = strip_tags($data['mother_contact']);
+        $this->guardian_name = strip_tags($data['guardian_name'] ?? '');
+        $this->guardian_age = strip_tags($data['guardian_age'] ?? '');
+        $this->guardian_edu_attainment = strip_tags($data['guardian_education'] ?? '');
+        $this->guardian_occupation = strip_tags($data['guardian_occupation'] ?? '');
+        $this->guardian_monthly_income = strip_tags($data['guardian_income'] ?? '');
+        $this->guardian_contact_number = strip_tags($data['guardian_contact'] ?? '');
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -149,32 +141,24 @@ class FamilyModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->father_name = htmlspecialchars(strip_tags($data['father_name']));
-        $this->father_age = htmlspecialchars(strip_tags($data['father_age']));
-        $this->father_edu_attainment = htmlspecialchars(strip_tags($data['father_education']));
-        $this->father_occupation = htmlspecialchars(strip_tags($data['father_occupation']));
-        $this->father_monthly_income = htmlspecialchars(strip_tags($data['father_income']));
-        $this->father_contact_number = htmlspecialchars(strip_tags($data['father_contact']));
-        $this->mother_name = htmlspecialchars(strip_tags($data['mother_name']));
-        $this->mother_age = htmlspecialchars(strip_tags($data['mother_age']));
-        $this->mother_edu_attainment = htmlspecialchars(strip_tags($data['mother_education']));
-        $this->mother_occupation = htmlspecialchars(strip_tags($data['mother_occupation']));
-        $this->mother_monthly_income = htmlspecialchars(strip_tags($data['mother_income']));
-        $this->mother_contact_number = htmlspecialchars(strip_tags($data['mother_contact']));
-        $this->guardian_name = htmlspecialchars(strip_tags($data['guardian_name'] ?? ''));
-        $this->guardian_age = htmlspecialchars(strip_tags($data['guardian_age'] ?? ''));
-        $this->guardian_edu_attainment = htmlspecialchars(
-            strip_tags($data['guardian_education'] ?? ''),
-        );
-        $this->guardian_occupation = htmlspecialchars(
-            strip_tags($data['guardian_occupation'] ?? ''),
-        );
-        $this->guardian_monthly_income = htmlspecialchars(
-            strip_tags($data['guardian_income'] ?? ''),
-        );
-        $this->guardian_contact_number = htmlspecialchars(
-            strip_tags($data['guardian_contact'] ?? ''),
-        );
+        $this->father_name = strip_tags($data['father_name']);
+        $this->father_age = strip_tags($data['father_age']);
+        $this->father_edu_attainment = strip_tags($data['father_education']);
+        $this->father_occupation = strip_tags($data['father_occupation']);
+        $this->father_monthly_income = strip_tags($data['father_income']);
+        $this->father_contact_number = strip_tags($data['father_contact']);
+        $this->mother_name = strip_tags($data['mother_name']);
+        $this->mother_age = strip_tags($data['mother_age']);
+        $this->mother_edu_attainment = strip_tags($data['mother_education']);
+        $this->mother_occupation = strip_tags($data['mother_occupation']);
+        $this->mother_monthly_income = strip_tags($data['mother_income']);
+        $this->mother_contact_number = strip_tags($data['mother_contact']);
+        $this->guardian_name = strip_tags($data['guardian_name'] ?? '');
+        $this->guardian_age = strip_tags($data['guardian_age'] ?? '');
+        $this->guardian_edu_attainment = strip_tags($data['guardian_education'] ?? '');
+        $this->guardian_occupation = strip_tags($data['guardian_occupation'] ?? '');
+        $this->guardian_monthly_income = strip_tags($data['guardian_income'] ?? '');
+        $this->guardian_contact_number = strip_tags($data['guardian_contact'] ?? '');
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -231,32 +215,24 @@ class FamilyModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->father_name = htmlspecialchars(strip_tags($data['father_name']));
-        $this->father_age = htmlspecialchars(strip_tags($data['father_age']));
-        $this->father_edu_attainment = htmlspecialchars(strip_tags($data['father_education']));
-        $this->father_occupation = htmlspecialchars(strip_tags($data['father_occupation']));
-        $this->father_monthly_income = htmlspecialchars(strip_tags($data['father_income']));
-        $this->father_contact_number = htmlspecialchars(strip_tags($data['father_contact']));
-        $this->mother_name = htmlspecialchars(strip_tags($data['mother_name']));
-        $this->mother_age = htmlspecialchars(strip_tags($data['mother_age']));
-        $this->mother_edu_attainment = htmlspecialchars(strip_tags($data['mother_education']));
-        $this->mother_occupation = htmlspecialchars(strip_tags($data['mother_occupation']));
-        $this->mother_monthly_income = htmlspecialchars(strip_tags($data['mother_income']));
-        $this->mother_contact_number = htmlspecialchars(strip_tags($data['mother_contact']));
-        $this->guardian_name = htmlspecialchars(strip_tags($data['guardian_name'] ?? ''));
-        $this->guardian_age = htmlspecialchars(strip_tags($data['guardian_age'] ?? ''));
-        $this->guardian_edu_attainment = htmlspecialchars(
-            strip_tags($data['guardian_education'] ?? ''),
-        );
-        $this->guardian_occupation = htmlspecialchars(
-            strip_tags($data['guardian_occupation'] ?? ''),
-        );
-        $this->guardian_monthly_income = htmlspecialchars(
-            strip_tags($data['guardian_income'] ?? ''),
-        );
-        $this->guardian_contact_number = htmlspecialchars(
-            strip_tags($data['guardian_contact'] ?? ''),
-        );
+        $this->father_name = strip_tags($data['father_name']);
+        $this->father_age = strip_tags($data['father_age']);
+        $this->father_edu_attainment = strip_tags($data['father_education']);
+        $this->father_occupation = strip_tags($data['father_occupation']);
+        $this->father_monthly_income = strip_tags($data['father_income']);
+        $this->father_contact_number = strip_tags($data['father_contact']);
+        $this->mother_name = strip_tags($data['mother_name']);
+        $this->mother_age = strip_tags($data['mother_age']);
+        $this->mother_edu_attainment = strip_tags($data['mother_education']);
+        $this->mother_occupation = strip_tags($data['mother_occupation']);
+        $this->mother_monthly_income = strip_tags($data['mother_income']);
+        $this->mother_contact_number = strip_tags($data['mother_contact']);
+        $this->guardian_name = strip_tags($data['guardian_name'] ?? '');
+        $this->guardian_age = strip_tags($data['guardian_age'] ?? '');
+        $this->guardian_edu_attainment = strip_tags($data['guardian_education'] ?? '');
+        $this->guardian_occupation = strip_tags($data['guardian_occupation'] ?? '');
+        $this->guardian_monthly_income = strip_tags($data['guardian_income'] ?? '');
+        $this->guardian_contact_number = strip_tags($data['guardian_contact'] ?? '');
 
         // Bind values
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);

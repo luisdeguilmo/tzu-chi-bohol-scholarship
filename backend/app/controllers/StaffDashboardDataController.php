@@ -4,9 +4,6 @@ namespace App\Controllers;
 
 date_default_timezone_set('Asia/Manila');
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -15,8 +12,6 @@ require_once __DIR__ . '/../Models/BatchModel.php';
 
 use App\Models\NotificationsModel;
 use App\Models\ScholarAccountModel;
-use App\Models\ScholarOverviewDataModel;
-use App\Models\ScholarsModel;
 use App\Models\StaffDashboardDataModel;
 use Config\Database;
 
@@ -67,61 +62,36 @@ class StaffDashboardDataController
             $school_year = $_GET['school_year'] ?? null;
 
             $userName = $dashboardData->getUserName($id);
-            $numberOfAllApplications = $dashboardData->getNumberOfAllApplications();
             $numberOfNewApplications = $dashboardData->getNumberOfNewApplications();
             $numberOfOldApplications = $dashboardData->getNumberOfOldApplications();
             $numberOfApprovedApplications = $dashboardData->getNumberOfApprovedApplications();
             $numberOfRejectedApplications = $dashboardData->getNumberOfRejectedApplications();
             $numberOfActiveScholars = $dashboardData->getNumberOfActiveScholars();
-            $numberOfNewScholars = $dashboardData->getNumberOfNewScholars();
-            $numberOfOldScholars = $dashboardData->getNumberOfOldScholars();
-            $numberOfApplicantsEligibleForExam = $dashboardData->getNumberOfApplicantsEligibleForExam();
-            $numberOfApplicantsForInitialInterview = $dashboardData->getNumberOfApplicantsForInitialInterview();
-            $numberOfApplicantsForHomeVisitation = $dashboardData->getNumberOfApplicantsForHomeVisitation();
-            $numberOfApplicantsForFinalInterview = $dashboardData->getNumberOfApplicantsForFinalInterview();
-            $numberOfApplicantsForOrientation = $dashboardData->getNumberOfApplicantsForOrientation();
-            $numberOfApplicantsForAwarding = $dashboardData->getNumberOfApplicantsForAwarding();
-            $numberOfUpcomingEvents = $dashboardData->getNumberOfUpcomingEvents();
             $numberOfNewCommunityServices = $dashboardData->getNumberOfNewCommunityServices();
             $applicationData = $dashboardData->getApplicationData($school_year);
             $monthlyAllowanceDistributionData = $dashboardData->getMonthlyAllowanceDistributionData();
             $tenScholarsByHighestDutyHours = $dashboardData->getTenScholarsByHighestDutyHours();
             $eventAttendanceData = $dashboardData->getEventAttendanceData();
             $communityServiceHoursCompletionData = $dashboardData->getCommunityServiceHoursCompletion();
-            // $orientationAndAwardingData = $dashboardData->getOrientationAndAwardingData();
 
             $data = [
                 'userName' => $userName,
-                'numberOfAllApplications' => $numberOfAllApplications,
                 'numberOfNewApplications' => $numberOfNewApplications,
                 'numberOfOldApplications' => $numberOfOldApplications,
                 'numberOfApprovedApplications' => $numberOfApprovedApplications,
                 'numberOfRejectedApplications' => $numberOfRejectedApplications,
                 'numberOfActiveScholars' => $numberOfActiveScholars,
-                'numberOfNewScholars' => $numberOfNewScholars,
-                'numberOfOldScholars' => $numberOfOldScholars,
                 'numberOfApplicationsSubmitted' =>
                     $numberOfNewApplications + $numberOfOldApplications,
                 'numberOfReviewedApplications' =>
                     $numberOfApprovedApplications + $numberOfRejectedApplications,
-                'numberOfApplicantsEligibleForExam' => $numberOfApplicantsEligibleForExam,
-                'numberOfApplicantsForInitialInterview' => $numberOfApplicantsForInitialInterview,
-                'numberOfApplicantsForHomeVisitation' => $numberOfApplicantsForHomeVisitation,
-                'numberOfApplicantsForFinalInterview' => $numberOfApplicantsForFinalInterview,
-                'numberOfApplicantsForOrientation' => $numberOfApplicantsForOrientation,
-                'numberOfApplicantsForAwarding' => $numberOfApplicantsForAwarding,
-                'numberOfUpcomingEvents' => $numberOfUpcomingEvents,
                 'numberOfNewCommunityServices' => $numberOfNewCommunityServices,
                 'applicationData' => $applicationData,
                 'monthlyAllowanceDistributionData' => $monthlyAllowanceDistributionData,
                 'tenScholarsByHighestDutyHours' => $tenScholarsByHighestDutyHours,
                 'eventAttendanceData' => $eventAttendanceData,
                 'communityServiceHoursCompletionData' => $communityServiceHoursCompletionData,
-                // 'orientationAndAwardingData' => $orientationAndAwardingData,
             ];
-
-            // preg_match('/\d+/', $pendingScholarNotification['message'], $matches);
-            // $numberOfPendingScholars = (int) $matches[0];
 
             $pendingScholarsCount = $scholarModel->getPendingScholarsCount();
             $pendingScholarNotification = $notificationModel->getLastPendingScholarNotification(

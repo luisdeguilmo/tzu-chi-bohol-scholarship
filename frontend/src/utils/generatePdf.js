@@ -295,7 +295,9 @@ export const generatePDF = async (
                                                 ", " +
                                                 personalInfo?.middle_name +
                                                 ", " +
-                                                personalInfo.first_name || "",
+                                                personalInfo?.first_name +
+                                                ", " +
+                                                personalInfo?.suffix || "",
                                         fontSize: 10,
                                     },
                                 ],
@@ -766,7 +768,18 @@ export const generatePDF = async (
                                                 ?.guardian_name || "",
                                         fontSize: 10,
                                     },
-                                    { text: " / ", fontSize: 10 },
+                                    {
+                                        text:
+                                            (familyInfo?.parents
+                                                ?.guardian_name === "" ||
+                                                familyInfo?.parents
+                                                    ?.guardian_name === null) &&
+                                            familyInfo?.parents?.guardian_age <
+                                                1
+                                                ? ""
+                                                : " / ",
+                                        fontSize: 10,
+                                    },
                                     {
                                         text:
                                             familyInfo?.parents?.guardian_age ||
@@ -855,7 +868,10 @@ export const generatePDF = async (
                             },
                             {
                                 text:
-                                    familyInfo?.parents?.guardian_income || "",
+                                    familyInfo?.parents?.guardian_income < 1
+                                        ? ""
+                                        : familyInfo?.parents
+                                              ?.guardian_income || "",
                                 fontSize: 10,
                             },
                             {

@@ -41,11 +41,11 @@ class CharacterReferenceModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->name = htmlspecialchars(strip_tags($scholar['name']));
-        $this->address = htmlspecialchars(strip_tags($scholar['address']));
-        $this->company = htmlspecialchars(strip_tags($scholar['company']));
-        $this->position = htmlspecialchars(strip_tags($scholar['position']));
-        $this->contact_number = htmlspecialchars(strip_tags($scholar['contact_number']));
+        $this->name = strip_tags($scholar['name']);
+        $this->address = strip_tags($scholar['address']);
+        $this->company = strip_tags($scholar['company']);
+        $this->position = strip_tags($scholar['position']);
+        $this->contact_number = strip_tags($scholar['contact_number']);
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -76,11 +76,11 @@ class CharacterReferenceModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->name = htmlspecialchars(strip_tags($scholar['name']));
-        $this->address = htmlspecialchars(strip_tags($scholar['address']));
-        $this->company = htmlspecialchars(strip_tags($scholar['company']));
-        $this->position = htmlspecialchars(strip_tags($scholar['position']));
-        $this->contact_number = htmlspecialchars(strip_tags($scholar['contact_number']));
+        $this->name = strip_tags($scholar['name']);
+        $this->address = strip_tags($scholar['address']);
+        $this->company = strip_tags($scholar['company']);
+        $this->position = strip_tags($scholar['position']);
+        $this->contact_number = strip_tags($scholar['contact_number']);
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -111,11 +111,11 @@ class CharacterReferenceModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->name = htmlspecialchars(strip_tags($scholar['name']));
-        $this->address = htmlspecialchars(strip_tags($scholar['address']));
-        $this->company = htmlspecialchars(strip_tags($scholar['company']));
-        $this->position = htmlspecialchars(strip_tags($scholar['position']));
-        $this->contact_number = htmlspecialchars(strip_tags($scholar['contact_number']));
+        $this->name = strip_tags($scholar['name']);
+        $this->address = strip_tags($scholar['address']);
+        $this->company = strip_tags($scholar['company']);
+        $this->position = strip_tags($scholar['position']);
+        $this->contact_number = strip_tags($scholar['contact_number']);
 
         // Bind values
         $stmt->bindParam(':id', $id);

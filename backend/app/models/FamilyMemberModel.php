@@ -47,16 +47,14 @@ class FamilyMemberModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->name = htmlspecialchars(strip_tags($member['name']));
-        $this->relationship = htmlspecialchars(strip_tags($member['relationship']));
-        $this->age = htmlspecialchars(strip_tags($member['age']));
-        $this->gender = htmlspecialchars(strip_tags($member['gender']));
-        $this->civil_status = htmlspecialchars(strip_tags($member['civil_status']));
-        $this->living_with_family = htmlspecialchars(strip_tags($member['living_with_family']));
-        $this->education_or_occupation = htmlspecialchars(
-            strip_tags($member['education_occupation']),
-        );
-        $this->monthly_income = htmlspecialchars(strip_tags($member['monthly_income'] ?? '0'));
+        $this->name = strip_tags($member['name']);
+        $this->relationship = strip_tags($member['relationship']);
+        $this->age = strip_tags($member['age']);
+        $this->gender = strip_tags($member['gender']);
+        $this->civil_status = strip_tags($member['civil_status']);
+        $this->living_with_family = strip_tags($member['living_with_family']);
+        $this->education_or_occupation = strip_tags($member['education_occupation']);
+        $this->monthly_income = strip_tags($member['monthly_income'] ?? '0');
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -93,16 +91,14 @@ class FamilyMemberModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->name = htmlspecialchars(strip_tags($member['name']));
-        $this->relationship = htmlspecialchars(strip_tags($member['relationship']));
-        $this->age = htmlspecialchars(strip_tags($member['age']));
-        $this->gender = htmlspecialchars(strip_tags($member['gender']));
-        $this->civil_status = htmlspecialchars(strip_tags($member['civil_status']));
-        $this->living_with_family = htmlspecialchars(strip_tags($member['living_with_family']));
-        $this->education_or_occupation = htmlspecialchars(
-            strip_tags($member['education_occupation']),
-        );
-        $this->monthly_income = htmlspecialchars(strip_tags($member['monthly_income'] ?? '0'));
+        $this->name = strip_tags($member['name']);
+        $this->relationship = strip_tags($member['relationship']);
+        $this->age = strip_tags($member['age']);
+        $this->gender = strip_tags($member['gender']);
+        $this->civil_status = strip_tags($member['civil_status']);
+        $this->living_with_family = strip_tags($member['living_with_family']);
+        $this->education_or_occupation = strip_tags($member['education_occupation']);
+        $this->monthly_income = strip_tags($member['monthly_income'] ?? '0');
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -139,16 +135,14 @@ class FamilyMemberModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->name = htmlspecialchars(strip_tags($member['name']));
-        $this->relationship = htmlspecialchars(strip_tags($member['relationship']));
-        $this->age = htmlspecialchars(strip_tags($member['age']));
-        $this->gender = htmlspecialchars(strip_tags($member['gender']));
-        $this->civil_status = htmlspecialchars(strip_tags($member['civil_status']));
-        $this->living_with_family = htmlspecialchars(strip_tags($member['living_with_family']));
-        $this->education_or_occupation = htmlspecialchars(
-            strip_tags($member['education_occupation']),
-        );
-        $this->monthly_income = htmlspecialchars(strip_tags($member['monthly_income'] ?? '0'));
+        $this->name = strip_tags($member['name']);
+        $this->relationship = strip_tags($member['relationship']);
+        $this->age = strip_tags($member['age']);
+        $this->gender = strip_tags($member['gender']);
+        $this->civil_status = strip_tags($member['civil_status']);
+        $this->living_with_family = strip_tags($member['living_with_family']);
+        $this->education_or_occupation = strip_tags($member['education_occupation']);
+        $this->monthly_income = strip_tags($member['monthly_income'] ?? '0');
 
         // Bind values
         $stmt->bindParam(':id', $id);

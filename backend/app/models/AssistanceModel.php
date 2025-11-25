@@ -37,9 +37,9 @@ class AssistanceModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->organization = htmlspecialchars(strip_tags($assistance['organization_name']));
-        $this->type = htmlspecialchars(strip_tags($assistance['support_type']));
-        $this->amount = htmlspecialchars(strip_tags($assistance['amount'] ?? '0'));
+        $this->organization = strip_tags($assistance['organization_name']);
+        $this->type = strip_tags($assistance['support_type']);
+        $this->amount = strip_tags($assistance['amount'] ?? '0');
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -66,9 +66,9 @@ class AssistanceModel
 
         // Sanitize inputs
         $this->application_id = $application_id;
-        $this->organization = htmlspecialchars(strip_tags($assistance['organization_name']));
-        $this->type = htmlspecialchars(strip_tags($assistance['support_type']));
-        $this->amount = htmlspecialchars(strip_tags($assistance['amount'] ?? '0'));
+        $this->organization = strip_tags($assistance['organization_name']);
+        $this->type = strip_tags($assistance['support_type']);
+        $this->amount = strip_tags($assistance['amount'] ?? '0');
 
         $scholarId = $scholar_id === 'null' ? null : $scholar_id;
 
@@ -97,9 +97,9 @@ class AssistanceModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->organization = htmlspecialchars(strip_tags($assistance['organization_name']));
-        $this->type = htmlspecialchars(strip_tags($assistance['support_type']));
-        $this->amount = htmlspecialchars(strip_tags($assistance['amount'] ?? '0'));
+        $this->organization = strip_tags($assistance['organization_name']);
+        $this->type = strip_tags($assistance['support_type']);
+        $this->amount = strip_tags($assistance['amount'] ?? '0');
 
         // Bind values
         $stmt->bindParam(':id', $id);

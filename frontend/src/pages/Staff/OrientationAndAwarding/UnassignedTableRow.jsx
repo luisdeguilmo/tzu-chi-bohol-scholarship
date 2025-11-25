@@ -10,7 +10,7 @@ const UnassignedTableRow = ({
     profilePics,
 }) => {
     const { fetchApplicantData } = useApplicantData();
-    const { viewPdf } = usePdfActions(fetchApplicantData);
+    const { viewPdf, downloadPdf } = usePdfActions("new", fetchApplicantData);
 
     return (
         <>
@@ -64,7 +64,12 @@ const UnassignedTableRow = ({
                     </td>
                     <td className="py-2 whitespace-nowrap font-medium">
                         <button
-                            onClick={() => viewPdf(info.application_id)}
+                            onClick={() =>
+                                viewPdf({
+                                    applicationId: info.application_id,
+                                    scholarId: null,
+                                })
+                            }
                             className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
                         >
                             <svg

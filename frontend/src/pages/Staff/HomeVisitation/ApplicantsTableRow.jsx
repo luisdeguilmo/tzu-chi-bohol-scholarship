@@ -13,7 +13,7 @@ const ApplicantsTableRow = ({
     onSuccess,
 }) => {
     const { fetchApplicantData } = useApplicantData();
-    const { viewPdf } = usePdfActions(fetchApplicantData);
+    const { viewPdf, downloadPdf } = usePdfActions("new", fetchApplicantData);
 
     return (
         <>
@@ -55,14 +55,24 @@ const ApplicantsTableRow = ({
                     <td className="py-2 whitespace-nowrap text-center font-medium">
                         <div className="flex items-center justify-center">
                             <button
-                                onClick={() => viewPdf(info.application_id)}
+                                onClick={() =>
+                                    viewPdf({
+                                        applicationId: info.application_id,
+                                        scholarId: null,
+                                    })
+                                }
                                 className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                                 title="View PDF"
                             >
                                 <Eye className="w-4 h-4" />
                             </button>
                             <button
-                                onClick={() => downloadPdf(info.application_id)}
+                                onClick={() =>
+                                    downloadPdf({
+                                        applicationId: info.application_id,
+                                        scholarId: null,
+                                    })
+                                }
                                 className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"
                                 title="Download PDF"
                             >

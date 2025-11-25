@@ -2,11 +2,6 @@
 
 require_once __DIR__ . "/../cors.php";
 
-// header("Access-Control-Allow-Origin: https://c0mkgnv7-5173.asse.devtunnels.ms");
-// header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-// header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-
-
 require_once __DIR__ . "/../../vendor/autoload.php";
 require_once __DIR__ . '/../../config/Database.php';
 

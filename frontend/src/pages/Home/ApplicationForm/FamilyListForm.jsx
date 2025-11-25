@@ -4,12 +4,20 @@ import scholarsInputFields from "../../../constant/application/scholarsInputFiel
 import assistanceInputFields from "../../../constant/application/assistanceInputFields";
 import { Plus, Trash2, TrashIcon } from "lucide-react";
 import { useApplicationForm } from "../../../context/ApplicationFormContext";
+import { toast } from "react-toastify";
+import {
+    lettersNumbers,
+    lettersOnly,
+    numbersOnly,
+} from "../../../utils/inputValidations";
 
 const FamilyListForm = ({
     formData,
     updateFormData,
     setIsFirstFormApplicable,
     setIsSecondFormApplicable,
+    setIsThirdFormApplicable,
+    isSiblingsExisted = false,
     isTzuChiSiblingsExisted = false,
     isOtherAssistanceExisted = false,
 }) => {
@@ -25,6 +33,8 @@ const FamilyListForm = ({
     );
 
     const {
+        isSiblingsApplicable,
+        setIsSiblingsApplicable,
         isTzuChiSiblingsApplicable,
         setIsTzuChiSiblingsApplicable,
         isOtherAssistanceApplicable,
@@ -32,6 +42,10 @@ const FamilyListForm = ({
     } = useApplicationForm();
 
     useEffect(() => {
+        if (isSiblingsExisted) {
+            setIsSiblingsApplicable("applicable");
+        }
+
         if (isTzuChiSiblingsExisted) {
             setIsTzuChiSiblingsApplicable("applicable");
         }
@@ -39,7 +53,7 @@ const FamilyListForm = ({
         if (isOtherAssistanceExisted) {
             setIsOtherAssistanceApplicable("applicable");
         }
-    }, [isTzuChiSiblingsExisted, isOtherAssistanceExisted]);
+    }, [isSiblingsExisted, isTzuChiSiblingsExisted, isOtherAssistanceExisted]);
 
     const [newMember, setNewMember] = useState({
         name: "",
@@ -82,59 +96,93 @@ const FamilyListForm = ({
 
     // Rest of the component remains the same...
     // Handle input changes
-    const handleChange = (e) => {
-        setNewMember({ ...newMember, [e.target.name]: e.target.value });
+    const handleChange = (name, value) => {
+        setNewMember({ ...newMember, [name]: value });
     };
 
-    const handleScholarChange = (e) => {
-        setNewScholar({ ...newScholar, [e.target.name]: e.target.value });
+    const handleScholarChange = (name, value) => {
+        setNewScholar({ ...newScholar, [name]: value });
     };
 
-    const handleAssistanceChange = (e) => {
-        setNewAssistance({ ...newAssistance, [e.target.name]: e.target.value });
+    const handleAssistanceChange = (name, value) => {
+        setNewAssistance({ ...newAssistance, [name]: value });
+    };
+
+    const validators = {
+        lettersOnly,
+        numbersOnly,
+        lettersNumbers,
     };
 
     // Add new family member
     const addFamilyMember = () => {
-        if (newMember.name && newMember.age) {
-            setFamilyMembers([...family_members, newMember]);
-            setNewMember({
-                name: "",
-                relationship: "",
-                age: "",
-                gender: "",
-                civil_status: "",
-                living_with_family: "",
-                education_occupation: "",
-                monthly_income: "",
-            });
+        if (
+            !newMember.name ||
+            !newMember.age ||
+            !newMember.relationship ||
+            !newMember.civil_status ||
+            !newMember.gender ||
+            !newMember.living_with_family ||
+            !newMember.monthly_income ||
+            !newMember.education_occupation
+        ) {
+            toast.error("Please fill in all required fields");
+            return;
         }
+
+        setFamilyMembers([...family_members, newMember]);
+        setNewMember({
+            name: "",
+            relationship: "",
+            age: "",
+            gender: "",
+            civil_status: "",
+            living_with_family: "",
+            education_occupation: "",
+            monthly_income: "",
+        });
     };
 
     // Add new Tzu Chi scholar
     const addScholar = () => {
-        if (newScholar.name && newScholar.school) {
-            setTzuChiScholars([...tzu_chi_siblings, newScholar]);
-            setNewScholar({
-                name: "",
-                year_level: "",
-                school: "",
-                course: "",
-                school_year: "",
-            });
+        if (
+            !newScholar.name ||
+            !newScholar.year_level ||
+            !newScholar.school ||
+            !newScholar.course ||
+            !newScholar.school_year
+        ) {
+            toast.error("Please fill in all required fields");
+            return;
         }
+
+        setTzuChiScholars([...tzu_chi_siblings, newScholar]);
+        setNewScholar({
+            name: "",
+            year_level: "",
+            school: "",
+            course: "",
+            school_year: "",
+        });
     };
 
     // Add new Assistance Entry
     const addAssistance = () => {
-        if (newAssistance.organization_name && newAssistance.support_type) {
-            setAssistanceList([...other_assistance, newAssistance]);
-            setNewAssistance({
-                organization_name: "",
-                support_type: "",
-                amount: "",
-            });
+        if (
+            !newAssistance.organization_name ||
+            !newAssistance.support_type ||
+            !newAssistance.amount
+        ) {
+            toast.error("Please fill in all required fields");
+            return;
         }
+
+        setAssistanceList([...other_assistance, newAssistance]);
+        setNewAssistance({
+            organization_name: "",
+            support_type: "",
+            amount: "",
+        });
     };
 
     // Remove a family member
@@ -163,34 +211,105 @@ const FamilyListForm = ({
 
     return (
         <div>
-            {/* <h2 className="pt-12 pb-6 font-bold mb-4 text-gray-700 md:text-lg text-sm">
-                Siblings (Eldest to Youngest) including Family Member
-            </h2> */}
-
             <h2 className="mt-12 mb-8 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
                 Siblings (Eldest to Youngest) including Family Member
             </h2>
 
+            <div
+                className={`${
+                    isSiblingsApplicable === null ||
+                    isSiblingsApplicable === "not_applicable"
+                        ? "mb-0"
+                        : "mb-4"
+                } p-4 border rounded-lg bg-gray-50/50 border-gray-200`}
+            >
+                <div>
+                    <input
+                        id="siblings_applicable"
+                        name="siblings"
+                        type="radio"
+                        value={"applicable"}
+                        checked={isSiblingsApplicable === "applicable"}
+                        onChange={(e) => {
+                            setIsSiblingsApplicable(e.target.value);
+                            setIsThirdFormApplicable(true);
+                        }}
+                        className="accent-green-600"
+                    />
+                    <label
+                        htmlFor="siblings_applicable"
+                        className="ml-2 text-xs text-gray-700"
+                    >
+                        Yes, I have siblings
+                    </label>
+                </div>
+                <div>
+                    <input
+                        id="siblings_not_applicable"
+                        name="siblings"
+                        type="radio"
+                        value={"not_applicable"}
+                        checked={isSiblingsApplicable === "not_applicable"}
+                        onChange={(e) => {
+                            setFamilyMembers([]);
+                            setIsSiblingsApplicable(e.target.value);
+                            setIsThirdFormApplicable(false);
+                        }}
+                        className="accent-green-600"
+                    />
+                    <label
+                        htmlFor="siblings_not_applicable"
+                        className="ml-2 text-xs text-gray-700"
+                    >
+                        No / Not applicable
+                    </label>
+                </div>
+            </div>
+
             {/* Family Members Input Form */}
             <div>
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
+                <div
+                    className={`grid sm:grid-cols-2 md:grid-cols-3 ${isSiblingsApplicable === "applicable" && "gap-5 sm:gap-4"}`}
+                >
                     {familyMembersInputFields.map((input, index) =>
                         input.type === "select" ? (
                             <div key={index}>
-                                <label className="block mb-1 text-gray-500 text-xs">
+                                <label
+                                    className={`block mb-1 text-gray-500 text-xs ${
+                                        isSiblingsApplicable === null ||
+                                        isSiblingsApplicable ===
+                                            "not_applicable"
+                                            ? "text-gray-400 hidden"
+                                            : "text-gray-600 block"
+                                    }`}
+                                >
                                     {input.label}
+                                    {"*"}
                                 </label>
                                 <select
                                     name={input.name}
                                     value={newMember[input.name]}
-                                    onChange={handleChange}
+                                    onChange={(e) =>
+                                        handleChange(input.name, e.target.value)
+                                    }
                                     // className={`w-full outline-none border-b-[2px] ${
                                     //     errors && errors[field.name]
                                     //         ? "border-red-500"
                                     //         : "border-gray-400"
                                     // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
-                                    className="w-full border text-gray-800 text-xs border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    className={`w-full border text-gray-800 text-xs border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500 ${
+                                        isSiblingsApplicable === null ||
+                                        isSiblingsApplicable ===
+                                            "not_applicable"
+                                            ? "text-gray-400 hidden"
+                                            : "text-gray-600 block"
+                                    }`}
                                     // required={field.required}
+                                    disabled={
+                                        isSiblingsApplicable === null ||
+                                        isSiblingsApplicable ===
+                                            "not_applicable"
+                                    }
                                 >
                                     {input.options.map((option) => (
                                         <option
@@ -208,148 +327,170 @@ const FamilyListForm = ({
                             </div>
                         ) : (
                             <div key={index}>
-                                <label className="block mb-1 text-gray-500 text-xs">
+                                <label
+                                    className={`block mb-1 text-gray-500 text-xs ${
+                                        isSiblingsApplicable === null ||
+                                        isSiblingsApplicable ===
+                                            "not_applicable"
+                                            ? "text-gray-400 hidden"
+                                            : "text-gray-600 block"
+                                    }`}
+                                >
                                     {input.label}
+                                    {"*"}
                                 </label>
                                 <input
                                     type={input.type}
                                     name={input.name}
                                     value={newMember[input.name]}
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                        let value = e.target.value;
+
+                                        if (input.validate) {
+                                            value =
+                                                validators[input.validate](
+                                                    value
+                                                );
+                                        }
+
+                                        handleChange(input.name, value);
+                                    }}
+                                    min={input.name === "age" && 1}
+                                    max={input.name === "age" && 100}
                                     placeholder={input.placeholder}
-                                    className="w-full border text-xs text-gray-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    className={`w-full border text-xs text-gray-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500 ${
+                                        isSiblingsApplicable === null ||
+                                        isSiblingsApplicable ===
+                                            "not_applicable"
+                                            ? "text-gray-400 hidden"
+                                            : "text-gray-600 block"
+                                    }`}
+                                    disabled={
+                                        isSiblingsApplicable === null ||
+                                        isSiblingsApplicable ===
+                                            "not_applicable"
+                                    }
                                 />
                             </div>
                         )
                     )}
-
-                    {/* <div className="block relative">
-                        
-                        <label className="block mb-1 text-gray-600 text-xs">
-                            Living w/ Family or Not?
-                        </label>
-                        <select
-                            id="living"
-                            name="living_with_family"
-                            value={newMember.living_with_family}
-                            onChange={handleChange}
-                            className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
-                        >
-                            <option value="" disabled>
-                                Select
-                            </option>
-                            <option value="Yes">Living with Family</option>
-                            <option value="No">Not Living with Family</option>
-                        </select>
-                    </div> */}
                 </div>
                 <button
                     type="button"
                     onClick={addFamilyMember}
-                    className="col-span-3 mt-4 mb-7 flex items-center gap-1 shadow-lg bg-green-600 hover:bg-green-700 text-xs rounded-lg text-white px-4 py-2.5"
+                    className={`col-span-3 mt-4 mb-7 flex items-center gap-1 shadow-lg bg-green-600 hover:bg-green-700 text-xs rounded-lg text-white px-4 py-2.5 ${
+                        isSiblingsApplicable === null ||
+                        isSiblingsApplicable === "not_applicable"
+                            ? "bg-green-300 hidden"
+                            : "bg-green-600 hover:bg-green-700 block"
+                    }`}
+                    disabled={
+                        isSiblingsApplicable === null ||
+                        isSiblingsApplicable === "not_applicable"
+                    }
                 >
                     <Plus className="mb-[.5px] w-4 h-4" />
                     Add Member
                 </button>
             </div>
 
-            {/* Family Members Table */}
-            <div className="space-y-4">
-                {sortedFamily.length > 0 ? (
-                    sortedFamily.map((member, index) => (
-                        <div
-                            key={index}
-                            className="border border-gray-200 rounded-md p-4 bg-white shadow-sm relative"
-                        >
-                            <button
-                                onClick={() => removeFamilyMember(index)}
-                                className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+            {isSiblingsApplicable === "applicable" && (
+                <div className="space-y-4">
+                    {sortedFamily.length > 0 ? (
+                        sortedFamily.map((member, index) => (
+                            <div
+                                key={index}
+                                className="border border-gray-200 rounded-md p-4 bg-white shadow-sm relative"
                             >
-                                <Trash2 className="w-4 h-4" />
-                            </button>
+                                <button
+                                    onClick={() => removeFamilyMember(index)}
+                                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
-                                <p>
-                                    <span className="text-gray-500">Name:</span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.name}
-                                    </span>
-                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                    <p>
+                                        <span className="text-gray-500">
+                                            Name:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {member.name}
+                                        </span>
+                                    </p>
 
-                                <p>
-                                    <span className="text-gray-500">
-                                        Relationship:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.relationship}
-                                    </span>
-                                </p>
+                                    <p>
+                                        <span className="text-gray-500">
+                                            Relationship:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {member.relationship}
+                                        </span>
+                                    </p>
 
-                                <p>
-                                    <span className="text-gray-500">Age:</span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.age}
-                                    </span>
-                                </p>
+                                    <p>
+                                        <span className="text-gray-500">
+                                            Age:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {member.age}
+                                        </span>
+                                    </p>
 
-                                <p>
-                                    <span className="text-gray-500">
-                                        Gender:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.gender}
-                                    </span>
-                                </p>
+                                    <p>
+                                        <span className="text-gray-500">
+                                            Gender:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {member.gender}
+                                        </span>
+                                    </p>
 
-                                <p>
-                                    <span className="text-gray-500">
-                                        Civil Status:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.civil_status}
-                                    </span>
-                                </p>
+                                    <p>
+                                        <span className="text-gray-500">
+                                            Civil Status:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {member.civil_status}
+                                        </span>
+                                    </p>
 
-                                <p>
-                                    <span className="text-gray-500">
-                                        Living with Family:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.living_with_family}
-                                    </span>
-                                </p>
+                                    <p>
+                                        <span className="text-gray-500">
+                                            Living with Family:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {member.living_with_family}
+                                        </span>
+                                    </p>
 
-                                <p className="md:col-span-2">
-                                    <span className="text-gray-500">
-                                        Educational/Occupation:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.education_occupation}
-                                    </span>
-                                </p>
+                                    <p className="md:col-span-2">
+                                        <span className="text-gray-500">
+                                            Educational/Occupation:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {member.education_occupation}
+                                        </span>
+                                    </p>
 
-                                <p>
-                                    <span className="text-gray-500">
-                                        Monthly Income:
-                                    </span>{" "}
-                                    <span className="text-gray-800">
-                                        {member.monthly_income}
-                                    </span>
-                                </p>
+                                    <p>
+                                        <span className="text-gray-500">
+                                            Monthly Income:
+                                        </span>{" "}
+                                        <span className="text-gray-800">
+                                            {member.monthly_income}
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    ))
-                ) : (
-                    <p className="px-4 py-8 rounded-md border-2 border-dashed text-xs text-center text-gray-400">
-                        No family members added yet.
-                    </p>
-                )}
-            </div>
-
-            {/* Tzu Chi Scholars Section */}
-            {/* <h2 className="pt-12 pb-6 font-bold mb-4 text-gray-800 md:text-lg text-sm">
-                Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
-            </h2> */}
+                        ))
+                    ) : (
+                        <p className="px-4 py-8 rounded-md border-2 border-dashed text-xs text-center text-gray-400">
+                            No family members added yet.
+                        </p>
+                    )}
+                </div>
+            )}
 
             <h2 className="mt-16 mb-6 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
                 Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
@@ -429,7 +570,16 @@ const FamilyListForm = ({
                                 type={input.type}
                                 name={input.name}
                                 value={newScholar[input.name]}
-                                onChange={handleScholarChange}
+                                onChange={(e) => {
+                                    let value = e.target.value;
+
+                                    if (input.validate) {
+                                        value =
+                                            validators[input.validate](value);
+                                    }
+
+                                    handleScholarChange(input.name, value);
+                                }}
                                 placeholder={input.placeholder}
                                 className={`${
                                     isTzuChiSiblingsApplicable === null ||
@@ -537,18 +687,6 @@ const FamilyListForm = ({
                 </div>
             )}
 
-            {/* Assistance from Other Organizations */}
-            {/* <h2
-                className={`${
-                    isTzuChiSiblingsApplicable === null ||
-                    isTzuChiSiblingsApplicable === "not_applicable"
-                        ? "pt-0 md:pt-4"
-                        : "pt-8"
-                } pb-6 font-bold sm:mt-0 -mt-5 mb-4 text-gray-700 md:text-lg text-sm`}
-            >
-                Assistance from Other Association, Organization, School
-                Discount, etc.
-            </h2> */}
             <h2 className="mt-16 mb-6 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
                 Assistance from Other Association, Organization, School
                 Discount, etc.
@@ -626,7 +764,16 @@ const FamilyListForm = ({
                                 type={input.type}
                                 name={input.name}
                                 value={newAssistance[input.name]}
-                                onChange={handleAssistanceChange}
+                                onChange={(e) => {
+                                    let value = e.target.value;
+
+                                    if (input.validate) {
+                                        value =
+                                            validators[input.validate](value);
+                                    }
+
+                                    handleAssistanceChange(input.name, value);
+                                }}
                                 placeholder={input.placeholder}
                                 className={`w-full border text-xs text-gray-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500 ${
                                     isOtherAssistanceApplicable === null ||
