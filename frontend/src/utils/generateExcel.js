@@ -985,11 +985,14 @@ export const generateExcel = () => {
 
         // Track rows that should have borders (table headers and data rows)
         const tableRows = [];
-        const header1Row = worksheet.addRow(["SCHOLARS LIST"]);
+
+        const header1Row = worksheet.addRow(["GRADUATED SCHOLARS LIST"]);
         const header2Row = worksheet.addRow([
-            "BY SCHOOL / COURSE / YEAR LEVEL",
+            "BY SCHOOL / COURSE / YEAR GRADUATED",
         ]);
-        const header3Row = worksheet.addRow(["S.Y. " + schoolYear]);
+        const header3Row = worksheet.addRow([
+            "S.Y. " + schoolYear === "all_years" ? "All" : schoolYear,
+        ]);
 
         header1Row.getCell(1).font = {
             name: "Arial Narrow",

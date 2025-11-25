@@ -151,7 +151,9 @@ export default function Scholars() {
                 onChangeCurrentPage={setCurrentPage}
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
-                buttonExport={true}
+                buttonExport={
+                    activeTab === "active" || activeTab === "graduated"
+                }
                 onExport={handleExport}
                 exportLoading={isLoading}
                 disabledButtonExport={scholars.length === 0}
