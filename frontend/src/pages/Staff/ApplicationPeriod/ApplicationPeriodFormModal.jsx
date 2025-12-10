@@ -150,7 +150,7 @@ const ApplicationPeriodFormModal = React.memo(
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
                                 placeholder="Start Date"
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                             />
                         </div>
@@ -165,7 +165,7 @@ const ApplicationPeriodFormModal = React.memo(
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
                                 placeholder="End Date"
-                                className="w-full border text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                             />
                         </div>
@@ -181,7 +181,7 @@ const ApplicationPeriodFormModal = React.memo(
                                 onChange={(e) =>
                                     setAnnouncementMessage(e.target.value)
                                 }
-                                className="w-full border resize-none text-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border resize-none text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 placeholder="Enter announcement message"
                                 required
                             ></textarea>

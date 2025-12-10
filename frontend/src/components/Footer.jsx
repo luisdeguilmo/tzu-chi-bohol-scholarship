@@ -22,8 +22,8 @@ function Footer() {
                     <h4 className="text-lg pt-4 pb-1 font-semibold">
                         Contact Us
                     </h4>
-                    <ul className="flex flex-col items-center text-sm text-gray-600">
-                        <li className="flex items-center gap-2 text">
+                    <ul className="flex flex-col items-center gap-2 text-xs sm:text-sm text-gray-600">
+                        <li className="flex items-center gap-2">
                             {/* <span className="material-symbols-outlined">
                                 call
                             </span> */}

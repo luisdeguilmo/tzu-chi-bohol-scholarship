@@ -1,7 +1,13 @@
-import { CheckCircle, Download, Pen, PenLine, Plus } from "lucide-react";
+import {
+    CheckCircle,
+    Download,
+    Pen,
+    PenLine,
+    Plus,
+    RefreshCcw,
+} from "lucide-react";
 import SearchInput from "./SearchInput";
 import { date } from "../utils/getDateAndTime";
-import { FilterDropdown } from "./FilterDropdown";
 
 const TableToolbar = ({
     isProcessed = false,
@@ -27,6 +33,7 @@ const TableToolbar = ({
     firstIndex,
     lastIndex,
     addButton = false,
+    button,
     buttonExport = false,
     disabledButtonExport = false,
     onExport,
@@ -41,12 +48,14 @@ const TableToolbar = ({
     };
     return (
         <>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-bold text-slate-600">{label}</h2>
-                <div className="flex items-center gap-3">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0 mb-6">
+                <h2 className="self-start text-lg font-bold text-slate-700">
+                    {label}
+                </h2>
+                <div className="flex w-full md:w-[max-content] items-center gap-3">
                     <button
                         onClick={onRefresh}
-                        className="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                        className="flex-1 md:flex-none px-3 py-2.5 text-xs md:text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
                     >
                         <svg
                             className="w-4 h-4"
@@ -64,34 +73,22 @@ const TableToolbar = ({
                         Refresh
                     </button>
                     {addButton &&
-                        (!buttonLabel ||
-                            buttonLabel === "College or University") && (
+                        !buttonLabel && (
                             <button
                                 onClick={() => onOpen(true)}
-                                className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                                className="flex-1 md:flex-none px-3 py-2.5 text-xs md:text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
                             >
-                                <Plus className="w-4 h-4 text-white" />
-                                Add New{" "}
-                                {buttonLabel === false
-                                    ? label.slice(0, -1)
-                                    : buttonLabel}
+                                {button?.icon}
+                                {button?.label}
                             </button>
                         )}
-                    {addButton && buttonLabel === "Set Message" && (
-                        <button
-                            onClick={() => onOpen(true)}
-                            className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
-                        >
-                            <PenLine className="w-4 h-4 text-white" />
-                            {buttonLabel}
-                        </button>
-                    )}
+
                     {addButton && buttonLabel === "Process Allowance" && (
                         <>
                             {isProcessed ? (
                                 <button
                                     disabled={isProcessed} // boolean flag
-                                    className={`px-3 py-2 text-sm rounded-lg flex items-center gap-2 transition-colors duration-200 
+                                    className={`flex-1 md:flex-none px-3 py-2 text-sm rounded-lg flex justify-center items-center gap-2 transition-colors duration-200 
                                 ${
                                     isProcessed
                                         ? "bg-gray-400 text-gray-200 cursor-not-allowed" // Disabled styling
@@ -106,7 +103,94 @@ const TableToolbar = ({
                             ) : (
                                 <button
                                     onClick={() => onOpen(true)}
-                                    className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                                    className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
+                                >
+                                    <RefreshCcw className="w-4 h-4 text-white" />
+                                    {buttonLabel} {" for "}{" "}
+                                    {date.getCurrentMonthFormatted()}
+                                </button>
+                            )}
+                        </>
+                    )}
+
+                    {buttonExport && (
+                        <button
+                            onClick={onExport}
+                            disabled={disabledButtonExport}
+                            className={`flex-1 md:flex-none px-4 py-2 text-sm rounded-lg flex justify-center items-center gap-2 transition-colors duration-200 
+             text-white  ${disabledButtonExport ? "bg-green-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
+                        >
+                            {exportLoading ? (
+                                <svg
+                                    className="w-4 h-4 animate-spin text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                    ></path>
+                                </svg>
+                            ) : (
+                                <Download className="w-4 h-4 text-white" />
+                            )}
+                            {exportLoading ? "Exporting..." : "Export"}
+                        </button>
+                    )}
+
+                    {/* {addButton &&
+                        (!buttonLabel || buttonLabel === "School") && (
+                            <button
+                                onClick={() => onOpen(true)}
+                                className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
+                            >
+                                <Plus className="w-4 h-4 text-white" />
+                                Add New{" "}
+                                {buttonLabel === false
+                                    ? label.slice(0, -1)
+                                    : buttonLabel}
+                            </button>
+                        )} */}
+                    {/* {addButton && buttonLabel === "Set Message" && (
+                        <button
+                            onClick={() => onOpen(true)}
+                            className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
+                        >
+                            <PenLine className="w-4 h-4 text-white" />
+                            {buttonLabel}
+                        </button>
+                    )}
+                    {addButton && buttonLabel === "Process Allowance" && (
+                        <>
+                            {isProcessed ? (
+                                <button
+                                    disabled={isProcessed} // boolean flag
+                                    className={`flex-1 md:flex-none px-3 py-2 text-sm rounded-lg flex justify-center items-center gap-2 transition-colors duration-200 
+                                ${
+                                    isProcessed
+                                        ? "bg-gray-400 text-gray-200 cursor-not-allowed" // Disabled styling
+                                        : "bg-green-600 hover:bg-green-700 text-white" // Enabled styling
+                                }`}
+                                >
+                                    <CheckCircle
+                                        className={`w-4 h-4 ${isProcessed ? "text-gray-200" : "text-white"}`}
+                                    />
+                                    Processed
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => onOpen(true)}
+                                    className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
                                 >
                                     <CheckCircle className="w-4 h-4 text-white" />
                                     {buttonLabel} {" for "}{" "}
@@ -119,7 +203,7 @@ const TableToolbar = ({
                         <button
                             onClick={onExport}
                             disabled={disabledButtonExport}
-                            className={`px-4 py-2 text-sm rounded-lg flex items-center gap-2 transition-colors duration-200 
+                            className={`flex-1 md:flex-none px-4 py-2 text-sm rounded-lg flex justify-center items-center gap-2 transition-colors duration-200 
              text-white  ${disabledButtonExport ? "bg-green-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
                         >
                             {exportLoading ? (
@@ -153,7 +237,7 @@ const TableToolbar = ({
                     (tab === "Batches" || tab === "Orientation") ? (
                         <button
                             onClick={() => onOpen(true)}
-                            className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                            className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
                         >
                             <Plus className="w-4 h-4 text-white" />
                             Create New Batch
@@ -161,14 +245,14 @@ const TableToolbar = ({
                     ) : addCreateBatchButton && tab === "Result" ? (
                         <button
                             onClick={() => onOpen(true)}
-                            className="px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                            className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
                         >
                             <Pen className="w-3.5 h-4 text-white" />
                             {passingScore
                                 ? "Edit Passing Score"
                                 : "Set Passing Score"}
                         </button>
-                    ) : null}
+                    ) : null} */}
                 </div>
             </div>
 
@@ -182,7 +266,7 @@ const TableToolbar = ({
                                 <button
                                     key={index}
                                     onClick={() => onChangeTab(button?.tabName)}
-                                    className={`flex-1 sm:flex-none px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
+                                    className={`flex-1 sm:flex-none sm:px-4 py-1.5 rounded-md text-[10px] sm:text-xs md:text-sm font-medium transition-all duration-200 ${
                                         tab === button?.tabName
                                             ? "bg-green-600 text-white shadow-sm"
                                             : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
@@ -220,16 +304,16 @@ const TableToolbar = ({
                 </div>
 
                 {/* Bottom Row - Controls */}
-                <div className="mt-4 flex justify-between items-end">
+                <div className="mt-4 flex flex-col md:flex-row justify-between items-end">
                     {/* Left side - Selection info and actions */}
-                    <div className="flex items-center gap-3">
+                    <div className="self-start md:self-end flex items-center gap-3 mb-4 md:mb-0">
                         <p className="text-xs text-slate-700">
                             Total {placeholder}: {items.length}
                         </p>
                     </div>
 
                     {/* Right side - Sort and view options */}
-                    <div className="flex items-center gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 mx-auto md:mx-0 lg:flex lg:justify-end gap-6">
                         {children}
                         {/* <FilterDropdown
                             label={"Sort"}

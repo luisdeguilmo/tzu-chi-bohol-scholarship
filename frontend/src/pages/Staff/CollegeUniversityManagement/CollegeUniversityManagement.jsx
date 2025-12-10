@@ -11,6 +11,8 @@ import ConfirmationModal from "../../../components/ConfirmationModal";
 import EditFormModal from "./EditFormModal";
 import { useCoursesAccepted } from "../../../hooks/useCoursesAccepted";
 import { DataListView } from "../../../components/DataListView";
+import { useWindowSize } from "../../../hooks/useWindowSize";
+import { Plus } from "lucide-react";
 
 export default function CollegeUniversityManagement() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -25,8 +27,8 @@ export default function CollegeUniversityManagement() {
         useState(false);
 
     const [selectedItem, setSelectedItem] = useState(null);
-    const [year, setYear] = useState("2025");
-    const [status, setStatus] = useState("all");
+    const size = useWindowSize();
+    const isMobile = size.width < 768;
 
     const {
         isLoading,
@@ -100,7 +102,7 @@ export default function CollegeUniversityManagement() {
             <TableToolbar
                 items={collegesAndUniversities}
                 label={"College & University Management"}
-                buttonLabel={"College or University"}
+                buttonLabel={"School"}
                 placeholder={"colleges or universities"}
                 searchTerm={searchTerm}
                 itemsPerPage={itemsPerPage}
@@ -116,36 +118,39 @@ export default function CollegeUniversityManagement() {
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
                 addButton={true}
+                button={{
+                    icon: <Plus className='w-4 h-4 text-white' />,
+                    label: "Add New School",
+                }}
             ></TableToolbar>
 
             {/* Table */}
-            <div className="overflow-x-auto rounded-[4px]">
-                <Table
-                    tableHeaders={collegesUniversitiesTableHeaders}
-                    hasNumberColumn={true}
-                >
-                    {currentItems.map((item, index) => (
-                        <tr
-                            key={item.id}
-                            className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
+            <div
+                className={`${isMobile && "flex flex-col gap-2"} overflow-x-auto rounded-[4px]`}
+            >
+                {isMobile ? (
+                    currentItems.map((item, index) => (
+                        <div
+                            key={index}
+                            className="p-4 border rounded-md bg-gray-50 space-y-2"
                         >
-                            <td
-                                className={`pl-1 py-3 whitespace-nowrap text-gray-500`}
-                            >
-                                {`${numberOfItemsPerPage + index + 1}.`}
-                            </td>
-                            <td className="py-3 pl-6 whitespace-nowrap text-gray-700">
-                                <p className="text-left">{item.name}</p>
-                            </td>
-
-                            <td className="py-3 text-center whitespace-nowrap font-medium">
+                            <p className="text-xs font-bold text-gray-900">
+                                School
+                                <span className="ml-4 font-normal text-gray-600">
+                                    {item.name}
+                                </span>
+                            </p>
+                            <div className="flex">
+                                <p className="text-xs font-bold text-gray-900">
+                                    Action
+                                </p>
                                 <button
                                     onClick={() => {
                                         setIsFormModalOpen(true);
                                         setSelectedId(item.id);
                                         setSelectedCollegeUniversity(item.name);
                                     }}
-                                    className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
+                                    className="ml-4 inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -184,10 +189,81 @@ export default function CollegeUniversityManagement() {
                                         />
                                     </svg>
                                 </button>
-                            </td>
-                        </tr>
-                    ))}
-                </Table>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <Table
+                        tableHeaders={collegesUniversitiesTableHeaders}
+                        hasNumberColumn={true}
+                    >
+                        {currentItems.map((item, index) => (
+                            <tr
+                                key={item.id}
+                                className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
+                            >
+                                <td
+                                    className={`pl-1 py-3 whitespace-nowrap text-gray-500`}
+                                >
+                                    {`${numberOfItemsPerPage + index + 1}.`}
+                                </td>
+                                <td className="py-3 pl-6 whitespace-nowrap text-gray-700">
+                                    <p className="text-left">{item.name}</p>
+                                </td>
+
+                                <td className="py-3 text-center whitespace-nowrap font-medium">
+                                    <button
+                                        onClick={() => {
+                                            setIsFormModalOpen(true);
+                                            setSelectedId(item.id);
+                                            setSelectedCollegeUniversity(
+                                                item.name
+                                            );
+                                        }}
+                                        className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-4 w-4 mr-1"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                            />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsConfirmationModalOpen(true);
+                                            setSelectedItem(item.id);
+                                        }}
+                                        className="inline-flex items-center text-red-600 hover:text-red-900"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-4 w-4 mr-1"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7"
+                                            />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </Table>
+                )}
 
                 {/* Empty state */}
                 {currentItems.length === 0 && (

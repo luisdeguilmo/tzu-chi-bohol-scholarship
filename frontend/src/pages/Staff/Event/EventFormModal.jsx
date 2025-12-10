@@ -1,8 +1,10 @@
-import { X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { X, XCircle } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import BASE_URL from "../../../config";
 import InputModal from "../../../components/InputModal";
+import { formatTime } from "../../../utils/formatTime";
+import { useScholars } from "../../../hooks/useScholars";
 
 const EventFormModal = React.memo(
     ({ isOpen, onClose, onRefresh, disabled, action, setAction, event }) => {
@@ -13,7 +15,18 @@ const EventFormModal = React.memo(
         const [eventLocation, setEventLocation] = useState("");
         const [eventType, setEventType] = useState("");
         const [isLoading, setIsLoading] = useState(false);
+        const [selectedScholars, setSelectedScholars] = useState([]);
         const [participantLimit, setParticipantLimit] = useState("");
+
+        const { scholars } = useScholars(
+            "active",
+            "all",
+            "all_years",
+            "all",
+            "all",
+            "all",
+            "newest"
+        );
 
         useEffect(() => {
             if (event && action === "edit") {
@@ -24,6 +37,9 @@ const EventFormModal = React.memo(
                 setEventLocation(event?.event_location);
                 setEventType(event?.event_type || "");
                 setParticipantLimit(event?.participant_limit || "");
+                setSelectedScholars(
+                    event?.participants.map((e) => e.scholar_id)
+                );
             }
         }, [event, action]);
 
@@ -40,6 +56,7 @@ const EventFormModal = React.memo(
                     event_type: eventType,
                     event_location: eventLocation,
                     participant_limit: participantLimit,
+                    selected_scholars: selectedScholars,
                 },
             };
 
@@ -95,6 +112,7 @@ const EventFormModal = React.memo(
                     event_type: eventType,
                     event_location: eventLocation,
                     participant_limit: participantLimit,
+                    selected_scholars: selectedScholars,
                 },
             };
 
@@ -155,7 +173,23 @@ const EventFormModal = React.memo(
             setParticipantLimit("");
         };
 
+        const toggleScholarSelection = (scholarId) => {
+            setSelectedScholars((prev) => {
+                if (prev.includes(scholarId)) {
+                    return prev.filter((id) => id !== scholarId);
+                } else {
+                    return [...prev, scholarId];
+                }
+            });
+        };
+
         const today = new Date().toISOString().split("T")[0]; // Current date in YYYY-MM-DD format
+
+        console.log(selectedScholars);
+
+        // useMemo(() => {
+
+        // }, []);
 
         return (
             <InputModal
@@ -183,6 +217,7 @@ const EventFormModal = React.memo(
                             min={today}
                             value={eventDate}
                             onChange={(e) => setEventDate(e.target.value)}
+                            onClick={(e) => e.target.showPicker()}
                             placeholder="Start Date"
                             className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                             required
@@ -195,11 +230,17 @@ const EventFormModal = React.memo(
                             <label className="block mb-1 text-gray-600 text-xs">
                                 Start Time
                             </label>
+                            {startTime && (
+                                <span className="pointer-events-none absolute left-2.5 top-[32px] text-gray-800 text-xs">
+                                    {formatTime(startTime)}
+                                </span>
+                            )}
                             <input
                                 type="time"
                                 value={startTime}
                                 onChange={(e) => setStartTime(e.target.value)}
-                                placeholder="Start Date"
+                                onClick={(e) => e.target.showPicker()}
+                                placeholder="Start Time"
                                 className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                                 disabled={disabled}
@@ -210,11 +251,17 @@ const EventFormModal = React.memo(
                             <label className="block mb-1 text-gray-600 text-xs">
                                 End Time
                             </label>
+                            {endTime && (
+                                <span className="pointer-events-none absolute left-2.5 top-[32px] text-gray-800 text-xs">
+                                    {formatTime(endTime)}
+                                </span>
+                            )}
                             <input
                                 type="time"
                                 value={endTime}
                                 onChange={(e) => setEndTime(e.target.value)}
-                                placeholder="Start Date"
+                                onClick={(e) => e.target.showPicker()}
+                                placeholder="End Time"
                                 className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                                 disabled={disabled}
@@ -318,6 +365,92 @@ const EventFormModal = React.memo(
                             </div>
                         </div>
                     </div>
+
+                    {eventType === "mandatory" && (
+                        <div className="">
+                            <div
+                                className={`mt-2 mb-4 grid border rounded-md border-gray-200`}
+                            >
+                                <h3
+                                    className={`bg-gray-50 rounded-tl-md rounded-tr-md px-4 py-4 border-b text-xs text-gray-600 font-bold`}
+                                >
+                                    Selected Scholars:
+                                </h3>
+                                <ul
+                                    className={`p-4 grid ${
+                                        selectedScholars?.length >= 15
+                                            ? "grid-cols-2"
+                                            : "grid-cols-1"
+                                    }`}
+                                >
+                                    {selectedScholars.length === 0 && (
+                                        <div>
+                                            <p className="text-xs text-gray-600 text-center">
+                                                No selected scholars.
+                                            </p>
+                                        </div>
+                                    )}
+                                    {scholars.map(
+                                        (scholar, index) =>
+                                            selectedScholars.includes(
+                                                scholar.account_id
+                                            ) && (
+                                                <li
+                                                    key={index}
+                                                    className="flex items-center gap-3 text-xs text-gray-600"
+                                                >
+                                                    {scholar.last_name +
+                                                        ", " +
+                                                        scholar.first_name}
+                                                    <button
+                                                        onClick={() =>
+                                                            toggleScholarSelection(
+                                                                scholar.account_id
+                                                            )
+                                                        }
+                                                        className="rounded-full bg-white"
+                                                    >
+                                                        <X className="w-4 h-4 text-red-600" />
+                                                    </button>
+                                                </li>
+                                            )
+                                    )}
+                                </ul>
+                            </div>
+
+                            <ul className="pb-0 space-y-1">
+                                {scholars.map((scholar, index) => (
+                                    <li
+                                        key={index}
+                                        className="text-xs text-gray-600"
+                                    >
+                                        <label className="flex gap-2">
+                                            <input
+                                                className="accent-green-600 hover:accent-green-600"
+                                                type="checkbox"
+                                                checked={selectedScholars.includes(
+                                                    scholar.account_id
+                                                )}
+                                                onChange={() =>
+                                                    toggleScholarSelection(
+                                                        scholar.account_id
+                                                    )
+                                                }
+                                            />
+                                            <p>
+                                                {scholar.last_name +
+                                                    ", " +
+                                                    scholar.first_name}
+                                            </p>
+                                        </label>
+                                    </li>
+                                ))}
+                            </ul>
+                            <p className="mt-4 text-xs text-gray-500">
+                                {selectedScholars.length} Selected
+                            </p>
+                        </div>
+                    )}
                 </div>
             </InputModal>
         );

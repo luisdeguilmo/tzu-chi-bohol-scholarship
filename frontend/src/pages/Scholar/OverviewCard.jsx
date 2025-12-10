@@ -16,8 +16,8 @@ const OverviewCard = ({
 }) => {
     return (
         <div className=" bg-white shadow-sm border-b border-gray-200">
-            <div className="px-6 py-6">
-                <h2 className="text-xl text-slate-700 font-bold mb-4">
+            <div className="p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl text-slate-700 font-bold mb-4">
                     {label}
                 </h2>
 
@@ -29,12 +29,12 @@ const OverviewCard = ({
 
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-4">
-                            <p className="text-left text-white/90 text-sm font-medium">
+                            <p className="text-left text-white/90 text-xs sm:text-sm font-medium">
                                 This Month Overview
                             </p>
                             <div className="flex items-center gap-2 text-white/80">
                                 <Calendar className="w-4 h-5 text-white" />
-                                <span className="text-sm">
+                                <span className="text-xs sm:text-sm">
                                     {date.getCurrentMonthFormatted()}{" "}
                                     {new Date().getFullYear()}
                                 </span>

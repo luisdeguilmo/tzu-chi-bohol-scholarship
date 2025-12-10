@@ -158,28 +158,6 @@ function ApplicantDetailsModal({
                     </div>
                 </div>
 
-                {/* <div className="text-xs text-gray-600 flex items-start gap-10 border border-gray-200 rounded-md p-4 bg-gray-50">
-                    <div className="flex flex-col gap-1 font-medium text-gray-700">
-                        <p>Application ID</p>
-                        <p>Applicant Name</p>
-                        <p>Date Applied</p>
-                    </div>
-
-                    <div className="flex flex-col gap-1 text-gray-400">
-                        <p>:</p>
-                        <p>:</p>
-                        <p>:</p>
-                    </div>
-
-                    <div className="flex flex-col gap-1 text-gray-700">
-                        <p>{applicant?.application_id}</p>
-                        <p>
-                            {applicant?.first_name} {applicant?.last_name}
-                        </p>
-                        <p>{formatDate(applicant?.created_at)}</p>
-                    </div>
-                </div> */}
-
                 <ul className="space-y-0.5 bg-gray-50/50 border border-gray-200 rounded-md p-4 shadow-sm transition-shadow">
                     <h2 className="text-xs font-semibold text-gray-700 mb-4 flex items-center gap-2">
                         Application Status

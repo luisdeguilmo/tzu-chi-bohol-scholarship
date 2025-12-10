@@ -1,6 +1,13 @@
 <?php
 // Database configuration
-require_once __DIR__ . '/../cors.php';
+$allowedMethods = ['GET', 'POST', 'OPTIONS'];
+$allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With'];
+
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Max-Age: 3600');
+
+require_once __DIR__ . '/../../config/bootstrap.php';
+// require_once __DIR__ . '/../cors.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Services/PHPMailerBrevoService.php'; // Add this line

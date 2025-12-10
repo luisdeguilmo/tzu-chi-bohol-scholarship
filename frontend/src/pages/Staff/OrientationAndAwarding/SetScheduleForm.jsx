@@ -114,6 +114,8 @@ export default function SetScheduleForm({
         return batch && batch.schedule;
     };
 
+    const dateNow = new Date();
+
     return (
         <>
             <div>
@@ -138,7 +140,7 @@ export default function SetScheduleForm({
                     {/* Content */}
                     <div className="p-6 space-y-4">
                         {/* Start Date Input */}
-                        <div>
+                        <div className="space-y-2">
                             <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                                 Batch
                                 <input
@@ -154,6 +156,7 @@ export default function SetScheduleForm({
                                     required
                                     type="date"
                                     value={date}
+                                    min={dateNow.toISOString().split("T")[0]}
                                     onChange={(e) => {
                                         setDate(e.target.value);
                                         setIsInputChanged(true);

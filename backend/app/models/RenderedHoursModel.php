@@ -22,11 +22,11 @@ class RenderedHoursModel
         );
         $eventRenderedHours = $this->getScholarEventRenderedHoursById($accountId);
 
-        if (!$communityServiceRenderedHours && $communityServiceRenderedHours !== 0) {
+        if ($communityServiceRenderedHours === null) {
             throw new \Exception('Scholar not found');
         }
 
-        if (!$eventRenderedHours && $eventRenderedHours !== 0) {
+        if ($eventRenderedHours === null) {
             throw new \Exception('Scholar not found');
         }
 
@@ -77,7 +77,7 @@ class RenderedHoursModel
     public function recordCommunityServiceRenderedHours($accountId, $renderedHours)
     {
         $scholarRenderedHours = $this->getScholarCommunityServiceRenderedHoursById($accountId);
-        if (!$scholarRenderedHours && $scholarRenderedHours !== 0) {
+        if ($scholarRenderedHours === null) {
             throw new \Exception('Scholar not found');
         }
 
@@ -100,7 +100,7 @@ class RenderedHoursModel
     {
         $scholarRenderedHours = $this->getScholarCommunityServiceRenderedHoursById($accountId);
 
-        if ($scholarRenderedHours === false || $scholarRenderedHours === null) {
+        if ($scholarRenderedHours === null) {
             throw new \Exception('Scholar not found');
         }
 
@@ -126,7 +126,7 @@ class RenderedHoursModel
     public function recordEventRenderedHours($accountId, $renderedHours)
     {
         $scholarRenderedHours = $this->getScholarEventRenderedHoursById($accountId);
-        if (!$scholarRenderedHours && $scholarRenderedHours !== 0) {
+        if ($scholarRenderedHours === null) {
             throw new \Exception('Scholar not found');
         }
 
@@ -148,7 +148,7 @@ class RenderedHoursModel
     public function AttendedEvents($accountId)
     {
         $scholarAttendedEvents = $this->getScholarAttendedEventsById($accountId);
-        if (!$scholarAttendedEvents && $scholarAttendedEvents !== 0) {
+        if ($scholarAttendedEvents === null) {
             throw new \Exception('Scholar not found');
         }
 

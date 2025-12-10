@@ -19,6 +19,7 @@ import DutyHoursChart from "./DutyHoursChart";
 import ScholarsByProgramChart from "./ScholarsByProgramChart";
 import ApplicationTrendsChart from "./ApplicationTrendsChart";
 import ApprovalRejectionChart from "./ApprovalRejectionChart";
+import { useScholar } from "../hooks/useScholar";
 
 function QuickOverview() {
     const { pathname } = useLocation();
@@ -59,57 +60,27 @@ function QuickOverview() {
 
     return (
         <>
-            <div className="w-full px-6 pt-6 pb-2">
+            <div className="w-full p-4 sm:p-6">
                 {/* <h2 className="text-xl font-bold text-slate-600 mb-4">Dashboard</h2> */}
-                <div className="p-6 mb-6 shadow-lg bg-gradient-to-r from-green-600 to-green-700 rounded-lg">
+                <div className="p-6 sm:p-6 mb-4 shadow-lg bg-gradient-to-r from-green-600 to-green-700 rounded-lg">
                     <div className="flex flex-col gap-4 md:flex-row justify-between md:items-center">
                         <div>
-                            <h2 className="text-2xl font-bold text-white mb-1">
+                            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1">
                                 Welcome back,{" "}
                                 {user.type === "admin"
                                     ? user.name
                                     : dashboardData.userName}
                                 !
                             </h2>
-                            <p className="text-xs text-white">
+                            <p className="text-[10px] md:text-xs text-white">
                                 Today is {date.getCurrentDay()},{" "}
                                 {formatDate(date.getCurrentDateAndTime())}
                             </p>
                         </div>
-
-                        {/* {user.type !== "scholar" && (
-                            <button
-                                onClick={() => {
-                                    if (user.type === "staff") {
-                                        exportStaffDashboardWorkbook(
-                                            dashboardData?.applicationData,
-                                            dashboardData?.tenScholarsByHighestDutyHours,
-                                            dashboardData?.monthlyAllowanceDistributionData,
-                                            dashboardData?.eventAttendanceData,
-                                            dashboardData?.communityServiceHoursCompletionData
-                                        );
-                                    } else {
-                                        exportAdminDashboardWorkbook(
-                                            dashboardData?.scholarsByProgram,
-                                            dashboardData?.applicationsSubmittedAndApplicationsApproved,
-                                            dashboardData?.approvedAndRejectedByStage,
-                                            dashboardData?.eventAttendanceData,
-                                            dashboardData?.communityServiceHoursCompletionData
-                                        );
-                                    }
-                                }}
-                                className="flex md:m-0 mx-auto items-center gap-2 text-sm text-white 
-                                border border-white/40 px-4 py-2 rounded-lg
-                                hover:bg-white/20 cursor-pointer transition"
-                            >
-                                <Download className="w-4 h-4" />
-                                Export Dashboard Data
-                            </button>
-                        )} */}
                     </div>
                 </div>
 
-                <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="mb-4 sm:mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                     <OverviewDataCard
                         overviewData={
                             user.type === "staff"
@@ -144,13 +115,6 @@ function QuickOverview() {
                                     }
                                 />
                             </div>
-
-                            {/* <div className="col-span-3 lg:col-span-2 p-6 border bg-white rounded-lg">
-                                <h2 className="mb-4 font-bold">
-                                    Orientation & Awarding Attendance
-                                </h2>
-                                <AttendanceChart />
-                            </div> */}
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -294,16 +258,27 @@ function OverviewDataCard({ overviewData, userType }) {
     const navigate = useNavigate();
     const { setActiveTab } = useSidebar();
 
+    const { user } = useAuth();
+    const { type } = useScholar(user.user_id, getCurrentSchoolYear());
+
+    const filtered = overviewData.filter((item) => {
+        if (type === "New") {
+            return item.title !== "Renewal Application";
+        } else {
+            return item;
+        }
+    });
+
     return (
         <>
-            {overviewData?.map((item, index) => (
+            {filtered?.map((item, index) => (
                 <div
                     key={index}
-                    className={`flex p-6 rounded-lg shadow-sm border relative bg-white`}
+                    className={`flex p-6 sm:p-6 rounded-lg shadow-sm border relative bg-white`}
                 >
                     <div className="w-full">
                         <div className="flex flex-col">
-                            <h2 className="text-xs text-slate-500">
+                            <h2 className="text-[10px] md:text-xs text-slate-500">
                                 {item.title}
                             </h2>
                             <div

@@ -52,8 +52,15 @@ function TopBar() {
                 isDropdownOpen &&
                 dropdownRef.current &&
                 !dropdownRef.current.contains(event.target) &&
-                dropdownButtonRef.current && // <- new toggle button ref
+                dropdownButtonRef.current &&
                 !dropdownButtonRef.current.contains(event.target)
+            ) {
+                setIsDropdownOpen(false);
+            }
+
+            if (
+                dropdownRef.current &&
+                dropdownRef.current.contains(event.target)
             ) {
                 setIsDropdownOpen(false);
             }
@@ -88,11 +95,11 @@ function TopBar() {
                 className={`relative py-1 px-5 flex items-center bg-white border-b-[2px] border-gray-300`}
             >
                 <div
-                    className={`flex justify-between items-center ml-8 pl-2 w-full`}
+                    className={`flex justify-between items-center ml-7 sm:ml-8 pl-2 w-full`}
                 >
                     <div className="flex justify-center items-center">
                         <img
-                            className="w-[50px] sm:w-[60px] mx-auto"
+                            className="w-[45px] sm:w-[60px] mx-auto"
                             src={Logo}
                             alt="Tzu Chi Logo"
                         />
@@ -207,14 +214,14 @@ function TopBar() {
                                 </>
                             )}
                             <ChevronDown
-                                className={`w-4 h-4 -ml-1 sm:m-0 text-gray-400`}
+                                className={`w-4 h-4 -ml-1 hidden sm:block sm:m-0 text-gray-400`}
                             />
                         </div>
 
                         {isDropdownOpen && (
                             <div
                                 ref={dropdownRef}
-                                className="p-2 w-full sm:w-[80%] mx-auto border rounded-md absolute z-50 bottom-[-80px] left-[50%] translate-x-[-50%] bg-white items-start text-gray-600 text-xs flex flex-col shadow-[0px_0px_4px_rgba(0,0,0,.2)]"
+                                className="p-2 w-[max-content] sm:w-[80%] mx-auto border rounded-md absolute z-50 bottom-[-80px] left-[30%] sm:left-[50%] translate-x-[-50%] bg-white items-start text-gray-600 text-xs flex flex-col shadow-[0px_0px_4px_rgba(0,0,0,.2)]"
                             >
                                 <button
                                     onClick={() => {
@@ -227,7 +234,7 @@ function TopBar() {
                                         }
                                         setIsDropdownOpen(!isDropdownOpen);
                                     }}
-                                    className="w-full px-2 py-2 hover:bg-gray-100 rounded-md"
+                                    className="w-full px-4 sm:px-2 py-2 hover:bg-gray-100 rounded-md"
                                 >
                                     My Profile
                                 </button>

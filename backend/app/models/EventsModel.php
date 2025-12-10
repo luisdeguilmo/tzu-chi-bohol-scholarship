@@ -111,10 +111,42 @@ class EventsModel
         return $stmt->execute();
     }
 
-    public function makeAllScholarsAsParticipants($eventId)
+    public function checkParticipant($accountId, $eventId)
     {
         $query =
-            'INSERT INTO event_participants (account_id, event_id) SELECT account_id, :event_id FROM scholars';
+            'SELECT * FROM event_participants WHERE account_id = :account_id AND event_id = :event_id';
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':account_id', $accountId, \PDO::PARAM_INT);
+        $stmt->bindParam(':event_id', $eventId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $row ? true : false;
+    }
+
+    public function addToEventParticipant($accountId, $eventId)
+    {
+        $query =
+            'INSERT INTO event_participants SET account_id = :account_id, event_id = :event_id';
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':account_id', $accountId, \PDO::PARAM_INT);
+        $stmt->bindParam(':event_id', $eventId, \PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function makeAllScholarsAsParticipants($eventId)
+    {
+        // $query =
+        //     'INSERT INTO event_participants (account_id, event_id) SELECT account_id, :event_id FROM scholars WHERE ';
+
+        $query =
+            "INSERT INTO event_participants (account_id, event_id) SELECT s.account_id, :event_id FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE u.status = 'active'";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':event_id', $eventId);
@@ -302,7 +334,7 @@ class EventsModel
 
     public function getParticipantName($scholarId)
     {
-        $query = 'SELECT * FROM personal_information WHERE application_id = :application_id';
+        $query = 'SELECT * FROM scholars WHERE account_id = :application_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':application_id', $scholarId, \PDO::PARAM_INT);
         $stmt->execute();
@@ -326,31 +358,42 @@ class EventsModel
         return $this->getEventParticipants($result, $joinedScholars);
     }
 
-    public function getEventParticipants($events, $joinedScholars)
+    public function getEventParticipants(array $events, $joinedScholars): array
     {
-        foreach ($events as &$event) {
-            $event['numberOfParticipants'] = $joinedScholars->getNumberOfJoinedScholars(
-                $event['id'],
-            );
+        $result = [];
 
-            $scholars = $this->getParticipantsIds($event['id']);
+        foreach ($events as $event) {
+            $eventId = $event['id'];
+
+            // Get number of participants
+            $event['numberOfParticipants'] = $joinedScholars->getNumberOfJoinedScholars($eventId);
+
+            // Fetch raw scholar participation info
+            $scholarRecords = $this->getParticipantsIds($eventId);
 
             $participants = [];
 
-            foreach ($scholars as &$scholarId) {
-                $participant = $this->getParticipantName($scholarId['account_id']);
+            foreach ($scholarRecords as $record) {
+                $participantInfo = $this->getParticipantName($record['account_id']);
+
                 $participants[] = [
-                    'scholar_id' => $participant['application_id'],
-                    'participant_name' =>
-                        $participant['first_name'] . ' ' . $participant['last_name'],
-                    'is_attended' => $scholarId['is_attended'],
+                    'scholar_id' => $participantInfo['account_id'] ?? null,
+                    'participant_name' => trim(
+                        ($participantInfo['first_name'] ?? '') .
+                            ' ' .
+                            ($participantInfo['last_name'] ?? ''),
+                    ),
+                    'is_attended' => $record['is_attended'] ?? false,
+                    // 'is_not_availab' => $record['is_attended'] ?? false,
+                    'reason' => $record['reason'] ?? false,
                 ];
             }
 
             $event['participants'] = $participants;
+            $result[] = $event;
         }
 
-        return $events;
+        return $result;
     }
 
     public function getEventsOnStaff($year, $status, $sort, $joinedScholars)

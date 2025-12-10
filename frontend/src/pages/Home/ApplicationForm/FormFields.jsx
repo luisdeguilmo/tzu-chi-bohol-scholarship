@@ -123,6 +123,11 @@ const FormFields = ({
         lettersNumbers,
     };
 
+    const currentYear = new Date().getFullYear();
+    const maxBirthdate = `${currentYear - 15}-12-31`;
+
+    console.log(formData);
+
     return (
         <>
             {section === FORM_SECTIONS.EDUCATION ? (
@@ -157,11 +162,6 @@ const FormFields = ({
                                         );
                                     }}
                                     placeholder={`${field.placeholder}`}
-                                    // className={`w-full outline-none border-b-[2px] ${
-                                    //     errors && errors[field.name]
-                                    //         ? "border-red-500"
-                                    //         : "border-gray-400"
-                                    // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
                                     className="w-full border text-xs text-slate-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                     required
                                 />
@@ -226,11 +226,6 @@ const FormFields = ({
                                                     );
                                                 }
                                             }}
-                                            // className={`w-full outline-none border-b-[2px] ${
-                                            //     errors && errors[field.name]
-                                            //         ? "border-red-500"
-                                            //         : "border-gray-400"
-                                            // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
                                             className="w-full border text-gray-800 text-xs border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                             required={field.required}
                                         >
@@ -324,11 +319,6 @@ const FormFields = ({
                                                 );
                                             }}
                                             placeholder={`${field.placeholder}`}
-                                            // className={`w-full outline-none border-b-[2px] ${
-                                            //     errors && errors[field.name]
-                                            //         ? "border-red-500"
-                                            //         : "border-gray-400"
-                                            // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
                                             className="w-full border text-xs text-slate-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                             required
                                         />
@@ -369,12 +359,7 @@ const FormFields = ({
                                                 e.target.value
                                             )
                                         }
-                                        // className={`w-full outline-none border-b-[2px] ${
-                                        //     errors && errors[field.name]
-                                        //         ? "border-red-500"
-                                        //         : "border-gray-400"
-                                        // } py-2 mt-1 box-border hover:border-black focus:border-green-500`}
-                                        className="w-full border text-gray-800 text-xs border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        className="w-full border text-gray-800 text-xs border-gray-300 bg-white rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required={field.required}
                                     >
                                         {field.options.map((option) => (
@@ -402,6 +387,7 @@ const FormFields = ({
                                         {field.label}
                                         {field.required ? "*" : ""}
                                     </label>
+
                                     <textarea
                                         rows={5}
                                         name={field.name}
@@ -432,7 +418,16 @@ const FormFields = ({
                                         {field.label}
                                         {field.required ? "*" : ""}
                                     </label>
-                                    <input
+
+                                    {/* {field.name === "birthdate" &&
+                                        formData[inputSection][field.name] ===
+                                            "" && (
+                                            <span className="pointer-events-none absolute left-3.5 top-[32px] text-gray-400 text-xs">
+                                                dd/mm/yyyy
+                                            </span>
+                                        )} */}
+
+                                    {/* <input
                                         type={field.type}
                                         name={field.name}
                                         value={
@@ -451,6 +446,11 @@ const FormFields = ({
                                                       field.name
                                                   ]
                                         }
+                                        onClick={(e) => {
+                                            if (field.type === "date") {
+                                                e.target.showPicker();
+                                            }
+                                        }}
                                         onChange={(e) => {
                                             let value = e.target.value;
 
@@ -470,10 +470,61 @@ const FormFields = ({
                                         autoCapitalize={
                                             field.type === "text" && "on"
                                         }
-                                        min={field.name === "age" && 1}
-                                        max={field.name === "age" && 100}
+                                        min={field.name === "age" && 15 }
+                                        max={
+                                            field.name === "age"
+                                                ? 100
+                                                : field.name === "birthdate"
+                                                  ? maxBirthdate
+                                                  : ""
+                                        }
                                         placeholder={`${field.placeholder}`}
-                                        className="w-full border text-xs text-slate-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        className="w-full border text-xs text-slate-800 border-gray-300 bg-white rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        required
+                                    /> */}
+                                    <input
+                                        type={field.type}
+                                        name={field.name}
+                                        value={
+                                            formData[inputSection][field.name]
+                                        }
+                                        onClick={(e) => {
+                                            if (field.type === "date") {
+                                                e.target.showPicker();
+                                            }
+                                        }}
+                                        onChange={(e) => {
+                                            let value = e.target.value;
+
+                                            if (field.validate) {
+                                                value =
+                                                    validators[field.validate](
+                                                        value
+                                                    );
+                                            }
+
+                                            formData.personal_information.age =
+                                                calculateAge(value);
+
+                                            handleInputChange(
+                                                inputSection,
+                                                field.name,
+                                                value
+                                            );
+                                        }}
+                                        autoCapitalize={
+                                            field.type === "text" && "on"
+                                        }
+                                        min={field.name === "age" && 15}
+                                        max={
+                                            field.name === "age"
+                                                ? 100
+                                                : field.name === "birthdate"
+                                                  ? maxBirthdate
+                                                  : 0
+                                        }
+                                        placeholder={`${field.placeholder}`}
+                                        className="w-full border text-xs text-slate-800 border-gray-300 bg-white rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required
                                     />
                                     {errors && errors[field.name] && (

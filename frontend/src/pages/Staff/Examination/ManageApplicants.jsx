@@ -31,7 +31,7 @@ const ManageApplicants = ({
     };
 
     return (
-        <div>
+        <div className="mt-6 md:mt-0">
             <div className="flex items-center gap-2">
                 <p className="italic text-xs text-slate-500 mr-4">
                     With Selected:{" "}

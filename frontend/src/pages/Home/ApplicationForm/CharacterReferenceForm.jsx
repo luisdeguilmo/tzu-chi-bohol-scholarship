@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import characterReferenceInputFields from "../../../constant/application/characterReferenceInputFields";
 import { Plus, TrashIcon } from "lucide-react";
 import {
+    isValidContactNumber,
     lettersNumbers,
     lettersOnly,
     numbersOnly,
 } from "../../../utils/inputValidations";
+import { toast } from "react-toastify";
 
 const CharacterReferenceForm = ({ formData, updateFormData }) => {
     // Initialize state from formData or use empty arrays if not present
@@ -42,6 +44,11 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
 
     // Add new Tzu Chi scholar
     const addCharacter = () => {
+        if (newCharacter.contact_number !== "" && !isValidContactNumber(newCharacter.contact_number)) {
+            toast.error("Invalid contact number.");
+            return;
+        }
+
         if (newCharacter.name && newCharacter.address) {
             setCharacterReference([...character_reference, newCharacter]);
             setNewCharacter({

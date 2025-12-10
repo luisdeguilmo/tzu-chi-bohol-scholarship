@@ -200,7 +200,7 @@ export default function CommunityServices() {
             {/* Modals */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="p-4 fixed bottom-10 xl:right-28 right-14 bg-green-600 text-white rounded-full transition-colors flex justify-center items-center shadow-lg hover:bg-green-700"
+                className="p-4 fixed bottom-10 right-12 md:right-16 xl:right-28 bg-green-600 text-white rounded-full transition-colors flex justify-center items-center shadow-lg hover:bg-green-700"
             >
                 <Plus className="w-4 h-4  text-white" />
             </button>

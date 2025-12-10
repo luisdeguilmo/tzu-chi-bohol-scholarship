@@ -20,11 +20,11 @@ const PersonalSection = ({
     }, [pathname]);
 
     return (
-        <form className="w-[85%] sm:w-[80%] xl:w-[70%] mx-auto">
+        <form className="w-[90%] sm:w-[80%] xl:w-[70%] mx-auto">
             {/* <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">
                 Personal Information
             </h2> */}
-            <h2 className="mb-12 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 md:text-lg text-sm">
+            <h2 className="mb-8 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 md:text-lg text-sm">
                 Personal Information
             </h2>
             <FormFields

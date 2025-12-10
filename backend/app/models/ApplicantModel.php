@@ -406,13 +406,23 @@ class ApplicantModel
                 ";
         } elseif ($status === 'old') {
             $query = "SELECT 
-                ai.*,
-                pi.*, 
-                pp.*
+                pi.first_name,
+                pi.last_name,
+                pi.email, 
+                ai.is_application_approved,
+                ai.is_application_rejected,
+                ai.application_id,
+                ai.scholar_id,
+                ai.type,
+                ai.created_at,
+                ai.approved_at,
+                pp.file_name,
+                pp.file_path,
+                pp.file_type,
+                pp.file_size
               FROM application_info ai
-                JOIN profile_pictures pp ON pp.application_id = ai.scholar_id
               JOIN personal_information pi ON pi.application_id = ai.application_id
-              
+                JOIN profile_pictures pp ON pp.application_id = ai.scholar_id
               WHERE (ai.is_application_approved = '1' OR ai.is_application_rejected = '1')
                 AND ai.type = 'Old' AND YEAR(ai.created_at) = $this->currentYear";
         }

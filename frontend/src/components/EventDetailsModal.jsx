@@ -1,4 +1,12 @@
-import { Calendar, Check, Clock, MapPin, Users, X } from "lucide-react";
+import {
+    Calendar,
+    Check,
+    Clock,
+    MapPin,
+    SendHorizonal,
+    Users,
+    X,
+} from "lucide-react";
 import { formatDate } from "../utils/formatDate";
 import { formatTime } from "../utils/formatTime";
 import { date } from "../utils/getDateAndTime";
@@ -8,6 +16,9 @@ import EventButton from "../pages/Scholar/Events/EventButton";
 import ConfirmationModal from "../pages/Staff/Event/ConfirmationModal";
 import InputModal from "./InputModal";
 import { toast } from "react-toastify";
+import { useEventReason } from "../hooks/useEventReason";
+import { formatDateTime } from "../utils/formatDateTime";
+import { useAuth } from "../context/AuthContext";
 
 const EventDetailsModal = React.memo(
     ({
@@ -18,6 +29,8 @@ const EventDetailsModal = React.memo(
         joinEvent,
         cancelEvent,
         userId,
+        firstName,
+        lastName,
         fetchEvents,
         activeTab,
         isScholar = false,
@@ -28,11 +41,23 @@ const EventDetailsModal = React.memo(
         const [renderedHours, setRenderedHours] = useState("");
         const [selectedScholars, setSelectedScholars] = useState([]);
         const [localEvent, setLocalEvent] = useState(event);
+        const [isOnTheList, setIsOnTheList] = useState(false);
+        const [hasReason, setHasReason] = useState(false);
+        const [reason, setReason] = useState("");
+
+        const {
+            addReason,
+            privateComments,
+            fetchPrivateComments,
+            fetchScholarPrivateComments,
+        } = useEventReason(userId, localEvent?.id);
 
         // Update local event when prop changes
         useEffect(() => {
             setLocalEvent(event);
         }, [event]);
+
+        console.log(privateComments);
 
         const handleSelectScholar = (scholarId) => {
             setSelectedScholars((prev) => {
@@ -104,23 +129,78 @@ const EventDetailsModal = React.memo(
             }
         };
 
+        console.log(event);
+
+        useMemo(() => {
+            if (event?.event_type === "mandatory") {
+                const isExist = event.participants.some(
+                    (item) => item.scholar_id === userId
+                );
+
+                if (isExist) {
+                    setIsOnTheList(true);
+                }
+            } else {
+                setIsOnTheList(false);
+            }
+        }, [event]);
+
+        useMemo(() => {
+            if (event?.event_type === "mandatory") {
+                const isExist = event.participants.some((item) => item.reason);
+
+                if (isExist) {
+                    setHasReason(true);
+                }
+            } else {
+                setHasReason(false);
+            }
+        }, [event]);
+
+        const handleSubmit = async (userId) => {
+            const success = await addReason(
+                localEvent?.id,
+                userId,
+                reason,
+                firstName,
+                lastName
+            );
+
+            if (success && isScholar) {
+                fetchScholarPrivateComments();
+                setReason("");
+            }
+
+            if (success && isStaff) {
+                fetchPrivateComments();
+                setReason("");
+            }
+        };
+
         return (
             <>
                 <InputModal
                     label={localEvent?.event_name}
                     isOpen={isOpen}
                     onClose={onClose}
+                    resetFields={() => setReason("")}
                     expandable={true}
                     onCancel={handleCancel}
-                    disabledButton={true}
+                    buttonLabel={"Submit"}
+                    onSubmit={() => handleSubmit(userId)}
+                    disabledButton={
+                        localEvent?.event_type === "optional" ||
+                        (isStaff && localEvent?.event_type === "mandatory")
+                    }
+                    disabledButtonSave={true}
                 >
                     {/* Content */}
                     <div
                         className={`max-h-[400px] overflow-y-auto scroll-smooth p-6 ${localEvent?.participants.length > 0 && "space-y-6"}`}
                     >
                         {/* Event Details Grid */}
-                        <div className="grid grid-cols-2 sm:gap-12 gap-14 text-xs">
-                            <div className="space-y-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-12  text-xs">
+                            <div className="mb-3 sm:mb-0 space-y-3">
                                 <div className="flex items-center text-slate-600">
                                     <Calendar className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
                                     <span className="text-slate-700 font-medium">
@@ -147,21 +227,44 @@ const EventDetailsModal = React.memo(
 
                                 <div className="flex items-center text-slate-600">
                                     <Users className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                    {localEvent?.date +
+                                    {localEvent?.event_type === "optional" ? (
+                                        localEvent?.date +
+                                            " " +
+                                            localEvent?.end_time >
+                                            date.getCurrentDateAndTime() ? (
+                                            <span className="text-slate-700 font-medium">
+                                                {
+                                                    localEvent?.numberOfParticipants
+                                                }
+                                                {" / "}
+                                                {
+                                                    localEvent?.participant_limit
+                                                }{" "}
+                                                Participants
+                                            </span>
+                                        ) : (
+                                            <span className="text-slate-700 font-medium">
+                                                {
+                                                    localEvent?.numberOfParticipants
+                                                }
+                                                {" / "}
+                                                {
+                                                    localEvent?.participant_limit
+                                                }{" "}
+                                                Participated
+                                            </span>
+                                        )
+                                    ) : localEvent?.date +
                                         " " +
                                         localEvent?.end_time >
-                                    date.getCurrentDateAndTime() ? (
+                                        date.getCurrentDateAndTime() ? (
                                         <span className="text-slate-700 font-medium">
-                                            {localEvent?.numberOfParticipants}
-                                            {" / "}
-                                            {localEvent?.participant_limit}{" "}
+                                            {localEvent?.numberOfParticipants}{" "}
                                             Participants
                                         </span>
                                     ) : (
                                         <span className="text-slate-700 font-medium">
-                                            {localEvent?.numberOfParticipants}
-                                            {" / "}
-                                            {localEvent?.participant_limit}{" "}
+                                            {localEvent?.numberOfParticipants}{" "}
                                             Participated
                                         </span>
                                     )}
@@ -171,27 +274,27 @@ const EventDetailsModal = React.memo(
 
                         <div>
                             <div
-                                className={`mt-2 grid gap-1 ${localEvent?.participants?.length > 0 ? "block" : "hidden"} ${
-                                    localEvent?.participants?.length >= 15
-                                        ? "grid-cols-2"
-                                        : "grid-cols-1"
-                                } border rounded-md border-gray-200`}
+                                className={`mt-2 ${localEvent?.participants?.length > 0 ? "block" : "hidden"}  rounded-md border-gray-200`}
                             >
                                 <h3
-                                    className={`${
-                                        localEvent?.participants?.length > 0
+                                    className={`${localEvent?.participants?.length > 0
                                             ? "block"
                                             : "hidden"
-                                    } bg-gray-50 rounded-tl-md rounded-tr-md px-4 py-4 border-b text-xs text-gray-600 font-bold`}
+                                        } bg-gray-50 rounded-tl-md rounded-tr-md px-4 py-4 text-xs text-gray-600 font-bold`}
                                 >
                                     {localEvent?.date +
                                         " " +
                                         localEvent?.end_time >
-                                    date.getCurrentDateAndTime()
+                                        date.getCurrentDateAndTime()
                                         ? "Scholars Who Will Participate:"
                                         : "Scholars Who Participated:"}
                                 </h3>
-                                <ul className="p-4 space-y-0.5">
+                                <ul
+                                    className={`px-4 py-4 space-y-0.5 grid ${localEvent?.participants?.length >= 15
+                                            ? "grid-cols-2"
+                                            : "grid-cols-1"
+                                        }`}
+                                >
                                     {localEvent?.participants?.map(
                                         (participant, index) => (
                                             <li
@@ -219,14 +322,13 @@ const EventDetailsModal = React.memo(
                                                                                 .checked
                                                                         )
                                                                     }
-                                                                    className={`${
-                                                                        localEvent?.date +
+                                                                    className={`${localEvent?.date +
                                                                             " " +
                                                                             localEvent?.end_time >
-                                                                        date.getCurrentDateAndTime()
+                                                                            date.getCurrentDateAndTime()
                                                                             ? "hidden"
                                                                             : "block"
-                                                                    } accent-green-600`}
+                                                                        } accent-green-600`}
                                                                 />
                                                             )}
                                                         </>
@@ -244,11 +346,166 @@ const EventDetailsModal = React.memo(
                             </div>
                         </div>
 
+                        {/* {isScholar && isOnTheList && (
+                            <div className="mt-6">
+                                <label className="block mb-1 text-gray-600 text-xs">
+                                    Reason{" "}
+                                    <span className="font-normal text-[10px] italic"></span>
+                                </label>
+                                <textarea
+                                    rows={5}
+                                    placeholder="Enter your reason here..."
+                                    value={reason}
+                                    onChange={(e) => setReason(e.target.value)}
+                                    className="w-full resize-none border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                ></textarea>
+                            </div>
+                        )} */}
+
+                        {isStaff && (
+                            <div
+                                className={`mt-2 border rounded-md border-gray-200`}
+                            >
+                                <h3
+                                    className={`bg-gray-50 rounded-tl-md rounded-tr-md px-4 py-4 border-b text-xs text-gray-600 font-bold`}
+                                >
+                                    Private Comments
+                                </h3>
+                                <ul className="">
+                                    {privateComments.map(
+                                        (group, groupIndex) => (
+                                            <li
+                                                key={groupIndex}
+                                                className={`${groupIndex !== privateComments.length - 1 && "border-b"}`}
+                                            >
+                                                {group.map((comment) => (
+                                                    <div
+                                                        key={comment.id}
+                                                        className={`px-4 py-2.5 flex flex-col`}
+                                                    >
+                                                        <div className="flex justify-between">
+                                                            <p className="mb-2 text-xs font-bold text-gray-800">
+                                                                {comment.first_name +
+                                                                    " " +
+                                                                    comment.last_name}
+                                                            </p>
+                                                            <p className="mb-2 text-[10px] text-gray-500">
+                                                                {formatDateTime(
+                                                                    comment.created_at
+                                                                )}
+                                                            </p>
+                                                        </div>
+                                                        <p className="text-xs text-gray-600">
+                                                            {comment.message}
+                                                        </p>
+                                                    </div>
+                                                ))}
+                                                <div className="px-4 pb-2 flex items-center">
+                                                    <label className="flex-1">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Add a comment..."
+                                                            value={reason}
+                                                            onChange={(e) =>
+                                                                setReason(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                            className="w-[100%] border text-xs border-gray-300 rounded-md py-2 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                                            required
+                                                        />
+                                                    </label>
+                                                    <div className="">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                handleSubmit(
+                                                                    group[0]
+                                                                        .scholar_id
+                                                                );
+                                                            }}
+                                                            type="button"
+                                                            className=" px-4 py-2 flex"
+                                                        >
+                                                            <SendHorizonal className="w-6 h-6 text-gray-400" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        )
+                                    )}
+                                </ul>
+                            </div>
+                        )}
+
+                        {isScholar && (
+                            <div className={`mt-2 rounded-md border-gray-200`}>
+                                <h3
+                                    className={`bg-gray-50 rounded-tl-md rounded-tr-md px-4 py-4 text-xs text-gray-600 font-bold`}
+                                >
+                                    Private comments
+                                </h3>
+                                <ul
+                                    className={`${privateComments.length === 0 && "pt-2"}`}
+                                >
+                                    {privateComments.map((comment) => (
+                                        <li
+                                            key={comment.id}
+                                            className={`px-4 py-2.5 flex flex-col`}
+                                        >
+                                            <div className="flex justify-between">
+                                                <p className="mb-2 text-xs font-bold text-gray-800">
+                                                    {comment.first_name +
+                                                        " " +
+                                                        comment.last_name}
+                                                </p>
+                                                <p className="mb-2 text-[10px] text-gray-500">
+                                                    {formatDateTime(
+                                                        comment.created_at
+                                                    )}
+                                                </p>
+                                            </div>
+                                            <p className="text-xs text-gray-600">
+                                                {comment.message}
+                                            </p>
+                                        </li>
+                                    ))}
+                                    <div className="px-4 pb-2 flex items-center">
+                                        <label className="flex-1">
+                                            <input
+                                                type="text"
+                                                placeholder="Add a comment..."
+                                                value={reason}
+                                                onChange={(e) =>
+                                                    setReason(e.target.value)
+                                                }
+                                                className="w-[100%] border text-xs border-gray-300 rounded-md py-2 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                                required
+                                            />
+                                        </label>
+                                        <div className="">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleSubmit(userId);
+                                                }}
+                                                type="button"
+                                                className=" px-4 py-2 flex"
+                                            >
+                                                <SendHorizonal className="w-6 h-6 text-gray-400" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </ul>
+                            </div>
+                        )}
+
                         {localEvent?.date + " " + localEvent?.end_time <
                             date.getCurrentDateAndTime() &&
                             isStaff &&
                             participated.length <
-                                localEvent?.numberOfParticipants && (
+                            localEvent?.numberOfParticipants && (
                                 <div>
                                     <div className="mt-2 border rounded-md border-gray-200">
                                         <h3 className="bg-gray-50 rounded-tl-md rounded-tr-md px-4 py-4 border-b text-xs text-gray-600 font-bold">
@@ -313,53 +570,57 @@ const EventDetailsModal = React.memo(
                             )}
                     </div>
 
-                    <div className="flex justify-end rounded-b-sm gap-2 p-3.5 border-t border-gray-300 bg-gray-50 flex-shrink-0">
-                        <button
-                            onClick={() => onClose(false)}
-                            type="button"
-                            className="ml-auto bg-gray-200 text-gray-600 text-sm px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
-                        >
-                            Close
-                        </button>
-
-                        {isScholar &&
-                            date.getCurrentDateAndTime() <
-                                localEvent?.date +
+                    {(isStaff ||
+                        (isScholar &&
+                            localEvent?.event_type === "optional")) && (
+                            <div className="flex justify-end rounded-b-sm gap-2 p-3.5 border-t border-gray-300 bg-gray-50 flex-shrink-0">
+                                <button
+                                    onClick={() => onClose(false)}
+                                    type="button"
+                                    className="ml-auto bg-gray-200 text-gray-600 text-sm px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
+                                >
+                                    Close
+                                </button>
+                                {isScholar &&
+                                    date.getCurrentDateAndTime() <
+                                    localEvent?.date +
                                     " " +
                                     localEvent?.start_time && (
-                                <EventButton
-                                    numberOfParticipants={
-                                        localEvent?.numberOfParticipants
-                                    }
-                                    participantLimit={
-                                        localEvent?.participant_limit
-                                    }
-                                    hasJoinButton={
-                                        localEvent?.event_type === "optional"
-                                    }
-                                    setIsOpen={onClose}
-                                    joinEvent={joinEvent}
-                                    cancelEvent={cancelEvent}
-                                    eventId={localEvent?.id}
-                                    scholarId={userId}
-                                    onRefresh={fetchEvents}
-                                    activeTab={activeTab}
-                                />
-                            )}
-                        {isStaff &&
-                            localEvent?.date + " " + localEvent?.end_time <
-                                date.getCurrentDateAndTime() &&
-                            participated.length !==
-                                localEvent?.numberOfParticipants && (
-                                <button
-                                    onClick={handleOpenConfirmationModal}
-                                    type="button"
-                                    className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition"
-                                >
-                                    Record
-                                </button>
-                            )}
-                    </div>
+                                        <EventButton
+                                            numberOfParticipants={
+                                                localEvent?.numberOfParticipants
+                                            }
+                                            participantLimit={
+                                                localEvent?.participant_limit
+                                            }
+                                            hasJoinButton={
+                                                localEvent?.event_type ===
+                                                "optional"
+                                            }
+                                            setIsOpen={onClose}
+                                            joinEvent={joinEvent}
+                                            cancelEvent={cancelEvent}
+                                            eventId={localEvent?.id}
+                                            scholarId={userId}
+                                            onRefresh={fetchEvents}
+                                            activeTab={activeTab}
+                                        />
+                                    )}
+                                {isStaff &&
+                                    localEvent?.date + " " + localEvent?.end_time <
+                                    date.getCurrentDateAndTime() &&
+                                    participated.length !==
+                                    localEvent?.numberOfParticipants && (
+                                        <button
+                                            onClick={handleOpenConfirmationModal}
+                                            type="button"
+                                            className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition"
+                                        >
+                                            Record
+                                        </button>
+                                    )}
+                            </div>
+                        )}
                 </InputModal>
                 <ConfirmationModal
                     isOpen={isOpenSelectedScholarModal}

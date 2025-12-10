@@ -6,7 +6,7 @@ use PDO;
 
 class Database {
     private $host = "localhost";
-    private $db_name = "tzuchischolarship";
+    private $db_name = "tzu_chi_scholarship";
     private $username = "root";
     private $password = "";
     private $conn;

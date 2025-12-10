@@ -70,11 +70,9 @@
 
 import { useNavigate } from "react-router-dom";
 import "/src/background.css";
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import BASE_URL from "../../config";
 import { useApplicationPeriods } from "../../hooks/useApplicationPeriods";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -163,21 +161,21 @@ function HeroSection() {
                 </div>
             </div>
 
-            <div className="absolute top-[45%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10">
+            <div className="w-[95%] absolute top-[45%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10">
                 <div>
-                    <h1 className="text-6xl italic font-semibold text-center whitespace-pre-wrap">
+                    <h1 className="text-4xl md:text-6xl italic font-semibold text-center whitespace-pre-wrap">
                         Seize the Opportunity, Apply Now!
                     </h1>
-                    <div className="mt-5 flex justify-center gap-5">
+                    <div className="mt-5 flex justify-center gap-2 md:gap-5">
                         <button
                             onClick={handleClick}
-                            className="bg-green-700 hover:bg-green-800 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                            className="bg-green-700 hover:bg-green-800 text-xs md:text-sm text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                         >
                             Apply Now
                         </button>
                         <button
                             onClick={() => navigate("/login/scholar")}
-                            className="w-28 p-2 border-2 border-green-500 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                            className="w-28 p-2 border-2 border-green-500 text-xs md:text-sm rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                         >
                             Login
                         </button>

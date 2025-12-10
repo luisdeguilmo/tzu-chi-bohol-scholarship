@@ -68,7 +68,7 @@ const CoeGradesCard = ({
 
             <div className="relative">
                 <h3
-                    className={`font-bold text-lg leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
+                    className={`font-bold text-lg md:text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
                         isArchived
                             ? "italic text-slate-400 decoration-slate-400"
                             : "text-slate-700"

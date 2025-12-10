@@ -3,12 +3,12 @@ import { useCheckEmail } from "../../../hooks/useCheckEmail";
 import { useAuth } from "../../../context/AuthContext";
 import { useEffect } from "react";
 import { useApplicationForm } from "../../../context/ApplicationFormContext";
+import { isValidContactNumber } from "../../../utils/inputValidations";
+import { useValidateEmail } from "../../../hooks/useValidateEmail";
 
 const validateSection = (section, formData, formConfig) => {
     const errors = {};
     let hasErrors = false;
-
-    // const [section1, section2] = sections;
 
     formConfig[section].forEach((field) => {
         if (
@@ -51,11 +51,13 @@ const NavigationButtons = ({
         user?.user_id ?? null
     );
 
+    const { loading, result, validateEmail } = useValidateEmail();
+
     useEffect(() => {
         refetch();
     }, [formData?.personal_information.email]);
 
-    const checkAndProceed = (e) => {
+    const checkAndProceed = async (e) => {
         e.preventDefault();
 
         if (sections) {
@@ -67,8 +69,6 @@ const NavigationButtons = ({
                 formConfig
             );
 
-            // let hasErrorsInSection2 = false, errors2 = {};
-
             if (section2) {
                 const { errors, hasErrors } = validateSection(
                     section2,
@@ -77,21 +77,46 @@ const NavigationButtons = ({
                 );
 
                 if (hasErrors) {
-                    // Show toast notification for validation errors
                     toast.error("Please fill in all required fields");
-
-                    // You could also highlight the fields with errors here if needed
                     return;
                 }
             }
 
             if (hasErrors) {
-                // Show toast notification for validation errors
                 toast.error("Please fill in all required fields");
-
-                // You could also highlight the fields with errors here if needed
                 return;
             }
+        }
+
+        if (
+            section === "Personal" &&
+            !isValidContactNumber(formData.personal_information.contact_number)
+        ) {
+            toast.error("Invalid contact number.");
+            return;
+        }
+
+        if (
+            section === "Family" &&
+            (!isValidContactNumber(formData.parents_guardian.father_contact) ||
+                !isValidContactNumber(
+                    formData.parents_guardian.mother_contact
+                ) ||
+                !isValidContactNumber(
+                    formData.contact_person.emergency_contact_number
+                ))
+        ) {
+            toast.error("Invalid contact number.");
+            return;
+        }
+
+        if (
+            section === "Family" &&
+            formData.parents_guardian.guardian_contact !== "" &&
+            !isValidContactNumber(formData.parents_guardian.guardian_contact)
+        ) {
+            toast.error("Invalid contact number.");
+            return;
         }
 
         if (section === "Personal") {
@@ -110,8 +135,17 @@ const NavigationButtons = ({
                         ? "Email is already used."
                         : "An application with this email already exists."
                 );
+                return;
+            }
+        }
 
-                // You could also highlight the fields with errors here if needed
+        // FIXED: Properly await the validation result
+        if (section === "Personal") {
+            console.log(formData.personal_information.email);
+            const isValid = await validateEmail(
+                formData.personal_information.email
+            );
+            if (!isValid) {
                 return;
             }
         }
@@ -141,7 +175,6 @@ const NavigationButtons = ({
             }
         }
 
-        // Siblings
         if (section === "Family") {
             if (isThirdFormApplicable && formData.family_members.length === 0) {
                 toast.error(
@@ -151,7 +184,6 @@ const NavigationButtons = ({
             }
         }
 
-        // Sibling who enjoyed/enjoying
         if (section === "Family") {
             if (
                 isFirstFormApplicable &&
@@ -164,7 +196,6 @@ const NavigationButtons = ({
             }
         }
 
-        // Other assistance received
         if (section === "Family") {
             if (
                 isSecondFormApplicable &&
@@ -183,8 +214,6 @@ const NavigationButtons = ({
                 formData.uploaded_files.length === 0
             ) {
                 toast.error("Please fill in all required fields");
-
-                // You could also highlight the fields with errors here if needed
                 return;
             }
         }
@@ -192,34 +221,18 @@ const NavigationButtons = ({
         if (section === "Other Information") {
             const refs = formData.character_reference;
 
-            // If no reference entered
             if (refs.length === 0) {
                 toast.error("Please add at least 1 character reference.");
                 return;
             }
 
-            // If more than 3 references
             if (refs.length > 3) {
                 toast.error(
                     "You can only add a maximum of 3 character references."
                 );
                 return;
             }
-
-            // If fewer than 3 but at least 1
-            // if (refs.length < 3) {
-            //     toast.info(
-            //         "You have added fewer than the recommended 3 character references."
-            //     );
-            // }
         }
-
-        // if (section === "Other Information") {
-        //     if (formData.character_reference.length < 3) {
-        //         toast.error("You must add 3 character references to continue.");
-        //         return;
-        //     }
-        // }
 
         // If validation passes, proceed to next step
         if (!isLast) {
@@ -248,20 +261,21 @@ const NavigationButtons = ({
                 <button
                     className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg shadow-lg"
                     onClick={checkAndProceed}
+                    disabled={loading}
                 >
-                    Next
+                    {loading ? "Validating..." : "Next"}
                 </button>
             ) : (
                 <button
                     className={`px-5 py-2 ${
-                        disabled
+                        disabled || loading
                             ? "bg-green-400"
                             : "bg-green-600 hover:bg-green-700"
                     } text-white text-sm rounded-lg shadow-lg`}
                     onClick={checkAndProceed}
-                    disabled={disabled}
+                    disabled={disabled || loading}
                 >
-                    Submit
+                    {loading ? "Validating..." : "Submit"}
                 </button>
             )}
         </div>

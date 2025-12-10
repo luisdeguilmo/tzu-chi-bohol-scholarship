@@ -20,6 +20,7 @@ import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 import FileUploadFormModal from "../../../components/FileUploadFormModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
+import { Pencil } from "lucide-react";
 
 export default function HomeVisitation() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -171,8 +172,11 @@ export default function HomeVisitation() {
                     onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
-                    buttonLabel={"Set Message"}
                     addButton={true}
+                    button={{
+                        icon: <Pencil className="w-4 h-4 text-white" />,
+                        label: "Set Message",
+                    }}
                     onOpen={setIsMessageModalOpen}
                 />
 

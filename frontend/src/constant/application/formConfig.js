@@ -381,13 +381,14 @@ const formConfig = {
             required: true,
             placeholder: "Select gender",
         },
-        {
-            name: "age",
-            label: "Age",
-            type: "number",
-            required: true,
-            placeholder: "Enter your age",
-        },
+        // {
+        //     name: "age",
+        //     label: "Age",
+        //     type: "text",
+        //     required: true,
+        //     placeholder: "Enter your age",
+        //     validate: "numbersOnly",
+        // },
         {
             name: "birthdate",
             label: "Birthdate",
@@ -605,10 +606,10 @@ const formConfig = {
         {
             name: "father_age",
             label: "Age",
-            type: "number",
+            type: "text",
             required: true,
             placeholder: "Enter age",
-
+            validate: "numbersOnly",
         },
         {
             name: "father_education",
@@ -629,9 +630,10 @@ const formConfig = {
         {
             name: "father_income",
             label: "Monthly Income",
-            type: "number",
+            type: "text",
             required: true,
             placeholder: "Enter monthly income",
+            validate: "numbersOnly",
         },
         {
             name: "father_contact",
@@ -656,6 +658,7 @@ const formConfig = {
             type: "number",
             required: true,
             placeholder: "Enter age",
+            validate: "numbersOnly",
         },
         {
             name: "mother_education",
@@ -676,9 +679,10 @@ const formConfig = {
         {
             name: "mother_income",
             label: "Monthly Income",
-            type: "number",
+            type: "text",
             required: true,
             placeholder: "Enter monthly income",
+            validate: "numbersOnly",
         },
         {
             name: "mother_contact",
@@ -700,10 +704,10 @@ const formConfig = {
         {
             name: "guardian_age",
             label: "Age",
-            type: "number",
+            type: "text",
             required: false,
             placeholder: "Enter age",
-            // validate: "numbersOnly",
+            validate: "numbersOnly",
         },
         {
             name: "guardian_education",
@@ -724,10 +728,10 @@ const formConfig = {
         {
             name: "guardian_income",
             label: "Monthly Income",
-            type: "number",
+            type: "text",
             required: false,
             placeholder: "Enter monthly income",
-            // validate: "numbersOnly",
+            validate: "numbersOnly",
         },
         {
             name: "guardian_contact",

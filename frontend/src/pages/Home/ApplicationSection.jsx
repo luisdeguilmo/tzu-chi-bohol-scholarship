@@ -8,7 +8,7 @@ import {
 
 function ApplicationSection() {
     return (
-        <div className="py-24 bg-white">
+        <div className="py-16 bg-white">
             <NewApplicationForm />
         </div>
     );

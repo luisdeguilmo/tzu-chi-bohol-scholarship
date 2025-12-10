@@ -57,7 +57,7 @@ export const applicationTableHeaders = [
 export const renewalTableHeaders = [
     { name: "Application ID", style: "text-center" },
     { name: "Scholar ID", style: "text-center" },
-    { name: "Applicant", style: "text-center" },
+    { name: "Scholar", style: "text-center" },
     { name: "Date Applied", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
@@ -67,7 +67,17 @@ export const approvedApplicationTableHeaders = [
     { name: "Applicant", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Date Applied", style: "text-center" },
-    { name: "Date Status Changed", style: "text-center" },
+    { name: "Result Date", style: "text-center" },
+    { name: "Action", style: "text-center" },
+];
+
+export const approvedRenewalApplicationTableHeaders = [
+    { name: "Application ID", style: "text-center" },
+    { name: "Scholar ID", style: "text-center" },
+    { name: "Scholar", style: "text-center" },
+    { name: "Status", style: "text-center" },
+    { name: "Date Applied", style: "text-center" },
+    { name: "Result Date", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
 

@@ -82,7 +82,7 @@ const CommunityServiceCard = ({
 
             <div className="relative">
                 <h3
-                    className={`font-bold text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
+                    className={`font-bold text-lg md:text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
                         isArchived
                             ? "italic text-slate-400 decoration-slate-400"
                             : "text-slate-700"
@@ -103,7 +103,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                            className={`text-xs ${isArchived ? "italic" : ""}`}
+                            className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
                             {formatDate(activity.activity_date)}
                         </span>
@@ -120,7 +120,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                           className={`text-xs ${isArchived ? "italic" : ""}`}
+                           className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
                             {formatTime(activity.start_time)} -{" "}
                             {formatTime(activity.end_time)}
@@ -138,7 +138,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                            className={`text-xs ${isArchived ? "italic" : ""}`}
+                            className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
                             {activity.activity_location}
                         </span>
@@ -167,7 +167,7 @@ const CommunityServiceCard = ({
                             />
                         )}
                         <span
-                            className={`px-2 py-1 rounded-lg text-xs font-medium ${
+                            className={`px-2 py-1 mt-[1px] rounded-lg text-xs font-medium ${
                                 activity.activity_status === "Pending"
                                     ? "bg-yellow-100 text-yellow-800"
                                     : activity.activity_status === "Recorded"

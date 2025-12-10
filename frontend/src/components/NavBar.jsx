@@ -28,7 +28,7 @@ function NavLinks({ isMobile = false, onLinkClick }) {
             <ul
                 className={`${
                     isMobile
-                        ? "text-xs last:flex flex-col gap-4"
+                        ? "text-xs last:flex flex-col gap-5"
                         : "flex gap-12 items-center"
                 } sm:text-[15px]`}
             >

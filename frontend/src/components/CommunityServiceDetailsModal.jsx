@@ -164,7 +164,7 @@ const CommunityServiceDetailsModal = React.memo(
                                         setIsRevoked(false);
                                         onClose(false);
                                     }}
-                                    className="absolute top-2 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-100 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                    className="absolute top-2 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-200 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
                                     aria-label="Close modal"
                                 >
                                     <X size={18} />
@@ -178,8 +178,8 @@ const CommunityServiceDetailsModal = React.memo(
                             >
                                 {/* Event Details Grid */}
                                 <div className="p-6 space-y-6">
-                                    <div className="grid grid-cols-2 sm:gap-4 gap-6 text-xs">
-                                        <div className="space-y-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-4 gap-6 text-xs">
+                                        <div className="-mb-3 sm:mb-0 space-y-3">
                                             <div className="flex items-center text-slate-600">
                                                 <Calendar className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
                                                 <span className="text-slate-700 font-medium">

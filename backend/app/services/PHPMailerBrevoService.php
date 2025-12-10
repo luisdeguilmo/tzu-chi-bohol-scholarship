@@ -4,6 +4,12 @@ namespace App\Services;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+try {
+    $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
+    $dotenv->safeLoad();
+} catch (\Exception $e) {
+    error_log('Could not load .env file: ' . $e->getMessage());
+}
 
 class PHPMailerBrevoService
 {
@@ -266,7 +272,8 @@ class PHPMailerBrevoService
     public function sendResetLinkEmail($email, $token)
     {
         // $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
-        $resetLink = 'http://localhost:5173/reset-password?token=' . $token;
+        $allowedOrigin = $_ENV['ALLOWED_ORIGIN'] ?? '*';
+        $resetLink = 'http://' . $allowedOrigin . '/reset-password?token=' . $token;
 
         $subject = 'Password Reset Request';
         $htmlContent =
@@ -290,6 +297,45 @@ class PHPMailerBrevoService
         </p>
         <p style=\"margin-bottom: 32px;\">
             If you did not request to reset your password, simply disregard this email. No changes will be made to your account.
+        </p>
+        <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
+        <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
+        <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">Contact: {$this->contactInfo}</p>
+    </div>";
+
+        return $this->sendEmail($email, $subject, $htmlContent);
+    }
+
+    public function sendEmailVerificationLink($email, $token, $firstName = '', $lastName = '')
+    {
+        $fullName = trim($firstName . ' ' . $lastName);
+        $greeting = $fullName ? "Dear <strong>{$fullName}</strong>," : 'Hello,';
+
+        $allowedOrigin = $_ENV['ALLOWED_ORIGIN'] ?? '*';
+        $verificationLink = 'http://' . $allowedOrigin . '/verify-email?token=' . $token;
+
+        $subject = 'Email Verification - Tzu Chi Scholarship';
+        $htmlContent = "
+    <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
+        <p style=\"margin-bottom: 16px;\">
+            {$greeting}
+        </p>
+        <p style=\"margin-bottom: 16px;\">
+            Thank you for registering with the Tzu Chi Scholarship Program. To complete your registration, please verify your email address.
+        </p>
+        <p style=\"margin-bottom: 8px;\">
+            Click the button below to verify your email:
+        </p>
+        <div style=\"background-color: #f9f9f9; border: 1px solid #ddd; padding: 12px; margin-bottom: 16px;\">
+            <a href=\"{$verificationLink}\" style=\"color: #1a73e8; text-decoration: none; font-weight: bold;\">
+                Verify Your Email Address
+            </a>
+        </div>
+        <p style=\"margin-bottom: 8px;\">
+            Please note that this verification link expires in 24 hours.
+        </p>
+        <p style=\"margin-bottom: 32px;\">
+            If you did not create an account with us, please disregard this email.
         </p>
         <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
         <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>

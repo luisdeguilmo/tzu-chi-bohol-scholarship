@@ -379,20 +379,9 @@ export default function ScholarsAndAllowances() {
                     isLoading={loading}
                     label={"Confirmation"}
                     message={
-                        "This will calculate the allowance for all scholars with Pending status. This action cannot be undone. Proceed?"
+                        "This will calculate the allowance for all scholars. This action cannot be undone. Proceed?"
                     }
                     onClick={handleProcessAllowance}
-                />
-
-                <ConfirmationModal
-                    isOpen={isResetConfirmationModalOpen}
-                    onClose={setIsResetConfirmationModalOpen}
-                    isLoading={isLoading}
-                    label={"Confirmation"}
-                    message={
-                        "You are about to reset all scholars’ allowance status to Pending. This will start a new allowance cycle and cannot be undone. Do you want to continue?"
-                    }
-                    onClick={handleStartNewCycle}
                 />
             </div>
         </div>

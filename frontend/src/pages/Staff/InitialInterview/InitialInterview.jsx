@@ -19,6 +19,7 @@ import { manageApplication } from "../../../services/emailService";
 import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 import FileUploadFormModal from "../../../components/FileUploadFormModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
+import { Pencil } from "lucide-react";
 
 export default function InitialInterview() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -36,7 +37,10 @@ export default function InitialInterview() {
     const { loading, error, applications, fetchApplications } =
         useInitialInterview(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(applications, "profile-picture");
+    const { profilePics, fetchAllPics } = useProfilePicture(
+        applications,
+        "profile-picture"
+    );
 
     useEffect(() => {
         fetchApplications();
@@ -163,8 +167,11 @@ export default function InitialInterview() {
                     onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
-                    buttonLabel={"Set Message"}
                     addButton={true}
+                    button={{
+                        icon: <Pencil className="w-4 h-4 text-white" />,
+                        label: "Set Message",
+                    }}
                     onOpen={setIsMessageModalOpen}
                 />
 

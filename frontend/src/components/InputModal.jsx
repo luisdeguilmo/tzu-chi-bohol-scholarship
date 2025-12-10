@@ -156,7 +156,7 @@ const InputModal = React.memo(
                 <form
                     onSubmit={handleSubmit}
                     className={`
-                        relative bg-white shadow-2xl rounded-sm w-full sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[35%] transition-transform duration-300 ${isOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"} absolute bottom-0 sm:relative sm:bottom-auto flex flex-col ${isScholar ? "h-[90vh]" : "h-auto"}
+                        max-h-[600px] relative bg-white shadow-2xl rounded-sm w-full sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[40%] transition-transform duration-300 ${isOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"} absolute bottom-0 sm:relative sm:bottom-auto flex flex-col ${isScholar ? "h-[90vh]" : "h-auto"}
                     `}
                 >
                     {/* Header */}
@@ -184,7 +184,7 @@ const InputModal = React.memo(
                     {!disabledButton && (
                         <div className="flex rounded-b-sm justify-end gap-2 p-3.5 border-t border-gray-300 bg-gray-50 flex-shrink-0">
                             <button
-                                onClick={onCancel}
+                                onClick={handleClose}
                                 type="button"
                                 className="ml-auto bg-gray-200 text-gray-600 text-sm px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
                             >

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useBatches } from "../../../hooks/useBatches";
 import { useExamination } from "../../../hooks/useExamination";
 import { usePagination } from "../../../hooks/usePagination";
@@ -29,6 +29,12 @@ import FileUploadFormModal from "../../../components/FileUploadFormModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useSettings } from "../../../hooks/useSettings";
+import { DownloadIcon, Eye, Pencil, Plus } from "lucide-react";
+import { useWindowSize } from "../../../hooks/useWindowSize";
+import { TableButtonAction } from "../../../components/TableButtonAction";
+import { UnassignedList } from "./UnassignedList";
+import { BatchesList } from "./BatchesList";
+import { ResultList } from "./ResultList";
 
 export default function Examination() {
     const [isEmailSent, setIsEmailSent] = useState(false);
@@ -54,6 +60,10 @@ export default function Examination() {
     const [isPassingScoreModalOpen, setIsPassingScoreModalOpen] =
         useState(false);
     const [batchName, setBatchName] = useState("");
+    const [tableHeaders, setTableHeaders] = useState([]);
+
+    const size = useWindowSize();
+    const isMobile = size.width < 768;
 
     const {
         setPageNum,
@@ -207,12 +217,6 @@ export default function Examination() {
     const handleSendEmail = async () => {
         const success = await sendExaminationResult(applications);
 
-        // if (status === "passed") {
-        //     success = sendExaminationPassed(applications);
-        // } else if (status === "failed") {
-        //     success = sendExaminationFailed(applications);
-        // }
-
         if (success) {
             setIsConfirmationModalOpen(false);
         }
@@ -231,6 +235,16 @@ export default function Examination() {
         setSelectedBatchInBatches("all");
         setSelectedApplicants([]);
     };
+
+    useMemo(() => {
+        setTableHeaders(
+            activeTab === "Applicants"
+                ? unassignedTableHeaders
+                : activeTab === "Batches"
+                  ? batchesTableHeaders
+                  : resultTableHeaders
+        );
+    }, [activeTab]);
 
     return (
         <PageContent>
@@ -253,23 +267,12 @@ export default function Examination() {
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
                 passingScore={passingScore}
-                addButton={status === "passed" || status === "failed"}
-                buttonLabel={
-                    status === "passed" || status === "failed"
-                        ? "Set Message"
-                        : false
-                }
-                addCreateBatchButton={
-                    activeTab === "Batches" ||
-                    (activeTab === "Result" && status === "all")
-                }
-                onOpen={
-                    activeTab === "Batches"
-                        ? setIsCreateBatchModalOpen
-                        : activeTab === "Result" && status === "all"
-                          ? setIsPassingScoreModalOpen
-                          : setIsMessageModalOpen
-                }
+                addButton={activeTab === "Batches"}
+                button={{
+                    icon: <Plus className="w-4 h-4 text-white" />,
+                    label: "Create Batch",
+                }}
+                onOpen={setIsCreateBatchModalOpen}
             >
                 {activeTab === "Result" && (
                     <div className="flex items-center gap-2">
@@ -308,62 +311,144 @@ export default function Examination() {
                 )}
             </TableToolbar>
 
-            <div className="overflow-x-auto rounded-[4px]">
-                <Table
-                    applications={applications}
-                    tableHeaders={
-                        activeTab === "Applicants"
-                            ? unassignedTableHeaders
-                            : activeTab === "Batches"
-                              ? batchesTableHeaders
-                              : resultTableHeaders
-                    }
-                    hasCheckbox={
-                        activeTab === "Applicants" || activeTab === "Batches"
-                    }
-                    currentItems={currentItems}
-                    selectedItems={selectedApplicants}
-                    selectAllVisible={selectAllVisible}
-                >
-                    {(() => {
-                        switch (activeTab) {
-                            case "Applicants":
-                                return (
-                                    <UnassignedTableRow
-                                        currentItems={currentItems}
-                                        selectedApplicants={selectedApplicants}
-                                        toggleApplicantSelection={
-                                            toggleApplicantSelection
-                                        }
-                                        profilePics={profilePics}
-                                    />
-                                );
-                            case "Batches":
-                                return (
-                                    <BatchesTableRow
-                                        tab={activeTab}
-                                        currentItems={currentItems}
-                                        selectedApplicants={selectedApplicants}
-                                        toggleApplicantSelection={
-                                            toggleApplicantSelection
-                                        }
-                                        profilePics={profilePics}
-                                        onRefresh={
-                                            fetchApplicationsOnBatchesTab
-                                        }
-                                    />
-                                );
-                            default:
-                                return (
-                                    <ResultTableRow
-                                        currentItems={currentItems}
-                                        profilePics={profilePics}
-                                        onOpenModal={handleOpenFileFormModal}
-                                    />
-                                );
+            {applications.length > 0 && (
+                <label className="mb-2 flex items-center gap-2 text-xs tracking-wider text-gray-700">
+                    <input
+                        type="checkbox"
+                        className={`h-3.5 w-3.5 accent-green-600 focus:ring-green-500 border-gray-300 rounded`}
+                        checked={
+                            currentItems?.length > 0 &&
+                            selectedApplicants?.length === currentItems?.length
                         }
-                    })()}
-                </Table>
+                        onChange={selectAllVisible}
+                    />
+                    Select All
+                </label>
+            )}
+
+            <div
+                className={`${isMobile && "flex flex-col gap-2"} overflow-x-auto rounded-[4px]`}
+            >
+                {isMobile ? (
+                    currentItems.map((item, index) => (
+                        <>
+                            {(() => {
+                                switch (activeTab) {
+                                    case "Applicants":
+                                        return (
+                                            <UnassignedList
+                                                index={index}
+                                                item={item}
+                                                tableHeaders={tableHeaders}
+                                                profilePics={profilePics}
+                                                selectedApplicants={
+                                                    selectedApplicants
+                                                }
+                                                toggleApplicantSelection={
+                                                    toggleApplicantSelection
+                                                }
+                                            />
+                                        );
+                                    case "Batches":
+                                        return (
+                                            <BatchesList
+                                                tab={activeTab}
+                                                index={index}
+                                                item={item}
+                                                tableHeaders={tableHeaders}
+                                                profilePics={profilePics}
+                                                selectedApplicants={
+                                                    selectedApplicants
+                                                }
+                                                toggleApplicantSelection={
+                                                    toggleApplicantSelection
+                                                }
+                                                onRefresh={
+                                                    fetchApplicationsOnBatchesTab
+                                                }
+                                            />
+                                        );
+                                    default:
+                                        return (
+                                            <ResultList
+                                                index={index}
+                                                item={item}
+                                                tableHeaders={tableHeaders}
+                                                currentItems={currentItems}
+                                                profilePics={profilePics}
+                                                onOpenModal={
+                                                    handleOpenFileFormModal
+                                                }
+                                            />
+                                        );
+                                }
+                            })()}
+                        </>
+                    ))
+                ) : (
+                    <Table
+                        applications={applications}
+                        tableHeaders={
+                            activeTab === "Applicants"
+                                ? unassignedTableHeaders
+                                : activeTab === "Batches"
+                                  ? batchesTableHeaders
+                                  : resultTableHeaders
+                        }
+                        hasCheckbox={
+                            activeTab === "Applicants" ||
+                            activeTab === "Batches"
+                        }
+                        currentItems={currentItems}
+                        selectedItems={selectedApplicants}
+                        selectAllVisible={selectAllVisible}
+                    >
+                        {(() => {
+                            switch (activeTab) {
+                                case "Applicants":
+                                    return (
+                                        <UnassignedTableRow
+                                            currentItems={currentItems}
+                                            selectedApplicants={
+                                                selectedApplicants
+                                            }
+                                            toggleApplicantSelection={
+                                                toggleApplicantSelection
+                                            }
+                                            profilePics={profilePics}
+                                        />
+                                    );
+                                case "Batches":
+                                    return (
+                                        <BatchesTableRow
+                                            tab={activeTab}
+                                            currentItems={currentItems}
+                                            selectedApplicants={
+                                                selectedApplicants
+                                            }
+                                            toggleApplicantSelection={
+                                                toggleApplicantSelection
+                                            }
+                                            profilePics={profilePics}
+                                            onRefresh={
+                                                fetchApplicationsOnBatchesTab
+                                            }
+                                        />
+                                    );
+                                default:
+                                    return (
+                                        <ResultTableRow
+                                            currentItems={currentItems}
+                                            profilePics={profilePics}
+                                            onOpenModal={
+                                                handleOpenFileFormModal
+                                            }
+                                        />
+                                    );
+                            }
+                        })()}
+                    </Table>
+                )}
 
                 {/* Empty state */}
                 {currentItems.length === 0 && (
@@ -372,7 +457,7 @@ export default function Examination() {
             </div>
 
             <div
-                className={`flex items-center gap-6 ml-4 ${
+                className={`md:flex items-center gap-6 ml-4 ${
                     applications.length > 0 && "mt-4"
                 }`}
             >
@@ -381,7 +466,6 @@ export default function Examination() {
                         applications={applications}
                         isModalOpen={isModalOpen}
                         setIsModalOpen={setIsModalOpen}
-                        // handleSendSchedule={handleSendSchedule}
                         selectedBatchInBatches={selectedBatchInBatches}
                         isOpen={isOpen}
                         setIsOpen={setIsOpen}
@@ -395,46 +479,8 @@ export default function Examination() {
                     />
                 )}
 
-                {/* {activeTab === "Result" &&
-                    (status === "passed" || status === "failed") && (
-                        <SendEmailButton
-                            isEmailSent={isEmailSent}
-                            isLoading={isLoading}
-                            onSendSchedule={handleSendEmail}
-                        />
-                    )} */}
-
                 {activeTab === "Result" && (
                     <div className="flex items-center gap-2">
-                        {/* <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-600">
-                                Notify Applicants:
-                            </span>
-                            <select
-                                // value={status}
-                                // onChange={(e) => setStatus(e.target.value)}
-                                className="px-3 py-1 accent-green-700 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
-                            >
-                                <option
-                                    className="hover:bg-green-700 accent-green-700"
-                                    value="all"
-                                >
-                                    Notify Passed Applicants
-                                </option>
-                                <option
-                                    className="hover:bg-green-700"
-                                    value="attended"
-                                >
-                                    Notify Failed Applicants
-                                </option>
-                                <option
-                                    className="hover:bg-green-700"
-                                    value="not_attended"
-                                >
-                                    Notify All
-                                </option>
-                            </select>
-                        </div> */}
                         <SendEmailButton
                             onClick={() => setIsConfirmationModalOpen(true)}
                             isLoading={isLoading}
@@ -442,6 +488,45 @@ export default function Examination() {
                         />
                     </div>
                 )}
+
+                <div className="flex items-center justify-between">
+                    {activeTab === "Batches" &&
+                        selectedBatchInBatches === "all" && (
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setIsMessageModalOpen(true)}
+                                    title={"Set Message"}
+                                    className="p-2 bg-green-600 text-xs rounded-lg hover:bg-green-700 transition-colors flex items-center text-white"
+                                >
+                                    <Pencil className="w-4 h-4 mr-1" />
+                                    Set Message
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        setIsPassingScoreModalOpen(true)
+                                    }
+                                    title={"Set Message"}
+                                    className="p-2 bg-blue-600 text-xs rounded-lg hover:bg-blue-700 transition-colors flex items-center text-white"
+                                >
+                                    <Pencil className="w-4 h-4 mr-1" />
+                                    Set Passing Score
+                                </button>
+                            </div>
+                        )}
+
+                    <div className="block md:hidden">
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPrevious={goToPreviousPage}
+                            onNext={goToNextPage}
+                            indexOfFirstItem={indexOfFirstItem}
+                            indexOfLastItem={indexOfLastItem}
+                            totalItems={filteredApplications.length}
+                            itemLabel={"applications"}
+                        />
+                    </div>
+                </div>
 
                 {filteredApplications.length > 0 && activeTab !== "Result" && (
                     <ManageApplicants
@@ -459,7 +544,7 @@ export default function Examination() {
                 )}
 
                 {filteredApplications.length > 0 && (
-                    <div className="flex justify-between items-center ml-auto">
+                    <div className="hidden md:flex justify-between items-center ml-auto">
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}

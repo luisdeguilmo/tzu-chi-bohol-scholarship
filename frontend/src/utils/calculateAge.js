@@ -2,6 +2,10 @@ export function calculateAge(birthdate) {
     const dob = new Date(birthdate);
     const today = new Date();
 
+    if (today.getFullYear() === dob.getFullYear()) {
+        return null;
+    }
+
     let age = today.getFullYear() - dob.getFullYear();
 
     // Check if birthday has occurred yet this year

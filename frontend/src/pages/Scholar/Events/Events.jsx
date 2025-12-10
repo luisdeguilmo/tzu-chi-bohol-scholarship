@@ -189,6 +189,8 @@ export default function Events() {
                 fetchEvents={fetchEvents}
                 activeTab={activeTab}
                 isScholar={true}
+                firstName={user.first_name}
+                lastName={user.last_name}
             />
         </div>
     );

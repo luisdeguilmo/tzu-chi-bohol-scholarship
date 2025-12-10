@@ -73,7 +73,7 @@ const ChangePasswordForm = ({ userId }) => {
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                         placeholder="Current Password"
-                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                         // disabled={disabled}
                     />
@@ -107,7 +107,7 @@ const ChangePasswordForm = ({ userId }) => {
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="New Password"
-                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                         // disabled={disabled}
                     />
@@ -143,7 +143,7 @@ const ChangePasswordForm = ({ userId }) => {
                         value={confirmNewPassword}
                         onChange={(e) => setConfirmNewPassword(e.target.value)}
                         placeholder="Confirm New Password"
-                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full border text-xs border-gray-300 rounded-md px-2 py-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                         // disabled={disabled}
                     />
@@ -167,7 +167,7 @@ const ChangePasswordForm = ({ userId }) => {
 
             <button
                 type="submit"
-                className="inline-flex items-center text-sm px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+                className="inline-flex items-center text-sm px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
             >
                 {loading ? "Processing..." : "Change Password"}
             </button>

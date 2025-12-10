@@ -1,11 +1,6 @@
 <?php
 namespace App\Controllers;
 
-// header('Access-Control-Allow-Origin: *');
-// header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
-// header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-// header('Content-Type: application/json');
-
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/ApplicationPeriodModel.php';
@@ -20,6 +15,7 @@ try {
     error_log('Could not load .env file: ' . $e->getMessage());
 }
 
+use App\Models\EventParticipantsModel;
 use App\Models\EventsModel;
 use App\Models\NotificationsModel;
 use App\Models\ScholarModel;
@@ -146,23 +142,29 @@ class EventsController
             $notification = new NotificationsModel();
             $scholarModel = new ScholarModel();
 
+            $scholars = $scholarModel->getAllScholars();
+
+            // foreach ($scholars as $scholar) {
+            //     if (!$emailService->sendNewEventEmail($scholar, $data['event'])) {
+            //         throw new \Exception('Failed to send email');
+            //     }
+            // }
+
             $eventId = $event->createEvent($data['event']);
 
             if (!$eventId) {
                 throw new \Exception('Failed to save event information');
             }
 
+            // if ($data['event']['event_type'] === 'mandatory') {
+            //     if (!$event->makeAllScholarsAsParticipants($eventId)) {
+            //         throw new \Exception('Failed to save event information');
+            //     }
+            // }
+
             if ($data['event']['event_type'] === 'mandatory') {
-                if (!$event->makeAllScholarsAsParticipants($eventId)) {
-                    throw new \Exception('Failed to save event information');
-                }
-            }
-
-            $scholars = $scholarModel->getAllScholars();
-
-            foreach ($scholars as $scholar) {
-                if (!$emailService->sendNewEventEmail($scholar, $data['event'])) {
-                    throw new \Exception('Failed to send email');
+                foreach ($data['event']['selected_scholars'] as $scholarId) {
+                    $event->addToEventParticipant($scholarId, $eventId);
                 }
             }
 
@@ -206,6 +208,7 @@ class EventsController
 
             // Process application period data
             $event = new EventsModel();
+            $eventParticipants = new EventParticipantsModel();
             // $notification = new NotificationsModel();
             $scholarModel = new ScholarModel();
 
@@ -218,8 +221,9 @@ class EventsController
             $event->updateEvent($data['event']);
 
             if ($data['event']['event_type'] === 'mandatory') {
-                if (!$event->makeAllScholarsAsParticipants($eventId)) {
-                    throw new \Exception('Failed to save event information');
+                $eventParticipants->deleteEventParticipants($eventId);
+                foreach ($data['event']['selected_scholars'] as $scholarId) {
+                    $event->addToEventParticipant($scholarId, $eventId);
                 }
             }
 

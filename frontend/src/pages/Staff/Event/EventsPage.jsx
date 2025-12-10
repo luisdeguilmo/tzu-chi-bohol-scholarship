@@ -10,8 +10,9 @@ import { date } from "../../../utils/getDateAndTime";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { eventTableHeaders } from "../../../constant/tableHeaders";
-import { ClipboardEdit, Eye, PenLine } from "lucide-react";
+import { ClipboardEdit, Eye, PenLine, Plus } from "lucide-react";
 import EventFormModal from "./EventFormModal";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function EventsPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -25,6 +26,7 @@ export default function EventsPage() {
     const [status, setStatus] = useState("all");
     const [action, setAction] = useState("create");
 
+    const { user } = useAuth();
     const { events, fetchEvents } = useEventsOnStaff(year, status, sortBy);
 
     useEffect(() => {
@@ -98,6 +100,10 @@ export default function EventsPage() {
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     addButton={true}
+                    button={{
+                        icon: <Plus className="w-4 h-4 text-white" />,
+                        label: "Add New Event",
+                    }}
                 >
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-600">
@@ -272,6 +278,8 @@ export default function EventsPage() {
                 onClose={setIsOpenEventDetailsModal}
                 event={selectedEvent}
                 isStaff={true}
+                firstName={user.first_name}
+                lastName={user.last_name}
                 fetchEvents={handleRefresh}
             />
         </div>

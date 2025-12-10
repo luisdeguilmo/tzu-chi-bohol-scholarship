@@ -6,7 +6,7 @@ const TabNavigation = ({ tabs, handleTabChange, activeTab }) => {
                     <button
                         key={index}
                         onClick={() => handleTabChange(tab.value)}
-                        className={`px-4 py-2 rounded-lg text-xs md:text-sm transition-all duration-200 ${
+                        className={`px-4 py-2 rounded-lg text-[10px] md:text-sm transition-all duration-200 ${
                             activeTab === tab.value
                                 ? "bg-green-600 text-white shadow-md"
                                 : "bg-transparent text-gray-600 hover:bg-gray-100"

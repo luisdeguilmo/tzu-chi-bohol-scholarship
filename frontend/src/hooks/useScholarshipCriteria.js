@@ -9,28 +9,28 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
     const [error, setError] = useState(null);
     const [strands, setStrands] = useState([]);
 
-    const fetchStrands = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get(
-                `${BASE_URL}/app/views/strands.php`
-            );
+    // const fetchStrands = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await axios.get(
+    //             `${BASE_URL}/app/views/strands.php`
+    //         );
 
-            const decodedStrands =
-                response.data.data?.map((strand) => ({
-                    ...strand,
-                    strand: decodeHTMLEntities(strand.strand),
-                })) || [];
+    //         const decodedStrands =
+    //             response.data.data?.map((strand) => ({
+    //                 ...strand,
+    //                 strand: decodeHTMLEntities(strand.strand),
+    //             })) || [];
 
-            // Fix 2: Access the correct property in the response
-            setStrands(decodedStrands);
-            setLoading(false);
-        } catch (err) {
-            console.error("Error fetching strands data:", err);
-            setError("Failed to load strands data. Please try again.");
-            setLoading(false);
-        }
-    };
+    //         // Fix 2: Access the correct property in the response
+    //         setStrands(decodedStrands);
+    //         setLoading(false);
+    //     } catch (err) {
+    //         console.error("Error fetching strands data:", err);
+    //         setError("Failed to load strands data. Please try again.");
+    //         setLoading(false);
+    //     }
+    // };
 
     const fetchItems = async () => {
         try {
@@ -106,9 +106,9 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
         }
     };
 
-    useEffect(() => {
-        fetchStrands();
-    }, []);
+    // useEffect(() => {
+    //     fetchStrands();
+    // }, []);
 
     useEffect(() => {
         fetchItems();
@@ -122,6 +122,6 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
         fetchItems,
         updateItem,
         deleteItem,
-        fetchStrands,
+        // fetchStrands,
     };
 };

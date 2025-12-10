@@ -673,6 +673,7 @@ import { useAuth } from "../../../context/AuthContext";
 import InputModal from "../../../components/InputModal";
 import BASE_URL from "../../../config";
 import { useAccountStatus } from "../../../hooks/useAccountStatus";
+import { formatTime } from "../../../utils/formatTime";
 
 function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     const [activityName, setActivityName] = useState("");
@@ -1120,43 +1121,65 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                         />
                     </label>
 
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                    <label className="relative py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                         Date
+                        {/* Fake placeholder */}
+                        {/* {!activityDate && (
+                            <span className="pointer-events-none absolute left-2.5 top-[34px] text-gray-400 text-xs">
+                                Date
+                            </span>
+                        )} */}
                         <input
                             type="date"
                             required
                             value={activityDate}
+                            placeholder="Date"
+                            onClick={(e) => e.target.showPicker()}
                             onChange={(e) =>
                                 handleChange(setActivityDate, e.target.value)
                             }
-                            className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full border text-xs bg-white text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         />
                     </label>
 
-                    <div className="flex justify-between gap-1.5">
-                        <label className="w-[48%] py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                    <div className="flex justify-between items-end gap-2">
+                        <label className="relative flex-1 pb-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                             Start Time
+                            {startTime && (
+                                <span className="pointer-events-none absolute left-2.5 top-[28px] text-gray-800 text-xs">
+                                    {formatTime(startTime)}
+                                </span>
+                            )}
                             <input
                                 type="time"
                                 required
                                 value={startTime}
+                                placeholder="Start time"
+                                onClick={(e) => e.target.showPicker()}
                                 onChange={(e) =>
                                     handleChange(setStartTime, e.target.value)
                                 }
-                                className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs text-gray-800 bg-white border-gray-300 rounded-md py-[9px] px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
 
-                        <label className="w-[48%] py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                        <label className="relative flex-1 pb-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                             End Time
+                            {endTime && (
+                                <span className="pointer-events-none absolute left-2.5 top-[28px] text-gray-800 text-xs">
+                                    {formatTime(endTime)}
+                                </span>
+                            )}
                             <input
                                 type="time"
                                 required
                                 value={endTime}
+                                placeholder="End time"
+                                onClick={(e) => e.target.showPicker()}
                                 onChange={(e) =>
                                     handleChange(setEndTime, e.target.value)
                                 }
-                                className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="w-full border text-xs text-gray-800 bg-white border-gray-300 rounded-md py-[9px] px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
                     </div>

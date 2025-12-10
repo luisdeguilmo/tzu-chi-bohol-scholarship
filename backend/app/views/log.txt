@@ -1,0 +1,5 @@
+{"applicantIds":[8225004],"batch":"Batch 1"}
+{"applicantIds":[8225004],"batch":"Batch 1"}
+{"account_id":8225004,"status":"not_attended"}
+{"account_id":8225004,"status":"attended"}
+{"applicantIds":[2555632],"batch":"Unassigned"}

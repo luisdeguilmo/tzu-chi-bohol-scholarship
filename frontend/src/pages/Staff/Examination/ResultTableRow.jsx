@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import { Upload } from "lucide-react";
-import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 
 const ResultTableRow = ({ currentItems, profilePics, onOpenModal }) => {
-    
     const [edit, setEdit] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [score, setScore] = useState(0);
@@ -76,11 +74,6 @@ const ResultTableRow = ({ currentItems, profilePics, onOpenModal }) => {
                                : "bg-yellow-100 text-yellow-800"
                      }`}
                         >
-                            {/* {info.score >= 50 && info.score !== null
-                                ? "Passed"
-                                : info.score < 50 && info.score !== null
-                                ? "Failed"
-                                : "Pending"} */}
                             {info.is_examination_passed
                                 ? "Passed"
                                 : info.is_examination_failed

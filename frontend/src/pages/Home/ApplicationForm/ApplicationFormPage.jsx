@@ -447,8 +447,6 @@ function ApplicationForm({ includeRequirements = true }) {
         submitStudentData();
     };
 
-    console.log(formData);
-
     // Render form step components
     const renderStep = () => {
         switch (currentStep) {

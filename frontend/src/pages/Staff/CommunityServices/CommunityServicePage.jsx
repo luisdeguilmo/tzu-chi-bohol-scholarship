@@ -88,7 +88,8 @@ const CommunityServicePage = () => {
     };
 
     const handleRefresh = () => {
-        setSelectedItems([]);
+        // setSelectedItems([]);
+        fetchScholars(year, month, status, sortBy);
     };
 
     return (

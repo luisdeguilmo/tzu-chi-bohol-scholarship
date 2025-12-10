@@ -193,10 +193,10 @@ function Accordion() {
                     <ul
                         className={`mt-6 mb-4 list-none list-inside text-xs md:text-sm space-y-2 text-gray-600 ${
                             courseLength <= 10
-                                ? "columns-1"
+                                ? "md:columns-1 columns-1"
                                 : courseLength <= 20
-                                  ? "columns-2"
-                                  : "columns-3"
+                                  ? "md:columns-2 columns-1"
+                                  : "md:columns-3 columns-1"
                         }`}
                     >
                         {courses.map((course, index) => (

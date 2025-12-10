@@ -278,7 +278,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
             isLoading={isSubmitting}
         >
             <div>
-                <div className="py-4 overflow-y-auto scroll-smooth h-[400px]">
+                <div className="py-4 overflow-y-auto scroll-smooth max-h-[400px]">
                     <div className="px-8 grid grid-cols-1 gap-2">
                         {/* <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                             Year Level
@@ -357,7 +357,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                     </label>
 
                     {filePreviews.length > 0 && (
-                        <ul className="px-8 mt-2 w-full text-sm text-gray-700 grid md:grid-cols-2 gap-2">
+                        <ul className="px-8 mt-2 w-full text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2">
                             {filePreviews.map((filePreview, index) => (
                                 <li
                                     key={

@@ -14,7 +14,7 @@ function CoaGradesModal({ scholarId, isOpen, onClose }) {
 
     useEffect(() => {
         if (scholarId) {
-            fetchSubmissions();
+            fetchSubmissions("all", scholarId);
         }
     }, [scholarId]);
 

@@ -82,7 +82,7 @@ const EventCard = ({
 
             <div className="relative">
                 <h3
-                    className={`font-bold text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
+                    className={`font-bold text-lg md:text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
                         isArchived
                             ? "italic text-slate-400 decoration-slate-400"
                             : "text-slate-700"
@@ -99,13 +99,11 @@ const EventCard = ({
                     >
                         <Calendar
                             className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived
-                                    ? "text-slate-400"
-                                    : "text-gray-600"
+                                isArchived ? "text-slate-400" : "text-gray-600"
                             }`}
                         />
                         <span
-                            className={`text-xs ${isArchived ? "italic" : ""}`}
+                            className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
                             {formatDate(event.date)}
                         </span>
@@ -118,13 +116,11 @@ const EventCard = ({
                     >
                         <Clock
                             className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived
-                                    ? "text-slate-400"
-                                    : "text-gray-600"
+                                isArchived ? "text-slate-400" : "text-gray-600"
                             }`}
                         />
                         <span
-                            className={`text-xs ${isArchived ? "italic" : ""}`}
+                            className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
                             {formatTime(event.start_time)} -{" "}
                             {formatTime(event.end_time)}
@@ -138,13 +134,11 @@ const EventCard = ({
                     >
                         <MapPin
                             className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived
-                                    ? "text-slate-400"
-                                    : "text-gray-600"
+                                isArchived ? "text-slate-400" : "text-gray-600"
                             }`}
                         />
                         <span
-                            className={`text-xs truncate ${isArchived ? "italic" : ""}`}
+                            className={`text-xs mt-[1px] truncate ${isArchived ? "italic" : ""}`}
                         >
                             {event.event_location}
                         </span>
@@ -157,25 +151,31 @@ const EventCard = ({
                     >
                         <Users
                             className={`w-4 h-4 mr-2 ${
-                                isArchived
-                                    ? "text-slate-400"
-                                    : "text-gray-600"
+                                isArchived ? "text-slate-400" : "text-gray-600"
                             }`}
                         />
                         <span
-                            className={`text-xs ${isArchived ? "italic" : ""}`}
+                            className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
-                            {/* {event.numberOfParticipants}{" "}
-                            {event.date > dateToday &&
-                            event.numberOfParticipants < 2
-                                ? "Participant"
+                            {event.numberOfParticipants}{" "}
+                            {event.event_type === "optional"
+                                ? event.date > dateToday &&
+                                  event.numberOfParticipants < 2
+                                    ? `/ ${event.participant_limit} Participant`
+                                    : event.date > dateToday &&
+                                        event.numberOfParticipants > 1
+                                      ? `/ ${event.participant_limit} Participants`
+                                      : `/ ${event.participant_limit} Participated`
                                 : event.date > dateToday &&
-                                    event.numberOfParticipants > 1
-                                  ? "Participants"
-                                  : "Participated"} */}
-                            {event.numberOfParticipants}
+                                    event.numberOfParticipants < 2
+                                  ? `Participant`
+                                  : event.date > dateToday &&
+                                      event.numberOfParticipants > 1
+                                    ? `Participants`
+                                    : `Participated`}
+                            {/* {event.numberOfParticipants}
                             {" / "}
-                            {event.participant_limit} Participants
+                            {event.participant_limit} Participants */}
                         </span>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ ob_start();
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Models\ApplicantModel;
+use App\Models\ApplicationRecordsModel;
 
 header('Content-Type: application/json; charset=UTF-8');
 
@@ -12,6 +13,7 @@ try {
     // echo json_encode(["personalInfo" => $data]);
 
     $applicant = new ApplicantModel();
+    $applicationRecord = new ApplicationRecordsModel();
 
     // Get filter parameters from the URL
     $application_status = $_GET['application_status'] ?? null;

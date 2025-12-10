@@ -990,6 +990,10 @@ export const generateExcel = () => {
         const header2Row = worksheet.addRow([
             "BY SCHOOL / COURSE / YEAR GRADUATED",
         ]);
+        // lw
+        // if (schoolYear === "all_years") {
+
+        // } 
         const header3Row = worksheet.addRow([
             "S.Y. " + schoolYear === "all_years" ? "All" : schoolYear,
         ]);

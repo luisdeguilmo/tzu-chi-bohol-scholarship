@@ -135,7 +135,7 @@ export default function CoeGrades() {
         <div className="min-h-screen bg-gray-50">
             <div className=" bg-white shadow-sm border-b border-gray-200">
                 <div className="px-4 py-4">
-                    <h2 className="pt-2 text-xl text-slate-700 font-bold mb-4">
+                    <h2 className="pt-2 text-lg sm:text-xl text-slate-700 font-bold mb-4">
                         Certificate of Enrollment and Grades
                     </h2>
 
@@ -224,7 +224,7 @@ export default function CoeGrades() {
             {/* Add Button */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="p-4 fixed bottom-10 xl:right-28 right-14 bg-green-600 text-white rounded-full transition-colors flex justify-center items-center shadow-lg hover:bg-green-700" // Changed from green to blue
+                className="p-4 fixed bottom-10 right-12 md:right-16 xl:right-28 bg-green-600 text-white rounded-full transition-colors flex justify-center items-center shadow-lg hover:bg-green-700" // Changed from green to blue
             >
                 <Plus className="w-4 h-4 text-white" />
             </button>

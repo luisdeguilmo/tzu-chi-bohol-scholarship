@@ -64,7 +64,12 @@ const UnassignedTableRow = ({
                     </td>
                     <td className="py-2 whitespace-nowrap font-medium">
                         <button
-                            onClick={() => viewPdf(info.application_id)}
+                            onClick={() =>
+                                viewPdf({
+                                    applicationId: item.application_id,
+                                    scholarId: null,
+                                })
+                            }
                             className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
                         >
                             <svg
@@ -75,13 +80,13 @@ const UnassignedTableRow = ({
                                 stroke="currentColor"
                             >
                                 <path
-                                    stroke-linecap="round"
+                                    strokeLinecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                                 />
                                 <path
-                                    stroke-linecap="round"
+                                    strokeLinecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="2"
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"

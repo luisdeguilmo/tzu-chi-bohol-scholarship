@@ -36,16 +36,16 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                                 <h3 className="text-gray-700 text-sm font-bold">
                                     {activity.activity_name}
                                 </h3>
-                                <div className="mt-2 flex flex-col md:flex-row gap-2 md:gap-6">
-                                    <div className="flex gap-1.5">
+                                <div className="mt-2 flex flex-col md:flex-row gap-2.5 md:gap-6">
+                                    <div className="flex gap-2">
                                         <Calendar className="w-4 h-4 text-gray-500" />
-                                        <p className="text-xs text-gray-600">
+                                        <p className="text-xs mt-[1px] text-gray-600">
                                             {formatDate(activity.activity_date)}
                                         </p>
                                     </div>
-                                    <div className="flex gap-1.5">
+                                    <div className="flex gap-2">
                                         <Clock className="w-4 h-4 text-gray-500" />
-                                        <p className="text-xs text-gray-600">
+                                        <p className="text-xs mt-[1px] text-gray-600">
                                             {formatTime(
                                                 activity.activity_start_time
                                             )}{" "}
@@ -55,9 +55,9 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                                             )}
                                         </p>
                                     </div>
-                                    <div className="flex gap-1.5">
+                                    <div className="flex gap-2">
                                         <MapPin className="w-4 h-4 text-gray-500" />
-                                        <p className="text-xs text-gray-600">
+                                        <p className="text-xs mt-[1px] text-gray-600">
                                             {activity.activity_location}
                                         </p>
                                     </div>
@@ -72,7 +72,7 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                         <h4 className="text-lg font-medium text-gray-900 mb-2">
                             You haven’t participated in any activities recently.
                         </h4>
-                        <p className="text-sm text-gray-500 mb-4">
+                        <p className="text-xs md:text-sm text-gray-500 mb-4">
                             Recent activities like community service submissions
                             and event participation will appear here.
                         </p>
