@@ -128,7 +128,6 @@ export const useRecordHours = () => {
 
             if (data.success) {
                 toast.success("Recorded Successfully");
-                console.log("Recorded Successfully");
                 // onRefresh(activeTab, year, month);
                 return true;
             }

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import BASE_URL from "../../../config";
 import InputModal from "../../../components/InputModal";
 import { formatTime } from "../../../utils/formatTime";
+import { numbersOnly } from "../../../utils/inputValidations";
 import { useScholars } from "../../../hooks/useScholars";
 
 const EventFormModal = React.memo(
@@ -42,8 +43,6 @@ const EventFormModal = React.memo(
                 );
             }
         }, [event, action]);
-
-        console.log(action);
 
         const handleAddEvent = async () => {
             // Create the data structure that matches your backend expectations
@@ -185,12 +184,6 @@ const EventFormModal = React.memo(
 
         const today = new Date().toISOString().split("T")[0]; // Current date in YYYY-MM-DD format
 
-        console.log(selectedScholars);
-
-        // useMemo(() => {
-
-        // }, []);
-
         return (
             <InputModal
                 label={action === "create" ? "New Event" : "Edit Event"}
@@ -212,13 +205,12 @@ const EventFormModal = React.memo(
                             Date
                         </label>
                         <input
-                            d
                             type="date"
                             min={today}
                             value={eventDate}
                             onChange={(e) => setEventDate(e.target.value)}
                             onClick={(e) => e.target.showPicker()}
-                            placeholder="Start Date"
+                            placeholder="yyyy-mm-dd"
                             className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                             required
                             disabled={disabled}
@@ -240,7 +232,7 @@ const EventFormModal = React.memo(
                                 value={startTime}
                                 onChange={(e) => setStartTime(e.target.value)}
                                 onClick={(e) => e.target.showPicker()}
-                                placeholder="Start Time"
+                                placeholder="--:-- --"
                                 className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                                 disabled={disabled}
@@ -261,7 +253,7 @@ const EventFormModal = React.memo(
                                 value={endTime}
                                 onChange={(e) => setEndTime(e.target.value)}
                                 onClick={(e) => e.target.showPicker()}
-                                placeholder="End Time"
+                                placeholder="--:-- --"
                                 className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                                 disabled={disabled}
@@ -308,12 +300,13 @@ const EventFormModal = React.memo(
                                 Participant Limit
                             </label>
                             <input
-                                type="number"
+                                type="text"
                                 min={1}
                                 value={participantLimit}
-                                onChange={(e) =>
-                                    setParticipantLimit(e.target.value)
-                                }
+                                onChange={(e) => {
+                                    const value = numbersOnly(e.target.value);
+                                    setParticipantLimit(value);
+                                }}
                                 placeholder="Enter participant limit"
                                 className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required

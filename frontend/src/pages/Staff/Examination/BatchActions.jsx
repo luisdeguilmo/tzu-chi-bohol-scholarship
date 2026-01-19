@@ -6,7 +6,6 @@ export default function BatchActions({
     applications,
     isModalOpen,
     setIsModalOpen,
-    // handleSendSchedule,
     selectedBatchInBatches,
     setIsOpen,
     onSuccess,

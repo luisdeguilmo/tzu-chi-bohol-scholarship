@@ -3,3 +3,5 @@
 {"account_id":8225004,"status":"not_attended"}
 {"account_id":8225004,"status":"attended"}
 {"applicantIds":[2555632],"batch":"Unassigned"}
+{"purpose":"entrance_examination","batch_name":"Batch 3"}
+{"purpose":"orientation","batch_name":"Batch 2"}

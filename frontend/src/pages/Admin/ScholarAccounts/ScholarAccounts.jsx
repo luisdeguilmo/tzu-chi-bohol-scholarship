@@ -27,7 +27,8 @@ const ScholarAccounts = () => {
     const { loading, scholars, createScholarAccount, fetchScholars } =
         useScholarAccounts(activeTab);
 
-    const { loading: isLoading, updateScholarAccountStatus } = useScholarAccounts();
+    const { loading: isLoading, updateScholarAccountStatus } =
+        useScholarAccounts();
 
     const { profilePics, fetchAllPics } = useProfilePicture(
         scholars,
@@ -39,9 +40,6 @@ const ScholarAccounts = () => {
         fetchAllPics();
     }, [activeTab]);
 
-    console.log(scholars);
-    console.log(selectedScholars);
-
     // Toggle scholar selection
     const toggleScholarSelection = (scholarId) => {
         setSelectedScholars((prev) => {
@@ -51,7 +49,6 @@ const ScholarAccounts = () => {
                 return [...prev, scholarId];
             }
         });
-        console.log("Selected Scholars:", selectedScholars);
     };
 
     // Select all visible scholars

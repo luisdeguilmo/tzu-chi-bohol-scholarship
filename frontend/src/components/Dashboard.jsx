@@ -56,7 +56,7 @@ function QuickOverview() {
         }
     }, [dashboardData.hasSubmittedLivingInfo]);
 
-    console.log(dashboardData);
+    console.log(user);
 
     return (
         <>
@@ -69,7 +69,7 @@ function QuickOverview() {
                                 Welcome back,{" "}
                                 {user.type === "admin"
                                     ? user.name
-                                    : dashboardData.userName}
+                                    : user.first_name}
                                 !
                             </h2>
                             <p className="text-[10px] md:text-xs text-white">

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import InputModal from "./InputModal";
+import { formatCurrency } from "../utils/formatCurrency";
+import { all } from "axios";
 
 function ConfirmationModal({
     isOpen,
@@ -7,16 +9,16 @@ function ConfirmationModal({
     isLoading,
     label,
     message,
-    applicant,
     action = "",
     onClick,
     removeBackground = false,
-    onSuccess,
     feedback,
     setFeedback,
     deactivationReason,
     setDeactivationReason,
     isScholarAccount = false,
+    isForProcessAllowance = false,
+    allowanceSettings = null,
 }) {
     const resetFields = () => {
         if (action === "reject") {
@@ -43,7 +45,47 @@ function ConfirmationModal({
         >
             <div className={`p-4`}>
                 <div>
-                    <p className="py-2.5 text-justify text-sm text-gray-600">
+                    {isForProcessAllowance && (
+                        <>
+                            <h2 className="text-sm font-semibold text-gray-700">
+                                Process Allowance for December
+                            </h2>
+                            <p className="py-2.5 text-justify text-xs text-gray-600">
+                                This will calculate the allowance for all
+                                scholars using the following rules:
+                            </p>
+                            <p className="mt-1 mb-1 font-bold text-xs text-gray-700">
+                                Allowance
+                            </p>
+                            <ul className="list-disc pl-5 text-xs text-gray-600">
+                                <li>
+                                    Maximum hours counted per month:{" "}
+                                    {allowanceSettings?.maximum_hours || 0}{" "}
+                                    hours
+                                </li>
+                                <li>
+                                    Amount per hour: ₱
+                                    {allowanceSettings?.amount_per_hour || 0}
+                                </li>
+                                <li>
+                                    Maximum allowance:{" "}
+                                    {formatCurrency(
+                                        allowanceSettings?.maximum_hours *
+                                            allowanceSettings?.amount_per_hour ||
+                                            0
+                                    )}
+                                </li>
+                            </ul>
+                            <p className="mt-4 mb-1 font-bold text-xs text-gray-700">
+                                Other Allowances
+                            </p>
+                            <ul className="mb-1 list-disc pl-5 text-xs text-gray-600">
+                                <li>Transportation Allowance</li>
+                                <li>Load Allowance</li>
+                            </ul>
+                        </>
+                    )}
+                    <p className="py-2.5 text-justify text-xs text-gray-600">
                         {message}
                     </p>
                     {action === "reject" && (

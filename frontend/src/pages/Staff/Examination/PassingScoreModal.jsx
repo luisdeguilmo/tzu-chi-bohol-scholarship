@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useSettings } from "../../../hooks/useSettings";
+import { numbersOnly } from "../../../utils/inputValidations";
 import { useEffect, useState } from "react";
 
 const PassingScoreModal = ({
@@ -56,12 +56,15 @@ const PassingScoreModal = ({
                     <label className="py-3 flex flex-col gap-[1px] text-gray-600 text-xs">
                         Passing Score
                         <input
-                            type="number"
+                            type="text"
                             placeholder={"Enter passing score"}
                             min={0}
                             value={newPassingScore}
                             required
-                            onChange={(e) => setNewPassingScore(e.target.value)}
+                            onChange={(e) => {
+                                const value = numbersOnly(e.target.value);
+                                setNewPassingScore(value);
+                            }}
                             className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         />
                     </label>

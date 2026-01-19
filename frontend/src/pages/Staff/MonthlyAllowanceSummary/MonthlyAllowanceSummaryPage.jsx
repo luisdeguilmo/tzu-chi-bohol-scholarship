@@ -31,8 +31,6 @@ export default function MonthlyAllowanceSummaryPage() {
         fetchAllowanceCycles();
     }, [month, year]);
 
-    console.log(allowanceCycles);
-
     // Filter data based on search term
     const filteredAllowanceCycles = allowanceCycles.filter((cycle) => {
         const term = searchTerm.trim().toLowerCase();
@@ -137,10 +135,10 @@ export default function MonthlyAllowanceSummaryPage() {
                 <Table tableHeaders={allowanceCyclesTableHeaders}>
                     {currentItems.map((item) => (
                         <TableRow key={item.id}>
-                            <td className="py-5 whitespace-nowrap text-xs">
+                            {/* <td className="py-5 whitespace-nowrap text-xs">
                                 {formatMonth(item.cycle_month)}
-                            </td>
-                            <td className="py-3 whitespace-nowrap text-xs">
+                            </td> */}
+                            <td className="py-5 whitespace-nowrap text-xs">
                                 {formatMonth(item.allowance_month) || "--"}
                             </td>
                             <td className="py-3 whitespace-nowrap text-xs">

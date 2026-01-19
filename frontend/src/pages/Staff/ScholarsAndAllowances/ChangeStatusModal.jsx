@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import InputModal from "../../../components/InputModal";
 import { formatCurrency } from "../../../utils/formatCurrency";
+import { numbersOnly } from "../../../utils/inputValidations";
 
 function ChangeStatusModal({
     scholar,
@@ -14,10 +15,10 @@ function ChangeStatusModal({
     isLoading,
 }) {
     const [allowance, setAllowance] = useState(scholar?.allowance || 0.0);
-    const [transportAllowance, setTransportAllowance] = useState(0);
-    const [loadAllowance, setLoadAllowance] = useState(0.0);
+    const [transportAllowance, setTransportAllowance] = useState("");
+    const [loadAllowance, setLoadAllowance] = useState("");
     const [allowanceStatus, setAllowanceStatus] = useState(
-        scholar?.allowance_status || 0.0
+        scholar?.allowance_status || ""
     );
     const [totalAllowance, setTotalAllowance] = useState(0.0);
 
@@ -85,16 +86,19 @@ function ChangeStatusModal({
             <div className="pb-5">
                 <div className="block w-full relative pt-4 px-6">
                     <label className="block mb-1 text-gray-600 text-xs">
-                        Allowance
+                        Allowance (₱)
                     </label>
                     <input
-                        type="number"
+                        type="text"
                         name="allowance"
                         min={0}
                         value={allowance}
                         readOnly
-                        placeholder="Allowance"
-                        onChange={(e) => setAllowance(e.target.value)}
+                        placeholder="Allowance (₱)"
+                        onChange={(e) => {
+                            const value = numbersOnly(e.target.value);
+                            setAllowance(value);
+                        }}
                         className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800  focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
@@ -102,15 +106,18 @@ function ChangeStatusModal({
 
                 <div className="block w-full relative pt-4 px-6">
                     <label className="block mb-1 text-gray-600 text-xs">
-                        Transport Allowance
+                        Transport Allowance (₱)
                     </label>
                     <input
-                        type="number"
+                        type="text"
                         name="transport_allowance"
                         min={0}
                         value={transportAllowance}
                         placeholder="Transport Allowance"
-                        onChange={(e) => setTransportAllowance(e.target.value)}
+                        onChange={(e) => {
+                            let value = numbersOnly(e.target.value);
+                            setTransportAllowance(value);
+                        }}
                         className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
@@ -118,10 +125,10 @@ function ChangeStatusModal({
 
                 <div className="block w-full relative pt-4 px-6">
                     <label className="block mb-1 text-gray-600 text-xs">
-                        Load Allowance
+                        Load Allowance (₱)
                     </label>
                     <input
-                        type="number"
+                        type="text"
                         name="load_allowance"
                         min={0}
                         value={loadAllowance}

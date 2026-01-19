@@ -71,9 +71,7 @@ const OrientationTableRow = ({
             toast.error("Failed to update score");
         }
     };
-
-    console.log(selectedApplicants);
-
+    
     return (
         <>
             {currentItems.map((info, index) => (

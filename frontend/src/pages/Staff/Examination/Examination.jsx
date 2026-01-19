@@ -147,8 +147,6 @@ export default function Examination() {
         fetchApplicationFiles("entrance_examination", selectedId);
     }, [selectedId]);
 
-    console.log("Application Files: ", applicationFiles);
-
     const handleChangeTab = async (tab) => {
         setActiveTab(tab);
         setCurrentPage(1);
@@ -226,7 +224,6 @@ export default function Examination() {
         fetchApplicationFiles("entrance_examination", applicationId);
         setIsDocumentFormModalOpen(true);
         setSelectedId(applicationId);
-        console.log("Selected ID: ", selectedId);
     };
 
     const handleRefresh = async () => {

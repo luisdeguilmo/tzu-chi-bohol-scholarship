@@ -19,9 +19,6 @@ function HomeVisitationForm({ isOpen, setIsOpen, applicant }) {
         setIsOpen(false);
     };
 
-    console.log(applicant);
-    console.log(applicant.previous_course);
-
     return (
         <div>
             {isOpen && (

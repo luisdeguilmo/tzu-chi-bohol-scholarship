@@ -68,8 +68,6 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
     const fileInputRef = useRef(null);
     const [isOpenCropper, setIsOpenCropper] = useState(false);
 
-    console.log(userId);
-
     const handleFileSelect = (e) => {
         const file = e.target.files[0];
         if (file && file.type.startsWith("image/")) {
@@ -134,7 +132,6 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
                         ],
                     };
 
-                    console.log("Submitting activity data:", activityData);
 
                     // Submit the data
                     const response = await fetch(
@@ -169,10 +166,8 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
                         onOpenModal(false);
                     } else {
                         toast.error("Error: " + result.message);
-                        console.log("Error: " + result.message);
                     }
                 } catch (error) {
-                    console.log("Submission error:", error.message);
                     toast.error("Failed to submit the form. Please try again.");
                 }
             };

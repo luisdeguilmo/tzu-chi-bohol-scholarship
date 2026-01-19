@@ -13,7 +13,6 @@ export const useScholar = (id, schoolYear) => {
             );
 
             if (response.data.success) {
-                console.log(response.data);
                 setType(response.data.data || "");
                 setLoading(false);
             } else {

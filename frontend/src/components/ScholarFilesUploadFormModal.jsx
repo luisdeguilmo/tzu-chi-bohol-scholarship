@@ -26,7 +26,6 @@ function FileUploadFormModal({
     useEffect(() => {
         if (applicationFiles[0]?.files?.length > 0) {
             setExistingFiles(applicationFiles[0].files);
-            console.log("Existing Files: ", applicationFiles[0].files);
 
             const existingPreviews = applicationFiles[0].files.map((file) => ({
                 id: file.id,
@@ -163,8 +162,6 @@ function FileUploadFormModal({
         }
     };
 
-    console.log(filePreviews);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -212,8 +209,6 @@ function FileUploadFormModal({
                 activityData.removed_file_ids = existingFilesRemoved;
             }
 
-            console.log("Submitting activity data:", activityData);
-
             // Submit the data
             const response = await fetch(
                 `${BASE_URL}app/views/application-files.php`,
@@ -246,10 +241,8 @@ function FileUploadFormModal({
                 setIsOpen(false);
             } else {
                 toast.error("Error: " + result.message);
-                console.log("Error: " + result.message);
             }
         } catch (error) {
-            console.log("Submission error:", error.message);
             toast.error("Failed to submit the form. Please try again.");
         } finally {
             setIsSubmitting(false);

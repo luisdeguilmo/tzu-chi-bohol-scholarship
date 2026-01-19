@@ -57,7 +57,6 @@ export const useAdminAccountInformation = (userId) => {
                 return false;
             }
         } catch (err) {
-            console.log(err);
             toast.error(err);
             setLoading(false);
             return false;

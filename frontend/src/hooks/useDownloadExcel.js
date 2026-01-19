@@ -21,25 +21,6 @@ export const useDownloadExcel = () => {
                 }
             );
 
-            // Get filename from Content-Disposition header if not provided
-            // let downloadFileName = fileName;
-            // if (!downloadFileName) {
-            //     const contentDisposition =
-            //         response.headers["content-disposition"];
-            //     if (contentDisposition) {
-            //         const fileNameMatch =
-            //             contentDisposition.match(/filename="?(.+)"?/);
-            //         if (fileNameMatch && fileNameMatch[1]) {
-            //             downloadFileName = fileNameMatch[1];
-            //         }
-            //     }
-            // }
-
-            // // Fallback filename
-            // if (!downloadFileName) {
-            //     downloadFileName = `allowance_file_${id}.xlsx`;
-            // }
-
             // Create blob link to download
             const blob = new Blob([response.data], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

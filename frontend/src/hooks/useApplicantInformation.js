@@ -27,7 +27,5 @@ export const useApplicantInformation = (userId, schoolYear) => {
         fetchApplicantInformation();
     }, [userId, schoolYear]);
 
-    console.log(applicantInformation);
-
     return { applicantInformation, fetchApplicantInformation };
 };

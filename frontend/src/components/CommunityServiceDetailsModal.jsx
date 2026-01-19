@@ -10,6 +10,7 @@ import {
     X,
 } from "lucide-react";
 import { convertTo24HourFormat } from "../utils/convertTo24HourFormat";
+import { numbersOnly } from "../utils/inputValidations";
 import { useRecordHours } from "../hooks/useRecordHours";
 import BASE_URL from "../config";
 
@@ -94,8 +95,6 @@ const CommunityServiceDetailsModal = React.memo(
             setFeedback("");
             setRenderedHours("");
         };
-
-        console.log(filePreviews);
 
         const handleSubmit = (e) => {
             e.preventDefault();
@@ -470,14 +469,20 @@ const CommunityServiceDetailsModal = React.memo(
                                                         Rendered Hours
                                                     </label>
                                                     <input
-                                                        type="number"
+                                                        type="text"
                                                         min={1}
                                                         value={renderedHours}
-                                                        onChange={(e) =>
+                                                        onChange={(e) => {
+                                                            const value =
+                                                                numbersOnly(
+                                                                    e.target
+                                                                        .value
+                                                                );
+
                                                             setRenderedHours(
-                                                                e.target.value
-                                                            )
-                                                        }
+                                                                value
+                                                            );
+                                                        }}
                                                         required
                                                         placeholder="Enter number of hours"
                                                         className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"

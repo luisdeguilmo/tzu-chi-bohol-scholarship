@@ -50,7 +50,6 @@ export const useNotifications = (userId) => {
             );
 
             if (response.data) {
-                toast.success("Notification deleted successfully");
                 return true;
             }
 

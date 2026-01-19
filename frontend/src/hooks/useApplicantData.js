@@ -15,7 +15,6 @@ export const useApplicantData = () => {
                 `${BASE_URL}app/views/applications.php?applicationId=${id}`
             );
             setApplicantData(response.data || []);
-            console.log(response.data);
             setApplicationId(id);
             const data = response.data;
             return data;

@@ -11,37 +11,6 @@ export const useCriteria = () => {
 };
 
 export const CriteriaProvider = ({ children }) => {
-    // const [strand, setStrand] = useState("");
-    // const [strandDescription, setStrandDescription] = useState("");
-    // const [course, setCourse] = useState("");
-    // const [qualification, setQualification] = useState("");
-    // const [quantity, setQuantity] = useState("");
-    // const [description, setDescription] = useState("");
-    // const [submit, setSubmit] = useState("");
-    // const [procedure, setProcedure] = useState("");
-    // const [instruction, setInstruction] = useState("");
-
-    // const value = {
-    //     strand,
-    //     strandDescription,
-    //     course,
-    //     qualification,
-    //     quantity,
-    //     description,
-    //     submit,
-    //     procedure,
-    //     instruction,
-    //     setStrand,
-    //     setStrandDescription,
-    //     setCourse,
-    //     setQualification,
-    //     setQuantity,
-    //     setDescription,
-    //     setSubmit,
-    //     setProcedure,
-    //     setInstruction,
-    // };
-
     const [id, setId] = useState("");
     const [text, setText] = useState("");
     const [quantity, setQuantity] = useState("");

@@ -3,17 +3,10 @@ import BASE_URL from "../config";
 
 export const getProfilePicture = async (applicationId) => {
     try {
-        console.log(
-            "Getting profile picture for application ID:",
-            applicationId
-        );
-
         // Use your existing profile picture endpoint
         const response = await axios.get(
             `${BASE_URL}backend/api/applications/${applicationId}/2x2-picture`
         );
-
-        console.log("Profile picture endpoint response:", response.data);
 
         // Assuming your endpoint returns the base64 data
         // Adjust this based on your actual response structure

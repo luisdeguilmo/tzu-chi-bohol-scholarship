@@ -2,6 +2,7 @@ import { useState } from "react";
 import InputModal from "../../../components/InputModal";
 import { toast } from "react-toastify";
 import { useStaffAccounts } from "../../../hooks/useStaffAccounts";
+import { numbersOnly } from "../../../utils/inputValidations";
 
 const FormModal = ({ isOpen, onClose, onSuccess }) => {
     const [firstName, setFirstName] = useState("");
@@ -169,9 +170,12 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         Age
                     </label>
                     <input
-                        type="number"
+                        type="text"
                         value={age}
-                        onChange={(e) => setAge(e.target.value)}
+                        onChange={(e) => {
+                            const value = numbersOnly(e.target.value);
+                            setAge(value);
+                        }}
                         placeholder="Enter your age"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required

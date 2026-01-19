@@ -82,8 +82,6 @@ const BatchesTableRow = ({
         }
     };
 
-    console.log(selectedApplicants);
-
     return (
         <>
             {currentItems.map((info, index) => (

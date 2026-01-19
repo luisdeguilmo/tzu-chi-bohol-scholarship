@@ -27,7 +27,7 @@ export const scholarsAndAllowancesTableHeaders = [
 ];
 
 export const allowanceCyclesTableHeaders = [
-    { name: "Rendered Month", style: "text-center" },
+    // { name: "Rendered Month", style: "text-center" },
     { name: "Allowance Month", style: "text-center" },
     { name: "Cutoff Date", style: "text-center" },
     { name: "Status", style: "text-center" },

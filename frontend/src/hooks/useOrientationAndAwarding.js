@@ -79,8 +79,6 @@ export const useOrientationAndAwarding = (
 
             const data = response.data;
 
-            console.log(data);
-
             if (data.success) {
                 toast.success("Status Updated Successfully");
                 setIsLoading(false);
@@ -115,8 +113,6 @@ export const useOrientationAndAwarding = (
 
             const data = response.data;
 
-            console.log(data);
-
             if (data.success) {
                 toast.success("Status Updated Successfully");
                 setIsLoading(false);
@@ -134,13 +130,6 @@ export const useOrientationAndAwarding = (
     };
 
     useEffect(() => {
-        console.log("useEffect triggered with:", {
-            tab: tab,
-            selectedBatchInBatches: selectedBatchInBatches,
-            status: status,
-            sort: sort,
-        });
-
         if (tab === "Applicants") {
             fetchApplicationsOnApplicantsTab();
         } else if (tab === "Orientation" && selectedBatchInBatches && sort) {
@@ -151,11 +140,6 @@ export const useOrientationAndAwarding = (
             status &&
             sort
         ) {
-            console.log("Calling fetchApplicationsOnResultTab with:", {
-                batch: selectedBatchInBatches,
-                status: status,
-                sort: sort,
-            });
             fetchApplicationsOnAwardingTab();
         } else {
             console.log("Conditions not met for API call");

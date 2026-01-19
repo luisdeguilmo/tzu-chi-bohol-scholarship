@@ -35,17 +35,9 @@ const CommunityServicePage = () => {
         "profile-picture"
     );
 
-    console.log(scholars);
-
     useEffect(() => {
         fetchScholars(year, month, status, sortBy);
     }, [year, month, status, sortBy]);
-
-    // useEffect(() => {
-    //     fetchAllPics();
-    // }, [scholars]);
-
-    console.log(scholars);
 
     // Filter data based on search term
     const filteredActivities = scholars.filter((applicant) =>

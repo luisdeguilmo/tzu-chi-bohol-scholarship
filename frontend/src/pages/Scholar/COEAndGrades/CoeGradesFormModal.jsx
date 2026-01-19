@@ -30,8 +30,6 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
         }));
 
         setFilePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
-
-        console.log(filePreviews);
     };
 
     const handleAddFileClick = () => {
@@ -92,13 +90,6 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
     };
 
     const handleSubmit = async () => {
-        // if (accountStatus === "not_renewed") {
-        //     toast.error(
-        //         `You can't submit COE and grades until your renewal application is approved.`
-        //     );
-        //     return;
-        // }
-
         setIsSubmitting(true);
         setIsLoading(true);
 
@@ -147,8 +138,6 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
                 submissionData.uploaded_files = uploadedFiles;
             }
 
-            console.log("Submitting COE and grades data:", submissionData);
-
             // Submit the data
             const response = await fetch(
                 `${BASE_URL}app/views/coe-grades.php`,
@@ -194,8 +183,6 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
             setIsLoading(false);
         }
     };
-
-    console.log(filePreviews);
 
     return (
         <InputModal

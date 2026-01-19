@@ -6,6 +6,7 @@ import { useCoursesAccepted } from "../hooks/useCoursesAccepted";
 import { useCollegesUniversities } from "../hooks/useCollegesUniversities";
 import { useScholar } from "../hooks/useScholar";
 import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
+import { numbersOnly } from "../utils/inputValidations";
 
 function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
     const [stayingArrangement, setStayingArrangement] = useState("");
@@ -19,8 +20,6 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
     const { transportInfo, addTransportInfo } = useSchoolTransportInfo(
         user.user_id
     );
-
-    console.log(type);
 
     const [university, setUniversity] = useState("");
     const [course, setCourse] = useState("");
@@ -121,8 +120,8 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                                 <option value={""} disabled={university !== ""}>
                                     -- Select --
                                 </option>
-                                {collegesAndUniversities.map((item) => (
-                                    <option data-id={item.id} value={item.name}>
+                                {collegesAndUniversities.map((item, index) => (
+                                    <option key={index} data-id={item.id} value={item.name}>
                                         {item.name}
                                     </option>
                                 ))}
@@ -142,8 +141,9 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                                 <option value={""} disabled={course !== ""}>
                                     -- Select --
                                 </option>
-                                {coursesAccepted.map((item) => (
+                                {coursesAccepted.map((item, index) => (
                                     <option
+                                        key={index}
                                         data-id={item.id}
                                         value={item.course}
                                     >
@@ -270,14 +270,15 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                             Estimated daily transport cost (₱)
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             name="dailyTransportCost"
                             min={0}
                             value={dailyTransportCost}
                             placeholder="Daily transport cost"
-                            onChange={(e) =>
-                                setDailyTransportCost(e.target.value)
-                            }
+                            onChange={(e) => {
+                                const value = numbersOnly(e.target.value);
+                                setDailyTransportCost(value);
+                            }}
                             className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
                             required
                         />

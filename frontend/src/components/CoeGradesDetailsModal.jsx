@@ -12,8 +12,6 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
         }
     }, [submission]);
 
-    console.log(submission);
-
     const isPdf = (type) => type === "application/pdf";
     const isImage = (type) => type && type.startsWith("image/");
 

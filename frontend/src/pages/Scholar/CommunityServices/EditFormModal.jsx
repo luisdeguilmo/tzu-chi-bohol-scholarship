@@ -30,8 +30,6 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
             setExistingFiles(activity.files);
             // setExistingFilesRemoved(activity.files);
 
-            console.log("Existing Files: ", activity.files);
-
             // Create previews for existing files
             const existingPreviews = activity.files.map((file) => ({
                 id: file.id, // Add ID to identify existing files

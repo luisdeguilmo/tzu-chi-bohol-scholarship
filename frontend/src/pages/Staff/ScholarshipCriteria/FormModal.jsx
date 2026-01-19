@@ -96,7 +96,6 @@ function FormModal({
         }
 
         const success = await updateItem(id, endpoint, data);
-        console.log(data);
         if (success) data = null;
     };
 

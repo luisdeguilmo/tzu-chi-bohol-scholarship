@@ -191,6 +191,7 @@ export default function Events() {
                 isScholar={true}
                 firstName={user.first_name}
                 lastName={user.last_name}
+                onScholarEventsRefresh={fetchEvents}
             />
         </div>
     );

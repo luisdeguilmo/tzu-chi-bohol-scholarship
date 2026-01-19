@@ -71,13 +71,15 @@ class CoursesAcceptedController
                     'success' => true,
                     'data' => $result,
                 ]);
-            } else {
-                http_response_code(404);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Course not found',
-                ]);
-            }
+            } 
+
+            // else {
+            //     http_response_code(404);
+            //     echo json_encode([
+            //         'success' => false,
+            //         'message' => 'Course not found',
+            //     ]);
+            // }
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode([

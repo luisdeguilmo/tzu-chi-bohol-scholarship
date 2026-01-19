@@ -15,9 +15,7 @@ export const useApplicationRecords = (tab, status, schoolYear, sort) => {
             );
             const json = await response.json();
             setApplications(json.data || []);
-            console.log(json.data);
         } catch (error) {
-            console.log("Error: ", error);
             alert("Failed: ", error);
         }
     };

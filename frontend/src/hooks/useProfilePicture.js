@@ -10,7 +10,6 @@ export const useProfilePicture = (applications, endpoint) => {
             const response = await axios.get(
                 `${BASE_URL}backend/api/applications/${applicationId}/${endpoint}`
             );
-            console.log(response.data.profile_picture_url);
             return response.data.profile_picture_url;
         } catch (error) {
             console.error("Error fetching profile picture:", error);

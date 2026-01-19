@@ -28,7 +28,6 @@ export const useResetAllowances = (tab, status, scholarYear, sortBy) => {
                 return true;
             } else {
                 // toast.error("Failed to reset allowances. Please try again.");
-                console.log(data);
                 setLoading(false);
                 return false;
             }

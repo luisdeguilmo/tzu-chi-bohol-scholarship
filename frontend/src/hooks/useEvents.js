@@ -78,8 +78,6 @@ export const useEvents = (tab, userId) => {
             );
 
             if (response.data.success) {
-                // Handle success (e.g., update UI, show message)
-                console.log("Event cancelled successfully");
             } else {
                 throw new Error(
                     response.data.message || "Failed to cancel event"

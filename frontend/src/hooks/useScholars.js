@@ -61,7 +61,6 @@ export const useScholars = (
                 return true;
             } else {
                 toast.error("Failed to process allowance. Please try again.");
-                console.log(data);
                 setLoading(false);
                 return false;
             }

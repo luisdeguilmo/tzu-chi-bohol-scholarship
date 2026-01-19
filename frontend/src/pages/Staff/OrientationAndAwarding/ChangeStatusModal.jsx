@@ -32,8 +32,6 @@ function ChangeStatusModal({
         });
     }, [tab, scholar]); // Add 'scholar' to dependencies
 
-    console.log(tab);
-
     const resetFields = () => {
         // setFeedback("");
     };
@@ -52,8 +50,6 @@ function ChangeStatusModal({
         if (success) {
             onClose(false);
             onRefresh();
-        } else {
-            console.log("ke ");
         }
     };
 

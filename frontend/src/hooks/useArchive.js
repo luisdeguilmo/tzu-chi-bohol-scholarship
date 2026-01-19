@@ -70,7 +70,6 @@ export const useArchive = (tab, userId) => {
             );
             if (response.data.success) {
                 // Handle success (e.g., update UI, show message)
-                console.log("success");
             } else {
                 throw new Error(response.data.message || "Failed to");
             }

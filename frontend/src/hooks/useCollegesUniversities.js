@@ -113,7 +113,6 @@ export const useCollegesUniversities = () => {
             setIsLoading(false);
             return false;
         } catch (error) {
-            console.log("Error: ", error);
             setIsLoading(false);
             return false;
         }

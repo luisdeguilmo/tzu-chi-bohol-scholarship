@@ -94,7 +94,7 @@ const CommunityServiceCard = ({
                 <div className="space-y-3">
                     <div
                         className={`flex items-center text-sm ${
-                            isArchived ? "text-slate-500" : "text-slate-600"
+                            isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
                         <Calendar
@@ -111,7 +111,7 @@ const CommunityServiceCard = ({
 
                     <div
                         className={`flex items-center text-sm ${
-                            isArchived ? "text-slate-500" : "text-slate-600"
+                            isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
                         <Clock
@@ -129,7 +129,7 @@ const CommunityServiceCard = ({
 
                     <div
                         className={`flex items-center text-sm ${
-                            isArchived ? "text-slate-500" : "text-slate-600"
+                            isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
                         <MapPin
@@ -146,7 +146,7 @@ const CommunityServiceCard = ({
 
                     <div
                         className={`flex items-center text-sm ${
-                            isArchived ? "text-slate-500" : "text-slate-600"
+                            isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
                         {activity.activity_status === "Pending" ? (
@@ -167,13 +167,14 @@ const CommunityServiceCard = ({
                             />
                         )}
                         <span
-                            className={`px-2 py-1 mt-[1px] rounded-lg text-xs font-medium ${
+                            className={`mt-[1px] rounded-lg text-xs font-medium ${
+                                isArchived ? "" :
                                 activity.activity_status === "Pending"
                                     ? "bg-yellow-100 text-yellow-800"
                                     : activity.activity_status === "Recorded"
                                       ? "bg-green-100 text-green-800"
                                       : "bg-red-100 text-red-800"
-                            } ${isArchived ? "italic text-slate-400" : ""}`}
+                            } ${isArchived ? "italic text-slate-400" : "px-2 py-1"}`}
                         >
                             {activity.activity_status === "Pending"
                                 ? "Pending"

@@ -1,4 +1,11 @@
-import { Calendar, Clock, MapPin, Users, Archive } from "lucide-react";
+import {
+    Calendar,
+    Clock,
+    MapPin,
+    Users,
+    Archive,
+    MessageSquare,
+} from "lucide-react";
 import { formatDate } from "../../../utils/formatDate";
 import { formatTime } from "../../../utils/formatTime";
 import { useArchive } from "../../../hooks/useArchive";
@@ -199,6 +206,18 @@ const EventCard = ({
                 //         ? "bg-slate-300 text-slate-700 border border-slate-400"
                 //         : "bg-green-200 text-green-900"
                 // } */}
+
+            {/* <p className="absolute bottom-16 text-xs right-6">
+                <MessageSquare className="w-5 h-5 text-green-500" />
+            </p> */}
+
+            {event.numberOfStaffUnreadComments > 0 && (
+                <span
+                    className={`absolute -top-2 text-[11px] -right-2 py-[3.5px] px-[8px] rounded-full bg-red-600 text-white font-bold flex items-center justify-center`}
+                >
+                    {event.numberOfStaffUnreadComments}
+                </span>
+            )}
 
             <p
                 className={`py-2 px-4 rounded-xl absolute bottom-6 text-xs right-6

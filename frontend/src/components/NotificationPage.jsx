@@ -122,7 +122,6 @@ const NotificationPage = React.forwardRef(
                                                         handleMarkAsRead(
                                                             notification.id
                                                         );
-                                                        console.log("Clicked!");
                                                     }}
                                                     className="flex items-center gap-1.5 py-1.5 px-3 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-colors duration-150"
                                                 >

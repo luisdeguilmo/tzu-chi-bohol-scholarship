@@ -10,7 +10,7 @@ import { date } from "../../../utils/getDateAndTime";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { eventTableHeaders } from "../../../constant/tableHeaders";
-import { ClipboardEdit, Eye, PenLine, Plus } from "lucide-react";
+import { ClipboardEdit, Eye, MessageSquare, PenLine, Plus } from "lucide-react";
 import EventFormModal from "./EventFormModal";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -22,7 +22,8 @@ export default function EventsPage() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isOpenEventDetailsModal, setIsOpenEventDetailsModal] =
         useState(false);
-    const [year, setYear] = useState("2025");
+    const [shouldScrollToComments, setShouldScrollToComments] = useState(false);
+    const [year, setYear] = useState("2026");
     const [status, setStatus] = useState("all");
     const [action, setAction] = useState("create");
 
@@ -107,12 +108,12 @@ export default function EventsPage() {
                 >
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-600">
-                            Filtered by status:
+                            Status:
                         </span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="px-3 py-1 w-full text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value="upcoming">Upcoming</option>
@@ -126,8 +127,9 @@ export default function EventsPage() {
                             onChange={(e) =>
                                 handleChangeYear(Number(e.target.value))
                             }
-                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="px-3 py-1 w-full text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
+                            <option value={2026}>2026</option>
                             <option value={2025}>2025</option>
                             <option value={2024}>2024</option>
                         </select>
@@ -205,6 +207,7 @@ export default function EventsPage() {
                                         onClick={() => {
                                             handleOpenDetailsModal(event);
                                             setAction("view_and_record");
+                                            setShouldScrollToComments(false);
                                         }}
                                         className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
                                     >
@@ -232,6 +235,23 @@ export default function EventsPage() {
                                         className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
                                     >
                                         <PenLine className="w-4 h-4 text-green-600" />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            handleOpenDetailsModal(event);
+                                            setAction("view_and_record");
+                                            setShouldScrollToComments(true);
+                                        }}
+                                        className={`${event.numberOfScholarUnreadComments > 0 ? "visible" : "invisible"} inline-flex relative items-center text-green-600 hover:text-green-900 mr-3`}
+                                    >
+                                        <span
+                                            className={`absolute -top-2 -right-1 text-[9px] py-[.2px] px-[5px] rounded-full bg-red-600 text-white font-bold flex items-center justify-center`}
+                                        >
+                                            {
+                                                event.numberOfScholarUnreadComments
+                                            }
+                                        </span>
+                                        <MessageSquare className="w-4 h-4 text-purple-600" />
                                     </button>
                                 </td>
                             </tr>
@@ -281,6 +301,8 @@ export default function EventsPage() {
                 firstName={user.first_name}
                 lastName={user.last_name}
                 fetchEvents={handleRefresh}
+                shouldScrollToComments={shouldScrollToComments}
+                onStaffEventsRefresh={fetchEvents}
             />
         </div>
     );

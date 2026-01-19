@@ -1,9 +1,6 @@
 import {
     CheckCircle,
     Download,
-    Pen,
-    PenLine,
-    Plus,
     RefreshCcw,
 } from "lucide-react";
 import SearchInput from "./SearchInput";
@@ -24,7 +21,6 @@ const TableToolbar = ({
     onChangeItemsPerPage,
     onChangeCurrentPage,
     onChangeNumberOfItemsPerPage = false,
-    scholarList = false,
     onSort,
     onSearchChange,
     onRefresh,
@@ -313,7 +309,7 @@ const TableToolbar = ({
                     </div>
 
                     {/* Right side - Sort and view options */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 mx-auto md:mx-0 lg:flex lg:justify-end gap-6">
+                    <div className="flex flex-col gap-3 md:flex-row md:gap-6 w-full md:w-[max-content]">
                         {children}
                         {/* <FilterDropdown
                             label={"Sort"}
@@ -335,7 +331,7 @@ const TableToolbar = ({
                                     onSort(e.target.value);
                                     onChangeCurrentPage(1);
                                 }}
-                                className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="px-3 w-full py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
                                 <option value="newest">Newest First</option>
                                 <option value="oldest">Oldest First</option>
@@ -355,7 +351,7 @@ const TableToolbar = ({
                                         onChangeNumberOfItemsPerPage(0);
                                     }
                                 }}
-                                className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="px-3 w-full py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
                                 <option value={5}>5</option>
                                 <option value={10}>10</option>

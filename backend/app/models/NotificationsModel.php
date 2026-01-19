@@ -177,6 +177,52 @@ class NotificationsModel
         }
     }
 
+    public function createScholarUnreadCommentsNotification($scholarId)
+    {
+        $model = new PrivateCommentsModel();
+        $numberOfUnreadComments = $model->getScholarUnreadCommentsByScholarId($scholarId);
+        $message = '';
+
+        $totalComments = $numberOfUnreadComments > 1 ? 'comments.' : 'comment.';
+
+        $message = 'Your have ' . $numberOfUnreadComments . ' new unread ' . $totalComments;
+
+        $id = $this->createNotification([
+            'type' => 'private_comments',
+            'title' => 'Unread Private Comments',
+            'message' => $message,
+        ]);
+
+        if ($id) {
+            return $this->createUserNotification($scholarId, $id);
+        } else {
+            return false;
+        }
+    }
+
+    public function createStaffUnreadCommentsNotification()
+    {
+        $model = new PrivateCommentsModel();
+        $numberOfUnreadComments = $model->getStaffUnreadComments();
+        $message = '';
+
+        $totalComments = $numberOfUnreadComments > 1 ? 'comments.' : 'comment.';
+
+        $message = 'Your have ' . $numberOfUnreadComments . ' new unread ' . $totalComments;
+
+        $id = $this->createNotification([
+            'type' => 'private_comments',
+            'title' => 'Unread Private Comments',
+            'message' => $message,
+        ]);
+
+        if ($id) {
+            return $this->createStaffNotification($id);
+        } else {
+            return false;
+        }
+    }
+
     public function createNotification($data)
     {
         $type = $data['type'];

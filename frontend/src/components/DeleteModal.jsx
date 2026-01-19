@@ -164,35 +164,3 @@ const DeleteModal = ({ isOpen, onClose, onDelete }) => {
 };
 
 export default DeleteModal;
-
-// // Demo component to show the modal in action
-// const DeleteModalDemo = () => {
-//   const [modalIsOpen, setModalIsOpen] = React.useState(false);
-
-//   const openModal = () => setModalIsOpen(true);
-//   const closeModal = () => setModalIsOpen(false);
-//   const handleDelete = () => {
-//     // Handle delete action
-//     console.log("Deleted!");
-//     closeModal();
-//   };
-
-//   return (
-//     <div className="p-4">
-//       <button
-//         onClick={openModal}
-//         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-//       >
-//         Show Delete Modal
-//       </button>
-
-//       <DeleteModal
-//         isOpen={modalIsOpen}
-//         onClose={closeModal}
-//         onDelete={handleDelete}
-//       />
-//     </div>
-//   );
-// };
-
-// export default DeleteModalDemo;

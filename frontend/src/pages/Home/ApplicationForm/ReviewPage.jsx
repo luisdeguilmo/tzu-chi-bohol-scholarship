@@ -28,7 +28,6 @@ const PersonalInformation = ({ personal }) => {
 };
 
 const EducationalBackground = ({ education }) => {
-    console.log(education);
     return (
         <>
             <h2 className="mt-10 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
@@ -419,7 +418,6 @@ const OtherInformation = ({ expectation, character_reference }) => {
 };
 
 const ReviewPage = ({ formData, isConsent, onSetConsent }) => {
-    console.log(formData);
     return (
         <div className="bg-white">
             <div className="bg-white mx-auto">

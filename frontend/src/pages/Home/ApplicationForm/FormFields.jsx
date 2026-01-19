@@ -126,8 +126,6 @@ const FormFields = ({
     const currentYear = new Date().getFullYear();
     const maxBirthdate = `${currentYear - 15}-12-31`;
 
-    console.log(formData);
-
     return (
         <>
             {section === FORM_SECTIONS.EDUCATION ? (

@@ -34,8 +34,6 @@ export const useBatches = (purpose) => {
                 body: JSON.stringify(data),
             });
 
-            console.log(data);
-
             const result = await response.json();
 
             if (result.success) {

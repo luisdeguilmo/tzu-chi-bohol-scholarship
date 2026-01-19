@@ -11,8 +11,6 @@ function DocumentFormModal({ isOpen, setIsOpen, onSuccess }) {
     const { user } = useAuth();
     const fileInputRef = useRef(null);
 
-    console.log(files);
-
     const handleFileSelect = (event) => {
         const selectedFiles = Array.from(event.target.files);
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
@@ -117,8 +115,6 @@ function DocumentFormModal({ isOpen, setIsOpen, onSuccess }) {
                 activityData.uploaded_files = uploadedFiles;
             }
 
-            console.log("Submitting activity data:", activityData);
-
             // Submit the data
             const response = await fetch(
                 `${BASE_URL}app/views/activities.php`,
@@ -202,7 +198,9 @@ function DocumentFormModal({ isOpen, setIsOpen, onSuccess }) {
                                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                                 />
                             </svg>
-                            <span className="block text-xs">Click to Select</span>
+                            <span className="block text-xs">
+                                Click to Select
+                            </span>
                         </button>
                     </label>
 

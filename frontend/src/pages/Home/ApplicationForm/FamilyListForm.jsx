@@ -130,6 +130,11 @@ const FamilyListForm = ({
             return;
         }
 
+        if (Number(newMember.age) < 0 || Number(newMember.age) > 100) {
+            toast.error("Please enter a valid age between 0 and 100");
+            return;
+        }
+
         setFamilyMembers([...family_members, newMember]);
         setNewMember({
             name: "",

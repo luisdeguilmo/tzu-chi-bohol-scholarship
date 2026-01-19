@@ -6,14 +6,10 @@ import BASE_URL from "../config";
 
 export const getExaminationFiles = async (applicationId) => {
     try {
-        console.log("Getting requirements for application ID:", applicationId);
-
         // Use your requirements endpoint
         const response = await axios.get(
             `${BASE_URL}backend/api/applications/${applicationId}/examination_files`
         );
-
-        console.log("Requirements endpoint response:", response.data[0]);
 
         // return response.data;
 

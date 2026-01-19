@@ -5,6 +5,8 @@ import { useSchedule } from "../../../hooks/useSchedule";
 import { manageApplication } from "../../../services/emailService";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import InputModal from "../../../components/InputModal";
+import { formatTime } from "../../../utils/formatTime";
+import { formatDate } from "../../../utils/formatDate";
 
 export default function SetScheduleForm({
     applications,
@@ -25,8 +27,6 @@ export default function SetScheduleForm({
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const { loading, createSchedule } = useSchedule();
     const { isLoading, sendSchedule } = manageApplication();
-
-    console.log("Selected Batch in SetScheduleForm:", selectedBatch);
 
     // Use useEffect to set the initial schedule value when component mounts or selectedBatch changes
     useEffect(() => {
@@ -150,8 +150,16 @@ export default function SetScheduleForm({
                                     className="w-full border border-gray-300 rounded-md py-2.5 px-2 focus:outline-none"
                                 />
                             </label>
-                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
-                                Date *
+                            <div className="relative">
+                                {/* {date && (
+                                    <span className="pointer-events-none absolute left-2.5 top-[32px] text-gray-800 text-xs">
+                                        {formatDate(date)}
+                                    </span>
+                                )} */}
+                                <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                                    Date *
+                                </label>
+
                                 <input
                                     required
                                     type="date"
@@ -161,22 +169,34 @@ export default function SetScheduleForm({
                                         setDate(e.target.value);
                                         setIsInputChanged(true);
                                     }}
-                                    className="w-full border border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    onClick={(e) => e.target.showPicker()}
+                                    placeholder="yyyy-mm-dd"
+                                    className="w-full border border-gray-300 rounded-md py-2.5 px-2 text-xs focus:outline-none focus:ring-1 focus:ring-green-500"
                                 />
-                            </label>
-                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
-                                Time *
-                                <input
-                                    required
-                                    type="time"
-                                    value={time}
-                                    onChange={(e) => {
-                                        setTime(e.target.value);
-                                        setIsInputChanged(true);
-                                    }}
-                                    className="w-full border border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
-                                />
-                            </label>
+                            </div>
+
+                            <div className="relative">
+                                {time && (
+                                    <span className="pointer-events-none absolute left-2.5 top-[32px] text-gray-800 text-xs">
+                                        {formatTime(time)}
+                                    </span>
+                                )}
+                                <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                                    Time *
+                                    <input
+                                        required
+                                        type="time"
+                                        value={time}
+                                        onChange={(e) => {
+                                            setTime(e.target.value);
+                                            setIsInputChanged(true);
+                                        }}
+                                        onClick={(e) => e.target.showPicker()}
+                                        placeholder="--:-- --"
+                                        className="w-full border border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    />
+                                </label>
+                            </div>
                             <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                                 Venue *
                                 <input

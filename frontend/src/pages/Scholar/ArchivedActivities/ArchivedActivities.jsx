@@ -31,6 +31,8 @@ export default function ArchivedActivities() {
         user.user_id
     );
 
+    console.log(archivedActivities);
+
     const tabs = [
         { name: "All", value: "all" },
         { name: "Community Services", value: "volunteer_activities" },

@@ -22,8 +22,6 @@ export const generatePDF = async (
     }
 
     try {
-        console.log("Starting PDF generation...");
-
         // Convert logo to base64
         const logoBase64 = await convertImageToBase64(FormLogo);
         // const profilePictureBase64 = await getProfilePictureBase64(studentId);
@@ -32,10 +30,6 @@ export const generatePDF = async (
         let profilePictureBase64 = null;
         if (type === "new") {
             if (applicationId) {
-                console.log(
-                    "Getting profile picture for student ID:",
-                    applicationId
-                );
                 profilePictureBase64 = await getProfilePicture(
                     applicationId,
                     "profile-picture"
@@ -49,10 +43,6 @@ export const generatePDF = async (
             }
         } else {
             if (scholarId) {
-                console.log(
-                    "Getting profile picture for student ID:",
-                    scholarId
-                );
                 profilePictureBase64 = await getProfilePicture(
                     scholarId,
                     "profile-picture"
@@ -68,7 +58,6 @@ export const generatePDF = async (
 
         let requirementsBase64 = null;
         if (applicationId) {
-            console.log("Getting requirements for student ID:", applicationId);
             requirementsBase64 = await getRequirements(applicationId);
 
             if (!requirementsBase64) {
@@ -77,8 +66,6 @@ export const generatePDF = async (
                 );
             }
         }
-
-        console.log("Profile picture base64:", requirementsBase64);
 
         let examinationFilesBase64 = null;
         if (applicationId) {
@@ -1244,18 +1231,6 @@ export const generatePDF = async (
                     },
                 ],
             },
-            // {
-            //     pageBreak: "before",
-            //     stack: [
-            //         {
-            //             text: "Requirements",
-            //             fontSize: 16,
-            //             alignment: "center",
-            //             margin: [0, 0, 0, 10],
-            //         },
-            //         ...requirementImages,
-            //     ],
-            // },
 
             ...(requirementImages.length > 0
                 ? [
@@ -1273,19 +1248,6 @@ export const generatePDF = async (
                       },
                   ]
                 : []),
-
-            // {
-            //     pageBreak: "before",
-            //     stack: [
-            //         {
-            //             text: "Entrance Examination Files",
-            //             fontSize: 16,
-            //             alignment: "center",
-            //             margin: [0, 0, 0, 10],
-            //         },
-            //         ...examinationFilesImages,
-            //     ],
-            // },
 
             ...(examinationFilesImages.length > 0
                 ? [
@@ -1365,27 +1327,6 @@ export const generatePDF = async (
             pageMargins: [20, 40, 20, 40],
             images: {}, // Optional for pre-defined images
         };
-
-        // const docDefinition = {
-        //     content: content,
-        //     pageSize: "A4",
-        //     pageMargins: [40, 40, 40, 40],
-        //     defaultStyle: {
-        //         fontSize: 10,
-        //     },
-        //     styles: {
-        //         header: {
-        //             fontSize: 18,
-        //             bold: true,
-        //             alignment: "center",
-        //         },
-        //         subheader: {
-        //             fontSize: 14,
-        //             bold: true,
-        //             margin: [0, 10, 0, 5],
-        //         },
-        //     },
-        // };
 
         const pdfDoc = pdfMake.createPdf(docDefinition);
 

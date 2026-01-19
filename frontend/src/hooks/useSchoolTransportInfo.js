@@ -80,45 +80,6 @@ export const useSchoolTransportInfo = (id) => {
         }
     };
 
-    // const updateCourse = async (selectedId, courseName) => {
-    //     const data = {
-    //         id: selectedId,
-    //         course_name: courseName,
-    //     };
-
-    //     try {
-    //         setIsLoading(true);
-
-    //         const response = await fetch(
-    //             `${BASE_URL}app/views/courses-accepted.php`,
-    //             {
-    //                 method: "PUT",
-    //                 headers: {
-    //                     "Content-Type": "application/json", // Important for JSON body
-    //                 },
-    //                 body: JSON.stringify(data),
-    //             }
-    //         );
-
-    //         const result = await response.json(); // Parse as JSON instead of text
-
-    //         if (result.success) {
-    //             toast.success(result.message + ".");
-    //             setIsLoading(false);
-    //             return true;
-    //         } else {
-    //             alert("Error: " + result.message);
-    //             setIsLoading(false);
-    //             return false;
-    //         }
-    //     } catch (error) {
-    //         console.error("Submission error:", error);
-    //         alert("Failed to submit the form. Please try again.");
-    //         setIsLoading(false);
-    //         return false;
-    //     }
-    // };
-
     const deleteCourse = async (id) => {
         try {
             setIsLoading(true);

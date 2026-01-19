@@ -10,7 +10,7 @@ import {
 } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import { Eye, PenLine, RotateCcw } from "lucide-react";
+import { Eye, PenLine, SettingsIcon } from "lucide-react";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import ScholarProfileModal from "../../../components/UserProfileModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
@@ -21,10 +21,15 @@ import { generateExcel } from "../../../utils/generateExcel";
 import { useScholarInformation } from "../../../hooks/useScholarInformation";
 import { useResetAllowances } from "../../../hooks/useResetAllowances";
 import ChangeStatusModal from "./ChangeStatusModal";
+import AllowanceSettingsModal from "./AllowanceSettingsModal";
+import { useAllowanceSettings } from "../../../hooks/useAllowanceSettings";
+import { toast } from "react-toastify";
 
 export default function ScholarsAndAllowances() {
     const [searchTerm, setSearchTerm] = useState("");
     const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] =
+        useState(false);
+    const [isAllowanceSettingsModalOpen, setIsAllowanceSettingsModalOpen] =
         useState(false);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
         useState(false);
@@ -67,22 +72,38 @@ export default function ScholarsAndAllowances() {
     } = useAllowanceCycle();
 
     const { resetAllowances } = useResetAllowances();
-
     const { scholarAllowances, fetchScholarAllowances } = useScholarAllowances(
         getCurrentSchoolYear()
     );
-
     const { exportAllowancesToExcel, exportScholarInformationToExcel } =
         generateExcel();
-
     const { profilePics } = useProfilePicture(scholars, "profile-picture");
+    const { allowanceSettings, fetchMaximumHoursAndAmountPerHour } =
+        useAllowanceSettings();
 
     useEffect(() => {
         fetchScholars();
     }, [activeTab, status, schoolYear, school, course, yearLevel, sortBy]);
 
+    useEffect(() => {
+        if (!isAllowanceSettingsModalOpen) {
+            fetchMaximumHoursAndAmountPerHour();
+        }
+    }, [isAllowanceSettingsModalOpen]);
+
     const handleProcessAllowance = async () => {
         try {
+            if (
+                allowanceSettings?.maximum_hours === 0 ||
+                allowanceSettings?.amount_per_hour === 0
+            ) {
+                toast.error(
+                    "Please set the allowance settings before processing allowances."
+                );
+                setIsConfirmationModalOpen(false);
+                return;
+            }
+
             const fileName = `Scholar_Allowances_${date.getCurrentMonthFormatted()}_${date.getCurrentYear()}`;
 
             // Step 1: Process allowance
@@ -94,8 +115,6 @@ export default function ScholarsAndAllowances() {
                     scholarAllowances,
                     fileName
                 );
-
-                console.log(scholarAllowances);
 
                 if (exported) {
                     // Step 3: Reset allowances after successful export
@@ -330,17 +349,16 @@ export default function ScholarsAndAllowances() {
                 {/* Pagination */}
                 {filteredScholars.length > 0 && (
                     <div className="flex justify-between items-center mt-6">
-                        {/* {activeTab === "active" && (
-                            <button
-                                onClick={() =>
-                                    setIsResetConfirmationModalOpen(true)
-                                }
-                                className="px-3 py-2 text-sm whitespace-nowrap bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
-                            >
-                                <RotateCcw className="w-4 h-4 text-white" />
-                                Initialize Month
-                            </button>
-                        )} */}
+                        <button
+                            onClick={() =>
+                                setIsAllowanceSettingsModalOpen(true)
+                            }
+                            className="px-3 py-2 text-sm whitespace-nowrap bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                        >
+                            <SettingsIcon className="w-4 h-4 text-white" />
+                            Allowance Settings
+                        </button>
+
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}
@@ -361,11 +379,17 @@ export default function ScholarsAndAllowances() {
                     isScholar={true}
                 />
 
+                <AllowanceSettingsModal
+                    label={"Allowance Settings"}
+                    isOpen={isAllowanceSettingsModalOpen}
+                    onClose={setIsAllowanceSettingsModalOpen}
+                />
+
                 <ChangeStatusModal
                     scholar={selectedScholar}
                     isOpen={isChangeStatusModalOpen}
                     onClose={setIsChangeStatusModalOpen}
-                    label={"Update Allowance Status"}
+                    label={"Update Allowance Details"}
                     scholarId={scholarId}
                     onUpdate={updateAllowanceStatus}
                     onRefresh={handleRefresh}
@@ -379,8 +403,10 @@ export default function ScholarsAndAllowances() {
                     isLoading={loading}
                     label={"Confirmation"}
                     message={
-                        "This will calculate the allowance for all scholars. This action cannot be undone. Proceed?"
+                        "This action cannot be undone. Do you want to proceed?"
                     }
+                    isForProcessAllowance={true}
+                    allowanceSettings={allowanceSettings}
                     onClick={handleProcessAllowance}
                 />
             </div>

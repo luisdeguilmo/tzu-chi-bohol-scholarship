@@ -42,8 +42,6 @@ export const useApplicationFiles = (type, applicationId) => {
     ) => {
         setIsSubmitting(true);
 
-        console.log(existingFilesRemoved);
-
         try {
             setLoading(true);
             const activityData = {
@@ -109,12 +107,7 @@ export const useApplicationFiles = (type, applicationId) => {
                 }
 
                 activityData.uploaded_files = uploadedFiles;
-
-                console.log("File Reviews: ", filePreviews);
-                console.log("Activity Data: ", activityData);
             }
-
-            console.log("Submitting activity data:", activityData);
 
             // Submit the data
             const response = await fetch(

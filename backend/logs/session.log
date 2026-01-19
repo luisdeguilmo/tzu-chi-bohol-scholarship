@@ -1918,3 +1918,953 @@
 [2025-12-09 13:52:03] [IP: ::1] [Session: bbbc886f7e21555827739022c51cf787] [User ID: 8225004] SESSION CHECK - Valid session
 [2025-12-09 13:57:03] [IP: ::1] [Session: bbbc886f7e21555827739022c51cf787] [User ID: 8225004] SESSION CHECK - Valid session
 [2025-12-09 14:02:03] [IP: ::1] [Session: bbbc886f7e21555827739022c51cf787] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 11:28:32] [IP: ::1] [Session: 5b78c9ef0bcfd143818db6e189af94e8] SESSION CHECK - No active session
+[2025-12-12 11:28:33] [IP: ::1] [Session: bb149758e91c5c4da46e51de8547f248] SESSION CHECK - No active session
+[2025-12-12 11:28:33] [IP: ::1] [Session: 9a663d255a416b4d66fbbff5395f8c6c] SESSION CHECK - No active session
+[2025-12-12 11:28:34] [IP: ::1] [Session: 2d5a9522c68aa1e1460b6eb7ea3d869a] SESSION CHECK - No active session
+[2025-12-12 11:28:34] [IP: ::1] [Session: 782fe80aea79364b7425cdb0ceb7918c] SESSION CHECK - No active session
+[2025-12-12 11:28:59] [IP: ::1] [Session: 5310a90e259a871787a72e74844e7ffb] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-12 11:33:33] [IP: ::1] [Session: 5310a90e259a871787a72e74844e7ffb] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-12 11:34:51] [IP: ::1] [Session: c44c7a4c76e789509da82bed941188a2] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 11:37:42] [IP: ::1] [Session: b6a4aaaecc97b5df618defa1ee49036d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-12 12:43:22] [IP: ::1] [Session: 5b1ef11b536c2a90fadd566dfd5f7032] SESSION CHECK - No active session
+[2025-12-12 13:35:53] [IP: ::1] [Session: 5b1ef11b536c2a90fadd566dfd5f7032] SESSION CHECK - No active session
+[2025-12-12 13:35:54] [IP: ::1] [Session: 5b1ef11b536c2a90fadd566dfd5f7032] SESSION CHECK - No active session
+[2025-12-12 13:37:01] [IP: ::1] [Session: 5b1ef11b536c2a90fadd566dfd5f7032] SESSION CHECK - No active session
+[2025-12-12 13:37:01] [IP: ::1] [Session: 5b1ef11b536c2a90fadd566dfd5f7032] SESSION CHECK - No active session
+[2025-12-12 13:37:28] [IP: ::1] [Session: 5b1ef11b536c2a90fadd566dfd5f7032] SESSION CHECK - No active session
+[2025-12-12 13:37:29] [IP: ::1] [Session: 5b1ef11b536c2a90fadd566dfd5f7032] SESSION CHECK - No active session
+[2025-12-12 13:37:44] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 13:42:28] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 13:45:42] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 13:45:42] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 13:49:12] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 13:49:12] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 13:54:12] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 13:59:12] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:04:12] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:09:12] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:14:12] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:14:34] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:14:34] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:18:04] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:18:04] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:23:04] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:28:04] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:33:04] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:38:04] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:39:57] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:39:57] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:44:57] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:49:57] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:54:57] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:56:51] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 14:56:51] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:01:51] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:06:51] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:11:51] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:16:51] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:21:52] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:25:58] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:25:58] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:30:58] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:33:31] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:33:31] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:37:14] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:37:14] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-12 15:42:15] [IP: ::1] [Session: 0eaee44d74f8e2b875c07f56b969d8a8] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 13:21:00] [IP: ::1] [Session: e12de98688c2a434c1d7ef3981c83888] SESSION CHECK - No active session
+[2025-12-13 13:21:49] [IP: ::1] [Session: 5f6d3d6a5af7f61fb5475cde7711e999] SESSION CHECK - No active session
+[2025-12-13 13:23:35] [IP: ::1] [Session: e12de98688c2a434c1d7ef3981c83888] SESSION CHECK - No active session
+[2025-12-13 13:23:35] [IP: ::1] [Session: e12de98688c2a434c1d7ef3981c83888] SESSION CHECK - No active session
+[2025-12-13 13:26:39] [IP: ::1] [Session: e12de98688c2a434c1d7ef3981c83888] SESSION CHECK - No active session
+[2025-12-13 13:31:39] [IP: ::1] [Session: e12de98688c2a434c1d7ef3981c83888] SESSION CHECK - No active session
+[2025-12-13 13:32:53] [IP: ::1] [Session: e12de98688c2a434c1d7ef3981c83888] SESSION CHECK - No active session
+[2025-12-13 13:32:53] [IP: ::1] [Session: e12de98688c2a434c1d7ef3981c83888] SESSION CHECK - No active session
+[2025-12-13 13:37:48] [IP: ::1] [Session: e12de98688c2a434c1d7ef3981c83888] SESSION CHECK - No active session
+[2025-12-13 13:40:35] [IP: ::1] [Session: 29809731cce700132a2be5f483a4d9ad] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 13:41:08] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 13:42:48] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 13:47:48] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 13:52:48] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 13:57:48] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:02:48] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:07:48] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:09:24] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:09:24] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:10:11] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:10:12] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:15:11] [IP: ::1] [Session: f023b500ad6ce4d9c13c9e263b47b093] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:17:35] [IP: ::1] [Session: 61343fa9ecd9dd99aeb0575ff2c6e581] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:20:11] [IP: ::1] [Session: 61343fa9ecd9dd99aeb0575ff2c6e581] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:21:22] [IP: ::1] [Session: 61343fa9ecd9dd99aeb0575ff2c6e581] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:21:22] [IP: ::1] [Session: 61343fa9ecd9dd99aeb0575ff2c6e581] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:26:22] [IP: ::1] [Session: 61343fa9ecd9dd99aeb0575ff2c6e581] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:26:45] [IP: ::1] [Session: 61343fa9ecd9dd99aeb0575ff2c6e581] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:26:45] [IP: ::1] [Session: 61343fa9ecd9dd99aeb0575ff2c6e581] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:29:15] [IP: ::1] [Session: a3153c1852112618645e72d7ca7db75d] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-13 14:31:15] [IP: ::1] [Session: 9f72fd899c46e6752148cb725ad21688] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:31:46] [IP: ::1] [Session: 9f72fd899c46e6752148cb725ad21688] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:31:55] [IP: ::1] [Session: 9f72fd899c46e6752148cb725ad21688] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:31:55] [IP: ::1] [Session: 9f72fd899c46e6752148cb725ad21688] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:36:56] [IP: ::1] [Session: 9f72fd899c46e6752148cb725ad21688] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:41:02] [IP: ::1] [Session: 75404ffc89ed28c1a6aa92302cff8300] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:41:55] [IP: ::1] [Session: 75404ffc89ed28c1a6aa92302cff8300] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 14:44:56] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:46:14] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:46:14] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:51:15] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:54:15] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:54:15] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 14:59:16] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:00:53] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:00:53] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:05:54] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:08:07] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:08:07] [IP: ::1] [Session: b900e15803f925a6d5dd98b183945686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:11:55] [IP: ::1] [Session: 74c3570f90f5453350de1e55b2ce9aaf] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-13 15:12:49] [IP: ::1] [Session: b7a6572b69086b7e83d9a45ad2e2b365] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-13 15:13:07] [IP: ::1] [Session: b7a6572b69086b7e83d9a45ad2e2b365] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-13 15:18:08] [IP: ::1] [Session: eb13171f57a3e3afa4ec3696b6f023fb] SESSION CHECK - No active session
+[2025-12-13 15:23:07] [IP: ::1] [Session: eb13171f57a3e3afa4ec3696b6f023fb] SESSION CHECK - No active session
+[2025-12-13 15:28:07] [IP: ::1] [Session: eb13171f57a3e3afa4ec3696b6f023fb] SESSION CHECK - No active session
+[2025-12-13 15:33:07] [IP: ::1] [Session: eb13171f57a3e3afa4ec3696b6f023fb] SESSION CHECK - No active session
+[2025-12-13 15:35:38] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:38:07] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:43:55] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:48:07] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:52:34] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:52:34] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:54:18] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:54:18] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:55:12] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 15:55:12] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:00:13] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:05:12] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:10:12] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:10:17] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:10:17] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:11:47] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:11:47] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:13:21] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:13:21] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:18:22] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:18:35] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:18:35] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:20:27] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-13 16:20:27] [IP: ::1] [Session: db2782b5e848b8e018d342ba534d7467] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:40:43] [IP: ::1] [Session: c60dbb2e26abcc9cc2e7ecfce517cf81] SESSION CHECK - No active session
+[2025-12-14 06:40:44] [IP: ::1] [Session: 5f1f10bd2eed6957ff155ab5bd611e35] SESSION CHECK - No active session
+[2025-12-14 06:41:06] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:45:43] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:50:43] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:51:31] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:51:31] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:51:44] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:51:44] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:52:12] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:52:12] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:52:21] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:52:21] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:52:25] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:52:25] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 06:57:26] [IP: ::1] [Session: 277dca0674d783dffbe009f78087b9a1] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:01:35] [IP: ::1] [Session: a6bc0961c06679931fd3666637c11450] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-14 07:02:25] [IP: ::1] [Session: a6bc0961c06679931fd3666637c11450] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-14 07:04:44] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:07:26] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:09:17] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:09:17] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:14:17] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:19:17] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:24:17] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:27:16] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:27:16] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:32:17] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:32:27] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:32:27] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:32:28] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:32:28] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:32:34] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:32:34] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:37:34] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:42:35] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:47:35] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:52:35] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 07:57:35] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:02:26] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:02:26] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:07:26] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:12:26] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:17:26] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:18:37] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:18:37] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:19:36] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:19:36] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:19:40] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:19:40] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:20:15] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:20:15] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:20:20] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:20:20] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:20:22] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:20:22] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:20:34] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:20:34] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 08:25:34] [IP: ::1] [Session: 2857c5b7edb41cb75e9ba2bfba1acb1d] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:09:22] [IP: ::1] [Session: 69f3551fb9e298bbdb872b63142d6ed9] SESSION CHECK - No active session
+[2025-12-14 13:09:23] [IP: ::1] [Session: a0f2047e4915711010f5ba2de55b2795] SESSION CHECK - No active session
+[2025-12-14 13:09:24] [IP: ::1] [Session: a0f2047e4915711010f5ba2de55b2795] SESSION CHECK - No active session
+[2025-12-14 13:09:24] [IP: ::1] [Session: a0f2047e4915711010f5ba2de55b2795] SESSION CHECK - No active session
+[2025-12-14 13:09:35] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:14:26] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:19:24] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:24:24] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:29:24] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:33:42] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:33:42] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:33:45] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:33:45] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:33:49] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:33:49] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:33:55] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:33:55] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:34:31] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:34:31] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:34:33] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:34:33] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:39:34] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:44:34] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:49:33] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:54:34] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:56:06] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 13:56:06] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:01:07] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:06:07] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:07:08] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:07:08] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:09:01] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:09:01] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:09:15] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:09:15] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:09:37] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:09:37] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:11:26] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:11:26] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:11:34] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:11:34] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:13:55] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:13:55] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:14:20] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:14:20] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:16:01] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:16:01] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:16:09] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:16:09] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:17:04] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:17:04] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:17:12] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:17:12] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:18:42] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:18:42] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:21:52] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:21:52] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:21:59] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:21:59] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:22:45] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:22:45] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:22:52] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-14 14:22:52] [IP: ::1] [Session: e96feb608b1168aac433278c46c80508] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 02:40:11] [IP: ::1] [Session: fd6bac253634cdbec80ef4ac07a95ba0] SESSION CHECK - No active session
+[2025-12-17 02:40:12] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 02:41:45] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 02:41:45] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 02:46:35] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 02:51:36] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 02:56:36] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:01:36] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:06:36] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:11:36] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:16:38] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:44:46] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:44:46] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:44:48] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:44:51] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:44:51] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:49:51] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:54:40] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:54:40] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:54:44] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:54:44] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 03:59:44] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:04:44] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:09:44] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:14:44] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:19:44] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:24:44] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:30:14] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:35:19] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:40:24] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:45:29] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:50:34] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:55:38] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 04:59:44] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 05:05:38] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 05:10:38] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 05:15:38] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 07:57:59] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 08:00:34] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 08:05:34] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 08:10:34] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 08:15:34] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 13:04:27] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 13:10:30] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:06:23] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:06:24] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:11:21] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:16:18] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:21:18] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:26:18] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:31:18] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:36:18] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:41:23] [IP: ::1] [Session: 5827a0c69436a0af2a871c71ce42e196] SESSION CHECK - No active session
+[2025-12-17 15:43:45] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 15:46:18] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 15:51:18] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 15:53:31] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 15:53:31] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 15:58:31] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:03:31] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:08:31] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:10:27] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:10:27] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:11:15] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:11:15] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:12:27] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:12:27] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:17:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:17:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:22:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:27:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:32:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:37:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:42:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:47:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:51:38] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:51:38] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:52:47] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:52:47] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:53:00] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:53:00] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:53:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:53:12] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:56:41] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:56:41] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:58:21] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 16:58:21] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:02:51] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:02:51] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:06:30] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:06:30] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:06:44] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:06:44] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:06:54] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:06:54] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:11:55] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:16:54] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:21:54] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:26:55] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:31:54] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:37:25] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:42:30] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:47:32] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:52:32] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 17:57:32] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 18:02:35] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 18:07:32] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 18:12:33] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 18:17:33] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 18:22:33] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 18:27:33] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-17 18:32:33] [IP: ::1] [Session: 113bc9e010787fb19f03f6c2def723d5] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:07:11] [IP: ::1] [Session: 0ee1d8ffcaa08e1af9fe4701f7ebb2e5] SESSION CHECK - No active session
+[2025-12-18 04:07:11] [IP: ::1] [Session: 508790f412cc770b5520b1bad1a4912c] SESSION CHECK - No active session
+[2025-12-18 04:07:25] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:12:10] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:17:04] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:17:04] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:20:23] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:20:23] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:21:01] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:21:01] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:26:01] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:31:01] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:34:18] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:34:18] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:36:10] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:36:10] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:37:31] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:37:31] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:37:43] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:37:43] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:41:00] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:41:00] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:45:23] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:45:23] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:49:19] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:49:19] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:54:19] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:56:23] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:56:23] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:57:18] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:57:18] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:58:27] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 04:58:27] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:03:27] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:08:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:13:27] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:18:28] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:23:26] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:27:13] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:27:14] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:28:11] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:28:11] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:33:12] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:38:12] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:43:12] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:44:46] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:44:46] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:49:46] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:52:53] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:52:53] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:53:11] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:53:11] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:53:14] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:53:14] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:55:40] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 05:55:40] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:00:41] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:05:40] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:10:41] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:15:41] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:20:41] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:26:24] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:31:17] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:36:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:41:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:46:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:51:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 06:56:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:01:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:06:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:08:48] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:08:48] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:08:57] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:08:57] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:09:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:09:30] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:10:16] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:10:16] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:11:26] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:11:26] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:14:12] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:14:12] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:14:14] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:14:14] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:14:33] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:14:33] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:14:35] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:14:35] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:16:45] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:16:45] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:19:04] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:19:04] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:20:10] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:20:10] [IP: ::1] [Session: ba2120961a1c006580fd4bf36b1d1729] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 07:25:11] [IP: ::1] [Session: 4cf13a577e6417b966b54a76d1351a08] SESSION CHECK - No active session
+[2025-12-18 07:25:13] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 07:30:10] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 07:35:10] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 07:40:11] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 07:45:11] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 07:50:11] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 07:55:28] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 08:22:35] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 08:22:37] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 08:22:37] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 09:11:19] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 09:11:20] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 09:11:20] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 10:27:58] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 10:27:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 10:27:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 10:32:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 10:37:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 10:42:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 10:47:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 10:52:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 10:57:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:02:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:07:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:12:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:09] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:09] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:14] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:14] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:19] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:19] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:22] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:22] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:27] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:27] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:29] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:29] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:41] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:41] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:15:59] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:16:00] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:21:00] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:26:00] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:31:00] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:36:05] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:36:07] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:36:07] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:41:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:46:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:51:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 11:56:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:01:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:06:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:11:30] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:13:42] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:13:42] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:18:28] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:18:28] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:19:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:19:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:24:09] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:29:09] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:34:09] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:37:13] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:37:13] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:18] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:18] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:21] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:21] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:26] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:26] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:29] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:29] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:39] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:41:39] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:42:24] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:42:24] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:42:30] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:42:30] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:42:41] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:42:41] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:42:48] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:42:48] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:45:26] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:45:26] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:45:50] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:45:50] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:45:54] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:45:54] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:46:00] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:46:00] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:46:22] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:46:22] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:46:44] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:46:44] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:47:15] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:47:15] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:49:01] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:49:01] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:49:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:49:08] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:49:16] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:49:16] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:50:27] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:50:28] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:50:34] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:50:34] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:55:35] [IP: ::1] [Session: d4adcbfd25fb196f408e85f506524c14] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 12:57:11] [IP: ::1] [Session: 369ca6c0209469e2ebcce14c0c26ddf9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 12:57:38] [IP: ::1] [Session: 369ca6c0209469e2ebcce14c0c26ddf9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 12:57:38] [IP: ::1] [Session: 369ca6c0209469e2ebcce14c0c26ddf9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:01:08] [IP: ::1] [Session: 369ca6c0209469e2ebcce14c0c26ddf9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:01:08] [IP: ::1] [Session: 369ca6c0209469e2ebcce14c0c26ddf9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:01:48] [IP: ::1] [Session: 369ca6c0209469e2ebcce14c0c26ddf9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:01:48] [IP: ::1] [Session: 369ca6c0209469e2ebcce14c0c26ddf9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:02:41] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:03:22] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:03:22] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:04:00] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:04:00] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:09:00] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:14:00] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:19:00] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:24:00] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:29:00] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:30:32] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:30:32] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:31:21] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:31:21] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:33:56] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:33:56] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:34:19] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:34:19] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:34:33] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:34:34] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:37:31] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:37:31] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:39:28] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:39:28] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:39:45] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:39:45] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:39:55] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:39:55] [IP: ::1] [Session: ac3498322305716f44a5a573ed430927] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:40:53] [IP: ::1] [Session: 83827f232f46dd849b05c56419013268] SESSION CHECK - No active session
+[2025-12-18 13:40:53] [IP: ::1] [Session: 83827f232f46dd849b05c56419013268] SESSION CHECK - No active session
+[2025-12-18 13:41:00] [IP: ::1] [Session: 685a64dfe3ad36e1aa6dc4616ec7c4f9] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:41:28] [IP: ::1] [Session: 60ad41d4ffaa8e87e2191dab96233684] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:41:48] [IP: ::1] [Session: 60ad41d4ffaa8e87e2191dab96233684] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:41:48] [IP: ::1] [Session: 60ad41d4ffaa8e87e2191dab96233684] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:42:44] [IP: ::1] [Session: 60ad41d4ffaa8e87e2191dab96233684] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:42:45] [IP: ::1] [Session: 60ad41d4ffaa8e87e2191dab96233684] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:43:02] [IP: ::1] [Session: 60ad41d4ffaa8e87e2191dab96233684] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:43:02] [IP: ::1] [Session: 60ad41d4ffaa8e87e2191dab96233684] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:43:22] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:47:02] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:47:02] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:47:10] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:47:10] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:48:35] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:48:35] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:49:09] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:49:09] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:50:58] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:50:58] [IP: ::1] [Session: 23352cf8537ff0b4c2a6293e58b8e752] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 13:51:24] [IP: ::1] [Session: 1b7906da3dba73eac9d0b9154efbbbbf] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-18 13:51:43] [IP: ::1] [Session: d02edd89a8d696ab9f0cc6e3c18d176a] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 13:55:58] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:00:58] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:05:58] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:10:58] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:15:58] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:20:58] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:26:30] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:31:30] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:36:30] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:41:30] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:46:30] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:51:30] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 14:56:30] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 15:01:17] [IP: ::1] [Session: 232b854b46389c5087d00b4c33baf0fc] SESSION CHECK - No active session
+[2025-12-18 15:02:41] [IP: ::1] [Session: 6ca58d5620188dd8b18615c12fa58399] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 15:05:58] [IP: ::1] [Session: 6ca58d5620188dd8b18615c12fa58399] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 15:11:30] [IP: ::1] [Session: 6ca58d5620188dd8b18615c12fa58399] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 15:14:03] [IP: ::1] [Session: 6ca58d5620188dd8b18615c12fa58399] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 15:14:03] [IP: ::1] [Session: 6ca58d5620188dd8b18615c12fa58399] [User ID: 2555632] SESSION CHECK - Valid session
+[2025-12-18 15:14:24] [IP: ::1] [Session: 74342548dfce956f9fe0beaff0858804] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 15:15:04] [IP: ::1] [Session: 74342548dfce956f9fe0beaff0858804] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 15:15:04] [IP: ::1] [Session: 74342548dfce956f9fe0beaff0858804] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 15:15:27] [IP: ::1] [Session: 74342548dfce956f9fe0beaff0858804] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 15:15:27] [IP: ::1] [Session: 74342548dfce956f9fe0beaff0858804] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 15:16:10] [IP: ::1] [Session: 74342548dfce956f9fe0beaff0858804] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-18 15:16:10] [IP: ::1] [Session: 74342548dfce956f9fe0beaff0858804] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-19 07:50:35] [IP: ::1] [Session: 888d0898af967b871303acfe0970328b] SESSION CHECK - No active session
+[2025-12-19 07:51:25] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 07:53:52] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 07:53:52] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 07:58:51] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:03:51] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:08:51] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:13:51] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:18:51] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:32:00] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:32:06] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:32:06] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:37:06] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:42:06] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:47:06] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:52:07] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 08:57:06] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 09:02:06] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 09:07:27] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 09:12:27] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 09:17:27] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 09:34:25] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 11:18:39] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 11:18:39] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-19 11:18:41] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-20 03:23:10] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-20 03:23:11] [IP: ::1] [Session: 39fa0f2b9dd3b0b6fb6836cc3134c427] SESSION CHECK - No active session
+[2025-12-20 03:24:25] [IP: ::1] [Session: 05d676cc0b8100afadc2ca3a27e50eef] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:28:10] [IP: ::1] [Session: 05d676cc0b8100afadc2ca3a27e50eef] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:33:10] [IP: ::1] [Session: 05d676cc0b8100afadc2ca3a27e50eef] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:36:24] [IP: ::1] [Session: 05d676cc0b8100afadc2ca3a27e50eef] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:36:24] [IP: ::1] [Session: 05d676cc0b8100afadc2ca3a27e50eef] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:40:59] [IP: ::1] [Session: 05d676cc0b8100afadc2ca3a27e50eef] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:40:59] [IP: ::1] [Session: 05d676cc0b8100afadc2ca3a27e50eef] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:45:59] [IP: ::1] [Session: 79897b7124dc639489818c3ef9c59e7e] SESSION CHECK - No active session
+[2025-12-20 03:46:37] [IP: ::1] [Session: 77776a57fdb390d950d2837e5944a686] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 03:47:42] [IP: ::1] [Session: d782704f47c090fd6d137da0a5a81d8c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:48:11] [IP: ::1] [Session: d782704f47c090fd6d137da0a5a81d8c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:48:11] [IP: ::1] [Session: d782704f47c090fd6d137da0a5a81d8c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:53:11] [IP: ::1] [Session: d782704f47c090fd6d137da0a5a81d8c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 03:57:39] [IP: ::1] [Session: 935dd03a49479e262aa147908d18c789] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 03:58:11] [IP: ::1] [Session: 935dd03a49479e262aa147908d18c789] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 03:59:20] [IP: ::1] [Session: 653317eb15a53262f821c42e79480be0] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 04:00:53] [IP: ::1] [Session: 653317eb15a53262f821c42e79480be0] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 04:00:54] [IP: ::1] [Session: 653317eb15a53262f821c42e79480be0] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 04:01:27] [IP: ::1] [Session: 653317eb15a53262f821c42e79480be0] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 04:01:27] [IP: ::1] [Session: 653317eb15a53262f821c42e79480be0] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 04:03:25] [IP: ::1] [Session: ff295f0f66829d60fa91af321a4bba85] SESSION CHECK - No active session
+[2025-12-20 04:03:25] [IP: ::1] [Session: 6ba8754e8586a861a60eadb63ca9bce0] SESSION CHECK - No active session
+[2025-12-20 04:04:02] [IP: ::1] [Session: a62f34b780ea194ae1d08eb48b2d7ed7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:08:25] [IP: ::1] [Session: a62f34b780ea194ae1d08eb48b2d7ed7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:13:25] [IP: ::1] [Session: a62f34b780ea194ae1d08eb48b2d7ed7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:18:25] [IP: ::1] [Session: a62f34b780ea194ae1d08eb48b2d7ed7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:18:46] [IP: ::1] [Session: a62f34b780ea194ae1d08eb48b2d7ed7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:18:46] [IP: ::1] [Session: a62f34b780ea194ae1d08eb48b2d7ed7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:19:00] [IP: ::1] [Session: 511848afc724e5797bf55f295e760efc] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 04:21:26] [IP: ::1] [Session: 1838d217e913c36e20d131b6e23e3551] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:23:46] [IP: ::1] [Session: 1838d217e913c36e20d131b6e23e3551] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:28:46] [IP: ::1] [Session: 1838d217e913c36e20d131b6e23e3551] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:33:46] [IP: ::1] [Session: 1838d217e913c36e20d131b6e23e3551] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:38:46] [IP: ::1] [Session: 1838d217e913c36e20d131b6e23e3551] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:43:46] [IP: ::1] [Session: 1838d217e913c36e20d131b6e23e3551] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 04:48:46] [IP: ::1] [Session: 1838d217e913c36e20d131b6e23e3551] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:15:55] [IP: ::1] [Session: dce91f5578562ba20d80657e36ee6039] SESSION CHECK - No active session
+[2025-12-20 14:15:56] [IP: ::1] [Session: 62449dd9ecdeb9577fc0d0190bbc8021] SESSION CHECK - No active session
+[2025-12-20 14:15:56] [IP: ::1] [Session: 19d039a6369db59773686309e677689d] SESSION CHECK - No active session
+[2025-12-20 14:16:06] [IP: ::1] [Session: 6358aada77dff919191eaab7fd657649] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:20:55] [IP: ::1] [Session: 6358aada77dff919191eaab7fd657649] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:21:09] [IP: ::1] [Session: 6358aada77dff919191eaab7fd657649] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:21:09] [IP: ::1] [Session: 6358aada77dff919191eaab7fd657649] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:26:10] [IP: ::1] [Session: 6358aada77dff919191eaab7fd657649] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:31:10] [IP: ::1] [Session: 6358aada77dff919191eaab7fd657649] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:36:09] [IP: ::1] [Session: 6358aada77dff919191eaab7fd657649] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:36:35] [IP: ::1] [Session: 01d5c408265134437fa9b4e423f1ec38] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 14:37:38] [IP: ::1] [Session: 4c6d38be64369c8bb12ed35e51c9b2c9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:39:29] [IP: ::1] [Session: 4c6d38be64369c8bb12ed35e51c9b2c9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:39:30] [IP: ::1] [Session: 4c6d38be64369c8bb12ed35e51c9b2c9] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:40:24] [IP: ::1] [Session: 484645090ef94c8a5e7eca09a6df7950] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:44:30] [IP: ::1] [Session: 484645090ef94c8a5e7eca09a6df7950] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:45:23] [IP: ::1] [Session: 2d5542da9c1652baceedd781f29a0e94] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 14:49:30] [IP: ::1] [Session: 2d5542da9c1652baceedd781f29a0e94] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 14:50:19] [IP: ::1] [Session: b05a87f95520c9ebd1ce74154d50d98e] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:50:58] [IP: ::1] [Session: b05a87f95520c9ebd1ce74154d50d98e] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:50:58] [IP: ::1] [Session: b05a87f95520c9ebd1ce74154d50d98e] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 14:51:40] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 14:55:58] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:00:58] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:05:41] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:05:41] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:07:24] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:07:24] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:08:59] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:08:59] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:09:57] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:09:57] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:10:06] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:10:06] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:10:39] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:10:39] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:10:54] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:10:54] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:11:24] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:11:24] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:13:57] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:13:57] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:15:42] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:15:42] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:19:58] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:19:58] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:21:28] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:21:28] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:22:16] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:22:17] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:27:17] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:28:40] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:28:40] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:33:40] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:35:36] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:35:36] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:39:13] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:39:13] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:40:09] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:40:09] [IP: ::1] [Session: 0e55354672680da5a19a4c043e33ee2c] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-20 15:41:33] [IP: ::1] [Session: c554e6556a5bade02cd746a1a640c88a] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 15:44:06] [IP: ::1] [Session: c554e6556a5bade02cd746a1a640c88a] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-20 15:44:06] [IP: ::1] [Session: c554e6556a5bade02cd746a1a640c88a] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-21 13:51:46] [IP: ::1] [Session: 432ba8a6a2bc71c32e6cc669efe02a54] SESSION CHECK - No active session
+[2025-12-21 13:51:47] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 13:56:39] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:01:39] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:04:03] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:04:04] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:09:03] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:14:03] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:19:03] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:24:08] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:29:03] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:34:05] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:39:03] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:44:05] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:49:15] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:54:15] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 14:59:16] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 15:04:03] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 15:09:15] [IP: ::1] [Session: 60acc1c5bc33bec4fd051c0543c494b1] SESSION CHECK - No active session
+[2025-12-21 15:13:48] [IP: ::1] [Session: 177e18e86e2efbc2dbf7e56b28290cb0] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-21 15:14:03] [IP: ::1] [Session: 177e18e86e2efbc2dbf7e56b28290cb0] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-21 15:19:03] [IP: ::1] [Session: 177e18e86e2efbc2dbf7e56b28290cb0] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-21 15:24:03] [IP: ::1] [Session: 177e18e86e2efbc2dbf7e56b28290cb0] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-21 15:29:03] [IP: ::1] [Session: 177e18e86e2efbc2dbf7e56b28290cb0] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-21 15:34:16] [IP: ::1] [Session: 177e18e86e2efbc2dbf7e56b28290cb0] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-21 23:57:26] [IP: ::1] [Session: 64d90c64bc351f75af2b6554515c56b5] SESSION CHECK - No active session
+[2025-12-21 23:57:27] [IP: ::1] [Session: 89d53d13efb698a4c2eb20f1f95b74b9] SESSION CHECK - No active session
+[2025-12-21 23:57:38] [IP: ::1] [Session: 1c8840ca155387e3172b0b8f4adc1d51] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-21 23:58:34] [IP: ::1] [Session: 1c8840ca155387e3172b0b8f4adc1d51] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-21 23:58:34] [IP: ::1] [Session: 1c8840ca155387e3172b0b8f4adc1d51] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-22 00:03:34] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:08:34] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:13:34] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:18:34] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:23:34] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:28:34] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:34:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:39:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:44:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:49:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:54:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 00:59:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:04:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:09:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:13:41] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:13:42] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:24:14] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:24:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:24:15] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:54:01] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:54:04] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:54:04] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 01:59:03] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:04:03] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:05:11] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:05:11] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:09:49] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:09:49] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:14:49] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:19:49] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:24:50] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:29:49] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:34:49] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:43:38] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:43:42] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 02:43:42] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 03:32:46] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 03:32:49] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 03:32:49] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 07:28:13] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 07:28:13] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 08:35:36] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 08:35:38] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 08:35:38] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 13:45:27] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 13:45:28] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 13:45:28] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 13:50:29] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 13:55:29] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 14:00:29] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 14:05:29] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 14:10:29] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-22 14:15:29] [IP: ::1] [Session: bff5650813bfac87bbc7086da4793982] SESSION CHECK - No active session
+[2025-12-31 07:06:47] [IP: ::1] [Session: dea40afa08122a49fc7bdb5b24c44ed4] SESSION CHECK - No active session
+[2025-12-31 07:06:49] [IP: ::1] [Session: 993ba6a6dc501c3ea6c47618315c9931] SESSION CHECK - No active session
+[2025-12-31 07:07:00] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:07:10] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:07:10] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:08:32] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:08:32] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:12:21] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:12:21] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:18] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:18] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:23] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:23] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:25] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:25] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:31] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:31] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:35] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:14:35] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:18:19] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:18:19] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:19:38] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:19:38] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:19:43] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:19:45] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:19:45] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:16] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:16] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:23] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:23] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:44] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:44] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:49] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:49] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:55] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:20:55] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:23:43] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:23:43] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:28:44] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:31:26] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:31:26] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:31:30] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:31:30] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:31:34] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:31:34] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:35:56] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:35:56] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:36:36] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:36:37] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:36:44] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:36:44] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:36:47] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:36:47] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:41:49] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:44:20] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:44:20] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:49:21] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:50:55] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:50:55] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:54:43] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:54:43] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:56:35] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:56:35] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:58:19] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:58:19] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:58:44] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 07:58:44] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:00:15] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:00:15] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:01:25] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:01:25] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:02:20] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:02:20] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:03:25] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:03:25] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:05:33] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:05:33] [IP: ::1] [Session: 45e5062ef6b2b40ea769e97c317f1d37] [User ID: 8225004] SESSION CHECK - Valid session
+[2025-12-31 08:05:55] [IP: ::1] [Session: ba92b83d491860138b8a46ab062b8bf7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-31 08:07:12] [IP: ::1] [Session: ba92b83d491860138b8a46ab062b8bf7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-31 08:07:12] [IP: ::1] [Session: ba92b83d491860138b8a46ab062b8bf7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-31 08:08:59] [IP: ::1] [Session: ba92b83d491860138b8a46ab062b8bf7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-31 08:08:59] [IP: ::1] [Session: ba92b83d491860138b8a46ab062b8bf7] [User ID: 3824544] SESSION CHECK - Valid session
+[2025-12-31 08:12:25] [IP: ::1] [Session: c0bb0fca8840330a935ad8b1da341f3a] SESSION CHECK - No active session
+[2025-12-31 08:12:25] [IP: ::1] [Session: 269900561d1b38e494e991fbc0dec232] SESSION CHECK - No active session
+[2026-01-02 09:09:34] [IP: ::1] [Session: 269900561d1b38e494e991fbc0dec232] SESSION CHECK - No active session

@@ -6,8 +6,6 @@ import { useLocation } from "react-router-dom";
 const ReviewSection = ({ formData, prevStep, handleSubmit }) => {
     const [isConsent, setIsConsent] = useState(false);
 
-    console.log("Review Section");
-
     const handleConsent = () => {
         setIsConsent(!isConsent);
     };
@@ -36,7 +34,7 @@ const ReviewSection = ({ formData, prevStep, handleSubmit }) => {
                 prevStep={prevStep}
                 disabled={!isConsent}
                 handleSubmit={handleSubmit}
-                section={'Review'}
+                section={"Review"}
                 sections={null}
             />
         </div>

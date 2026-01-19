@@ -355,11 +355,12 @@ class EventsModel
             $result = $this->getAllEventsByScholarId($id, $tab);
         }
 
-        return $this->getEventParticipants($result, $joinedScholars);
+        return $this->getEventParticipants($result, $joinedScholars, $id);
     }
 
-    public function getEventParticipants(array $events, $joinedScholars): array
+    public function getEventParticipants(array $events, $joinedScholars, $userId): array
     {
+        $privateComment = new PrivateCommentsModel();
         $result = [];
 
         foreach ($events as $event) {
@@ -367,6 +368,11 @@ class EventsModel
 
             // Get number of participants
             $event['numberOfParticipants'] = $joinedScholars->getNumberOfJoinedScholars($eventId);
+            $event[
+                'numberOfScholarUnreadComments'
+            ] = $privateComment->getUnreadScholarPrivateCommentsByEventId($eventId);
+            $event['numberOfStaffUnreadComments'] =
+                $privateComment->getUnreadStaffPrivateCommentsByEventId($eventId, $userId) ?? 0;
 
             // Fetch raw scholar participation info
             $scholarRecords = $this->getParticipantsIds($eventId);
@@ -426,7 +432,7 @@ class EventsModel
         $stmt->bindParam(':current_datetime', $this->currentDateTime);
         $stmt->execute();
         $events = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        return $this->getEventParticipants($events, $joinedScholars);
+        return $this->getEventParticipants($events, $joinedScholars, null);
     }
 
     public function getEventsByYearAndMonth($year, $joinedScholars)
@@ -441,7 +447,7 @@ class EventsModel
         $stmt->execute();
         $events = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $this->getEventParticipants($events, $joinedScholars);
+        return $this->getEventParticipants($events, $joinedScholars, null);
     }
 }
 ?>

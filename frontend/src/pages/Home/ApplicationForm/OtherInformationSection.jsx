@@ -60,55 +60,6 @@ const OtherInformationSection = ({
                 />
             </div>
 
-            {/* <div>
-                <div>
-                    <input
-                        id="other_assistance_applicable"
-                        name="other_assistance"
-                        type="radio"
-                        // value={"applicable"}
-                        // checked={isOtherAssistanceApplicable === "applicable"}
-                        // onChange={(e) => {
-                        //     setIsOtherAssistanceApplicable(e.target.value);
-                        //     setIsSecondFormApplicable(true);
-                        // }}
-                        className="accent-green-600"
-                    />
-                    <label
-                        htmlFor="other_assistance_applicable"
-                        className="ml-2 text-xs text-gray-700"
-                    >
-                        Boarding house
-                    </label>
-                </div>
-                <div>
-                    <input
-                        id="other_assistance_not_applicable"
-                        name="other_assistance"
-                        type="radio"
-                        value={"not_applicable"}
-                        // checked={
-                        //     isOtherAssistanceApplicable === "not_applicable"
-                        // }
-                        // onChange={(e) => {
-                        //     setIsOtherAssistanceApplicable(e.target.value);
-                        //     setIsSecondFormApplicable(false);
-                        // }}
-                        className="accent-green-600"
-                    />
-                    <label
-                        htmlFor="other_assistance_not_applicable"
-                        className="ml-2 text-xs text-gray-700"
-                    >
-                        Other:
-                    </label>
-                    <input
-                        type="text"
-                        className="ml-2 border-b border-gray-600 text-xs outline-none"
-                    />
-                </div>
-            </div> */}
-
             <NavigationButtons
                 isFirst={false}
                 isLast={false}
@@ -116,7 +67,6 @@ const OtherInformationSection = ({
                 nextStep={nextStep}
                 formData={formData}
                 formConfig={formConfig}
-                // handleRenewSubmit={handleRenewSubmit}
                 sections={[FORM_SECTIONS.OTHER_INFORMATION]}
                 section={"Other Information"}
             />

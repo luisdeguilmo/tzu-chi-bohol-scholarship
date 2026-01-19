@@ -22,6 +22,7 @@ import { useOrientationAndAwarding } from "../../../hooks/useOrientationAndAward
 import OrientationTableRow from "./OrientationTableRow";
 import ChangeStatusModal from "./ChangeStatusModal";
 import AwardingTableRow from "./AwardingTableRow";
+import { Plus } from "lucide-react";
 
 export default function OrientationAndAwarding() {
     const [isRefresh, setIsRefresh] = useState(false);
@@ -202,7 +203,11 @@ export default function OrientationAndAwarding() {
                 onChangeCurrentPage={setCurrentPage}
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
-                addCreateBatchButton={activeTab === "Orientation"}
+                addButton={activeTab === "Orientation"}
+                button={{
+                    icon: <Plus className="w-4 h-4 text-white" />,
+                    label: "Create Batch",
+                }}
                 onOpen={setIsCreateBatchModalOpen}
             >
                 {activeTab !== "Applicants" && (

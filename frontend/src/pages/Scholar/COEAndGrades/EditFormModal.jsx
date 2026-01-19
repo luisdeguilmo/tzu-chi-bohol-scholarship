@@ -239,8 +239,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
             } else {
                 toast.error(result.message);
             }
-
-            console.log(submissionData);
         } catch (error) {
             console.error("Submission error:", error);
             toast.error("Failed to submit the form. Please try again.");
@@ -258,8 +256,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
     };
 
     const isImage = (type) => type && type.startsWith("image/");
-
-    console.log(filePreviews);
 
     return (
         <InputModal

@@ -23,8 +23,8 @@ export default function ApplicationRecordsPage() {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("new");
     const [sortBy, setSortBy] = useState("newest");
-    const [schoolYear, setSchoolYear] = useState(getCurrentSchoolYear());
-    const [status, setStatus] = useState("all");
+    const [schoolYear, setSchoolYear] = useState("all_years");
+    const [status, setStatus] = useState("all_years");
 
     const { applications, fetchApplications } = useApplicationRecords(
         activeTab,
@@ -32,6 +32,9 @@ export default function ApplicationRecordsPage() {
         schoolYear,
         sortBy
     );
+
+    console.log(activeTab, status, schoolYear, sortBy);
+
     const { fetchApplicantData } = useApplicantData();
     const { profilePics, fetchAllPics } = useProfilePicture(
         applications,
@@ -45,8 +48,6 @@ export default function ApplicationRecordsPage() {
     useEffect(() => {
         fetchApplications();
     }, [activeTab, status, schoolYear, sortBy]);
-
-    console.log(profilePics);
 
     // Filter data based on search term
     const filteredApplications = applications.filter((applicant) => {
@@ -219,6 +220,7 @@ export default function ApplicationRecordsPage() {
                         className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all_years">All Years</option>
+                        <option value="2026-2027">2026-2027</option>
                         <option value="2025-2026">2025-2026</option>
                         <option value="2024-2025">2024-2025</option>
                     </select>

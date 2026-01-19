@@ -89,44 +89,33 @@ const NavigationButtons = ({
         }
 
         if (
-            section === "Personal" &&
-            !isValidContactNumber(formData.personal_information.contact_number)
-        ) {
-            toast.error("Invalid contact number.");
-            return;
-        }
-
-        if (
-            section === "Family" &&
-            (!isValidContactNumber(formData.parents_guardian.father_contact) ||
+            (section === "Personal" &&
                 !isValidContactNumber(
-                    formData.parents_guardian.mother_contact
-                ) ||
+                    formData.personal_information.contact_number
+                )) ||
+            (section === "Personal" &&
+                formData.personal_information.secondary_contact !== "" &&
                 !isValidContactNumber(
-                    formData.contact_person.emergency_contact_number
+                    formData.personal_information.secondary_contact
                 ))
         ) {
             toast.error("Invalid contact number.");
             return;
         }
 
-        if (
-            section === "Family" &&
-            formData.parents_guardian.guardian_contact !== "" &&
-            !isValidContactNumber(formData.parents_guardian.guardian_contact)
-        ) {
-            toast.error("Invalid contact number.");
-            return;
-        }
-
-        if (section === "Personal") {
-            const isGmail = (email) => /^[^\s@]+@gmail\.com$/.test(email);
-
-            if (!isGmail(formData.personal_information.email)) {
-                toast.error("Invalid email address.");
-                return;
-            }
-        }
+        // if (
+        //     section === "Family" &&
+        //     (!isValidContactNumber(formData.parents_guardian.father_contact) ||
+        //         !isValidContactNumber(
+        //             formData.parents_guardian.mother_contact
+        //         ) ||
+        //         !isValidContactNumber(
+        //             formData.contact_person.emergency_contact_number
+        //         ))
+        // ) {
+        //     toast.error("Invalid contact number.");
+        //     return;
+        // }
 
         if (section === "Personal") {
             if (isEmailExist) {
@@ -141,11 +130,90 @@ const NavigationButtons = ({
 
         // FIXED: Properly await the validation result
         if (section === "Personal") {
-            console.log(formData.personal_information.email);
             const isValid = await validateEmail(
                 formData.personal_information.email
             );
             if (!isValid) {
+                return;
+            }
+        }
+
+        if (
+            section === "Family" &&
+            !isValidContactNumber(formData.parents_guardian.father_contact)
+        ) {
+            toast.error(
+                "Father's contact number is invalid. Please enter a valid phone number."
+            );
+            return;
+        }
+
+        if (
+            section === "Family" &&
+            !isValidContactNumber(formData.parents_guardian.mother_contact)
+        ) {
+            toast.error(
+                "Mother's contact number is invalid. Please enter a valid phone number."
+            );
+            return;
+        }
+
+        if (
+            section === "Family" &&
+            formData.parents_guardian.guardian_contact !== "" &&
+            !isValidContactNumber(formData.parents_guardian.guardian_contact)
+        ) {
+            toast.error(
+                "Guardian's contact number is invalid. Please enter a valid phone number."
+            );
+            return;
+        }
+
+        if (
+            section === "Family" &&
+            !isValidContactNumber(
+                formData.contact_person.emergency_contact_number
+            )
+        ) {
+            toast.error(
+                "Emergency contact number is invalid. Please provide a valid phone number."
+            );
+            return;
+        }
+
+        if (
+            section === "Family" &&
+            (parseInt(formData.parents_guardian.father_age) < 18 ||
+                parseInt(formData.parents_guardian.father_age) > 100)
+        ) {
+            toast.error("Father's age must be between 18 and 100.");
+            return;
+        }
+
+        if (
+            section === "Family" &&
+            (parseInt(formData.parents_guardian.mother_age) < 18 ||
+                parseInt(formData.parents_guardian.mother_age) > 100)
+        ) {
+            toast.error("Mother's age must be between 18 and 100.");
+            return;
+        }
+
+        if (
+            section === "Family" &&
+            formData.parents_guardian.guardian_age !== "" &&
+            (parseInt(formData.parents_guardian.guardian_age) < 18 ||
+                parseInt(formData.parents_guardian.guardian_age) > 100)
+        ) {
+            toast.error("Guardian's age must be between 18 and 100.");
+            return;
+        }
+
+        if (section === "Personal") {
+            const isGmail = (email) => /^[^\s@]+@gmail\.com$/.test(email);
+
+            if (!isGmail(formData.personal_information.email)) {
+                toast.error("Invalid email address.");
                 return;
             }
         }
@@ -275,7 +343,7 @@ const NavigationButtons = ({
                     onClick={checkAndProceed}
                     disabled={disabled || loading}
                 >
-                    {loading ? "Validating..." : "Submit"}
+                    {loading ? "Submitting..." : "Submit"}
                 </button>
             )}
         </div>

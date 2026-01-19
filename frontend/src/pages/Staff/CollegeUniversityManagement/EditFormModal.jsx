@@ -81,9 +81,6 @@ function EditFormModal({
         e.preventDefault(); // Prevent form submission
         setIsOpen(false);
         resetFields();
-        // if (isEditing) {
-        //     onEdit(false);
-        // }
     };
 
     return (

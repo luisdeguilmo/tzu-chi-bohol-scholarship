@@ -22,7 +22,7 @@ const generateInitialState = (fieldsConfig) => {
     const initialState = {};
     fieldsConfig.forEach((field) => {
         initialState[field.name] =
-            field.type === "select" ? field.defaultValue || "s" : "s";
+            field.type === "select" ? field.defaultValue || "" : "";
     });
     return initialState;
 };
@@ -94,8 +94,6 @@ function ApplicationForm({ includeRequirements = true }) {
 
     // Initialize personal information from API
     useEffect(() => {
-        console.log("applicantInformation:", applicantInformation);
-
         if (applicantInformation?.personalInfo && !includeRequirements) {
             const {
                 applicationInfo,
@@ -108,8 +106,6 @@ function ApplicationForm({ includeRequirements = true }) {
                 assistanceInfo,
                 characterReference,
             } = applicantInformation;
-
-            console.log("Personal Info from API:", personalInfo);
 
             setFormData((prevData) => ({
                 ...prevData,
@@ -214,22 +210,6 @@ function ApplicationForm({ includeRequirements = true }) {
                     contact_number: ref.contact_number || "",
                 })),
             }));
-
-            console.log("Personal information initialized successfully");
-        } else {
-            console.log("Condition not met - checking values:");
-            console.log(
-                "applicantInformation?.success:",
-                applicantInformation?.success
-            );
-            console.log(
-                "applicantInformation?.data:",
-                applicantInformation?.data
-            );
-            console.log(
-                "applicantInformation?.data?.personalInfo:",
-                applicantInformation?.data?.personalInfo
-            );
         }
     }, [applicantInformation]);
 
@@ -297,8 +277,6 @@ function ApplicationForm({ includeRequirements = true }) {
                 JSON.stringify(applicationData)
             );
 
-            console.log(formDataToSend);
-
             const response = await axios.post(
                 `${BASE_URL}app/views/renewal.php`,
                 formDataToSend,
@@ -309,7 +287,6 @@ function ApplicationForm({ includeRequirements = true }) {
                 }
             );
 
-            console.log("Server response:", response.data);
             toast.success("Application submitted successfully!");
             setLoading(false);
             setTimeout(() => {
@@ -320,7 +297,7 @@ function ApplicationForm({ includeRequirements = true }) {
             console.log("Error: ", error);
             alert("Failed: ", error);
         }
-        console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
+        // console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
     };
 
     const handleReSubmitRenew = async (e) => {
@@ -342,8 +319,6 @@ function ApplicationForm({ includeRequirements = true }) {
                 JSON.stringify(applicationData)
             );
 
-            console.log(formDataToSend);
-
             const response = await axios.post(
                 `${BASE_URL}app/views/renewal.php`,
                 formDataToSend,
@@ -354,7 +329,6 @@ function ApplicationForm({ includeRequirements = true }) {
                 }
             );
 
-            console.log("Server response:", response.data);
             toast.success("Application submitted successfully!");
             setLoading(false);
             setTimeout(() => {
@@ -362,10 +336,9 @@ function ApplicationForm({ includeRequirements = true }) {
             }, 1000);
             setActiveTab("dashboard");
         } catch (error) {
-            console.log("Error: ", error);
             alert("Failed: ", error);
         }
-        console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
+        // console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
     };
 
     // Handle final form submission
@@ -374,7 +347,7 @@ function ApplicationForm({ includeRequirements = true }) {
         formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.status = "New";
         formData.educational_background.year_level = 1;
-        console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
+        // console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
 
         const submitStudentData = async () => {
             try {
@@ -430,7 +403,6 @@ function ApplicationForm({ includeRequirements = true }) {
                     }
                 );
 
-                console.log("Server response:", response.data);
                 toast.success("Application submitted successfully!");
                 setLoading(false);
                 setTimeout(() => {

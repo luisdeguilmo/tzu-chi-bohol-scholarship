@@ -16,8 +16,9 @@ const familyMembersInputFields = [
     {
         label: "Age",
         name: "age",
-        type: "number",
+        type: "text",
         placeholder: "Age",
+        validate: "numbersOnly",
     },
     {
         label: "Gender",
@@ -43,7 +44,7 @@ const familyMembersInputFields = [
     {
         label: "Monthly Income",
         name: "monthly_income",
-        type: "number",
+        type: "text",
         placeholder: "Enter amount",
         validate: "numbersOnly",
     },

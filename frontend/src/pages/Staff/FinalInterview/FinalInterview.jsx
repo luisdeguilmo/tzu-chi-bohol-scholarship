@@ -147,8 +147,6 @@ export default function FinalInterview() {
         await fetchApplications();
     };
 
-    console.log(profilePics);
-
     return (
         <div className="lg:p-6">
             <div className="w-[100%] mx-auto bg-white rounded-md shadow p-6">

@@ -13,9 +13,12 @@ export const useDashboardOverviewData = (id, userType, schoolYear) => {
                     headers: { "Content-Type": "application/json" },
                 }
             );
+
             const json = await response.json();
-            setDashboardData(json.data || []);
-            console.log(json.data);
+
+            if (response.ok) {
+                setDashboardData(json.data || []);
+            }
         } catch (error) {
             console.log("Error: ", error);
         }
@@ -32,7 +35,6 @@ export const useDashboardOverviewData = (id, userType, schoolYear) => {
             );
             const json = await response.json();
             setDashboardData(json.data || []);
-            console.log(json.data);
         } catch (error) {
             console.log("Error: ", error);
         }
@@ -49,7 +51,6 @@ export const useDashboardOverviewData = (id, userType, schoolYear) => {
             );
             const json = await response.json();
             setDashboardData(json.data || []);
-            console.log(json.data);
         } catch (error) {
             console.log("Error: ", error);
         }

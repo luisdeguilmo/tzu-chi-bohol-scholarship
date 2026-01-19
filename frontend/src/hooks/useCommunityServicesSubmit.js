@@ -126,12 +126,7 @@ export const useCommunityServicesSubmit = () => {
                 }
 
                 activityData.uploaded_files = uploadedFiles;
-
-                console.log("File Reviews: ", filePreviews);
-                console.log("Activity Data: ", activityData);
             }
-
-            console.log("Submitting activity data:", activityData);
 
             // Submit the data
             const response = await fetch(
@@ -198,8 +193,6 @@ export const useCommunityServicesSubmit = () => {
     ) => {
         setIsSubmitting(true);
         setIsLoading(true);
-
-        console.log(existingFilesRemoved);
 
         try {
             // Validate time inputs
@@ -300,12 +293,7 @@ export const useCommunityServicesSubmit = () => {
                 }
 
                 activityData.uploaded_files = uploadedFiles;
-
-                console.log("File Reviews: ", filePreviews);
-                console.log("Activity Data: ", activityData);
             }
-
-            console.log("Submitting activity data:", activityData);
 
             // Submit the data
             const response = await fetch(

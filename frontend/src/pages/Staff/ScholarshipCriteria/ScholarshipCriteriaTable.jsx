@@ -53,8 +53,6 @@ const ScholarshipCriteriaTable = ({
         goToNextPage,
     } = paginationState;
 
-    console.log(currentPage);
-
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -92,7 +90,6 @@ const ScholarshipCriteriaTable = ({
         ) {
             setText(item[searchPlaceholder.slice(0, -1)]);
         }
-        console.log(item);
         setId(item.id);
         setIsModalOpen(true);
         setIsEditing(true);

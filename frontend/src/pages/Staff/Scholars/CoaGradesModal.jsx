@@ -23,8 +23,6 @@ function CoaGradesModal({ scholarId, isOpen, onClose }) {
         onClose(false);
     };
 
-    console.log(submissions);
-
     const [open, setOpen] = useState(null);
 
     const toggle = (id) => setOpen(open === id ? null : id);
@@ -51,7 +49,9 @@ function CoaGradesModal({ scholarId, isOpen, onClose }) {
                 </div>
             )}
 
-            <div className={`max-h-[500px] p-6 space-y-3 ${loading ? "hidden" : "block"}`}>
+            <div
+                className={`max-h-[500px] p-6 space-y-3 ${loading ? "hidden" : "block"}`}
+            >
                 {submissions.length === 0 ? (
                     <p className="text-gray-500 text-sm text-center py-2">
                         No files submitted yet.

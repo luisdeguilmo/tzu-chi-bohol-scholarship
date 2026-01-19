@@ -63,7 +63,6 @@ const PendingScholarsRow = ({
                         <button
                             onClick={() => {
                                 onCreateAccount([scholar.application_id]);
-                                console.log([scholar.application_id]);
                             }}
                             title="Approve Account"
                             className="p-2 rounded-xl hover:bg-green-50"

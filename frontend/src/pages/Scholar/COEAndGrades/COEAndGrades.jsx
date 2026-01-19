@@ -50,8 +50,6 @@ export default function CoeGrades() {
         fetchSubmissions(activeTab, user.user_id); // Changed
     }, [activeTab, user.user_id]);
 
-    console.log(submissions);
-
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {

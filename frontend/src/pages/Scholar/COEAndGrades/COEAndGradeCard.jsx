@@ -23,8 +23,6 @@ const CoeGradesCard = ({
         userId
     );
 
-    console.log(submission.files[0]?.uploaded_at);
-
     const handleArchiveToggle = async (e) => {
         e.stopPropagation();
         setIsDotMenuOpen(false);

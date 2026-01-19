@@ -10,7 +10,7 @@ export const date = {
         return this.today.getFullYear();
     },
     getCurrentYearMonth: function () {
-        return `${this.today.getFullYear()}-${this.today.getMonth() + 1}`;
+        return `${this.today.getFullYear()}-${String(this.today.getMonth() + 1).padStart(2, '0')}`;
     },
     getCurrentMonthFormatted: function () {
         const months = [

@@ -1,8 +1,6 @@
 import { Calendar, CheckCircle, Clock } from "lucide-react";
 
 const DataOverview = ({ overviewData }) => {
-    console.log("Overview Data:", overviewData);
-
     return (
         <div className="mb-6 p-6 bg-green-600 rounded-xl shadow-xl text-center relative overflow-hidden">
             {/* Decorative elements */}

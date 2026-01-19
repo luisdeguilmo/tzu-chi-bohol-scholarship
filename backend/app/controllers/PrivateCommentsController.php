@@ -8,10 +8,11 @@ require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/EventParticipantsModel.php';
 
 use App\Models\EventParticipantsModel;
+use App\Models\NotificationsModel;
 use App\Models\PrivateCommentsModel;
 use Config\Database;
 
-class EventReasonController
+class PrivateCommentsController
 {
     private $pdo;
 
@@ -34,8 +35,14 @@ class EventReasonController
             case 'GET':
                 $this->handleGet();
                 break;
+            case 'POST':
+                $this->handlePost();
+                break;
             case 'PUT':
                 $this->handlePut();
+                break;
+            case 'DELETE':
+                $this->handleDelete();
                 break;
 
             default:
@@ -53,6 +60,7 @@ class EventReasonController
             // Get ID parameter if it exists
             $eventId = isset($_GET['event_id']) ? $_GET['event_id'] : null;
             $scholarId = isset($_GET['scholar_id']) ? $_GET['scholar_id'] : null;
+            $staffId = isset($_GET['staff_id']) ? $_GET['staff_id'] : null;
             $userType = isset($_GET['user_type']) ? $_GET['user_type'] : null;
 
             $rows = $privateComment->getPrivateComments($eventId);
@@ -83,7 +91,7 @@ class EventReasonController
         }
     }
 
-    private function handlePut()
+    private function handlePost()
     {
         try {
             $this->pdo->beginTransaction();
@@ -102,13 +110,16 @@ class EventReasonController
 
             $eventId = $data['event']['event_id'];
             $scholarId = $data['event']['scholar_id'];
+            $staffId = $data['event']['staff_id'];
             $reason = $data['event']['reason'] ?? '';
             $firstName = $data['event']['first_name'] ?? '';
             $lastName = $data['event']['last_name'] ?? '';
+            $userType = $data['event']['user_type'] ?? '';
 
             // Process procedure data
             $eventParticipant = new EventParticipantsModel();
             $privateComment = new PrivateCommentsModel();
+            $notification = new NotificationsModel();
 
             // if (!$eventParticipant->addReason($eventId, $scholarId, $reason)) {
             //     throw new \Exception('Failed to add');
@@ -118,12 +129,19 @@ class EventReasonController
                 !$privateComment->addPrivateComment(
                     $eventId,
                     $scholarId,
+                    $staffId,
                     $reason,
                     $firstName,
                     $lastName,
                 )
             ) {
                 throw new \Exception('Failed to add');
+            }
+
+            if ($userType === 'staff') {
+                $notification->createScholarUnreadCommentsNotification($scholarId);
+            } elseif ($userType === 'scholar') {
+                $notification->createStaffUnreadCommentsNotification();
             }
 
             $this->pdo->commit();
@@ -148,54 +166,109 @@ class EventReasonController
         }
     }
 
-    // private function handleDelete()
-    // {
-    //     try {
-    //         $this->pdo->beginTransaction();
+    private function handlePut()
+    {
+        try {
+            $this->pdo->beginTransaction();
 
-    //         // Get ID parameter
-    //         $id = isset($_GET['id']) ? $_GET['id'] : null;
+            // Get data from request body
+            $data = json_decode(file_get_contents('php://input'), true);
 
-    //         if (!$id) {
-    //             throw new \Exception('ID is required for delete');
-    //         }
+            if (!$data) {
+                throw new \Exception('No data provided');
+            }
 
-    //         // Process delete
-    //         $criteria = new ScholarshipCriteriaModel();
+            // Check if ID is provided
+            if (!isset($data['event']['user_type'])) {
+                throw new \Exception('User type is required for update');
+            }
 
-    //         // Check if procedure exists
-    //         $existingProcedure = $criteria->getProcedureById($id);
-    //         if (!$existingProcedure) {
-    //             throw new \Exception('Procedure not found');
-    //         }
+            $userType = $data['event']['user_type'];
+            $eventId = $data['event']['event_id'];
+            $scholarId = $data['event']['scholar_id'];
 
-    //         if (!$criteria->deleteProcedure($id)) {
-    //             throw new \Exception('Failed to delete procedure');
-    //         }
+            $privateComment = new PrivateCommentsModel();
 
-    //         $this->pdo->commit();
+            if ($userType === 'staff') {
+                if (!$privateComment->markScholarCommentsAsRead($eventId)) {
+                    throw new \Exception('Failed to mark comments as read');
+                }
+            } elseif ($userType === 'scholar') {
+                if (!$privateComment->markStaffCommentsAsRead($eventId, $scholarId)) {
+                    throw new \Exception('Failed to mark comments as read');
+                }
+            }
 
-    //         // Return success response
-    //         http_response_code(200);
-    //         echo json_encode([
-    //             'success' => true,
-    //             'message' => 'Procedure deleted successfully',
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         // Roll back transaction on error
-    //         if ($this->pdo->inTransaction()) {
-    //             $this->pdo->rollBack();
-    //         }
+            $this->pdo->commit();
 
-    //         http_response_code(400);
-    //         echo json_encode([
-    //             'success' => false,
-    //             'message' => $e->getMessage(),
-    //         ]);
-    //     }
-    // }
+            // Return success response
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Reason added successfully',
+            ]);
+        } catch (\Exception $e) {
+            // Roll back transaction on error
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function handleDelete()
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            // Get ID parameter
+            $id = isset($_GET['id']) ? $_GET['id'] : null;
+
+            if (!$id) {
+                throw new \Exception('ID is required for delete');
+            }
+
+            // Process delete
+            $model = new PrivateCommentsModel();
+
+            // Check if procedure exists
+            $existingPrivateComment = $model->getPrivateCommentById($id);
+            if (!$existingPrivateComment) {
+                throw new \Exception('Private comment not found');
+            }
+
+            if (!$model->deletePrivateComment($id)) {
+                throw new \Exception('Failed to delete private comment');
+            }
+
+            $this->pdo->commit();
+
+            // Return success response
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Private comment deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            // Roll back transaction on error
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 }
 
-$controller = new EventReasonController();
+$controller = new PrivateCommentsController();
 $controller->processRequest();
 ?>

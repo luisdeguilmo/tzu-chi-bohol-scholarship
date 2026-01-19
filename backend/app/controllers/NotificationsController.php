@@ -235,6 +235,10 @@ class NotificationsController
                 if (!$notification->deleteUserEventNotification($userId, $id)) {
                     throw new \Exception('Failed to notification');
                 }
+            } elseif ($type === 'private_comments') {
+                if (!$notification->deleteUserEventNotification($userId, $id)) {
+                    throw new \Exception('Failed to notification');
+                }
             } else {
                 throw new \Exception('Invalid type specified');
             }

@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
 import BASE_URL from "../config";
 
 export const useEventReason = (scholarId, eventId) => {
@@ -49,9 +48,11 @@ export const useEventReason = (scholarId, eventId) => {
     const addReason = async (
         eventId,
         scholarId,
+        staffId = null,
         reason,
         firstName,
-        lastName
+        lastName,
+        userType
     ) => {
         try {
             // Create the data structure for the update
@@ -60,9 +61,52 @@ export const useEventReason = (scholarId, eventId) => {
                 event: {
                     event_id: eventId,
                     scholar_id: scholarId,
+                    staff_id: staffId,
                     reason: reason,
                     first_name: firstName,
                     last_name: lastName,
+                    user_type: userType,
+                },
+            };
+
+            // Send the PUT request with the data in the body
+            const response = await fetch(
+                `${BASE_URL}app/views/event-reason.php`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                }
+            );
+
+            const result = await response.json();
+
+            // Check for success and update the UI
+            if (result.success) {
+                // Show success message
+                return true;
+            } else {
+                alert("Error: " + response.data);
+                return false;
+            }
+        } catch (error) {
+            alert("Failed to submit");
+            console.log(error);
+            return false;
+        }
+    };
+
+    const markCommentAsRead = async (userType, eventId, scholarId) => {
+        try {
+            // Create the data structure for the update
+            // No need to encode here as that should be handled server-side
+            const data = {
+                event: {
+                    event_id: eventId,
+                    scholar_id: scholarId,
+                    user_type: userType,
                 },
             };
 
@@ -83,7 +127,6 @@ export const useEventReason = (scholarId, eventId) => {
             // Check for success and update the UI
             if (result.success) {
                 // Show success message
-                toast.success("Reason added successfully.");
                 return true;
             } else {
                 alert("Error: " + response.data);
@@ -96,24 +139,19 @@ export const useEventReason = (scholarId, eventId) => {
         }
     };
 
-    // const deleteStrand = async (id) => {
-    //     try {
-    //         // Make the API call to delete
-    //         await axios.delete(`${BASE_URL}app/views/strands.php?id=${id}`);
+    const deletePrivateComment = async (id) => {
+        try {
+            // Make the API call to delete
+            await axios.delete(
+                `${BASE_URL}app/views/event-reason.php?id=${id}`
+            );
 
-    //         // Update local state after successful deletion
-    //         const updatedStrands = strands.filter((strand) => strand.id !== id);
-    //         setStrands(updatedStrands);
-
-    //         toast.success("Strand deleted successfully.");
-
-    //         return true;
-    //     } catch (error) {
-    //         console.error("Error deleting strand:", error);
-    //         alert("Failed to delete strand");
-    //         return false;
-    //     }
-    // };
+            return true;
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+            return false;
+        }
+    };
 
     useEffect(() => {
         if (scholarId && eventId) {
@@ -129,6 +167,8 @@ export const useEventReason = (scholarId, eventId) => {
         privateComments,
         fetchPrivateComments,
         fetchScholarPrivateComments,
+        markCommentAsRead,
+        deletePrivateComment,
         error,
     };
 };

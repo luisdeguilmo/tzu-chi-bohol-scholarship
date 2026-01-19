@@ -4,6 +4,6 @@ $allowedMethods = ['GET', 'PUT', 'DELETE', 'OPTIONS'];
 $allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With'];
 
 require_once __DIR__ . '/../../config/bootstrap.php';
-require_once __DIR__ . '/../controllers/EventReasonController.php';
+require_once __DIR__ . '/../controllers/PrivateCommentsController.php';
 
 ?>

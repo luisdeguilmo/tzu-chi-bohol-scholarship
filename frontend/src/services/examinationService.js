@@ -29,7 +29,6 @@ export const sendExaminationSchedule = async (
 export const proceedToInterview = async (ids) => {
     // const confirmationId = window.prompt("Enter applicant's application ID:");
 
-    console.log(ids);
     
     try {
         // setLoading(true);

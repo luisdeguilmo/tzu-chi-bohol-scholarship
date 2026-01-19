@@ -62,8 +62,6 @@ export default function CommunityServices() {
         return () => document.removeEventListener("click", handleClickOutside);
     }, [isDotMenuOpen]);
 
-    console.log(activeTab);
-
     // Filter data based on search term
     const filteredActivities = activities.filter(
         (activity) =>

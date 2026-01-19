@@ -155,7 +155,7 @@ function parseResponse($response)
         'hostExists' => $hostExists,
         'message' => $deliverable
             ? 'Email is valid and deliverable'
-            : 'Email may not exist or is not deliverable',
+            : 'This email address does not exist or cannot receive emails.',
         'status' => $status,
         'is_disposable' => $isDisposable,
         'free_email' => $data['free_email'] ?? null,

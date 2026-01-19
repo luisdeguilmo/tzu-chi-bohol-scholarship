@@ -2,9 +2,10 @@ import { Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useSchedule } from "../../../hooks/useSchedule";
-import { manageApplication } from "../../../services/emailService";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import InputModal from "../../../components/InputModal";
+import { formatTime } from "../../../utils/formatTime";
+import { manageApplication } from "../../../services/emailService";
 
 export default function SetScheduleForm({
     applications,
@@ -164,22 +165,33 @@ export default function SetScheduleForm({
                                         setDate(e.target.value);
                                         setIsInputChanged(true);
                                     }}
+                                    onClick={(e) => e.target.showPicker()}
+                                    placeholder="yyyy-mm-dd"
                                     className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
-                                />
+                                />`
                             </label>
-                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
-                                Time *
-                                <input
-                                    required
-                                    type="time"
-                                    value={time}
-                                    onChange={(e) => {
-                                        setTime(e.target.value);
-                                        setIsInputChanged(true);
-                                    }}
-                                    className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
-                                />
-                            </label>
+                            <div className="relative">
+                                {time && (
+                                    <span className="pointer-events-none absolute left-2.5 top-[32px] text-gray-800 text-xs">
+                                        {formatTime(time)}
+                                    </span>
+                                )}
+                                <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                                    Time *
+                                    <input
+                                        required
+                                        type="time"
+                                        value={time}
+                                        onChange={(e) => {
+                                            setTime(e.target.value);
+                                            setIsInputChanged(true);
+                                        }}
+                                        onClick={(e) => e.target.showPicker()}
+                                        placeholder="--:-- --"
+                                        className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    />
+                                </label>
+                            </div>
                             <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                                 Venue *
                                 <input
