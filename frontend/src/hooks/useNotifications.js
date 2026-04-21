@@ -11,7 +11,7 @@ export const useNotifications = (userId) => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/notifications.php?id=${userId}`
+                `${BASE_URL}app/api/notifications.php?id=${userId}`
             );
 
             if (response.data) {
@@ -29,7 +29,7 @@ export const useNotifications = (userId) => {
     const markAsRead = async (id) => {
         try {
             const response = await axios.put(
-                `${BASE_URL}app/views/notifications.php?id=${id}&user_id=${userId}`
+                `${BASE_URL}app/api/notifications.php?id=${id}&user_id=${userId}`
             );
 
             if (response.data) {
@@ -46,7 +46,7 @@ export const useNotifications = (userId) => {
     const deleteNotification = async (id, type) => {
         try {
             const response = await axios.delete(
-                `${BASE_URL}app/views/notifications.php?id=${id}&type=${type}&user_id=${userId}`
+                `${BASE_URL}app/api/notifications.php?id=${id}&type=${type}&user_id=${userId}`
             );
 
             if (response.data) {

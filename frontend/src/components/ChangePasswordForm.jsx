@@ -29,7 +29,7 @@ const ChangePasswordForm = ({ userId }) => {
             data.append("confirm_password", confirmNewPassword);
 
             const response = await axios.post(
-                `${BASE_URL}app/views/password-reset.php?action=change_password`,
+                `${BASE_URL}app/api/password-reset.php?action=change_password`,
                 data,
                 {
                     headers: {

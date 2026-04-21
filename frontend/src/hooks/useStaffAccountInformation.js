@@ -12,7 +12,7 @@ export const useStaffAccountInformation = (userId) => {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `${BASE_URL}app/views/staff-info.php?staff_id=${userId}`
+                `${BASE_URL}app/api/staff-info.php?staff_id=${userId}`
             );
 
             if (response.data.success) {

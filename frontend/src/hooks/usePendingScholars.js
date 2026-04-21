@@ -13,7 +13,7 @@ export const usePendingScholars = () => {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `${BASE_URL}app/views/scholar-accounts.php?application_status=Pending`
+                `${BASE_URL}app/api/scholar-accounts.php?application_status=Pending`
             );
             setPendingScholars(response.data.data || []);
             setLoading(false);
@@ -36,7 +36,7 @@ export const usePendingScholars = () => {
         try {
             setLoading(true);
             const response = await axios.post(
-                `${BASE_URL}app/views/scholar-accounts.php`,
+                `${BASE_URL}app/api/scholar-accounts.php`,
                 {
                     applicationIds: selectedScholars,
                 },

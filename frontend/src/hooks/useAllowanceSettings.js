@@ -11,7 +11,7 @@ export const useAllowanceSettings = () => {
             setLoading(true);
 
             const response = await fetch(
-                `${BASE_URL}app/views/allowance-settings.php`,
+                `${BASE_URL}app/api/allowance-settings.php`,
                 {
                     method: "GET",
                     headers: {
@@ -48,7 +48,7 @@ export const useAllowanceSettings = () => {
             setLoading(true);
 
             const response = await fetch(
-                `${BASE_URL}app/views/allowance-settings.php`,
+                `${BASE_URL}app/api/allowance-settings.php`,
                 {
                     method: "PUT",
                     headers: {

@@ -2,6 +2,7 @@
 export const applicationPeriodTableHeaders = [
     { name: "Start Date", style: "text-center" },
     { name: "End Date", style: "text-center" },
+    { name: "School Year", style: "text-center" },
     { name: "Type", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Message", style: "text-center" },
@@ -223,4 +224,20 @@ export const staffAccountHeaders = [
     { name: "Status" },
     { name: "Date Created" },
     { name: "Action" },
+];
+
+export const schoolYearsHeaders = [
+    { name: "School Year" },
+    { name: "Status" },
+    { name: "Action" },
+];
+
+export const auditLogsHeaders = [
+    { name: "User" },
+    { name: "Role" },
+    { name: "Action" },
+    { name: "Entity" },
+    { name: "Record ID" },
+    { name: "Changes" },
+    { name: "Date" },
 ];

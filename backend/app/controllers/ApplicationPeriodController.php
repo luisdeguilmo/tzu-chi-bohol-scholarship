@@ -21,6 +21,7 @@ use App\Models\ApplicationPeriodModel;
 use App\Models\NotificationsModel;
 use App\Models\ScholarModel;
 use App\Models\ScholarsModel;
+use App\Models\SchoolYearModel;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
 class ApplicationPeriodController
@@ -162,6 +163,7 @@ class ApplicationPeriodController
             $scholarModel = new ScholarModel();
             $applicationModel = new ApplicationModel();
             $notification = new NotificationsModel();
+            $schoolYear = new SchoolYearModel();
 
             if ($data['application']['type'] === 'renewal') {
                 $scholars = $scholarModel->getAllScholars();
@@ -201,6 +203,10 @@ class ApplicationPeriodController
 
             if (!$applicationPeriod->createApplicationPeriod($data['application'])) {
                 throw new \Exception('Failed to save application period information');
+            }
+
+            if (!$schoolYear->getSchoolYear($data['application']['schoolYear'])) {
+                $schoolYear->createSchoolYear($data['application']['schoolYear']);
             }
 
             $this->pdo->commit();
@@ -246,6 +252,7 @@ class ApplicationPeriodController
 
             // Process application period data
             $applicationPeriod = new ApplicationPeriodModel();
+            $schoolYear = new SchoolYearModel();
 
             // Check if application period exists
             $existingApplicationPeriod = $applicationPeriod->getApplicationPeriodById($id);
@@ -265,27 +272,31 @@ class ApplicationPeriodController
                 throw new \Exception('Failed to update application period information');
             }
 
+            if (!$schoolYear->getSchoolYear($data['application']['schoolYear'])) {
+                $schoolYear->createSchoolYear($data['application']['schoolYear']);
+            }
+
             $scholarsModel = new ScholarsModel();
             $applicationModel = new ApplicationModel();
 
-            if ($data['application']['type'] === 'renewal') {
-                $prevNewScholars = $applicationModel->getNewScholarsFromPreviousSchoolYear();
-                $prevOldScholars = $applicationModel->getOldScholarsFromPreviousSchoolYear();
+            // if ($data['application']['type'] === 'renewal') {
+            //     $prevNewScholars = $applicationModel->getNewScholarsFromPreviousSchoolYear();
+            //     $prevOldScholars = $applicationModel->getOldScholarsFromPreviousSchoolYear();
 
-                if ($prevNewScholars) {
-                    foreach ($prevNewScholars as $prevScholar) {
-                        $scholarsModel->setScholarsAsNotRenewed($prevScholar['application_id']);
-                    }
-                }
+            //     if ($prevNewScholars) {
+            //         foreach ($prevNewScholars as $prevScholar) {
+            //             $scholarsModel->setScholarsAsNotRenewed($prevScholar['application_id']);
+            //         }
+            //     }
 
-                if ($prevOldScholars) {
-                    foreach ($prevOldScholars as $prevScholar) {
-                        $scholarsModel->setScholarsAsNotRenewed($prevScholar['scholar_id']);
-                    }
-                }
+            //     if ($prevOldScholars) {
+            //         foreach ($prevOldScholars as $prevScholar) {
+            //             $scholarsModel->setScholarsAsNotRenewed($prevScholar['scholar_id']);
+            //         }
+            //     }
 
-                $applicationModel->setApplicationStatusAsNotRenewed();
-            }
+            //     $applicationModel->setApplicationStatusAsNotRenewed();
+            // }
 
             $this->pdo->commit();
 

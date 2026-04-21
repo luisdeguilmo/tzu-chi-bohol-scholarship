@@ -45,6 +45,8 @@ import AboutSection from "./pages/Home/About";
 import OurMission from "./pages/Home/OurMission";
 import ScholarsAndAllowances from "./pages/Staff/ScholarsAndAllowances/ScholarsAndAllowances";
 import CoeGrades from "./pages/Scholar/COEAndGrades/COEAndGrades";
+import SchoolYears from "./pages/Admin/SchoolYears/SchoolYears";
+import AuditLogs from "./pages/Admin/AuditLog/AuditLogs";
 
 // Component for role-specific login forms
 const RoleSpecificLoginForm = ({ role }) => {
@@ -209,6 +211,14 @@ export function App() {
                     <Route
                         path="/admin/staff-account-management"
                         element={<StaffAccounts />}
+                    />
+                    <Route
+                        path="/admin/school-years"
+                        element={<SchoolYears />}
+                    />
+                    <Route
+                        path="/admin/audit-logs"
+                        element={<AuditLogs />}
                     />
                 </Route>
 

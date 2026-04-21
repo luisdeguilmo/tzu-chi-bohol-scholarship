@@ -9,7 +9,7 @@ export const useScholar = (id, schoolYear) => {
     const getScholarType = async () => {
         try {
             const response = await axios.get(
-                `${BASE_URL}app/views/scholar.php?id=${id}&school_year=${schoolYear}`
+                `${BASE_URL}app/api/scholar.php?id=${id}&school_year=${schoolYear}`
             );
 
             if (response.data.success) {

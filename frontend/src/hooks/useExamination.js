@@ -12,7 +12,7 @@ export const useExamination = (selectedBatchInBatches, tab, status, sort) => {
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/views/applicants.php?application_status=examination&batch=Unassigned`
+                `${BASE_URL}app/api/applicants.php?application_status=examination&batch=Unassigned`
             );
             setApplications(response.data.data || []);
             setIsLoading(false);
@@ -28,7 +28,7 @@ export const useExamination = (selectedBatchInBatches, tab, status, sort) => {
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/views/batch-examination.php?batch=${selectedBatchInBatches.replace(" ", "%20")}&status=${status}&sort=${sort}`
+                `${BASE_URL}app/api/batch-examination.php?batch=${selectedBatchInBatches.replace(" ", "%20")}&status=${status}&sort=${sort}`
             );
             setApplications(response.data.data || []);
             setIsLoading(false);
@@ -44,7 +44,7 @@ export const useExamination = (selectedBatchInBatches, tab, status, sort) => {
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/views/batch-examination.php?batch=${selectedBatchInBatches.replace(" ", "%20")}&score=true&status=${status}&sort=${sort}`
+                `${BASE_URL}app/api/batch-examination.php?batch=${selectedBatchInBatches.replace(" ", "%20")}&score=true&status=${status}&sort=${sort}`
             );
             setApplications(response.data.data || []);
             setIsLoading(false);

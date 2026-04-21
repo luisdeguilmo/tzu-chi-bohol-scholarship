@@ -19,7 +19,7 @@ export const useScholarInformation = (
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/scholar-information.php?tab=${tab}&status=${status}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}`
+                `${BASE_URL}app/api/scholar-information.php?tab=${tab}&status=${status}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}`
             );
             // Set application periods data
             setScholarsInformation(response.data.data || []);

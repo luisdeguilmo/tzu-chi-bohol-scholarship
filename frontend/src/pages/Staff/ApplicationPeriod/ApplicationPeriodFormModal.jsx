@@ -5,6 +5,8 @@ import { usePeriod } from "../../../context/PeriodContext";
 import InputModal from "../../../components/InputModal";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import { date } from "../../../utils/getDateAndTime";
+import { numbersOnly, validateSchoolYear } from "../../../utils/inputValidations";
 
 const ApplicationPeriodFormModal = React.memo(
     ({
@@ -20,11 +22,13 @@ const ApplicationPeriodFormModal = React.memo(
             id,
             startDate,
             endDate,
+            schoolYear,
             announcementMessage,
             type,
             status,
             setStartDate,
             setEndDate,
+            setSchoolYear,
             setAnnouncementMessage,
             setType,
             setStatus,
@@ -32,6 +36,7 @@ const ApplicationPeriodFormModal = React.memo(
         } = usePeriod();
 
         const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+        const [isSubmitting, setIsSubmitting] = useState(false);
 
         const { loading, createApplicationPeriod, editApplicationPeriod } =
             useApplicationPeriods();
@@ -39,47 +44,64 @@ const ApplicationPeriodFormModal = React.memo(
         const handleCreateApplicationPeriod = async () => {
             if (type === "new" && disabledNew) {
                 toast.error(
-                    "Cannot create new application periods while there is an active period."
+                    "Cannot create new application periods while there is an active period.",
                 );
                 return;
             } else if (type === "renewal" && disabledRenewal) {
                 toast.error(
-                    "Cannot create renewal application periods while there is an active period."
+                    "Cannot create renewal application periods while there is an active period.",
                 );
                 return;
             }
 
-            const success = await createApplicationPeriod(
-                startDate,
-                endDate,
-                announcementMessage,
-                status,
-                type
-            );
+            try {
+                setIsSubmitting(true);
 
-            if (success) {
-                resetFields();
+                const success = await createApplicationPeriod(
+                    startDate,
+                    endDate,
+                    schoolYear,
+                    announcementMessage,
+                    status,
+                    type,
+                );
+
+                if (success) {
+                    resetFields();
+                }
+
+                await onRefresh();
+            } catch (error) {
+            } finally {
+                setIsSubmitting(false);
             }
-
-            await onRefresh();
         };
 
         const handleEditApplicationPeriod = async () => {
-            await editApplicationPeriod(
-                id,
-                startDate,
-                endDate,
-                announcementMessage,
-                status,
-                type === "new" ? type : selectedApplicationPeriod
-            );
-            setIsEditing(false);
-            await onRefresh();
+            try {
+                setIsSubmitting(true);
+
+                await editApplicationPeriod(
+                    id,
+                    startDate,
+                    endDate,
+                    schoolYear,
+                    announcementMessage,
+                    status,
+                    type === "new" ? type : selectedApplicationPeriod,
+                );
+                setIsEditing(false);
+                await onRefresh();
+            } catch (error) {
+            } finally {
+                setIsSubmitting(false);
+            }
         };
 
         const resetFields = () => {
             setStartDate("");
             setEndDate("");
+            setSchoolYear("");
             setAnnouncementMessage("");
             setType("");
             setStatus("");
@@ -90,13 +112,6 @@ const ApplicationPeriodFormModal = React.memo(
             resetFields();
             setIsEditing(false);
         };
-
-        const handleClose = () => {
-            onClose(false);
-            setIsEditing(false);
-        };
-
-        const handleConfirmation = () => {};
 
         const handleSubmit = () => {
             if (isEditing) {
@@ -127,17 +142,6 @@ const ApplicationPeriodFormModal = React.memo(
                     buttonLabel={isEditing ? "Save Changes" : "Save"}
                     isLoading={loading}
                 >
-                    {/* <div
-                    className={`${
-                        !disabled ? "hidden" : isEditing ? "hidden" : "block"
-                    } mx-8 mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400`}
-                >
-                    <p className="text-yellow-700 text-sm">
-                        Cannot create new application periods while there is an
-                        active period.
-                    </p>
-                </div> */}
-
                     {/* Content */}
                     <div className="p-6 space-y-3">
                         {/* Start Date Input */}
@@ -165,6 +169,24 @@ const ApplicationPeriodFormModal = React.memo(
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
                                 placeholder="End Date"
+                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                required
+                            />
+                        </div>
+
+                        <div className="block mb-2 relative">
+                            <label className="block mb-1 text-gray-600 text-xs">
+                                School Year
+                            </label>
+                            <input
+                                type="text"
+                                value={schoolYear}
+                                onChange={(e) => {
+                                    const value = validateSchoolYear(e.target.value);
+
+                                    setSchoolYear(value);
+                                }}
+                                placeholder="School Year"
                                 className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                             />
@@ -284,10 +306,14 @@ const ApplicationPeriodFormModal = React.memo(
                                 Cancel
                             </button>
                             <button
-                                onClick={() =>
-                                    setIsFormModalOpen(status === "Active")
-                                }
+                                onClick={() => {
+                                    status === "Active" &&
+                                    selectedApplicationPeriod === "renewal"
+                                        ? setIsFormModalOpen(true)
+                                        : handleSubmit();
+                                }}
                                 type="button"
+                                disabled={isSubmitting}
                                 className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition"
                             >
                                 {isEditing ? "Save Changes" : "Save"}
@@ -304,13 +330,14 @@ const ApplicationPeriodFormModal = React.memo(
                     removeBackground={true}
                     message={
                         status === "Active" &&
+                        selectedApplicationPeriod === "renewal" &&
                         "Activating a renewal period will mark all current scholars as Not Renewed. This action cannot be undone. Proceed?"
                     }
                     onClick={handleSubmit}
                 />
             </>
         );
-    }
+    },
 );
 
 export default ApplicationPeriodFormModal;

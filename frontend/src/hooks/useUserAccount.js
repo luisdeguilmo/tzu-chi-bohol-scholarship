@@ -13,7 +13,7 @@ export const useUserAccount = () => {
             setLoading(true);
 
             const response = await axios.put(
-                `${BASE_URL}app/views/user-account.php?action=${action}`,
+                `${BASE_URL}app/api/user-account.php?action=${action}`,
                 {
                     userId: userId,
                 }

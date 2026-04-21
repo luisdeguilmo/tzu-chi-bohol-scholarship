@@ -18,7 +18,7 @@ export const useOrientationAndAwarding = (
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/views/applicants.php?application_status=orientation&batch=Unassigned`
+                `${BASE_URL}app/api/applicants.php?application_status=orientation&batch=Unassigned`
             );
             setApplications(response.data.data || []);
             setIsLoading(false);
@@ -34,7 +34,7 @@ export const useOrientationAndAwarding = (
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/views/orientation.php?batch=${selectedBatchInBatches.replace(" ", "%20")}&status=${status}&sort=${sort}`
+                `${BASE_URL}app/api/orientation.php?batch=${selectedBatchInBatches.replace(" ", "%20")}&status=${status}&sort=${sort}`
             );
             setApplications(response.data.data || []);
             setIsLoading(false);
@@ -50,7 +50,7 @@ export const useOrientationAndAwarding = (
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/views/awarding.php?status=${status}&sort=${sort}`
+                `${BASE_URL}app/api/awarding.php?status=${status}&sort=${sort}`
             );
             setApplications(response.data.data || []);
             setIsLoading(false);
@@ -65,7 +65,7 @@ export const useOrientationAndAwarding = (
         try {
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/orientation.php`,
+                `${BASE_URL}app/api/orientation.php`,
                 {
                     account_id: accountId,
                     status: status,
@@ -99,7 +99,7 @@ export const useOrientationAndAwarding = (
         try {
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/awarding.php`,
+                `${BASE_URL}app/api/awarding.php`,
                 {
                     account_id: accountId,
                     status: status,

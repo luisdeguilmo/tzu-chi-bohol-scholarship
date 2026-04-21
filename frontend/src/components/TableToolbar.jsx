@@ -324,7 +324,7 @@ const TableToolbar = ({
                             ]}
                         /> */}
                         <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-600">Sort:</span>
+                            <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Sort:</span>
                             <select
                                 value={sortBy}
                                 onChange={(e) => {
@@ -339,7 +339,7 @@ const TableToolbar = ({
                             </select>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-600">Show:</span>
+                            <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Show:</span>
                             <select
                                 value={itemsPerPage}
                                 onChange={(e) => {

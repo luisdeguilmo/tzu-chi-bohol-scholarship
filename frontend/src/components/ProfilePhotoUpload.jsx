@@ -135,7 +135,7 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
 
                     // Submit the data
                     const response = await fetch(
-                        `${BASE_URL}app/views/profile-picture.php?type=profile_picture`,
+                        `${BASE_URL}app/api/profile-picture.php?type=profile_picture`,
                         {
                             method: "PUT",
                             headers: {

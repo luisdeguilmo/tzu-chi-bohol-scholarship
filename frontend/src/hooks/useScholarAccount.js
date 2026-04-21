@@ -13,7 +13,7 @@ export const useScholarAccount = () => {
             setLoading(true);
 
             const response = await axios.put(
-                `${BASE_URL}app/views/user-account.php?action=${action}&reason=${reason}`,
+                `${BASE_URL}app/api/user-account.php?action=${action}&reason=${reason}`,
                 {
                     userId: userId,
                 }

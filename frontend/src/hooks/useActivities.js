@@ -11,7 +11,7 @@ export const useActivities = (tab, userId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/activities.php?tab=${tab}&id=${userId}`
+                `${BASE_URL}app/api/activities.php?tab=${tab}&id=${userId}`
             );
             // Set application periods data
             setActivities(response.data.data || []);

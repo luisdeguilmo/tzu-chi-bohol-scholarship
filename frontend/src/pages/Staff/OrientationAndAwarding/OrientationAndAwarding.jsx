@@ -211,14 +211,14 @@ export default function OrientationAndAwarding() {
                 onOpen={setIsCreateBatchModalOpen}
             >
                 {activeTab !== "Applicants" && (
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">
-                            Filtered by status:
+                    <div className="flex justify-between items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Status:
                         </span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="px-3 py-1 accent-green-700 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full px-3 py-1 accent-green-700 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option
                                 className="hover:bg-green-700 accent-green-700"
@@ -249,12 +249,12 @@ export default function OrientationAndAwarding() {
                 )}
 
                 {activeTab === "Orientation" && (
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">Batches:</span>
+                    <div className="flex justify-between items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Batches:</span>
                         <select
                             value={selectedBatchInBatches}
                             onChange={(e) => handleBatchChange(e.target.value)}
-                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All Batches</option>
                             {batches.map((batch) => (

@@ -7,11 +7,11 @@ export const useSubmissions = (tab, userId, yearLevel) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchSubmissionsOnSatf = async (tab, userId) => {
+    const fetchSubmissionsOnStaff = async (tab, userId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/coe-grades.php?tab=${tab}&id=${userId}&year_level=${yearLevel}`
+                `${BASE_URL}app/api/coe-grades.php?tab=${tab}&id=${userId}&year_level=${yearLevel}`
             );
             // Set application periods data
             setSubmissions(response.data.data || []);
@@ -27,8 +27,8 @@ export const useSubmissions = (tab, userId, yearLevel) => {
     };
 
     useEffect(() => {
-        fetchSubmissions(tab, userId);
+        fetchSubmissionsOnStaff(tab, userId);
     }, [tab, userId]);
 
-    return { loading, submissions, fetchSubmissions };
+    return { loading, submissions, fetchSubmissionsOnStaff };
 };

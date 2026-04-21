@@ -23,7 +23,7 @@ export const useAssignBatch = (endpoint) => {
         try {
             setLoading(true);
             const response = await axios.post(
-                `${BASE_URL}app/views/${endpoint}.php`,
+                `${BASE_URL}app/api/${endpoint}.php`,
                 {
                     applicantIds: selectedApplicants,
                     batch: selectedBatch,
@@ -71,7 +71,7 @@ export const useAssignBatch = (endpoint) => {
         try {
             setLoading(true);
             const response = await axios.post(
-                `${BASE_URL}app/views/${endpoint}.php`,
+                `${BASE_URL}app/api/${endpoint}.php`,
                 {
                     applicantIds: selectedApplicants,
                     batch: "Unassigned",

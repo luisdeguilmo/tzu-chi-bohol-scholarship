@@ -11,6 +11,7 @@ import TableToolbar from "../../../components/TableToolbar";
 import { Eye } from "lucide-react";
 import Table from "../../../components/Table";
 import TableRow from "../../../components/TableRow";
+import { useYears } from "../../../hooks/useYear";
 
 const CommunityServicePage = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -23,16 +24,17 @@ const CommunityServicePage = () => {
     const [status, setStatus] = useState("all");
     const [active, setActiveTab] = useState("");
 
+    const { years } = useYears();
     const { scholars, fetchScholars } = useScholarsAndActivities(
         year,
         month,
         status,
-        sortBy
+        sortBy,
     );
 
     const { profilePics, fetchAllPics } = useProfilePicture(
         scholars,
-        "profile-picture"
+        "profile-picture",
     );
 
     useEffect(() => {
@@ -41,7 +43,7 @@ const CommunityServicePage = () => {
 
     // Filter data based on search term
     const filteredActivities = scholars.filter((applicant) =>
-        applicant.name.toLowerCase().includes(searchTerm.toLowerCase())
+        applicant.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     const sortedActivities = [...filteredActivities].sort((a, b) => {
@@ -105,14 +107,14 @@ const CommunityServicePage = () => {
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                 >
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">
-                            Filtered by status:
+                    <div className="flex justify-between items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Status:
                         </span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value="pending">Pending</option>
@@ -120,23 +122,26 @@ const CommunityServicePage = () => {
                             <option value="not_recorded">Not Recorded</option>
                         </select>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">Year:</span>
+                    <div className="flex justify-between items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Year:</span>
                         <select
                             value={year}
                             onChange={(e) => setYear(e.target.value)}
-                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
-                            <option value={2025}>2025</option>
-                            <option value={2024}>2024</option>
+                            {years.map((year) => (
+                                <option key={year.id} value={year.year}>
+                                    {year.year}
+                                </option>
+                            ))}
                         </select>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">Month:</span>
+                    <div className="flex justify-between items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Month:</span>
                         <select
                             value={month}
                             onChange={(e) => setMonth(e.target.value)}
-                            className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
                             <option value={1}>Jan</option>
                             <option value={2}>Feb</option>

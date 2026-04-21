@@ -140,7 +140,7 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
 
             // Submit the data
             const response = await fetch(
-                `${BASE_URL}app/views/coe-grades.php`,
+                `${BASE_URL}app/api/coe-grades.php`,
                 {
                     method: "POST",
                     headers: {

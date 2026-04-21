@@ -31,7 +31,7 @@ export const useSchedule = () => {
         try {
             setLoading(true);
             const response = await fetch(
-                `${BASE_URL}app/views/schedule.php?id=${batchToSet.batch_name}`,
+                `${BASE_URL}app/api/schedule.php?id=${batchToSet.batch_name}`,
                 {
                     method: "POST",
                     headers: {

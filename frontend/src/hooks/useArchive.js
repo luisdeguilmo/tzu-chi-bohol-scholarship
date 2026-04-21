@@ -12,7 +12,7 @@ export const useArchive = (tab, userId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/archived-activities.php?tab=${tab}&id=${userId}`
+                `${BASE_URL}app/api/archived-activities.php?tab=${tab}&id=${userId}`
             );
             // Set application periods data
             setArchivedActivities(response.data.data || []);
@@ -31,7 +31,7 @@ export const useArchive = (tab, userId) => {
         setLoading(true);
         try {
             const response = await axios.put(
-                `${BASE_URL}app/views/archived-activities.php`,
+                `${BASE_URL}app/api/archived-activities.php`,
                 { account_id: userId, activity_id: id, activity_type: type },
                 {
                     headers: {
@@ -56,7 +56,7 @@ export const useArchive = (tab, userId) => {
         setLoading(true);
         try {
             const response = await axios.delete(
-                `${BASE_URL}app/views/archived-activities.php`,
+                `${BASE_URL}app/api/archived-activities.php`,
                 {
                     data: {
                         account_id: userId,

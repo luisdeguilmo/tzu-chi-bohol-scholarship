@@ -11,7 +11,7 @@ export const useSchoolTransportInfo = (id) => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/school-transport-info.php?id=${id}`
+                `${BASE_URL}app/api/school-transport-info.php?id=${id}`
             );
 
             if (response.data) {
@@ -51,7 +51,7 @@ export const useSchoolTransportInfo = (id) => {
             setIsLoading(true);
 
             const response = await fetch(
-                `${BASE_URL}app/views/school-transport-info.php`,
+                `${BASE_URL}app/api/school-transport-info.php`,
                 {
                     method: "POST",
                     headers: {
@@ -84,7 +84,7 @@ export const useSchoolTransportInfo = (id) => {
         try {
             setIsLoading(true);
             const response = await axios.delete(
-                `${BASE_URL}app/views/courses-accepted.php?id=${id}`
+                `${BASE_URL}app/api/courses-accepted.php?id=${id}`
             );
 
             if (response.data) {

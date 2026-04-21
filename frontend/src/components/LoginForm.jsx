@@ -130,7 +130,7 @@ const LoginForm = ({ role }) => {
             console.log(data);
 
             const response = await axios.post(
-                `${BASE_URL}app/views/login.php`,
+                `${BASE_URL}app/api/login.php`,
                 data,
                 {
                     headers: {
@@ -197,7 +197,7 @@ const LoginForm = ({ role }) => {
             };
 
             const response = await axios.post(
-                `${BASE_URL}app/views/password-reset.php?action=request_reset`,
+                `${BASE_URL}app/api/password-reset.php?action=request_reset`,
                 data,
                 {
                     headers: {

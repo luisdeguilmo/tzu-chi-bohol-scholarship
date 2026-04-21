@@ -14,7 +14,7 @@ export const useAllowanceCycle = () => {
             setError(null);
 
             const response = await fetch(
-                `${BASE_URL}app/views/allowance-cycles.php`
+                `${BASE_URL}app/api/allowance-cycles.php`
             );
 
             if (!response.ok) {

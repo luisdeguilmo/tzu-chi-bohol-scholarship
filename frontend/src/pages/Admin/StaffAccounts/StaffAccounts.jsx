@@ -8,7 +8,7 @@ import { staffAccountHeaders } from "../../../constant/tableHeaders";
 import { useStaffAccounts } from "../../../hooks/useStaffAccounts";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import FormModal from "./FormModal";
-import { Eye, RotateCcw, UserCheck, UserX } from "lucide-react";
+import { Eye, Plus, RotateCcw, UserCheck, UserX } from "lucide-react";
 import UserProfileModal from "../../../components/UserProfileModal";
 import ChangePasswordModal from "../../../components/ChangePasswordModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
@@ -33,7 +33,7 @@ const StaffAccounts = () => {
     const { staffAccounts, fetchStaffAccounts } = useStaffAccounts();
     const { profilePics, fetchAllPics } = useProfilePicture(
         staffAccounts,
-        "user-profile-picture"
+        "user-profile-picture",
     );
     const { loading: isLoading, updateScholarAccountStatus } = useUserAccount();
 
@@ -46,7 +46,7 @@ const StaffAccounts = () => {
     const filteredStaffAccounts = staffAccounts.filter(
         (staff) =>
             staff.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            staff.last_name.toLowerCase().includes(searchTerm.toLowerCase())
+            staff.last_name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     const sortedStaffAccounts = [...filteredStaffAccounts].sort((a, b) => {
@@ -76,7 +76,7 @@ const StaffAccounts = () => {
     const handleOpenConfirmationModal = (
         accountId,
         accountStatus,
-        actionType
+        actionType,
     ) => {
         setAction(actionType);
         setAccountStatus(accountStatus);
@@ -87,7 +87,7 @@ const StaffAccounts = () => {
     const handleAccountStatusChange = async (
         accountId,
         accountStatus,
-        action
+        action,
     ) => {
         if (action === "activate" && accountStatus === "active") {
             toast.error("Account is already active.");
@@ -105,7 +105,7 @@ const StaffAccounts = () => {
                 toast.success(
                     `Account ${
                         action === "activate" ? "activated" : "deactivated"
-                    } successfully.`
+                    } successfully.`,
                 );
                 setIsConfirmationModalOpen(false);
                 fetchStaffAccounts();
@@ -141,6 +141,10 @@ const StaffAccounts = () => {
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     addButton={true}
+                    button={{
+                        icon: <Plus className="w-4 h-4 text-white" />,
+                        label: "New Staff Account",
+                    }}
                 />
 
                 {/* Table */}
@@ -219,10 +223,10 @@ const StaffAccounts = () => {
                                         <button
                                             onClick={() => {
                                                 setIsChangePasswordModalOpen(
-                                                    true
+                                                    true,
                                                 );
                                                 setSelectedStaff(
-                                                    staff.account_id
+                                                    staff.account_id,
                                                 );
                                             }}
                                             title="Change Password"
@@ -234,7 +238,7 @@ const StaffAccounts = () => {
                                                 handleOpenConfirmationModal(
                                                     staff.account_id,
                                                     staff.status,
-                                                    "activate"
+                                                    "activate",
                                                 )
                                             }
                                             title="Activate Account"
@@ -246,7 +250,7 @@ const StaffAccounts = () => {
                                                 handleOpenConfirmationModal(
                                                     staff.account_id,
                                                     staff.status,
-                                                    "deactivate"
+                                                    "deactivate",
                                                 )
                                             }
                                             title="Deactivate Account"
@@ -312,7 +316,7 @@ const StaffAccounts = () => {
                     handleAccountStatusChange(
                         selectedStaff,
                         accountStatus,
-                        action
+                        action,
                     )
                 }
                 // deactivationReason={deactivationReason}

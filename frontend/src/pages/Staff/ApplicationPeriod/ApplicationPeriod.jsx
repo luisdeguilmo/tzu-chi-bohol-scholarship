@@ -12,6 +12,9 @@ import { DataListView } from "../../../components/DataListView";
 import TableToolbar from "../../../components/TableToolbar";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { TableButtonAction } from "../../../components/TableButtonAction";
+import { date } from "../../../utils/getDateAndTime";
+import BASE_URL from "../../../config";
+import axios from "axios";
 
 const ApplicationPeriod = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -19,7 +22,6 @@ const ApplicationPeriod = () => {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [selectedApplicationPeriod, setSelectedApplicationPeriod] =
         useState("");
-    const { deleteApplicationPeriod } = useApplicationPeriods();
     const size = useWindowSize();
     const isMobile = size.width < 768;
 
@@ -28,6 +30,7 @@ const ApplicationPeriod = () => {
         setId,
         setStartDate,
         setEndDate,
+        setSchoolYear,
         setAnnouncementMessage,
         setStatus,
         setIsModalOpen,
@@ -38,8 +41,12 @@ const ApplicationPeriod = () => {
         applicationPeriods,
         hasActiveNewApplicationPeriod,
         hasActiveRenewalApplicationPeriod,
+        getSchoolYear,
         fetchApplicationPeriods,
+        deleteApplicationPeriod,
     } = useApplicationPeriods();
+
+    
 
     useEffect(() => {
         fetchApplicationPeriods();
@@ -53,7 +60,7 @@ const ApplicationPeriod = () => {
     // Filter data based on search term
     const filteredApplicationPeriods = applicationPeriods.filter(
         (application) =>
-            application.status.toLowerCase().includes(searchTerm.toLowerCase())
+            application.status.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     // Sort applications
@@ -69,7 +76,7 @@ const ApplicationPeriod = () => {
                 default:
                     return 0;
             }
-        }
+        },
     );
 
     const handlePeriodToEdit = (applicationPeriod) => {
@@ -78,6 +85,7 @@ const ApplicationPeriod = () => {
         setId(applicationPeriod.id);
         setStartDate(applicationPeriod.start_date);
         setEndDate(applicationPeriod.end_date);
+        setSchoolYear(applicationPeriod.school_year);
         setAnnouncementMessage(applicationPeriod.announcement_message);
         setStatus(applicationPeriod.status);
     };
@@ -147,12 +155,12 @@ const ApplicationPeriod = () => {
                                                     header.name
                                                         .substring(
                                                             1,
-                                                            header.name.length
+                                                            header.name.length,
                                                         )
-                                                        .toLowerCase()
+                                                        .toLowerCase(),
                                                 )}
                                         </p>
-                                    )
+                                    ),
                                 )}
                             </div>
                             <div className="text-xs space-y-2">
@@ -218,7 +226,7 @@ const ApplicationPeriod = () => {
                                         >
                                             {header.name}
                                         </th>
-                                    )
+                                    ),
                                 )}
                             </tr>
                         </thead>
@@ -230,13 +238,16 @@ const ApplicationPeriod = () => {
                                 >
                                     <td className="py-3 whitespace-nowrap text-gray-500">
                                         {formatDateTime(
-                                            applicationPeriod.start_date
+                                            applicationPeriod.start_date,
                                         )}
                                     </td>
                                     <td className="py-3 whitespace-nowrap text-gray-500">
                                         {formatDateTime(
-                                            applicationPeriod.end_date
+                                            applicationPeriod.end_date,
                                         )}
+                                    </td>
+                                    <td className="py-3 whitespace-nowrap text-gray-500">
+                                        {applicationPeriod.school_year}
                                     </td>
                                     <td className="py-3 whitespace-nowrap text-gray-500">
                                         {applicationPeriod.type === "new"
@@ -259,21 +270,29 @@ const ApplicationPeriod = () => {
                                         </span>
                                     </td>
 
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
+                                    <td className="py-3 w-[40%] text-justify text-gray-500">
                                         {applicationPeriod.announcement_message}
                                     </td>
-                                    <td className="py-3 whitespace-nowrap font-medium">
+                                    <td className="py-3 whitespace-nowrap flex items-center justify-center font-medium">
                                         <TableButtonAction
                                             onClick={() => {
                                                 setSelectedApplicationPeriod(
-                                                    applicationPeriod.type
+                                                    applicationPeriod,
                                                 );
                                                 handlePeriodToEdit(
-                                                    applicationPeriod
+                                                    applicationPeriod,
                                                 );
                                             }}
                                             button={{
                                                 title: "Edit",
+                                                disabled:
+                                                    applicationPeriod.created_at?.substring(
+                                                        0,
+                                                        4,
+                                                    ) !==
+                                                    date
+                                                        .getCurrentYear()
+                                                        .toString(),
                                                 icon: (
                                                     <PenLine className="w-4 h-4" />
                                                 ),
@@ -283,7 +302,7 @@ const ApplicationPeriod = () => {
                                         <TableButtonAction
                                             onClick={() =>
                                                 handleDelete(
-                                                    applicationPeriod.id
+                                                    applicationPeriod.id,
                                                 )
                                             }
                                             button={{

@@ -158,12 +158,12 @@ export default function Scholars() {
                 exportLoading={isLoading}
                 disabledButtonExport={scholars.length === 0}
             >
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-700">School:</span>
+                <div className="flex justify-between items-center gap-2">
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-700">School:</span>
                     <select
                         value={school}
                         onChange={(e) => setSchool(e.target.value)}
-                        className="w-[100px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all">All</option>
                         {collegesAndUniversities.map((item, index) => (
@@ -179,12 +179,12 @@ export default function Scholars() {
                     onChange={(e) => setSchool(e.target.value)}
                     options={collegesAndUniversities}
                 /> */}
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-600">Course:</span>
+                <div className="flex justify-between items-center gap-2">
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Course:</span>
                     <select
                         value={course}
                         onChange={(e) => setCourse(e.target.value)}
-                        className="w-[100px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all">All</option>
                         {courses.map((item, index) => (
@@ -206,14 +206,14 @@ export default function Scholars() {
                 /> */}
 
                 {activeTab === "active" && (
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">
+                    <div className="flex justify-between items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
                             Year Level:
                         </span>
                         <select
                             value={yearLevel}
                             onChange={(e) => setYearLevel(e.target.value)}
-                            className="w-[100px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value={1}>1st Year</option>
@@ -239,12 +239,12 @@ export default function Scholars() {
                 /> */}
 
                 {activeTab !== "graduated" && (
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">Status:</span>
+                    <div className="flex justify-between items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Status:</span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="w-[100px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value="new">New Scholars</option>
@@ -264,14 +264,14 @@ export default function Scholars() {
                 /> */}
 
                 {activeTab !== "active" && (
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">
+                    <div className="flex justify-between items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
                             School Year:
                         </span>
                         <select
                             value={schoolYear}
                             onChange={(e) => setSchoolYear(e.target.value)}
-                            className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all_years">All Years</option>
                             <option value="2025-2026">2025-2026</option>

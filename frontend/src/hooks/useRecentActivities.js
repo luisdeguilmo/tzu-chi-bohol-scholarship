@@ -10,7 +10,7 @@ export const useRecentActivities = (id) => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/recent-activities.php?id=${id}`
+                `${BASE_URL}app/api/recent-activities.php?id=${id}`
             );
             setRecentActivities(response.data.data || []);
             setIsLoading(false);

@@ -23,7 +23,7 @@ export const useScholars = (
             setError(null);
 
             const response = await fetch(
-                `${BASE_URL}app/views/scholars.php?tab=${tab}&status=${status}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}`
+                `${BASE_URL}app/api/scholars.php?tab=${tab}&status=${status}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}`
             );
 
             if (!response.ok) {
@@ -45,7 +45,7 @@ export const useScholars = (
         try {
             setLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/process-allowance.php`,
+                `${BASE_URL}app/api/process-allowance.php`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -81,7 +81,7 @@ export const useScholars = (
         try {
             setLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/scholar.php`,
+                `${BASE_URL}app/api/scholar.php`,
                 {
                     account_id: accountId,
                     allowance_status: status,

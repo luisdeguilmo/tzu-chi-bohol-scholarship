@@ -12,7 +12,7 @@ export const useEvents = (tab, userId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/events.php?tab=${tab}&id=${userId}&is_scholar=true`
+                `${BASE_URL}app/api/events.php?tab=${tab}&id=${userId}&is_scholar=true`
             );
             // Set application periods data
             setEvents(response.data.data || []);
@@ -30,7 +30,7 @@ export const useEvents = (tab, userId) => {
     const fetchEventParticipants = async (eventId) => {
         try {
             const response = await axios.get(
-                `${BASE_URL}app/views/event-participants.php?event_id=${eventId}`
+                `${BASE_URL}app/api/event-participants.php?event_id=${eventId}`
             );
             return response.data.data || 0;
         } catch (error) {
@@ -43,7 +43,7 @@ export const useEvents = (tab, userId) => {
     const joinEvent = async (eventId, scholarId) => {
         try {
             const response = await axios.post(
-                `${BASE_URL}app/views/event-participants.php`,
+                `${BASE_URL}app/api/event-participants.php`,
                 { event_id: eventId, scholar_id: scholarId },
                 {
                     headers: {
@@ -68,7 +68,7 @@ export const useEvents = (tab, userId) => {
     const cancelEvent = async (eventId, scholarId) => {
         try {
             const response = await axios.delete(
-                `${BASE_URL}app/views/event-participants.php`,
+                `${BASE_URL}app/api/event-participants.php`,
                 {
                     data: { event_id: eventId, scholar_id: scholarId },
                     headers: {

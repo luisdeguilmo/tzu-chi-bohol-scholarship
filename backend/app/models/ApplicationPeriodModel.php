@@ -34,6 +34,7 @@ class ApplicationPeriodModel
             " 
                   SET start_date = :start_date,
                   end_date = :end_date,
+                  school_year = :school_year,
                   type = :type,
                   status = :status,
                   announcement_message = :announcement_message,
@@ -43,12 +44,14 @@ class ApplicationPeriodModel
 
         $start_date = htmlspecialchars(strip_tags($data['startDate']));
         $end_date = htmlspecialchars(strip_tags($data['endDate']));
+        $school_year = htmlspecialchars(strip_tags($data['schoolYear']));
         $type = htmlspecialchars(strip_tags($data['type']));
         $status = htmlspecialchars(strip_tags($data['status']));
         $announcement_message = htmlspecialchars(strip_tags($data['announcementMessage']));
 
         $stmt->bindParam(':start_date', $start_date);
         $stmt->bindParam(':end_date', $end_date);
+        $stmt->bindParam(':school_year', $school_year);
         $stmt->bindParam(':type', $type);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':announcement_message', $announcement_message);
@@ -73,6 +76,7 @@ class ApplicationPeriodModel
             " 
                   SET start_date = :start_date,
                   end_date = :end_date,
+                  school_year = :school_year,
                   status = :status,
                   announcement_message = :announcement_message,
                   updated_at = NOW()
@@ -82,12 +86,14 @@ class ApplicationPeriodModel
 
         $start_date = htmlspecialchars(strip_tags($data['startDate']));
         $end_date = htmlspecialchars(strip_tags($data['endDate']));
+        $school_year = htmlspecialchars(strip_tags($data['schoolYear']));
         $status = htmlspecialchars(strip_tags($data['status']));
         $announcement_message = htmlspecialchars(strip_tags($data['announcementMessage']));
 
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':start_date', $start_date);
         $stmt->bindParam(':end_date', $end_date);
+        $stmt->bindParam(':school_year', $school_year);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':announcement_message', $announcement_message);
 
@@ -97,7 +103,7 @@ class ApplicationPeriodModel
     public function getLatestNewApplicationPeriod()
     {
         $query =
-            'SELECT status, announcement_message, start_date, end_date FROM ' .
+            'SELECT status, announcement_message, school_year, start_date, end_date FROM ' .
             $this->table_name .
             " WHERE type = 'new' ORDER BY created_at DESC LIMIT 1";
         $stmt = $this->pdo->prepare($query);
@@ -108,7 +114,7 @@ class ApplicationPeriodModel
     public function getLatestRenewalApplicationPeriod()
     {
         $query =
-            'SELECT status, start_date, end_date FROM ' .
+            'SELECT status, start_date, end_date, school_year FROM ' .
             $this->table_name .
             " WHERE type = 'renewal' ORDER BY created_at DESC LIMIT 1";
         $stmt = $this->pdo->prepare($query);

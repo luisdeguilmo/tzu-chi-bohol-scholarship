@@ -11,7 +11,7 @@ export const manageApplication = () => {
             // Only update status if email was sent successfully
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=approve`,
+                `${BASE_URL}app/api/application-management.php?action=approve`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -45,7 +45,7 @@ export const manageApplication = () => {
             // Only update status if email was sent successfully
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=approve_renew`,
+                `${BASE_URL}app/api/application-management.php?action=approve_renew`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -78,7 +78,7 @@ export const manageApplication = () => {
             setIsLoading(true);
             // Only update status if email was sent successfully
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=reject`,
+                `${BASE_URL}app/api/application-management.php?action=reject`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -113,7 +113,7 @@ export const manageApplication = () => {
             setIsLoading(true);
             // Only update status if email was sent successfully
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=reject_renew`,
+                `${BASE_URL}app/api/application-management.php?action=reject_renew`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -149,7 +149,7 @@ export const manageApplication = () => {
             // const { date, time } = result;
             // Only update status if email was sent successfully
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=examination_result`,
+                `${BASE_URL}app/api/application-management.php?action=examination_result`,
                 {
                     applicants: applicants,
                 }
@@ -176,7 +176,7 @@ export const manageApplication = () => {
             // Only update status if email was sent successfully
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=interview_passed`,
+                `${BASE_URL}app/api/application-management.php?action=interview_passed`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -210,7 +210,7 @@ export const manageApplication = () => {
             // Only update status if email was sent successfully
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=interview_failed`,
+                `${BASE_URL}app/api/application-management.php?action=interview_failed`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -242,7 +242,7 @@ export const manageApplication = () => {
             // Only update status if email was sent successfully
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=home_visitation_passed`,
+                `${BASE_URL}app/api/application-management.php?action=home_visitation_passed`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -278,7 +278,7 @@ export const manageApplication = () => {
             // Only update status if email was sent successfully
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=home_visitation_failed`,
+                `${BASE_URL}app/api/application-management.php?action=home_visitation_failed`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -312,7 +312,7 @@ export const manageApplication = () => {
             // Only update status if email was sent successfully
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=final_interview_passed`,
+                `${BASE_URL}app/api/application-management.php?action=final_interview_passed`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,
@@ -346,7 +346,7 @@ export const manageApplication = () => {
             // Only update status if email was sent successfully
             setIsLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/application-management.php?action=final_interview_failed`,
+                `${BASE_URL}app/api/application-management.php?action=final_interview_failed`,
                 {
                     application_id: applicant.application_id,
                     first_name: applicant.first_name,

@@ -13,7 +13,7 @@ export const useAdminAccountInformation = (userId) => {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `${BASE_URL}app/views/admin-info.php?admin_id=${userId}`
+                `${BASE_URL}app/api/admin-info.php?admin_id=${userId}`
             );
 
             if (response.data.success) {
@@ -33,7 +33,7 @@ export const useAdminAccountInformation = (userId) => {
     const updateAdminInfo = async (id, name, email) => {
         try {
             const response = await axios.put(
-                `${BASE_URL}app/views/admin-info.php`,
+                `${BASE_URL}app/api/admin-info.php`,
                 {
                     id: id,
                     name: name,

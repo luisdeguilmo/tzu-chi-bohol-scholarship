@@ -11,7 +11,7 @@ export const useScholarAllowances = (schoolYear) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/scholar-allowances.php?school_year=${schoolYear}`
+                `${BASE_URL}app/api/scholar-allowances.php?school_year=${schoolYear}`
             );
             // Set application periods data
             setScholarAllowances(response.data.data || []);

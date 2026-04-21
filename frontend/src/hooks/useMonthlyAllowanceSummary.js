@@ -10,7 +10,7 @@ const useMonthlyAllowanceSummary = (month, year) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/monthly-allowance-summary.php?month=${month}&year=${year}`
+                `${BASE_URL}app/api/monthly-allowance-summary.php?month=${month}&year=${year}`
             );
 
             if (response.data) {

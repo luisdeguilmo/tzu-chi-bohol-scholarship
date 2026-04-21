@@ -215,7 +215,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
             submissionData.removed_files = existingFilesRemoved;
 
             const response = await fetch(
-                `${BASE_URL}app/views/coe-grades.php`,
+                `${BASE_URL}app/api/coe-grades.php`,
                 {
                     method: "PUT",
                     headers: {

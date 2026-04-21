@@ -11,7 +11,7 @@ export const useApplicantInformation = (userId, schoolYear) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/applicant-information.php?id=${userId}&school_year=${schoolYear}`
+                `${BASE_URL}app/api/applicant-information.php?id=${userId}&school_year=${schoolYear}`
             );
             // Set application periods data
             setApplicantInformation(response.data.data || []);

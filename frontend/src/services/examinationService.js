@@ -33,7 +33,7 @@ export const proceedToInterview = async (ids) => {
     try {
         // setLoading(true);
         const response = await axios.post(
-            `${BASE_URL}app/views/initial-interview.php`,
+            `${BASE_URL}app/api/initial-interview.php`,
             {
                 applicantIds: ids,
                 application_status: "Initial Interview",

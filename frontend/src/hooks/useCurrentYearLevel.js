@@ -11,7 +11,7 @@ export const useCurrentYearLevel = (userId, schoolYear) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/year-level.php?scholar_id=${userId}&school_year=${schoolYear}`
+                `${BASE_URL}app/api/year-level.php?scholar_id=${userId}&school_year=${schoolYear}`
             );
             // Set application periods data
             setYearLevel(response.data.data || 0);

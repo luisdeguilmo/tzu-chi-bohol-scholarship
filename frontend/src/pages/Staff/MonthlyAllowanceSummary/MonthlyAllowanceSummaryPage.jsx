@@ -14,6 +14,7 @@ import { DownloadIcon } from "lucide-react";
 import { formatMonth } from "../../../utils/formatMonth";
 import { useDownloadExcel } from "../../../hooks/useDownloadExcel";
 import { toast } from "react-toastify";
+import { useYears } from "../../../hooks/useYear";
 
 export default function MonthlyAllowanceSummaryPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +24,7 @@ export default function MonthlyAllowanceSummaryPage() {
     const [month, setMonth] = useState("all_months");
     const [status, setStatus] = useState("all");
 
+    const { years } = useYears();
     const { loading, allowanceCycles, fetchAllowanceCycles } =
         useMonthlyAllowanceSummary(month, year);
     const { downloadExcel } = useDownloadExcel();
@@ -57,7 +59,7 @@ export default function MonthlyAllowanceSummaryPage() {
     const handleDownloadExcel = (item) => {
         if (!item.is_processed) {
             toast.warn(
-                `No file available for this month. Allowance was not processed.`
+                `No file available for this month. Allowance was not processed.`,
             );
             return;
         }
@@ -88,45 +90,47 @@ export default function MonthlyAllowanceSummaryPage() {
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
             >
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-600">Year:</span>
+                <div className="flex justify-between items-center gap-2">
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Year:</span>
                     <select
                         value={year}
                         onChange={(e) => {
                             setYear(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all_years">All Years</option>
-                        <option value="2026">2026</option>
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
+                        {years.map((year) => (
+                            <option key={year.id} value={year.year}>
+                                {year.year}
+                            </option>
+                        ))}
                     </select>
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-600">Month:</span>
+                <div className="flex justify-between items-center gap-2">
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Month:</span>
                     <select
                         value={month}
                         onChange={(e) => {
                             setMonth(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
                     >
                         <option value={"all_months"}>All Months</option>
-                        <option value={1}>Jan</option>
-                        <option value={2}>Feb</option>
-                        <option value={3}>Mar</option>
-                        <option value={4}>Apr</option>
+                        <option value={1}>January</option>
+                        <option value={2}>February</option>
+                        <option value={3}>March</option>
+                        <option value={4}>April</option>
                         <option value={5}>May</option>
-                        <option value={6}>Jun</option>
-                        <option value={7}>Jul</option>
-                        <option value={8}>Aug</option>
-                        <option value={9}>Sep</option>
-                        <option value={10}>Oct</option>
-                        <option value={11}>Nov</option>
-                        <option value={12}>Dec</option>
+                        <option value={6}>June</option>
+                        <option value={7}>July</option>
+                        <option value={8}>August</option>
+                        <option value={9}>September</option>
+                        <option value={10}>October</option>
+                        <option value={11}>November</option>
+                        <option value={12}>December</option>
                     </select>
                 </div>
             </TableToolbar>

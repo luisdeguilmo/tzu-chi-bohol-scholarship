@@ -7,7 +7,7 @@ export const useApplicationRecords = (tab, status, schoolYear, sort) => {
     const fetchApplications = async () => {
         try {
             const response = await fetch(
-                `${BASE_URL}app/views/application-records.php?tab=${tab}&status=${status}&school_year=${schoolYear}&sort=${sort}`,
+                `${BASE_URL}app/api/application-records.php?tab=${tab}&status=${status}&school_year=${schoolYear}&sort=${sort}`,
                 {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },

@@ -11,7 +11,7 @@ export const useEventsOnStaff = (year, status, sortBy) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/events.php?is_staff=true&year=${year}&status=${status}&sort_by=${sortBy}`
+                `${BASE_URL}app/api/events.php?is_staff=true&year=${year}&status=${status}&sort_by=${sortBy}`
             );
             // Set application periods data
             setEvents(response.data.data || []);

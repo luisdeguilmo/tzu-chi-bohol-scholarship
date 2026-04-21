@@ -12,7 +12,7 @@ export const useResetAllowances = (tab, status, scholarYear, sortBy) => {
         try {
             setLoading(true);
             const response = await axios.put(
-                `${BASE_URL}app/views/reset-scholar-allowances.php`,
+                `${BASE_URL}app/api/reset-scholar-allowances.php`,
                 {
                     headers: {
                         "Content-Type": "application/json",

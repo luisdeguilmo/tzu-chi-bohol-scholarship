@@ -13,7 +13,7 @@ export const useScholarAccountInformation = (userId, currentSchoolYear) => {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `${BASE_URL}app/views/scholar-info.php?scholar_id=${userId}&current_school_year=${currentSchoolYear}`
+                `${BASE_URL}app/api/scholar-info.php?scholar_id=${userId}&current_school_year=${currentSchoolYear}`
             );
 
             if (response.data.success) {

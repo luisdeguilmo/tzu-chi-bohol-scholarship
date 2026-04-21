@@ -3,7 +3,7 @@ import { formatDateTime } from "../../../utils/formatDateTime";
 import axios from "axios";
 import { toast } from "react-toastify";
 import BASE_URL from "../../../config";
-import { ClipboardEdit, PenLine } from "lucide-react";
+import { PenLine } from "lucide-react";
 
 const OrientationTableRow = ({
     tab,
@@ -16,62 +16,6 @@ const OrientationTableRow = ({
     onSelectScholarId,
     onSelectScholar,
 }) => {
-    const [edit, setEdit] = useState(false);
-    const [editingId, setEditingId] = useState(null);
-    const [score, setScore] = useState(0);
-
-    const handleButtonState = (id, value) => {
-        setEdit(true);
-        setEditingId(id);
-        setScore(value || ""); // Set initial value
-    };
-
-    const handleChange = (value) => {
-        setScore(value);
-    };
-
-    const handleAddScore = async (id) => {
-        setEdit(false);
-        setEditingId(null);
-
-        // Check if the user cancelled or submitted an empty string
-        if (!score || score < 0) {
-            return; // Exit if cancelled or empty
-        }
-
-        try {
-            // Create the data structure for the update
-            const data = {
-                id: id,
-                score: score, // Changed from procedure to score
-            };
-
-            // Send the PUT request with the data in the body
-            const response = await axios.put(
-                `${BASE_URL}/app/views/scores.php`, // Updated endpoint
-                data,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            // Check for success and update the UI
-            if (response.data.success) {
-                onRefresh(tab);
-
-                // Show success message
-                toast.success("Score updated successfully.");
-            } else {
-                toast.error("Error: " + response.data.message);
-            }
-        } catch (error) {
-            console.error("Error updating score:", error);
-            toast.error("Failed to update score");
-        }
-    };
-    
     return (
         <>
             {currentItems.map((info, index) => (

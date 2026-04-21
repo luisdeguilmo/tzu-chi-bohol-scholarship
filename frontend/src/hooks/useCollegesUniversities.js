@@ -11,7 +11,7 @@ export const useCollegesUniversities = () => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/colleges-universities.php`
+                `${BASE_URL}app/api/colleges-universities.php`
             );
 
             if (response.data) {
@@ -33,7 +33,7 @@ export const useCollegesUniversities = () => {
 
         try {
             const response = await fetch(
-                `${BASE_URL}app/views/colleges-universities.php`,
+                `${BASE_URL}app/api/colleges-universities.php`,
                 {
                     method: "POST",
                     headers: {
@@ -69,7 +69,7 @@ export const useCollegesUniversities = () => {
             setIsLoading(true);
 
             const response = await fetch(
-                `${BASE_URL}app/views/colleges-universities.php`,
+                `${BASE_URL}app/api/colleges-universities.php`,
                 {
                     method: "PUT",
                     headers: {
@@ -102,7 +102,7 @@ export const useCollegesUniversities = () => {
         try {
             setIsLoading(true);
             const response = await axios.delete(
-                `${BASE_URL}app/views/colleges-universities.php?id=${id}`
+                `${BASE_URL}app/api/colleges-universities.php?id=${id}`
             );
 
             if (response.data) {

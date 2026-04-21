@@ -11,7 +11,7 @@ export const useScholarOverviewData = (id, section) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/sholar-overview-data.php?section=${section}&id=${id}`
+                `${BASE_URL}app/api/scholar-overview-data.php?section=${section}&id=${id}`
             );
             setOverviewData(response.data.data || []);
             setLoading(false);

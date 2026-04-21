@@ -12,7 +12,7 @@ export const useDownloadExcel = () => {
 
         try {
             const response = await axios.get(
-                `${BASE_URL}app/views/allowance-cycle-excel.php?id=${id}`,
+                `${BASE_URL}app/api/allowance-cycle-excel.php?id=${id}`,
                 {
                     responseType: "blob", // Important: Get response as blob
                     headers: {

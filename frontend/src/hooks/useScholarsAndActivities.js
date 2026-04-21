@@ -11,7 +11,7 @@ export const useScholarsAndActivities = (year, month, status, sort) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/scholars-activities.php?year=${year}&month=${month}&status=${status}&sort=${sort}`
+                `${BASE_URL}app/api/scholars-activities.php?year=${year}&month=${month}&status=${status}&sort=${sort}`
             );
             // Set application periods data
             setScholars(response.data.data || []);

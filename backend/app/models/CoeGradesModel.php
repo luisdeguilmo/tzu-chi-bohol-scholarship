@@ -78,7 +78,7 @@ class CoeGradesModel
         $query =
             'UPDATE ' .
             $this->table_name .
-            " SET year_level = :year_level, semester = :semester WHERE id = :id";
+            ' SET year_level = :year_level, semester = :semester WHERE id = :id';
 
         $stmt = $this->pdo->prepare($query);
 

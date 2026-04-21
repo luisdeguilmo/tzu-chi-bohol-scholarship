@@ -14,26 +14,42 @@ export const useApplicationPeriods = (type) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const getSchoolYear = async (type) => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `${BASE_URL}app/api/application-periods.php?type=${type}`,
+            );
+            return response.data.data || [];
+        } catch (err) {
+            console.error("Error fetching application period data:", err);
+            setError(
+                "Failed to load application period data. Please try again.",
+            );
+            setLoading(false);
+        }
+    };
+
     const fetchApplicationPeriods = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/application-periods.php?type=${type}`
+                `${BASE_URL}app/api/application-periods.php?type=${type}`,
             );
             // Set application periods data
             setApplicationPeriods(response.data.data || []);
             // Set active application period flag
             setHasActiveNewApplicationPeriod(
-                response.data.hasActiveNewApplicationPeriod || false
+                response.data.hasActiveNewApplicationPeriod || false,
             );
             setHasActiveRenewalApplicationPeriod(
-                response.data.hasActiveRenewalApplicationPeriod || false
+                response.data.hasActiveRenewalApplicationPeriod || false,
             );
             setLoading(false);
         } catch (err) {
             console.error("Error fetching application period data:", err);
             setError(
-                "Failed to load application period data. Please try again."
+                "Failed to load application period data. Please try again.",
             );
             setLoading(false);
         }
@@ -42,14 +58,16 @@ export const useApplicationPeriods = (type) => {
     const createApplicationPeriod = async (
         startDate,
         endDate,
+        schoolYear,
         announcementMessage,
         status,
-        type
+        type,
     ) => {
         const data = {
             application: {
                 startDate: startDate,
                 endDate: endDate,
+                schoolYear: schoolYear,
                 type: type,
                 status: status,
                 announcementMessage: announcementMessage,
@@ -59,14 +77,14 @@ export const useApplicationPeriods = (type) => {
         try {
             setLoading(true);
             const response = await fetch(
-                `${BASE_URL}app/views/application-periods.php`,
+                `${BASE_URL}app/api/application-periods.php`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json(); // Parse as JSON instead of text
@@ -92,11 +110,11 @@ export const useApplicationPeriods = (type) => {
     const deleteApplicationPeriod = async (id) => {
         try {
             const response = await fetch(
-                `${BASE_URL}app/views/application-periods.php?id=${id}`,
+                `${BASE_URL}app/api/application-periods.php?id=${id}`,
                 {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },
-                }
+                },
             );
 
             const result = await response.json(); // Parse as JSON instead of text
@@ -117,15 +135,17 @@ export const useApplicationPeriods = (type) => {
         id,
         startDate,
         endDate,
+        schoolYear,
         announcementMessage,
         status,
-        type
+        type,
     ) => {
         const data = {
             application: {
                 id: id,
                 startDate: startDate,
                 endDate: endDate,
+                schoolYear: schoolYear,
                 type: type,
                 status: status,
                 announcementMessage: announcementMessage,
@@ -135,14 +155,14 @@ export const useApplicationPeriods = (type) => {
         try {
             setLoading(true);
             const response = await fetch(
-                `${BASE_URL}app/views/application-periods.php`,
+                `${BASE_URL}app/api/application-periods.php`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json(); // Parse as JSON instead of text
@@ -177,5 +197,6 @@ export const useApplicationPeriods = (type) => {
         editApplicationPeriod,
         deleteApplicationPeriod,
         fetchApplicationPeriods,
+        getSchoolYear,
     };
 };

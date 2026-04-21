@@ -63,7 +63,7 @@ const EventFormModal = React.memo(
                 setIsLoading(true);
 
                 const response = await fetch(
-                    `${BASE_URL}app/views/events.php`,
+                    `${BASE_URL}app/api/events.php`,
                     {
                         method: "POST",
                         headers: {
@@ -119,7 +119,7 @@ const EventFormModal = React.memo(
                 setIsLoading(true);
 
                 const response = await fetch(
-                    `${BASE_URL}app/views/events.php`,
+                    `${BASE_URL}app/api/events.php`,
                     {
                         method: "PUT",
                         headers: {

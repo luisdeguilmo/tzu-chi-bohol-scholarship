@@ -2,9 +2,9 @@
 
 namespace App\Controllers;
 
-date_default_timezone_set('Asia/Manila');
-
 header('Content-Type: application/json');
+
+date_default_timezone_set('Asia/Manila');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
@@ -12,6 +12,7 @@ require_once __DIR__ . '/../Models/BatchModel.php';
 
 use App\Models\NotificationsModel;
 use App\Models\ScholarAccountModel;
+use App\Models\YearModel;
 use App\Models\StaffDashboardDataModel;
 use Config\Database;
 
@@ -57,6 +58,7 @@ class StaffDashboardDataController
             $dashboardData = new StaffDashboardDataModel();
             $notificationModel = new NotificationsModel();
             $scholarModel = new ScholarAccountModel();
+            $yearModel = new YearModel();
 
             $id = $_GET['id'] ?? null;
             $school_year = $_GET['school_year'] ?? null;
@@ -93,6 +95,10 @@ class StaffDashboardDataController
                 'communityServiceHoursCompletionData' => $communityServiceHoursCompletionData,
             ];
 
+            // if (!$yearModel->getYear($this->currentYear)) {
+            //     $yearModel->createYear($this->currentYear);
+            // }
+
             $pendingScholarsCount = $scholarModel->getPendingScholarsCount();
             $pendingScholarNotification = $notificationModel->getLastPendingScholarNotification(
                 $this->currentYear,
@@ -103,6 +109,12 @@ class StaffDashboardDataController
                 if ($pendingScholarsCount > 0) {
                     $notificationModel->createNewPendingScholarsNotification($pendingScholarsCount);
                 }
+
+                http_response_code(200);
+                echo json_encode([
+                    'message' => 'Overview data fetched successfully',
+                    'data' => $data,
+                ]);
                 return;
             }
 

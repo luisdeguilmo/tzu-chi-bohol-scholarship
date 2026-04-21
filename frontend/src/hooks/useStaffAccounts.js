@@ -12,7 +12,7 @@ export const useStaffAccounts = () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/staff-accounts.php`
+                `${BASE_URL}app/api/staff-accounts.php`
             );
             setStaffAccounts(response.data.data || []);
             setLoading(false);
@@ -56,7 +56,7 @@ export const useStaffAccounts = () => {
             setLoading(true);
 
             const response = await fetch(
-                `${BASE_URL}app/views/staff-accounts.php`,
+                `${BASE_URL}app/api/staff-accounts.php`,
                 {
                     method: "POST",
                     headers: {
@@ -99,7 +99,7 @@ export const useStaffAccounts = () => {
             };
 
             const response = await fetch(
-                `${BASE_URL}app/views/staff-accounts.php`,
+                `${BASE_URL}app/api/staff-accounts.php`,
                 {
                     method: "PUT",
                     headers: {
@@ -139,7 +139,7 @@ export const useStaffAccounts = () => {
         try {
             // Make the API call to delete
             await axios.delete(
-                `${BASE_URL}app/views/staff-accounts.php?id=${id}`
+                `${BASE_URL}app/api/staff-accounts.php?id=${id}`
             );
 
             // Update local state after successful deletion

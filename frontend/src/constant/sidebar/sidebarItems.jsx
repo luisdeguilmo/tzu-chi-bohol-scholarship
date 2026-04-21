@@ -13,6 +13,8 @@ import {
     BookOpen,
     Users,
     FileText,
+    FileSpreadsheet,
+    CalendarRange,
 } from "lucide-react";
 
 export const scholarSidebarItems = [
@@ -183,6 +185,18 @@ export const adminSidebarItems = [
                 navigate: "/admin/staff-account-management",
             },
         ],
+    },
+    {
+        text: "School Years",
+        itemName: "school_years",
+        icon: <CalendarRange className="w-5 h-5 text-slate-600" />,
+        navigate: "/admin/school-years",
+    },
+    {
+        text: "Audit logs",
+        itemName: "audit_log",
+        icon: <FileSpreadsheet className="w-5 h-5 text-slate-600" />,
+        navigate: "/admin/audit-logs",
     },
     {
         text: "Logout",

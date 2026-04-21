@@ -117,7 +117,7 @@ function DocumentFormModal({ isOpen, setIsOpen, onSuccess }) {
 
             // Submit the data
             const response = await fetch(
-                `${BASE_URL}app/views/activities.php`,
+                `${BASE_URL}app/api/activities.php`,
                 {
                     method: "POST",
                     headers: {

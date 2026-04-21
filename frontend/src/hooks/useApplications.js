@@ -11,7 +11,7 @@ export const useApplications = (status) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/applicants.php?application_status=pending&status=${status}`
+                `${BASE_URL}app/api/applicants.php?application_status=pending&status=${status}`
             );
             setApplications(response.data.personalInfo || []);
             setLoading(false);

@@ -25,7 +25,7 @@ function Accordion() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}/app/views/strands.php`
+                `${BASE_URL}/app/api/strands.php`
             );
 
             const decodedStrands =
@@ -52,7 +52,7 @@ function Accordion() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/courses.php`
+                `${BASE_URL}app/api/courses.php`
             );
             // Fix 2: Access the correct property in the response
             setCourses(response.data.data || []);
@@ -74,7 +74,7 @@ function Accordion() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/instructions.php`
+                `${BASE_URL}app/api/instructions.php`
             );
             // Fix 2: Access the correct property in the response
             setInstructions(response.data.data || []);
@@ -94,7 +94,7 @@ function Accordion() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/qualifications.php`
+                `${BASE_URL}app/api/qualifications.php`
             );
             // Fix 2: Access the correct property in the response
             setQualifications(response.data.data || []);
@@ -114,7 +114,7 @@ function Accordion() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/requirements.php`
+                `${BASE_URL}app/api/requirements.php`
             );
             // Fix 2: Access the correct property in the response
             setRequirements(response.data.data || []);
@@ -134,7 +134,7 @@ function Accordion() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/procedures.php`
+                `${BASE_URL}app/api/procedures.php`
             );
             // Fix 2: Access the correct property in the response
             setProcedure(response.data.data || []);

@@ -45,7 +45,7 @@ const BatchesTableRow = ({
 
             // Send the PUT request with the data in the body
             const response = await axios.put(
-                `${BASE_URL}/app/views/scores.php`, // Updated endpoint
+                `${BASE_URL}/app/api/scores.php`, // Updated endpoint
                 data,
                 {
                     headers: {

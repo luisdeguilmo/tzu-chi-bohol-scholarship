@@ -15,6 +15,7 @@ import TableRow from "../../../components/TableRow";
 import PageContent from "../../../components/PageContent";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import ApplicantDetailsModal from "./ApplicantDetailsModal";
+import { useSchoolYears } from "../../../hooks/useSchoolYears";
 
 export default function ApplicationRecordsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,24 +26,23 @@ export default function ApplicationRecordsPage() {
     const [sortBy, setSortBy] = useState("newest");
     const [schoolYear, setSchoolYear] = useState("all_years");
     const [status, setStatus] = useState("all_years");
+    const { schoolYears } = useSchoolYears();
 
     const { applications, fetchApplications } = useApplicationRecords(
         activeTab,
         status,
         schoolYear,
-        sortBy
+        sortBy,
     );
-
-    console.log(activeTab, status, schoolYear, sortBy);
 
     const { fetchApplicantData } = useApplicantData();
     const { profilePics, fetchAllPics } = useProfilePicture(
         applications,
-        "profile-picture"
+        "profile-picture",
     );
     const { viewPdf, downloadPdf } = usePdfActions(
         activeTab,
-        fetchApplicantData
+        fetchApplicantData,
     );
 
     useEffect(() => {
@@ -103,9 +103,9 @@ export default function ApplicationRecordsPage() {
                 firstIndex={indexOfFirstItem}
                 lastIndex={indexOfLastItem}
             >
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-600">
-                        Filtered by status:
+                <div className="flex justify-between items-center gap-2">
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                        Status:
                     </span>
                     <select
                         value={status}
@@ -113,7 +113,7 @@ export default function ApplicationRecordsPage() {
                             setStatus(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="w-[100px] px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         {activeTab === "new" ? (
                             schoolYear === getCurrentSchoolYear() ? (
@@ -209,20 +209,22 @@ export default function ApplicationRecordsPage() {
                         )}
                     </select>
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-600">School Year:</span>
+                <div className="flex justify-between items-center gap-2">
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">School Year:</span>
                     <select
                         value={schoolYear}
                         onChange={(e) => {
                             setSchoolYear(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="px-3 py-1 text-xs border rounded-full bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all_years">All Years</option>
-                        <option value="2026-2027">2026-2027</option>
-                        <option value="2025-2026">2025-2026</option>
-                        <option value="2024-2025">2024-2025</option>
+                        {schoolYears.map((schoolYear) => (
+                            <option key={schoolYear.id} value={schoolYear.school_year}>
+                                {schoolYear.school_year}
+                            </option>
+                        ))}
                     </select>
                 </div>
             </TableToolbar>

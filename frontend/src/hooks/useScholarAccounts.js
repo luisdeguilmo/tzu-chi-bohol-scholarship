@@ -13,7 +13,7 @@ export const useScholarAccounts = (tab) => {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `${BASE_URL}app/views/scholar-accounts.php?application_status=${tab}`
+                `${BASE_URL}app/api/scholar-accounts.php?application_status=${tab}`
             );
 
             if (response.data.success) {
@@ -42,7 +42,7 @@ export const useScholarAccounts = (tab) => {
         try {
             setLoading(true);
             const response = await axios.post(
-                `${BASE_URL}app/views/scholar-accounts.php`,
+                `${BASE_URL}app/api/scholar-accounts.php`,
                 {
                     applicationIds: selectedScholars,
                 },
@@ -86,7 +86,7 @@ export const useScholarAccounts = (tab) => {
             setLoading(true);
 
             const response = await axios.put(
-                `${BASE_URL}app/views/scholar-accounts.php?action=${action}&reason=${reason}`,
+                `${BASE_URL}app/api/scholar-accounts.php?action=${action}&reason=${reason}`,
                 {
                     scholarId: scholarId,
                 }

@@ -211,7 +211,7 @@ function FileUploadFormModal({
 
             // Submit the data
             const response = await fetch(
-                `${BASE_URL}app/views/application-files.php`,
+                `${BASE_URL}app/api/application-files.php`,
                 {
                     method: "POST",
                     headers: {

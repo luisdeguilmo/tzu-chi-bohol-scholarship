@@ -12,7 +12,7 @@ export const useApplicationFiles = (type, applicationId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/scholar-files.php?type=${type}&id=${applicationId}`
+                `${BASE_URL}app/api/scholar-files.php?type=${type}&id=${applicationId}`
             );
             // Set application periods data
             setApplicationFiles(response.data.data || []);
@@ -111,7 +111,7 @@ export const useApplicationFiles = (type, applicationId) => {
 
             // Submit the data
             const response = await fetch(
-                `${BASE_URL}app/views/scholar-files.php?type=${type}`,
+                `${BASE_URL}app/api/scholar-files.php?type=${type}`,
                 {
                     method: "PUT",
                     headers: {

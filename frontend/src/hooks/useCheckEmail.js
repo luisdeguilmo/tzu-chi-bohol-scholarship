@@ -12,7 +12,7 @@ export const useCheckEmail = (email, userId) => {
             setLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/views/check-email.php`,
+                `${BASE_URL}app/api/check-email.php`,
                 {
                     params: { email: email, id: userId ?? null}
                 }

@@ -11,7 +11,7 @@ export const useApprovedApplications = () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/applicants.php?application_status=approved&status=${status}`
+                `${BASE_URL}app/api/applicants.php?application_status=approved&status=${status}`
             );
             setApplications(response.data.data || []);
             setLoading(false);

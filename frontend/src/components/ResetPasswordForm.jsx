@@ -37,7 +37,7 @@ const ResetPasswordForm = () => {
             data.append("confirm_password", confirmPassword);
 
             const response = await axios.post(
-                `${BASE_URL}app/views/password-reset.php?action=update_password`,
+                `${BASE_URL}app/api/password-reset.php?action=update_password`,
                 data,
                 {
                     headers: {

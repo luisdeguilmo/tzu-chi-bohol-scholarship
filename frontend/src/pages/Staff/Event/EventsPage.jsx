@@ -13,6 +13,7 @@ import { eventTableHeaders } from "../../../constant/tableHeaders";
 import { ClipboardEdit, Eye, MessageSquare, PenLine, Plus } from "lucide-react";
 import EventFormModal from "./EventFormModal";
 import { useAuth } from "../../../context/AuthContext";
+import { useYears } from "../../../hooks/useYear";
 
 export default function EventsPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -28,6 +29,7 @@ export default function EventsPage() {
     const [action, setAction] = useState("create");
 
     const { user } = useAuth();
+    const { years } = useYears();
     const { events, fetchEvents } = useEventsOnStaff(year, status, sortBy);
 
     useEffect(() => {
@@ -36,7 +38,7 @@ export default function EventsPage() {
 
     // Filter data based on search term
     const filteredEvents = events.filter((event) =>
-        event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
+        event.event_name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     // const participated = selectedEvent?.participants.filter(
@@ -107,9 +109,7 @@ export default function EventsPage() {
                     }}
                 >
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">
-                            Status:
-                        </span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Status:</span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
@@ -121,7 +121,7 @@ export default function EventsPage() {
                         </select>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">Year:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Year:</span>
                         <select
                             value={year}
                             onChange={(e) =>
@@ -129,9 +129,11 @@ export default function EventsPage() {
                             }
                             className="px-3 py-1 w-full text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
-                            <option value={2026}>2026</option>
-                            <option value={2025}>2025</option>
-                            <option value={2024}>2024</option>
+                            {years.map((year) => (
+                                <option key={year.id} value={year.year}>
+                                    {year.year}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </TableToolbar>
@@ -215,7 +217,7 @@ export default function EventsPage() {
                                         event.date + " " + event.end_time ? (
                                             event?.participants.filter(
                                                 (participant) =>
-                                                    participant.is_attended
+                                                    participant.is_attended,
                                             ).length !==
                                             event.numberOfParticipants ? (
                                                 <ClipboardEdit className="w-4 h-4 text-blue-600" />

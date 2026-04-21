@@ -15,6 +15,7 @@ export const PeriodProvider = ({ children }) => {
     const [id, setId] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [schoolYear, setSchoolYear] = useState("");
     const [announcementMessage, setAnnouncementMessage] = useState("");
     const [type, setType] = useState("");
     const [status, setStatus] = useState("");
@@ -25,6 +26,7 @@ export const PeriodProvider = ({ children }) => {
         id,
         startDate,
         endDate,
+        schoolYear,
         announcementMessage,
         type,
         status,
@@ -33,6 +35,7 @@ export const PeriodProvider = ({ children }) => {
         setId,
         setStartDate,
         setEndDate,
+        setSchoolYear,
         setAnnouncementMessage,
         setType,
         setStatus,

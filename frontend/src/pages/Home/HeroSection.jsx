@@ -26,7 +26,7 @@ function HeroSection() {
             toast.error("The online application has been closed.");
         } else {
             toast.info(
-                "The online application is not available at the moment."
+                "The online application is not available at the moment.",
             );
         }
     };
@@ -91,28 +91,75 @@ function HeroSection() {
                 </div>
             </div>
 
-            <div className="w-[95%] absolute top-[45%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10">
+            {/* <div className="w-[95%] absolute top-[45%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10">
                 <div>
-                    <h1 className="text-4xl md:text-6xl italic font-semibold text-center whitespace-pre-wrap">
-                        Seize the Opportunity, Apply Now!
+                    <h1 className="text-4xl md:text-6xl mb-[16px] italic font-semibold text-center whitespace-pre-wrap">
+                        Empowering <span className="text-green-600">Compassion</span> <br /> Through <span className="text-green-600">Education</span>
                     </h1>
-                    <div className="mt-5 flex justify-center gap-2 md:gap-5">
+                    <p className="mb-[28px] text-center whitespace-pre-wrap">
+                        A unified platform to manage scholarships, support
+                        scholars, and uphold the mission of service and
+                        gratitude.
+                    </p>
+                    <div className="mt-[36px] mb-[48px] flex justify-center gap-2 md:gap-5">
                         <button
                             onClick={handleClick}
-                            className="bg-green-700 hover:bg-green-800 text-xs md:text-sm text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                            className="bg-green-700 hover:bg-green-800 text-xs md:text-sm text-white px-4 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                         >
-                            Apply Now
+                            Apply for Scholarship
                         </button>
                         <button
                             onClick={() => navigate("/login/scholar")}
-                            className="w-28 p-2 border-2 border-green-500 text-xs md:text-sm rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                            className="px-4 py-2.5 border-2 border-green-500 text-xs md:text-sm rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                         >
-                            Login
+                            Scholar Login
                         </button>
                     </div>
                 </div>
                 <div className="mt-10">
                     <p className="text-center text-sm md:text-lg">
+                        {applicationPeriods.announcement_message}
+                    </p>
+                </div>
+            </div> */}
+
+            <div className="w-[95%] absolute top-[45%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10">
+                <div className="max-w-3xl mx-auto text-center">
+                    {/* HERO TITLE */}
+                    <h1 className="text-4xl md:text-6xl font-semibold leading-tight mb-6">
+                        Empowering{" "}
+                        <span className="text-green-600">Compassion</span>
+                        <br />
+                        Through{" "}
+                        <span className="text-green-600">Education</span>
+                    </h1>
+
+                    {/* SUBTITLE */}
+                    <p className="text-sm md:text-base text-white/90 leading-relaxed mb-8">
+                        A unified platform to manage scholarships, support
+                        scholars, and uphold the mission of service and
+                        gratitude.
+                    </p>
+
+                    {/* CTA BUTTONS */}
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-5 mb-10">
+                        <button
+                            onClick={handleClick}
+                            className="bg-green-700 hover:bg-green-800 text-white text-sm px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                        >
+                            Apply for Scholarship
+                        </button>
+
+                        <button
+                            onClick={() => navigate("/login/scholar")}
+                            className="border-2 border-green-500 text-white text-sm px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 hover:bg-green-500/10"
+                        >
+                            Scholar Login
+                        </button>
+                    </div>
+
+                    {/* ANNOUNCEMENT */}
+                    <p className="text-sm md:text-base text-white/80 leading-relaxed">
                         {applicationPeriods.announcement_message}
                     </p>
                 </div>

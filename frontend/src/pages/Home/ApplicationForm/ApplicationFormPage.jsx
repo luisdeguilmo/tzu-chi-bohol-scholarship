@@ -17,6 +17,7 @@ import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import { useAuth } from "../../../context/AuthContext";
 import { useApplicantInformation } from "../../../hooks/useApplicantInformation";
 import { useSidebar } from "../../../context/SidebarContext";
+import { useApplicationPeriods } from "../../../hooks/useApplicationPeriods";
 
 const generateInitialState = (fieldsConfig) => {
     const initialState = {};
@@ -37,8 +38,9 @@ function ApplicationForm({ includeRequirements = true }) {
     const { setActiveTab } = useSidebar();
     const { applicantInformation } = useApplicantInformation(
         user?.user_id,
-        getCurrentSchoolYear()
+        getCurrentSchoolYear(),
     );
+    const { getSchoolYear } = useApplicationPeriods();
 
     // Define steps based on whether requirements are included
     const steps = [
@@ -68,22 +70,22 @@ function ApplicationForm({ includeRequirements = true }) {
     // Consolidated form state
     const [formData, setFormData] = useState({
         application_info: generateInitialState(
-            formConfig[FORM_SECTIONS.APPLICATION]
+            formConfig[FORM_SECTIONS.APPLICATION],
         ),
         personal_information: generateInitialState(
-            formConfig[FORM_SECTIONS.PERSONAL]
+            formConfig[FORM_SECTIONS.PERSONAL],
         ),
         educational_background: generateInitialState(
-            formConfig[FORM_SECTIONS.EDUCATION]
+            formConfig[FORM_SECTIONS.EDUCATION],
         ),
         parents_guardian: generateInitialState(
-            formConfig[FORM_SECTIONS.FAMILY]
+            formConfig[FORM_SECTIONS.FAMILY],
         ),
         contact_person: generateInitialState(
-            formConfig[FORM_SECTIONS.CONTACT_PERSON]
+            formConfig[FORM_SECTIONS.CONTACT_PERSON],
         ),
         other_information: generateInitialState(
-            formConfig[FORM_SECTIONS.OTHER_INFORMATION]
+            formConfig[FORM_SECTIONS.OTHER_INFORMATION],
         ),
         family_members: [],
         tzu_chi_siblings: [],
@@ -259,7 +261,13 @@ function ApplicationForm({ includeRequirements = true }) {
 
     const handleRenewSubmit = async (e) => {
         e.preventDefault();
-        formData.application_info.school_year = getCurrentSchoolYear();
+        const fetchSchoolYear = async () => {
+            const data = await getSchoolYear("renewal");
+            formData.application_info.school_year = data?.school_year;
+        };
+
+        fetchSchoolYear();
+        // formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.application_type = "renew";
         formData.application_info.status = "Old";
         formData.application_info.scholar_id = user.user_id;
@@ -274,17 +282,17 @@ function ApplicationForm({ includeRequirements = true }) {
 
             formDataToSend.append(
                 "applicationData",
-                JSON.stringify(applicationData)
+                JSON.stringify(applicationData),
             );
 
             const response = await axios.post(
-                `${BASE_URL}app/views/renewal.php`,
+                `${BASE_URL}app/api/renewal.php`,
                 formDataToSend,
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
-                }
+                },
             );
 
             toast.success("Application submitted successfully!");
@@ -302,12 +310,15 @@ function ApplicationForm({ includeRequirements = true }) {
 
     const handleReSubmitRenew = async (e) => {
         e.preventDefault();
-        formData.application_info.school_year = getCurrentSchoolYear();
+        const fetchSchoolYear = async () => {
+            const data = await getSchoolYear("renewal");
+            formData.application_info.school_year = data?.school_year;
+        };
+
+        fetchSchoolYear();
+        // formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.application_type = "resubmit";
-        // formData.application_info.status = "Old";
         formData.application_info.scholar_id = user.user_id;
-        // formData.personal_information.scholar_id = user.user_id;
-        // formData.educational_background.scholar_id = user.user_id;
 
         try {
             const formDataToSend = new FormData();
@@ -316,17 +327,17 @@ function ApplicationForm({ includeRequirements = true }) {
 
             formDataToSend.append(
                 "applicationData",
-                JSON.stringify(applicationData)
+                JSON.stringify(applicationData),
             );
 
             const response = await axios.post(
-                `${BASE_URL}app/views/renewal.php`,
+                `${BASE_URL}app/api/renewal.php`,
                 formDataToSend,
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
-                }
+                },
             );
 
             toast.success("Application submitted successfully!");
@@ -344,7 +355,14 @@ function ApplicationForm({ includeRequirements = true }) {
     // Handle final form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        formData.application_info.school_year = getCurrentSchoolYear();
+
+        const fetchSchoolYear = async () => {
+            const data = await getSchoolYear("new");
+            formData.application_info.school_year = data?.school_year;
+        };
+
+        fetchSchoolYear();
+        // formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.status = "New";
         formData.educational_background.year_level = 1;
         // console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
@@ -360,19 +378,19 @@ function ApplicationForm({ includeRequirements = true }) {
 
                 formDataToSend.append(
                     "applicationData",
-                    JSON.stringify(applicationData)
+                    JSON.stringify(applicationData),
                 );
 
                 if (formData.picture_file && formData.picture_file.fileObj) {
                     formDataToSend.append(
                         "picture",
-                        formData.picture_file.fileObj
+                        formData.picture_file.fileObj,
                     );
                     formDataToSend.append(
                         "pictureInfo",
                         JSON.stringify({
                             filename: formData.picture_file.filename,
-                        })
+                        }),
                     );
                 }
 
@@ -388,19 +406,19 @@ function ApplicationForm({ includeRequirements = true }) {
                             "fileInfo[]",
                             JSON.stringify({
                                 filename: fileItem.filename,
-                            })
+                            }),
                         );
                     });
                 }
 
                 const response = await axios.post(
-                    `${BASE_URL}app/views/submit-application.php`,
+                    `${BASE_URL}app/api/submit-application.php`,
                     formDataToSend,
                     {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
-                    }
+                    },
                 );
 
                 toast.success("Application submitted successfully!");
@@ -487,11 +505,6 @@ function ApplicationForm({ includeRequirements = true }) {
                         formData={formData}
                         prevStep={prevStep}
                         nextStep={nextStep}
-                        // handleSubmit={
-                        //     !includeRequirements
-                        //         ? handleRenewSubmit
-                        //         : handleSubmit
-                        // }
                         handleSubmit={
                             !includeRequirements &&
                             !applicantInformation?.applicationInfo?.scholar_id

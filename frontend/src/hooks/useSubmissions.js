@@ -11,7 +11,7 @@ export const useSubmissions = (tab, userId, yearLevel) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/coe-grades.php?tab=${tab}&id=${userId}&year_level=${yearLevel}`
+                `${BASE_URL}app/api/coe-grades.php?tab=${tab}&id=${userId}&year_level=${yearLevel}`
             );
             // Set application periods data
             setSubmissions(response.data.data || []);

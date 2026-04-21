@@ -11,7 +11,7 @@ export const useEmailMessages = (stage) => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/email-messages.php?stage=${stage}`
+                `${BASE_URL}app/api/email-messages.php?stage=${stage}`
             );
 
             if (response.data) {
@@ -37,7 +37,7 @@ export const useEmailMessages = (stage) => {
             setIsLoading(true);
 
             const response = await fetch(
-                `${BASE_URL}app/views/email-messages.php`,
+                `${BASE_URL}app/api/email-messages.php`,
                 {
                     method: "PUT",
                     headers: {
@@ -70,7 +70,7 @@ export const useEmailMessages = (stage) => {
         try {
             setIsLoading(true);
             const response = await axios.delete(
-                `${BASE_URL}app/views/courses-accepted.php?id=${id}`
+                `${BASE_URL}app/api/courses-accepted.php?id=${id}`
             );
 
             if (response.data) {

@@ -8,7 +8,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
     const [error, setError] = useState(null);
 
     // Base URL configuration - makes it easier to update in one place
-    const API_BASE_URL = `${BASE_URL}app/views`;
+    const API_BASE_URL = `${BASE_URL}app/api`;
 
     // Generic error handler to provide consistent error handling
     const handleError = (error, errorMessage) => {

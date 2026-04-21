@@ -12,7 +12,7 @@ export const useBatches = (purpose) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/batches.php?purpose=${purpose}`
+                `${BASE_URL}app/api/batches.php?purpose=${purpose}`
             );
             setBatches(response.data.data || []);
             setLoading(false);
@@ -26,7 +26,7 @@ export const useBatches = (purpose) => {
     const createBatch = async (data) => {
         try {
             setLoading(true);
-            const response = await fetch(`${BASE_URL}app/views/batches.php`, {
+            const response = await fetch(`${BASE_URL}app/api/batches.php`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -62,7 +62,7 @@ export const useBatches = (purpose) => {
         try {
             // Make the API call to delete
             await axios.delete(
-                `${BASE_URL}app/views/batches.php?id=${batchToDelete.batch_name}&purpose=${purpose}`
+                `${BASE_URL}app/api/batches.php?id=${batchToDelete.batch_name}&purpose=${purpose}`
             );
 
             // Update local state after successful deletion

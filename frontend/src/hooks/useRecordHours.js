@@ -19,7 +19,7 @@ export const useRecordHours = () => {
             setIsLoading(true);
 
             const response = await axios.put(
-                `${BASE_URL}app/views/rendered-hours.php?duty_type=community_service&action=approve`,
+                `${BASE_URL}app/api/rendered-hours.php?duty_type=community_service&action=approve`,
                 {
                     id: activity?.id,
                     account_id: activity?.application_id,
@@ -70,7 +70,7 @@ export const useRecordHours = () => {
             setIsLoading(true);
 
             const response = await axios.put(
-                `${BASE_URL}app/views/rendered-hours.php?duty_type=community_service&action=reject`,
+                `${BASE_URL}app/api/rendered-hours.php?duty_type=community_service&action=reject`,
                 {
                     id: id,
                     account_id: accountId,
@@ -105,7 +105,7 @@ export const useRecordHours = () => {
     const recordEventHours = async (event, renderedHours, selectedScholars) => {
         try {
             const response = await axios.put(
-                `${BASE_URL}app/views/rendered-hours.php?duty_type=event`,
+                `${BASE_URL}app/api/rendered-hours.php?duty_type=event`,
                 {
                     event_id: event.id,
                     event_type: "event",

@@ -14,7 +14,7 @@ export const useValidateEmail = () => {
 
         try {
             const response = await fetch(
-                `${BASE_URL}app/views/validate-email.php`,
+                `${BASE_URL}app/api/validate-email.php`,
                 {
                     method: "POST",
                     headers: {

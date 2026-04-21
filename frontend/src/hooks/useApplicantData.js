@@ -12,7 +12,7 @@ export const useApplicantData = () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                `${BASE_URL}app/views/applications.php?applicationId=${id}`
+                `${BASE_URL}app/api/applications.php?applicationId=${id}`
             );
             setApplicantData(response.data || []);
             setApplicationId(id);

@@ -25,7 +25,7 @@ const ChangePasswordModal = ({ isOpen, onClose, userId }) => {
             data.append("confirm_password", confirmPassword);
 
             const response = await axios.post(
-                `${BASE_URL}app/views/password-reset.php?action=reset_password`,
+                `${BASE_URL}app/api/password-reset.php?action=reset_password`,
                 data,
                 {
                     headers: {

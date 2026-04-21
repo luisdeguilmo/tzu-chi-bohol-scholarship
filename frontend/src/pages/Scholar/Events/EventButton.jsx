@@ -28,7 +28,7 @@ const EventButton = ({
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/event-participants.php?scholar_id=${scholarId}&event_id=${eventId}`
+                `${BASE_URL}app/api/event-participants.php?scholar_id=${scholarId}&event_id=${eventId}`
             );
 
             if (response.data.success) {

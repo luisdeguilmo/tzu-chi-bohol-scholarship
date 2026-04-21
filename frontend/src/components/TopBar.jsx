@@ -36,6 +36,8 @@ function TopBar() {
         user.type === "admin" && userId
     );
 
+    console.log(user);
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (

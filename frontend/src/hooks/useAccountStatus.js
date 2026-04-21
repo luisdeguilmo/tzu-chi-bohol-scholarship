@@ -12,7 +12,7 @@ export const useAccountStatus = (userId) => {
             setLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/views/account-status.php`,
+                `${BASE_URL}app/api/account-status.php`,
                 {
                     params: { id: userId ?? null },
                 }

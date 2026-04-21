@@ -207,11 +207,11 @@ export default function ScholarsAndAllowances() {
                     onOpen={setIsConfirmationModalOpen}
                 >
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">Status:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Status:</span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value="new">New</option>

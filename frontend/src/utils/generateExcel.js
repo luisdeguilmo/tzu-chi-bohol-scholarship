@@ -24,7 +24,7 @@ export const generateExcel = () => {
 
             // Upload to server
             const response = await axios.post(
-                `${BASE_URL}app/views/allowance-cycle-excel.php`,
+                `${BASE_URL}app/api/allowance-cycle-excel.php`,
                 formData,
                 {
                     headers: {

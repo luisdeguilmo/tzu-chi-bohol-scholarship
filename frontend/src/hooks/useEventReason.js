@@ -11,7 +11,7 @@ export const useEventReason = (scholarId, eventId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/event-reason.php?event_id=${eventId}&user_type=staff`
+                `${BASE_URL}app/api/event-reason.php?event_id=${eventId}&user_type=staff`
             );
             // Set application periods data
             setPrivateComments(response.data.data || []);
@@ -30,7 +30,7 @@ export const useEventReason = (scholarId, eventId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/event-reason.php?scholar_id=${scholarId}&event_id=${eventId}&user_type=scholar`
+                `${BASE_URL}app/api/event-reason.php?scholar_id=${scholarId}&event_id=${eventId}&user_type=scholar`
             );
             // Set application periods data
             setPrivateComments(response.data.data || []);
@@ -71,7 +71,7 @@ export const useEventReason = (scholarId, eventId) => {
 
             // Send the PUT request with the data in the body
             const response = await fetch(
-                `${BASE_URL}app/views/event-reason.php`,
+                `${BASE_URL}app/api/event-reason.php`,
                 {
                     method: "POST",
                     headers: {
@@ -112,7 +112,7 @@ export const useEventReason = (scholarId, eventId) => {
 
             // Send the PUT request with the data in the body
             const response = await fetch(
-                `${BASE_URL}app/views/event-reason.php`,
+                `${BASE_URL}app/api/event-reason.php`,
                 {
                     method: "PUT",
                     headers: {
@@ -143,7 +143,7 @@ export const useEventReason = (scholarId, eventId) => {
         try {
             // Make the API call to delete
             await axios.delete(
-                `${BASE_URL}app/views/event-reason.php?id=${id}`
+                `${BASE_URL}app/api/event-reason.php?id=${id}`
             );
 
             return true;

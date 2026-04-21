@@ -7,7 +7,7 @@ export const useSettings = () => {
 
     const fetchPassingScore = async () => {
         try {
-            const response = await fetch(`${BASE_URL}app/views/settings.php`, {
+            const response = await fetch(`${BASE_URL}app/api/settings.php`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export const useSettings = () => {
         };
 
         try {
-            const response = await fetch(`${BASE_URL}app/views/settings.php`, {
+            const response = await fetch(`${BASE_URL}app/api/settings.php`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json", // Important for JSON body

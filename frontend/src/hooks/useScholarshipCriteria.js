@@ -13,7 +13,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/${endpoint}.php`
+                `${BASE_URL}app/api/${endpoint}.php`
             );
 
             setItems(response.data.data || []);
@@ -36,7 +36,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
             };
 
             const response = await fetch(
-                `${BASE_URL}app/views/${endpoint + "s"}.php`,
+                `${BASE_URL}app/api/${endpoint + "s"}.php`,
                 {
                     method: "PUT",
                     headers: {
@@ -67,7 +67,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
 
     const deleteItem = async (id) => {
         try {
-            await axios.delete(`${BASE_URL}app/views/${endpoint}.php?id=${id}`);
+            await axios.delete(`${BASE_URL}app/api/${endpoint}.php?id=${id}`);
 
             const updatedItems = items.filter((item) => item.id !== id);
             setItems(updatedItems);

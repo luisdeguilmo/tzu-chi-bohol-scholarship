@@ -12,7 +12,7 @@ export const useStrands = () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/views/strands.php`
+                `${BASE_URL}app/api/strands.php`
             );
             // Decode HTML entities in the data when it's received
             const decodedStrands =
@@ -54,7 +54,7 @@ export const useStrands = () => {
 
             // Send the PUT request with the data in the body
             const response = await fetch(
-                `${BASE_URL}app/views/strands.php`,
+                `${BASE_URL}app/api/strands.php`,
                 {
                     method: "PUT",
                     headers: {
@@ -97,7 +97,7 @@ export const useStrands = () => {
         try {
             // Make the API call to delete
             await axios.delete(
-                `${BASE_URL}app/views/strands.php?id=${id}`
+                `${BASE_URL}app/api/strands.php?id=${id}`
             );
 
             // Update local state after successful deletion
