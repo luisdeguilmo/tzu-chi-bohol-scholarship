@@ -32,22 +32,15 @@ export default function CommunityServices() {
     }, [pathname]);
 
     const { user } = useAuth();
-
-    const { loading, activities, fetchActivities } = useActivities(
-        activeTab,
-        user.user_id
-    );
-
+    const { loading, activities, fetchActivities } = useActivities(activeTab);
     const { overviewData } = useScholarOverviewData(
-        user.user_id,
-        "volunteer_activities"
+        "volunteer_activities",
     );
-
     const { communityServiceOverviewData } = scholarOverviewData(overviewData);
 
     useEffect(() => {
-        fetchActivities(activeTab, user.user_id);
-    }, [activeTab, user.user_id]);
+        fetchActivities(activeTab);
+    }, [activeTab]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -70,7 +63,7 @@ export default function CommunityServices() {
                 .includes(searchTerm.toLowerCase()) ||
             activity.activity_status
                 .toLowerCase()
-                .includes(searchTerm.toLowerCase())
+                .includes(searchTerm.toLowerCase()),
     );
 
     const tabs = [
@@ -85,7 +78,7 @@ export default function CommunityServices() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredActivities.slice(
         indexOfFirstItem,
-        indexOfLastItem
+        indexOfLastItem,
     );
 
     const handleOpenDetails = useCallback((activity) => {
@@ -100,10 +93,10 @@ export default function CommunityServices() {
     const handleTabChange = useCallback(
         (tab) => {
             setActiveTab(tab);
-            fetchActivities(tab, user.user_id);
+            fetchActivities(tab);
             setCurrentPage(1);
         },
-        [fetchActivities, user.user_id]
+        [fetchActivities],
     );
 
     const handleOpenDotMenu = useCallback(
@@ -116,11 +109,11 @@ export default function CommunityServices() {
             }
             setItemIndex(index);
         },
-        [itemIndex, isDotMenuOpen]
+        [itemIndex, isDotMenuOpen],
     );
 
     const handleRefresh = () => {
-        fetchActivities(activeTab, user.user_id);
+        fetchActivities(activeTab);
     };
 
     return (
@@ -144,7 +137,6 @@ export default function CommunityServices() {
                     ) : (
                         currentItems.map((activity, index) => (
                             <CommunityServiceCard
-                                userId={user.user_id}
                                 key={index}
                                 activity={activity}
                                 index={index}

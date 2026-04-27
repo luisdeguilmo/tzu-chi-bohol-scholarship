@@ -15,6 +15,7 @@ require_once __DIR__ . '/../../app/models/CharacterReferenceModel.php';
 
 header('Content-Type: application/json');
 
+use App\Constants\Action;
 use Config\Database;
 use App\Models\ApplicationModel;
 use App\Models\PersonalModel;
@@ -24,16 +25,19 @@ use App\Models\ContactPersonModel;
 use App\Models\FamilyMemberModel;
 use App\Models\ScholarModel;
 use App\Models\AssistanceModel;
+use App\Models\AuditLogModel;
 use App\Models\CharacterReferenceModel;
 
 class RenewalController
 {
     private $pdo;
+    private $scholarModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->scholarModel = new ScholarModel();
     }
 
     public function createApplication()
@@ -146,7 +150,14 @@ class RenewalController
     {
         // Process personal information
         $personal = new PersonalModel($this->pdo);
-        if (!$personal->renew($data['personal_information'], $application_id, $scholar_id, $scholar_id)) {
+        if (
+            !$personal->renew(
+                $data['personal_information'],
+                $application_id,
+                $scholar_id,
+                $scholar_id,
+            )
+        ) {
             throw new \Exception('Failed to save personal information');
         }
 
@@ -207,6 +218,32 @@ class RenewalController
                     throw new \Exception('Failed to save character');
                 }
             }
+        }
+
+        $auditLogModel = new AuditLogModel();
+
+        if (
+            !$auditLogModel->create([
+                'user_id' => null,
+                'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
+                'user_role' => 'applicant',
+                'action' => Action::RENEWAL_APPLICATION_SUBMITTED,
+                'entity_type' => 'application',
+                'entity_id' => $application_id,
+
+                'description' =>
+                    $data['personal_information']['first_name'] .
+                    ' ' .
+                    $data['personal_information']['last_name'] .
+                    ' submitted renewal application.',
+
+                'old_values' => null,
+                'new_values' => ['status' => 'submitted'],
+                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+            ])
+        ) {
+            throw new \Exception('Failed to create audit log');
         }
     }
 
@@ -290,6 +327,32 @@ class RenewalController
                     throw new \Exception('Failed to save character');
                 }
             }
+        }
+
+        $auditLogModel = new AuditLogModel();
+
+        if (
+            !$auditLogModel->create([
+                'user_id' => null,
+                'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
+                'user_role' => 'applicant',
+                'action' => Action::RENEWAL_APPLICATION_RESUBMITTED,
+                'entity_type' => 'application',
+                'entity_id' => $applicationId,
+
+                'description' =>
+                    $data['personal_information']['first_name'] .
+                    ' ' .
+                    $data['personal_information']['last_name'] .
+                    ' resubmitted renewal application.',
+
+                'old_values' => null,
+                'new_values' => ['status' => 'submitted'],
+                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+            ])
+        ) {
+            throw new \Exception('Failed to create audit log');
         }
     }
 }

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { AlignJustify, ChevronDown, ChevronUp, X } from "lucide-react";
@@ -14,7 +15,14 @@ function SideBar({ items }) {
     const [openDropdown, setOpenDropdown] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { activeTab, setActiveTab } = useSidebar();
+    const dropdownRefs = useRef({});
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Derive route segments reactively from useLocation so they update on navigation
+    const parts = location.pathname.split("/");
+    const nestedRoute = parts[2] ?? null; // e.g. "records" in /staff/records/scholars
+    const childRoute = parts[3] ?? null; // e.g. "scholars" in /staff/records/scholars
 
     const { user, logout } = useAuth();
     const scholarId = { id: user.user_id };
@@ -23,7 +31,7 @@ function SideBar({ items }) {
         useDashboardOverviewData(
             user.user_id,
             user.type,
-            getCurrentSchoolYear()
+            getCurrentSchoolYear(),
         );
 
     const { applicationPeriods, fetchApplicationPeriods } =
@@ -34,10 +42,22 @@ function SideBar({ items }) {
         fetchScholarDashboardData();
     }, [activeTab]);
 
+    // Auto-expand the dropdown that matches the current route on mount / path change
+    useEffect(() => {
+        const matchIndex = items.findIndex(
+            (item) => item.subItems && item.itemName === nestedRoute,
+        );
+        if (matchIndex !== -1) {
+            setOpenDropdown(matchIndex);
+        }
+    }, [nestedRoute]);
+
     const today = new Date().toISOString().split("T")[0];
 
+    // Closes the current dropdown if clicked again; otherwise opens the new one.
+    // Only one dropdown can be open at a time.
     const toggleDropdown = (index, tab) => {
-        setOpenDropdown(openDropdown === index ? null : index);
+        setOpenDropdown((prev) => (prev === index ? null : index));
         setActiveTab(tab);
     };
 
@@ -55,18 +75,17 @@ function SideBar({ items }) {
         ) {
             if (dashboardData?.renewalApplicationStatus?.status === "pending") {
                 toast.info(
-                    "You have already submitted a renewal application. Please wait for staff approval."
+                    "You have already submitted a renewal application. Please wait for staff approval.",
                 );
                 return false;
             } else if (
                 dashboardData?.renewalApplicationStatus?.status === "approved"
             ) {
                 toast.info(
-                    "Your renewal has been approved for the current school year!"
+                    "Your renewal has been approved for the current school year!",
                 );
                 return false;
             }
-
             return true;
         } else if (
             today > applicationPeriods.end_date ||
@@ -76,39 +95,17 @@ function SideBar({ items }) {
             return false;
         } else {
             toast.info(
-                "The online application is not available at the moment."
+                "The online application is not available at the moment.",
             );
             return false;
         }
     };
 
-    // const handleLogout = () => {
-    //     try {
-    //         const userType = user.type || "scholar";
-    //         toast.success("Logged out successfully");
-    //         logout();
-
-    //         if (userType === "scholar") {
-    //             navigate("/login/scholar");
-    //         } else if (userType === "staff") {
-    //             navigate("/login/staff");
-    //         } else if (userType === "admin") {
-    //             navigate("/login/admin");
-    //         }
-    //     } catch (error) {
-    //         console.error("Logout error:", error);
-    //         toast.error("Failed to log out. Please try again.");
-    //     }
-    // };
-
     const handleLogout = async () => {
         try {
             const userType = user.type || "scholar";
             toast.success("Logging out...");
-
             await logout();
-
-            // Navigate to appropriate login page
             if (userType === "scholar") {
                 navigate("/login/scholar");
             } else if (userType === "staff") {
@@ -128,70 +125,62 @@ function SideBar({ items }) {
         setActiveTab(tab);
     };
 
-    const handleNonDropDown = (path, tab) => {
-        navigate(path);
-        setIsOpen(false);
-        setActiveTab(tab);
+    // Returns the scrollHeight of a dropdown panel for smooth max-height animation
+    const getDropdownHeight = (index) => {
+        const el = dropdownRefs.current[index];
+        return el ? el.scrollHeight : 0;
     };
 
     return (
         <>
+            {/* Backdrop (mobile) */}
             {isOpen && (
                 <div
                     onClick={() => setIsOpen(false)}
                     className="absolute bg-[rgba(0,0,0,.4)] lg:bg-transparent top-0 left-0 z-10 w-full h-full"
-                ></div>
-            )}
-            {isOpen ? (
-                <span
-                    onClick={() => setIsOpen(false)}
-                    className="hover:bg-gray-100 p-2 rounded-lg cursor-pointer absolute top-2 left-[11px] z-10"
-                    title="Close sidebar"
-                >
-                    <AlignJustify className="w-6 h-6 text-slate-500" />
-                </span>
-            ) : (
-                <span
-                    onClick={() => setIsOpen(true)}
-                    className="material-symbols-outlined hover:bg-gray-100 p-2 rounded-lg cursor-pointer absolute top-2 left-[11px] z-20"
-                    title="Open sidebar"
-                >
-                    <AlignJustify className="w-6 h-6 text-slate-500" />
-                </span>
+                />
             )}
 
-            <nav
-                className={`group lg:h-[92vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative lg:hover:w-[400px] lg:hover:items-stretch z-20 overflow-hidden transition-all duration-200 ${
-                    isOpen ? "lg:w-[400px] w-[300px]" : "w-[0] lg:w-[70px]"
-                } ${!isOpen && "items-center"}`}
+            {/* Hamburger toggle */}
+            <span
+                onClick={() => setIsOpen((v) => !v)}
+                className="hover:bg-gray-100 p-2 rounded-lg cursor-pointer absolute top-2 left-[11px] z-20"
+                title={isOpen ? "Close sidebar" : "Open sidebar"}
             >
+                <AlignJustify className="w-6 h-6 text-slate-500" />
+            </span>
+
+            {/* Sidebar nav */}
+            <nav
+                className={`group lg:h-[92vh] h-[100vh] flex flex-col bg-white shadow-md fixed top-0 left-0 lg:relative z-20 overflow-hidden
+                    transition-[width] duration-300 ease-in-out
+                    lg:hover:w-[400px] lg:hover:items-stretch
+                    ${isOpen ? "lg:w-[400px] w-[300px]" : "w-0 lg:w-[70px]"}
+                    ${!isOpen && "items-center"}`}
+            >
+                {/* Mobile close button */}
                 {isOpen && (
                     <X
                         onClick={() => setIsOpen(false)}
                         className="w-10 h-10 text-gray-600 hover:bg-gray-100 p-2 rounded-lg cursor-pointer absolute z-20 top-2 right-3.5 lg:hidden"
                         title="Close sidebar"
-                    >
-                        close
-                    </X>
+                    />
                 )}
 
-                <ul className="h-[100%] mt-10 lg:mt-0 p-4 flex flex-col gap-1 text-[.9rem] text-gray-900">
+                <ul className="h-full mt-10 lg:mt-0 p-4 flex flex-col gap-1 text-[.9rem] text-gray-900">
                     {items.map((item, index) => (
                         <li key={index} className={`w-full ${item.style}`}>
                             {item.subItems ? (
-                                // If item has subItems, create a dropdown
+                                /* ── Dropdown item ── */
                                 <div>
                                     <div
-                                        className={`${
-                                            activeTab === item.itemName
-                                                ? "bg-gray-100"
-                                                : ""
-                                        } flex items-center justify-between cursor-pointer hover:bg-gray-100 whitespace-nowrap w-full px-3 py-3 rounded-lg`}
                                         onClick={() =>
                                             toggleDropdown(index, item.itemName)
                                         }
+                                        className={`flex items-center justify-between cursor-pointer hover:bg-gray-100 whitespace-nowrap w-full px-3 py-3 rounded-lg transition-colors duration-150
+                                            ${nestedRoute === item.itemName ? "bg-gray-100" : ""}`}
                                     >
-                                        <div className="flex items-center gap-3 ">
+                                        <div className="flex items-center gap-3">
                                             {item.icon}
                                             {isOpen ? (
                                                 <p className="lg:block group-hover:block text-sm">
@@ -203,6 +192,7 @@ function SideBar({ items }) {
                                                 </p>
                                             )}
                                         </div>
+
                                         {isOpen ? (
                                             <span className="material-symbols-outlined lg:block group-hover:block">
                                                 {openDropdown === index ? (
@@ -222,8 +212,22 @@ function SideBar({ items }) {
                                         )}
                                     </div>
 
-                                    {openDropdown === index && (
-                                        <ul className="ml-6 mt-1 text-gray-700">
+                                    {/* Smooth height-animated dropdown panel */}
+                                    <div
+                                        ref={(el) =>
+                                            (dropdownRefs.current[index] = el)
+                                        }
+                                        style={{
+                                            maxHeight:
+                                                openDropdown === index
+                                                    ? `${getDropdownHeight(index)}px`
+                                                    : "0px",
+                                            overflow: "hidden",
+                                            transition:
+                                                "max-height 250ms cubic-bezier(0.4, 0, 0.2, 1)",
+                                        }}
+                                    >
+                                        <ul className="ml-6 mt-1 mb-1 space-y-1 text-gray-700">
                                             {item.subItems.map(
                                                 (subItem, subIndex) => (
                                                     <li
@@ -231,53 +235,44 @@ function SideBar({ items }) {
                                                         onClick={() =>
                                                             handleClick(
                                                                 subItem.navigate,
-                                                                item.itemName
+                                                                item.itemName,
                                                             )
                                                         }
-                                                        className={`cursor-pointer hover:bg-gray-100 whitespace-nowrap text-xs w-full px-3 py-2.5 rounded-lg ${
-                                                            isOpen
-                                                                ? "block"
-                                                                : "hidden"
-                                                        } group-hover:block`}
+                                                        className={`cursor-pointer hover:bg-gray-100 whitespace-nowrap text-xs w-full px-3 py-2.5 rounded-lg transition-colors duration-150
+                                                            ${nestedRoute === item.itemName && childRoute === subItem.itemName ? "bg-gray-100 font-medium" : ""}
+                                                            ${isOpen ? "block" : "hidden"} group-hover:block`}
                                                     >
                                                         {subItem.text}
                                                     </li>
-                                                )
+                                                ),
                                             )}
                                         </ul>
-                                    )}
+                                    </div>
                                 </div>
                             ) : (
-                                // Regular menu item (without dropdown)
+                                /* ── Regular item ── */
                                 <div
                                     onClick={() => {
                                         if (item.itemName === "logout") {
                                             setIsModalOpen(true);
                                         } else if (item.itemName === "renew") {
                                             const success = handleClickRenew();
-
                                             if (success) {
                                                 handleRenew(
                                                     item.navigate,
                                                     item.itemName,
-                                                    scholarId
+                                                    scholarId,
                                                 );
                                             }
                                         } else {
                                             handleClick(
                                                 item.navigate,
-                                                item.itemName
+                                                item.itemName,
                                             );
                                         }
                                     }}
-                                    // onClick={() =>
-                                    //     handleClick(subItem.navigate)
-                                    // }
-                                    className={`${
-                                        activeTab === item.itemName
-                                            ? "bg-gray-100"
-                                            : ""
-                                    } flex items-center gap-4 cursor-pointer hover:bg-gray-100 whitespace-nowrap w-full px-3 py-3 rounded-lg`}
+                                    className={`flex items-center gap-4 cursor-pointer hover:bg-gray-100 whitespace-nowrap w-full px-3 py-3 rounded-lg transition-colors duration-150
+                                        ${location.pathname.includes(item.itemName) ? "bg-gray-100" : ""}`}
                                 >
                                     {item.icon}
                                     {isOpen ? (

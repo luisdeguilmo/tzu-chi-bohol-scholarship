@@ -104,7 +104,7 @@ class AllowanceCycleModel
     /**
      * Process allowance cycle for the PREVIOUS month
      * When called in November, this marks October as processed
-     * October hours → November allowance
+     * October hours â†’ November allowance
      */
     public function processAllowanceCycle()
     {
@@ -340,7 +340,7 @@ class AllowanceCycleModel
 
     /**
      * Get all cycles with their status for display
-     * Includes rendered month → allowance month mapping
+     * Includes rendered month â†’ allowance month mapping
      */
     public function getAllCyclesWithStatus($year = null)
     {

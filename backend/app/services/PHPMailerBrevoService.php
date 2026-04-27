@@ -414,7 +414,7 @@ class PHPMailerBrevoService
             <p style=\"margin-bottom: 16px;\">
                 A new event " .
             $data['event_name'] .
-            " has been created and you are invited to join!. Check it out and don’t miss the chance to be part of this event!
+            " has been created and you are invited to join!. Check it out and donâ€™t miss the chance to be part of this event!
             </p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -427,7 +427,7 @@ class PHPMailerBrevoService
     public function sendRenewalApplicationEmail($studentInfo, $data)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
-        $subject = 'New Event';
+        $subject = 'Renewal Application Open';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>

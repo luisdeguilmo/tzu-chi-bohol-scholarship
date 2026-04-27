@@ -13,6 +13,7 @@ import CoeGradesDetailsModal from "../../../components/CoeGradesDetailsModal";
 import { useCurrentYearLevel } from "../../../hooks/useCurrentYearLevel";
 import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import { useLocation } from "react-router-dom";
+import { useSchoolYears } from "../../../hooks/useSchoolYears";
 
 export default function CoeGrades() {
     const [activeTab, setActiveTab] = useState("all");
@@ -25,6 +26,7 @@ export default function CoeGrades() {
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isEditFormModalOpen, setIsEditFormModalOpen] = useState(false);
     const [selectedSubmission, setSelectedSubmission] = useState(null); // Changed from selectedActivity
+    const [activeSchoolYear, setActiveSchoolYear] = useState(null);
 
     const { pathname } = useLocation();
 
@@ -33,22 +35,32 @@ export default function CoeGrades() {
     }, [pathname]);
 
     const { user } = useAuth();
+    const { getActiveSchoolYear } = useSchoolYears();
 
-    const { yearLevel } = useCurrentYearLevel(
-        user.user_id,
-        getCurrentSchoolYear()
-    );
+    useEffect(() => {
+        const fetchSchoolYear = async () => {
+            try {
+                const data = await getActiveSchoolYear();
+                setActiveSchoolYear(data);
+            } catch (err) {
+                console.error(err);
+                setError("Failed to fetch school year");
+            }
+        };
+
+        fetchSchoolYear();
+    }, []);
+
+    const { yearLevel } = useCurrentYearLevel(activeSchoolYear);
 
     const { loading, submissions, fetchSubmissions } = useSubmissions(
-        // Changed from activities/fetchActivities
         activeTab,
-        user.user_id,
-        yearLevel
+        yearLevel,
     );
 
     useEffect(() => {
-        fetchSubmissions(activeTab, user.user_id); // Changed
-    }, [activeTab, user.user_id]);
+        fetchSubmissions(activeTab); // Changed
+    }, [activeTab]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -75,7 +87,7 @@ export default function CoeGrades() {
                 .includes(searchTerm.toLowerCase()) ||
             submission.submission_status // Added
                 .toLowerCase()
-                .includes(searchTerm.toLowerCase())
+                .includes(searchTerm.toLowerCase()),
     );
 
     const tabs = [
@@ -90,7 +102,7 @@ export default function CoeGrades() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredSubmissions.slice(
         indexOfFirstItem,
-        indexOfLastItem
+        indexOfLastItem,
     );
 
     const handleOpenDetails = useCallback((submission) => {
@@ -106,10 +118,10 @@ export default function CoeGrades() {
     const handleTabChange = useCallback(
         (tab) => {
             setActiveTab(tab);
-            fetchSubmissions(tab, user.user_id); // Changed
+            fetchSubmissions(tab); // Changed
             setCurrentPage(1);
         },
-        [fetchSubmissions, user.user_id] // Changed
+        [fetchSubmissions], // Changed
     );
 
     const handleOpenDotMenu = useCallback(
@@ -122,11 +134,11 @@ export default function CoeGrades() {
             }
             setItemIndex(index);
         },
-        [itemIndex, isDotMenuOpen]
+        [itemIndex, isDotMenuOpen],
     );
 
     const handleRefresh = () => {
-        fetchSubmissions(activeTab, user.user_id); // Changed
+        fetchSubmissions(activeTab); // Changed
     };
 
     return (
@@ -162,10 +174,9 @@ export default function CoeGrades() {
                         currentItems.map(
                             (
                                 submission,
-                                index // Changed from activity
+                                index, // Changed from activity
                             ) => (
                                 <CoeGradesCard // Changed component name
-                                    userId={user.user_id}
                                     key={index}
                                     submission={submission} // Changed prop name
                                     index={index}
@@ -185,7 +196,7 @@ export default function CoeGrades() {
                                     activeTab={activeTab}
                                     onRefresh={fetchSubmissions} // Changed
                                 />
-                            )
+                            ),
                         )
                     )}
                 </div>

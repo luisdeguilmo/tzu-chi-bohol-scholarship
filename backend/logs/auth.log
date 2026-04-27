@@ -3771,3 +3771,122 @@
 [2026-04-21 13:51:36] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
 [2026-04-21 15:19:59] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN ATTEMPT
 [2026-04-21 15:20:00] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-04-23 08:37:19] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN ATTEMPT
+[2026-04-23 08:37:20] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-04-23 09:09:32] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-23 09:09:33] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-23 13:37:26] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN ATTEMPT
+[2026-04-23 13:37:26] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-04-23 14:49:21] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis02@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-23 14:49:21] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis02@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-23 15:01:24] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-23 15:01:25] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED - Incorrect password
+[2026-04-23 15:01:26] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-23 15:01:26] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-23 15:03:46] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-23 15:03:46] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED - Incorrect password
+[2026-04-23 15:03:48] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-23 15:03:48] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-23 15:06:58] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-23 15:06:58] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-24 05:12:06] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 05:12:06] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED - Incorrect password
+[2026-04-24 05:12:08] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 05:12:08] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-24 05:39:12] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluigi@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-24 05:39:12] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluigi@gmail.com] [Type: staff] LOGIN FAILED - User not found or incorrect user type
+[2026-04-24 05:39:21] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-24 05:39:21] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-24 06:43:37] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 06:43:37] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED - Incorrect password
+[2026-04-24 06:43:39] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 06:43:39] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-24 07:09:00] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-24 07:09:00] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-24 07:11:41] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 07:11:41] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-24 07:17:50] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-24 07:17:50] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED - Incorrect password
+[2026-04-24 07:17:51] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-24 07:17:51] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-24 07:35:08] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 07:35:08] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-24 08:01:51] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN ATTEMPT
+[2026-04-24 08:01:52] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-04-24 12:40:16] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 12:40:16] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-24 12:42:32] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-24 12:42:32] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-24 12:44:53] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 12:44:53] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-24 13:55:18] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN ATTEMPT
+[2026-04-24 13:55:18] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-04-24 14:00:51] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 14:00:51] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-24 14:01:13] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-24 14:01:13] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-24 14:01:32] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN ATTEMPT
+[2026-04-24 14:01:33] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-04-24 14:07:29] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 14:07:30] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-24 14:25:41] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-24 14:25:41] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED - Incorrect password
+[2026-04-24 14:25:42] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-24 14:25:42] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-24 14:26:51] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-24 14:26:52] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-25 07:15:37] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN ATTEMPT
+[2026-04-25 07:15:38] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-04-25 07:33:50] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-25 07:33:50] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-25 08:21:04] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN ATTEMPT
+[2026-04-25 08:21:05] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-04-25 08:28:12] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-25 08:28:12] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED - Incorrect password
+[2026-04-25 08:28:13] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-25 08:28:13] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-25 08:28:49] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-25 08:28:49] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-25 08:34:23] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-25 08:34:24] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-26 01:19:47] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN ATTEMPT
+[2026-04-26 01:19:47] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-04-26 01:20:50] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN ATTEMPT
+[2026-04-26 01:20:50] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-26 01:22:31] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-26 01:22:31] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-26 03:05:41] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] LOGIN FAILED - Missing required fields
+[2026-04-26 03:05:45] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN ATTEMPT
+[2026-04-26 03:05:45] [IP: ::1] [User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-26 03:14:24] [IP: ::1] [Email: deguilmoluis0@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-26 03:16:38] [IP: ::1] [Email: deguilmoluis0@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-26 03:18:14] [IP: ::1] [Email: deguilmoluis0@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-26 03:18:16] [IP: ::1] [Email: deguilmoluis0@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-26 03:22:36] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-26 03:23:11] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-26 03:25:10] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-26 03:25:21] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-26 03:38:01] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-26 12:17:01] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-27 02:50:32] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-27 02:51:13] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-04-27 02:51:18] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-27 04:01:42] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-27 04:01:43] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-27 04:03:46] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-04-27 04:03:47] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-27 04:13:20] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-27 04:13:21] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-27 04:39:16] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-27 05:00:12] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-27 05:18:25] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-27 05:18:26] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-27 05:18:40] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-04-27 05:18:41] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-27 05:23:29] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-27 05:23:49] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-27 05:24:23] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-04-27 05:24:24] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-27 07:21:08] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-27 14:44:09] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-04-27 14:44:11] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS

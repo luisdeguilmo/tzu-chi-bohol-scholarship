@@ -239,6 +239,10 @@ class NotificationsController
                 if (!$notification->deleteUserEventNotification($userId, $id)) {
                     throw new \Exception('Failed to notification');
                 }
+            } elseif ($type === 'coe_grades') {
+                if (!$notification->deleteUserEventNotification($userId, $id)) {
+                    throw new \Exception('Failed to notification');
+                }
             } else {
                 throw new \Exception('Invalid type specified');
             }

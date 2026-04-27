@@ -19,6 +19,7 @@ require_once __DIR__ . '/../models/RequirementsModel.php';
 
 header('Content-Type: application/json');
 
+use App\Constants\Action;
 use Config\Database;
 use App\Models\ApplicationModel;
 use App\Models\PersonalModel;
@@ -28,6 +29,7 @@ use App\Models\ContactPersonModel;
 use App\Models\FamilyMemberModel;
 use App\Models\ScholarModel;
 use App\Models\AssistanceModel;
+use App\Models\AuditLogModel;
 use App\Models\CharacterReferenceModel;
 use App\Models\ExaminationFilesModel;
 use App\Models\FinalInterviewFilesModel;
@@ -94,6 +96,32 @@ class ApplicationController
 
             if (isset($data['picture_file']) && $data['picture_file']) {
                 $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
+            }
+
+            $auditLogModel = new AuditLogModel();
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => null,
+                    'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
+                    'user_role' => 'applicant',
+                    'action' => Action::APPLICATION_SUBMITTED,
+                    'entity_type' => 'application',
+                    'entity_id' => $application_id,
+
+                    'description' =>
+                        $data['personal_information']['first_name'] .
+                        ' ' .
+                        $data['personal_information']['last_name'] .
+                        ' submitted application.',
+
+                    'old_values' => null,
+                    'new_values' => ['status' => 'submitted'],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();

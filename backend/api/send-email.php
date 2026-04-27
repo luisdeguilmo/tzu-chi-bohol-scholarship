@@ -105,9 +105,9 @@ class PHPMailerBrevoService {
                     <strong>{$applicant['school_year']}</strong>.
                 </p>
                 <p style=\"margin-bottom: 16px;\">
-                    📅 <strong>Date:</strong> {$date}<br>
-                    🕒 <strong>Time:</strong> {$time}<br>
-                    📍 <strong>Venue:</strong> Room 1
+                    ðŸ“… <strong>Date:</strong> {$date}<br>
+                    ðŸ•’ <strong>Time:</strong> {$time}<br>
+                    ðŸ“ <strong>Venue:</strong> Room 1
                 </p>
                 <p style=\"margin-bottom: 16px;\">
                     Please arrive 15 minutes early and bring your valid ID and necessary documents. If you have any questions, feel free to contact us.

@@ -18,7 +18,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
     const { user } = useAuth();
     const { type } = useScholar(user.user_id, getCurrentSchoolYear());
     const { transportInfo, addTransportInfo } = useSchoolTransportInfo(
-        user.user_id
+        user.user_id,
     );
 
     const [university, setUniversity] = useState("");
@@ -67,7 +67,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
             stayingArrangement,
             address,
             dailyTransportCost,
-            routeAndCost
+            routeAndCost,
         );
 
         if (success) {
@@ -121,7 +121,11 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                                     -- Select --
                                 </option>
                                 {collegesAndUniversities.map((item, index) => (
-                                    <option key={index} data-id={item.id} value={item.name}>
+                                    <option
+                                        key={index}
+                                        data-id={item.id}
+                                        value={item.name}
+                                    >
                                         {item.name}
                                     </option>
                                 ))}
@@ -234,7 +238,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                                     value={otherStayingArrangement}
                                     onChange={(e) =>
                                         setOtherStayingArrangement(
-                                            e.target.value
+                                            e.target.value,
                                         )
                                     }
                                     placeholder="Please specify"

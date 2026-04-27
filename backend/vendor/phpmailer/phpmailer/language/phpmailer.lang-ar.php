@@ -6,22 +6,22 @@
  * @author bahjat al mostafa <bahjat983@hotmail.com>
  */
 
-$PHPMAILER_LANG['authenticate']         = 'خطأ SMTP : لا يمكن تأكيد الهوية.';
-$PHPMAILER_LANG['connect_host']         = 'خطأ SMTP: لا يمكن الاتصال بالخادم SMTP.';
-$PHPMAILER_LANG['data_not_accepted']    = 'خطأ SMTP: لم يتم قبول المعلومات .';
-$PHPMAILER_LANG['empty_message']        = 'نص الرسالة فارغ';
-$PHPMAILER_LANG['encoding']             = 'ترميز غير معروف: ';
-$PHPMAILER_LANG['execute']              = 'لا يمكن تنفيذ : ';
-$PHPMAILER_LANG['file_access']          = 'لا يمكن الوصول للملف: ';
-$PHPMAILER_LANG['file_open']            = 'خطأ في الملف: لا يمكن فتحه: ';
-$PHPMAILER_LANG['from_failed']          = 'خطأ على مستوى عنوان المرسل : ';
-$PHPMAILER_LANG['instantiate']          = 'لا يمكن توفير خدمة البريد.';
-$PHPMAILER_LANG['invalid_address']      = 'الإرسال غير ممكن لأن عنوان البريد الإلكتروني غير صالح: ';
-$PHPMAILER_LANG['mailer_not_supported'] = ' برنامج الإرسال غير مدعوم.';
-$PHPMAILER_LANG['provide_address']      = 'يجب توفير عنوان البريد الإلكتروني لمستلم واحد على الأقل.';
-$PHPMAILER_LANG['recipients_failed']    = 'خطأ SMTP: الأخطاء التالية فشل في الارسال لكل من : ';
-$PHPMAILER_LANG['signing']              = 'خطأ في التوقيع: ';
-$PHPMAILER_LANG['smtp_connect_failed']  = 'SMTP Connect() غير ممكن.';
-$PHPMAILER_LANG['smtp_error']           = 'خطأ على مستوى الخادم SMTP: ';
-$PHPMAILER_LANG['variable_set']         = 'لا يمكن تعيين أو إعادة تعيين متغير: ';
-$PHPMAILER_LANG['extension_missing']    = 'الإضافة غير موجودة: ';
+$PHPMAILER_LANG['authenticate']         = 'Ø®Ø·Ø£ SMTP : Ù„Ø§ ÙŠÙ…ÙƒÙ† ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ù‡ÙˆÙŠØ©.';
+$PHPMAILER_LANG['connect_host']         = 'Ø®Ø·Ø£ SMTP: Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø§Ù„Ø§ØªØµØ§Ù„ Ø¨Ø§Ù„Ø®Ø§Ø¯Ù… SMTP.';
+$PHPMAILER_LANG['data_not_accepted']    = 'Ø®Ø·Ø£ SMTP: Ù„Ù… ÙŠØªÙ… Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª .';
+$PHPMAILER_LANG['empty_message']        = 'Ù†Øµ Ø§Ù„Ø±Ø³Ø§Ù„Ø© ÙØ§Ø±Øº';
+$PHPMAILER_LANG['encoding']             = 'ØªØ±Ù…ÙŠØ² ØºÙŠØ± Ù…Ø¹Ø±ÙˆÙ: ';
+$PHPMAILER_LANG['execute']              = 'Ù„Ø§ ÙŠÙ…ÙƒÙ† ØªÙ†ÙÙŠØ° : ';
+$PHPMAILER_LANG['file_access']          = 'Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø§Ù„ÙˆØµÙˆÙ„ Ù„Ù„Ù…Ù„Ù: ';
+$PHPMAILER_LANG['file_open']            = 'Ø®Ø·Ø£ ÙÙŠ Ø§Ù„Ù…Ù„Ù: Ù„Ø§ ÙŠÙ…ÙƒÙ† ÙØªØ­Ù‡: ';
+$PHPMAILER_LANG['from_failed']          = 'Ø®Ø·Ø£ Ø¹Ù„Ù‰ Ù…Ø³ØªÙˆÙ‰ Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ù…Ø±Ø³Ù„ : ';
+$PHPMAILER_LANG['instantiate']          = 'Ù„Ø§ ÙŠÙ…ÙƒÙ† ØªÙˆÙÙŠØ± Ø®Ø¯Ù…Ø© Ø§Ù„Ø¨Ø±ÙŠØ¯.';
+$PHPMAILER_LANG['invalid_address']      = 'Ø§Ù„Ø¥Ø±Ø³Ø§Ù„ ØºÙŠØ± Ù…Ù…ÙƒÙ† Ù„Ø£Ù† Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ ØºÙŠØ± ØµØ§Ù„Ø­: ';
+$PHPMAILER_LANG['mailer_not_supported'] = ' Ø¨Ø±Ù†Ø§Ù…Ø¬ Ø§Ù„Ø¥Ø±Ø³Ø§Ù„ ØºÙŠØ± Ù…Ø¯Ø¹ÙˆÙ….';
+$PHPMAILER_LANG['provide_address']      = 'ÙŠØ¬Ø¨ ØªÙˆÙÙŠØ± Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ù„Ù…Ø³ØªÙ„Ù… ÙˆØ§Ø­Ø¯ Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„.';
+$PHPMAILER_LANG['recipients_failed']    = 'Ø®Ø·Ø£ SMTP: Ø§Ù„Ø£Ø®Ø·Ø§Ø¡ Ø§Ù„ØªØ§Ù„ÙŠØ© ÙØ´Ù„ ÙÙŠ Ø§Ù„Ø§Ø±Ø³Ø§Ù„ Ù„ÙƒÙ„ Ù…Ù† : ';
+$PHPMAILER_LANG['signing']              = 'Ø®Ø·Ø£ ÙÙŠ Ø§Ù„ØªÙˆÙ‚ÙŠØ¹: ';
+$PHPMAILER_LANG['smtp_connect_failed']  = 'SMTP Connect() ØºÙŠØ± Ù…Ù…ÙƒÙ†.';
+$PHPMAILER_LANG['smtp_error']           = 'Ø®Ø·Ø£ Ø¹Ù„Ù‰ Ù…Ø³ØªÙˆÙ‰ Ø§Ù„Ø®Ø§Ø¯Ù… SMTP: ';
+$PHPMAILER_LANG['variable_set']         = 'Ù„Ø§ ÙŠÙ…ÙƒÙ† ØªØ¹ÙŠÙŠÙ† Ø£Ùˆ Ø¥Ø¹Ø§Ø¯Ø© ØªØ¹ÙŠÙŠÙ† Ù…ØªØºÙŠØ±: ';
+$PHPMAILER_LANG['extension_missing']    = 'Ø§Ù„Ø¥Ø¶Ø§ÙØ© ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯Ø©: ';

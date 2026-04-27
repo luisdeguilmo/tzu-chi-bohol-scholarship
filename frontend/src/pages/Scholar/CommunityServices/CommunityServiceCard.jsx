@@ -10,7 +10,6 @@ import { formatTime } from "../../../utils/formatTime";
 import { useArchive } from "../../../hooks/useArchive";
 
 const CommunityServiceCard = ({
-    userId,
     activity,
     index,
     handleOpenDetails,
@@ -25,10 +24,7 @@ const CommunityServiceCard = ({
     onRefresh,
     isArchived = false,
 }) => {
-    const { archiveActivity, unArchiveActivity } = useArchive(
-        activeTab,
-        userId
-    );
+    const { archiveActivity, unArchiveActivity } = useArchive(activeTab);
 
     const handleArchiveToggle = async (e) => {
         e.stopPropagation();
@@ -37,13 +33,13 @@ const CommunityServiceCard = ({
 
         try {
             if (isArchived) {
-                await unArchiveActivity(userId, activity.id, "volunteer");
+                await unArchiveActivity(activity.id, "volunteer");
             } else {
-                await archiveActivity(userId, activity.id, "volunteer");
+                await archiveActivity(activity.id, "volunteer");
             }
 
             if (onRefresh) {
-                await onRefresh(activeTab, userId);
+                await onRefresh(activeTab);
             }
         } catch (error) {
             console.error("Error archiving/unarchiving event:", error);
@@ -120,7 +116,7 @@ const CommunityServiceCard = ({
                             }`}
                         />
                         <span
-                           className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
+                            className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
                             {formatTime(activity.start_time)} -{" "}
                             {formatTime(activity.end_time)}
@@ -168,12 +164,13 @@ const CommunityServiceCard = ({
                         )}
                         <span
                             className={`mt-[1px] rounded-lg text-xs font-medium ${
-                                isArchived ? "" :
-                                activity.activity_status === "Pending"
-                                    ? "bg-yellow-100 text-yellow-800"
-                                    : activity.activity_status === "Recorded"
-                                      ? "bg-green-100 text-green-800"
-                                      : "bg-red-100 text-red-800"
+                                isArchived
+                                    ? ""
+                                    : activity.activity_status === "Pending"
+                                      ? "bg-yellow-100 text-yellow-800"
+                                      : activity.activity_status === "Recorded"
+                                        ? "bg-green-100 text-green-800"
+                                        : "bg-red-100 text-red-800"
                             } ${isArchived ? "italic text-slate-400" : "px-2 py-1"}`}
                         >
                             {activity.activity_status === "Pending"

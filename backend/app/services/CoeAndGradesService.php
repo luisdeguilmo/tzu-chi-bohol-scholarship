@@ -24,14 +24,19 @@ class CoeAndGradesService
         $this->fileUploadService = new FileUploadService();
     }
 
-    public function createSubmissionWithFiles($submissionData, $files = null, $base64Files = null)
-    {
+    public function createSubmissionWithFiles(
+        $submissionData,
+        $scholarId,
+        $files = null,
+        $base64Files = null,
+    ) {
         // $batch_id = $this->generateBatchId();
         // Validate submission data
         // $this->validateSubmissionData($submissionData);
 
         // Create submission
-        $submissionId = $this->coeGradesModel->createActivity($submissionData);
+        $submissionId = $scholarId;
+        $id = $this->coeGradesModel->createActivity($submissionData, $scholarId);
 
         if (!$submissionId) {
             throw new \Exception('Failed to create COE and grades submission');
@@ -74,10 +79,11 @@ class CoeAndGradesService
             }
         }
 
-        return $submissionId;
+        return $id;
     }
 
     public function updateSubmissionWithFiles(
+        $scholarId,
         $submissionData,
         $existingFiles = [],
         $removedExistingFiles = [],
@@ -89,8 +95,8 @@ class CoeAndGradesService
         // $this->validateSubmissionData($submissionData);
 
         // Update submission
-        $submissionId = $submissionData['id'];
-        $this->coeGradesModel->updateSubmission($submissionData);
+        $submissionId = $scholarId;
+        $id = $this->coeGradesModel->updateSubmission($submissionData, $scholarId);
 
         if (!$submissionId) {
             throw new \Exception('Failed to update COE and grades submission');
@@ -105,7 +111,7 @@ class CoeAndGradesService
                 $this->fileUploadService->handleFormDataFiles(
                     'coe_grades',
                     $files,
-                    $submissionData['scholar_id'],
+                    $scholarId,
                 ),
             );
         }
@@ -116,7 +122,7 @@ class CoeAndGradesService
                 $this->fileUploadService->handleBase64Files(
                     'coe_grades',
                     $base64Files,
-                    $submissionData['scholar_id'],
+                    $scholarId,
                 ),
             );
         }
@@ -150,14 +156,14 @@ class CoeAndGradesService
                 !$this->documentModel->createCoeGradeFile(
                     $fileData,
                     $submissionData,
-                    $submissionData['scholar_id'],
+                    $scholarId,
                 )
             ) {
                 throw new \Exception('Failed to save file info: ' . $file['original_name']);
             }
         }
 
-        return $submissionId;
+        return $id;
     }
 
     private function validateSubmissionData($data)

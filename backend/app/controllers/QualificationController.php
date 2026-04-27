@@ -6,17 +6,25 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Constants\Action;
+use App\Models\AuditLogModel;
 use App\Models\ScholarshipCriteriaModel;
+use App\Models\StaffAccountModel;
 use Config\Database;
+use Middleware\Auth;
 
 class QualificationController
 {
     private $pdo;
+    private $auditLogModel;
+    private $staffModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
     public function processRequest()
@@ -120,6 +128,33 @@ class QualificationController
                 throw new \Exception('Failed to save qualification information');
             }
 
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::QUALIFICATION_CREATE,
+                    'entity_type' => 'criteria',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $staff['first_name'] .
+                        ' ' .
+                        $staff['last_name'] .
+                        ' added a new qualification.',
+
+                    'old_values' => null,
+                    'new_values' => ['qualification' => $data['qualification']],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
             $this->pdo->commit();
 
             // Return success response
@@ -174,6 +209,33 @@ class QualificationController
                 throw new \Exception('Failed to update qualification information');
             }
 
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::QUALIFICATION_UPDATE,
+                    'entity_type' => 'criteria',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $staff['first_name'] .
+                        ' ' .
+                        $staff['last_name'] .
+                        ' updated a qualification.',
+
+                    'old_values' => null,
+                    'new_values' => ['qualification' => $data['qualification']['qualification']],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
             $this->pdo->commit();
 
             // Return success response
@@ -219,6 +281,33 @@ class QualificationController
 
             if (!$criteria->deleteQualification($id)) {
                 throw new \Exception('Failed to delete qualification');
+            }
+
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::QUALIFICATION_DELETE,
+                    'entity_type' => 'criteria',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $staff['first_name'] .
+                        ' ' .
+                        $staff['last_name'] .
+                        ' deleted a qualification.',
+
+                    'old_values' => null,
+                    'new_values' => null,
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();

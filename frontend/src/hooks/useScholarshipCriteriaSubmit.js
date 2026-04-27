@@ -6,6 +6,7 @@ import BASE_URL from "../config";
 function useScholarshipCriteriaSubmit(onSuccess) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     // Base URL configuration - makes it easier to update in one place
     const API_BASE_URL = `${BASE_URL}app/api`;
@@ -15,7 +16,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         console.error(errorMessage, error);
         setError(error.message || "An unexpected error occurred");
         toast.error(
-            error.message || "Failed to submit the form. Please try again."
+            error.message || "Failed to submit the form. Please try again.",
         );
         setIsLoading(false);
         return false;
@@ -40,10 +41,11 @@ function useScholarshipCriteriaSubmit(onSuccess) {
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
                     },
                     // Setting timeout to prevent hanging requests
                     timeout: 10000,
-                }
+                },
             );
 
             const result = response.data;
@@ -65,6 +67,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
     const createCourse = async (text, onSuccess) => {
         const data = { course_name: text };
+        console.log(data);
 
         try {
             const formData = new FormData();
@@ -76,9 +79,10 @@ function useScholarshipCriteriaSubmit(onSuccess) {
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
                     },
                     timeout: 10000,
-                }
+                },
             );
 
             const result = response.data;
@@ -111,9 +115,10 @@ function useScholarshipCriteriaSubmit(onSuccess) {
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
                     },
                     timeout: 10000,
-                }
+                },
             );
 
             const result = response.data;
@@ -146,9 +151,10 @@ function useScholarshipCriteriaSubmit(onSuccess) {
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
                     },
                     timeout: 10000,
-                }
+                },
             );
 
             const result = response.data;
@@ -172,7 +178,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
         quantity,
         description,
         submit,
-        onSuccess
+        onSuccess,
     ) => {
         const data = {
             requirement: {
@@ -189,9 +195,10 @@ function useScholarshipCriteriaSubmit(onSuccess) {
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
                     timeout: 10000,
-                }
+                },
             );
 
             const result = response.data;
@@ -213,6 +220,7 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
     const createInstruction = async (text, onSuccess) => {
         const data = { instruction: text };
+        console.log(data);
 
         try {
             const formData = new FormData();
@@ -224,9 +232,10 @@ function useScholarshipCriteriaSubmit(onSuccess) {
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
                     },
                     timeout: 10000,
-                }
+                },
             );
 
             const result = response.data;

@@ -17,6 +17,34 @@ export default defineConfig({
         host: true, // Allow access from network
         port: 5173, // Optional but recommended
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    // Core React - rarely changes, stays cached longest
+                    "vendor-react": ["react", "react-dom", "react-router-dom"],
+
+                    // HTTP client
+                    "vendor-axios": ["axios"],
+
+                    // Chart libraries - large, cache separately
+                    "vendor-charts": ["react-chartjs-2", "chart.js"],
+
+                    // Icon libraries - very large (1,226 kB in your case!)
+                    "vendor-icons": ["lucide-react", "@iconify/react"],
+
+                    // PDF/Excel - only used in specific pages
+                    "vendor-excel": ["exceljs", "file-saver"],
+
+                    // Crop tool - only used in profile photo upload
+                    "vendor-crop": ["react-easy-crop"],
+                    "vendor-pdf": ["pdfmake"],
+                },
+            },
+        },
+        // Optional: warn you when any chunk exceeds 500kb
+        chunkSizeWarningLimit: 500,
+    },
 });
 
 // // vite.config.js

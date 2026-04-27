@@ -1,6 +1,7 @@
 import { Check, PenLine, Trash, Trash2, X } from "lucide-react";
 import InputModal from "../../../components/InputModal";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 
 function EditFormModal({
     isLoadingForCourse,
@@ -8,6 +9,7 @@ function EditFormModal({
     setIsOpen,
     label,
     selectedId,
+    setSelectedId,
     collegeUniversity,
     coursesAccepted,
     onAddCourse,
@@ -45,7 +47,11 @@ function EditFormModal({
     };
 
     const handleUpdateCourse = async () => {
-        const success = await onUpdateCourse(selectedCourseId, newCourseName);
+        const success = await onUpdateCourse(
+            selectedCourseId,
+            selectedId,
+            newCourseName,
+        );
 
         if (success) {
             onRefreshCourse();
@@ -65,7 +71,7 @@ function EditFormModal({
     const handleSubmit = async () => {
         const success = await onUpdateCollegeUniversity(
             selectedId,
-            newCollegeUniversity
+            newCollegeUniversity,
         );
 
         if (success) {
@@ -80,6 +86,7 @@ function EditFormModal({
     const handleCancel = (e) => {
         e.preventDefault(); // Prevent form submission
         setIsOpen(false);
+        setSelectedId(null);
         resetFields();
     };
 
@@ -184,10 +191,10 @@ function EditFormModal({
                                                 type="button"
                                                 onClick={() => {
                                                     setSelectedCourseId(
-                                                        course.id
+                                                        course.id,
                                                     );
                                                     setNewCourseName(
-                                                        course.course
+                                                        course.course,
                                                     );
                                                     setIsEditing(true);
                                                 }}
@@ -199,7 +206,7 @@ function EditFormModal({
                                                 type="button"
                                                 onClick={() =>
                                                     handleDeleteCourse(
-                                                        course.id
+                                                        course.id,
                                                     )
                                                 }
                                                 className="text-red-700"

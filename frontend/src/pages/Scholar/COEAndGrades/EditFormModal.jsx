@@ -16,6 +16,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
     const fileInputRef = useRef(null);
     const { user } = useAuth();
     const { accountStatus } = useAccountStatus(user.user_id);
+    const token = localStorage.getItem("token");
 
     useEffect(() => {
         if (submission?.files?.length > 0) {
@@ -65,12 +66,12 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
         if (fileToRemove.isExisting) {
             const fileId = fileToRemove.id;
             setExistingFiles((prev) =>
-                prev.filter((file) => file.id !== fileId)
+                prev.filter((file) => file.id !== fileId),
             );
             setExistingFilesRemoved([...existingFilesRemoved, { id: fileId }]);
         } else {
             const newFilesIndex = files.findIndex(
-                (file) => file === fileToRemove.originalFile
+                (file) => file === fileToRemove.originalFile,
             );
             if (newFilesIndex !== -1) {
                 const newFiles = [...files];
@@ -153,7 +154,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
             const submissionData = {
                 submission: {
                     id: submission?.id,
-                    scholar_id: user?.user_id,
                     year_level: submission?.year_level,
                     current_semester: submission?.semester,
                     semester: semester,
@@ -214,16 +214,14 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
             submissionData.existing_files = existingFiles;
             submissionData.removed_files = existingFilesRemoved;
 
-            const response = await fetch(
-                `${BASE_URL}app/api/coe-grades.php`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(submissionData),
-                }
-            );
+            const response = await fetch(`${BASE_URL}app/api/coe-grades.php`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(submissionData),
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -401,7 +399,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                                                 {filePreview.name}
                                                 {!filePreview.isExisting &&
                                                     isDocOrDocx(
-                                                        filePreview.type
+                                                        filePreview.type,
                                                     ) && (
                                                         <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
                                                             Will convert to PDF

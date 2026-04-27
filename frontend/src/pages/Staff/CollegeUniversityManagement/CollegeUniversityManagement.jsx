@@ -55,7 +55,7 @@ export default function CollegeUniversityManagement() {
 
     // Filter data based on search term
     const filteredEvents = collegesAndUniversities.filter((event) =>
-        event.name.toLowerCase().includes(searchTerm.toLowerCase())
+        event.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     const sortedApplications = [...filteredEvents].sort((a, b) => {
@@ -102,7 +102,6 @@ export default function CollegeUniversityManagement() {
             <TableToolbar
                 items={collegesAndUniversities}
                 label={"College & University Management"}
-                buttonLabel={"School"}
                 placeholder={"colleges or universities"}
                 searchTerm={searchTerm}
                 itemsPerPage={itemsPerPage}
@@ -119,7 +118,7 @@ export default function CollegeUniversityManagement() {
                 lastIndex={indexOfLastItem}
                 addButton={true}
                 button={{
-                    icon: <Plus className='w-4 h-4 text-white' />,
+                    icon: <Plus className="w-4 h-4 text-white" />,
                     label: "Add New School",
                 }}
             ></TableToolbar>
@@ -217,7 +216,7 @@ export default function CollegeUniversityManagement() {
                                             setIsFormModalOpen(true);
                                             setSelectedId(item.id);
                                             setSelectedCollegeUniversity(
-                                                item.name
+                                                item.name,
                                             );
                                         }}
                                         className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
@@ -312,6 +311,7 @@ export default function CollegeUniversityManagement() {
                 setIsOpen={setIsFormModalOpen}
                 label={"Edit Item"}
                 selectedId={selectedId}
+                setSelectedId={setSelectedId}
                 collegeUniversity={selectedCollegeUniversity}
                 isLoadingForCourse={isLoadingForCourse}
                 coursesAccepted={coursesAccepted}

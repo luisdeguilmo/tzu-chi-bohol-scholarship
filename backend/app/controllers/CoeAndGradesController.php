@@ -7,11 +7,16 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../services/CoeAndGradesService.php';
+require_once __DIR__ . '/../models/AuditLogModel.php';
 
+use App\Constants\Action;
+use App\Models\AuditLogModel;
 use App\Models\CoeGradesModel;
+use App\Models\NotificationsModel;
 use App\Models\ScholarModel;
 use App\Services\CoeAndGradesService;
 use Config\Database;
+use Middleware\Auth;
 
 class CoeAndGradesController
 {
@@ -89,6 +94,8 @@ class CoeAndGradesController
             $this->pdo->beginTransaction();
 
             $coeGradesModel = new CoeGradesModel();
+            $notificationModel = new NotificationsModel();
+            $auditLogModel = new AuditLogModel();
 
             // Parse input data
             $data = $this->parseInputData();
@@ -101,7 +108,7 @@ class CoeAndGradesController
             $files = $_FILES['files'] ?? null;
             $base64Files = $data['uploaded_files'] ?? null;
 
-            $scholarId = $data['submission']['scholar_id'];
+            $scholarId = Auth::id();
 
             $scholar = $this->scholarModel->getScholarById($scholarId);
 
@@ -109,7 +116,7 @@ class CoeAndGradesController
             //     throw new \Exception('Failed to send email');
             // }
 
-            if ($coeGradesModel->checkSubmission($data['submission'])) {
+            if ($coeGradesModel->checkSubmission($data['submission'], $scholarId)) {
                 $this->sendResponse(201, [
                     'success' => false,
                     'message' =>
@@ -119,15 +126,40 @@ class CoeAndGradesController
             }
 
             // Create submission with files
-            $submissionId = $this->coeGradesService->createSubmissionWithFiles(
+            $id = $this->coeGradesService->createSubmissionWithFiles(
                 $data['submission'],
+                $scholarId,
                 $files,
                 $base64Files,
             );
 
-            // if (!$this->notificationModel->createNotificationForSubmittedCoeGrades($scholar)) {
-            //     throw new \Exception('Failed to create notification');
-            // }
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $scholarId,
+                    'actor' => "{$scholar['first_name']} {$scholar['last_name']}",
+                    'user_role' => 'scholar',
+                    'action' => Action::DOCUMENT_SUBMITTED,
+                    'entity_type' => 'document',
+                    'entity_id' => $id,
+
+                    'description' =>
+                        $scholar['first_name'] .
+                        ' ' .
+                        $scholar['last_name'] .
+                        ' submitted Certificate of Enrollment and Grades.',
+
+                    'old_values' => null,
+                    'new_values' => ['status' => 'submitted'],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
+            if (!$notificationModel->createNotificationForSubmittedCoeGrades($scholar)) {
+                throw new \Exception('Failed to create notification');
+            }
 
             $this->pdo->commit();
 
@@ -157,13 +189,18 @@ class CoeAndGradesController
             }
 
             $coeGradesModel = new CoeGradesModel();
+            $auditLogModel = new AuditLogModel();
 
             // Extract files
             $files = $_FILES['files'] ?? null;
             $base64Files = $data['uploaded_files'] ?? null;
 
+            $scholarId = Auth::id();
+
+            $scholar = $this->scholarModel->getScholarById($scholarId);
+
             if (
-                $coeGradesModel->checkSubmission($data['submission']) &&
+                $coeGradesModel->checkSubmission($data['submission'], $scholarId) &&
                 $data['submission']['semester'] !== $data['submission']['current_semester']
             ) {
                 $this->sendResponse(201, [
@@ -175,7 +212,8 @@ class CoeAndGradesController
             }
 
             // Update submission with files
-            $submissionId = $this->coeGradesService->updateSubmissionWithFiles(
+            $id = $this->coeGradesService->updateSubmissionWithFiles(
+                $scholarId,
                 $data['submission'],
                 $data['existing_files'],
                 $data['removed_files'],
@@ -183,12 +221,36 @@ class CoeAndGradesController
                 $base64Files,
             );
 
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $scholarId,
+                    'actor' => "{$scholar['first_name']} {$scholar['last_name']}",
+                    'user_role' => 'scholar',
+                    'action' => Action::DOCUMENT_UPDATED,
+                    'entity_type' => 'document',
+                    'entity_id' => $id,
+
+                    'description' =>
+                        $scholar['first_name'] .
+                        ' ' .
+                        $scholar['last_name'] .
+                        ' updated and submitted Certificate of Enrollment and Grades.',
+
+                    'old_values' => null,
+                    'new_values' => ['status' => 'updated'],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
             $this->pdo->commit();
 
             $this->sendResponse(201, [
                 'success' => true,
                 'message' => 'COE and grades updated successfully',
-                'submission_id' => $submissionId,
+                // 'submission_id' => $id,
             ]);
         } catch (\Exception $e) {
             $this->pdo->rollBack();
@@ -220,7 +282,7 @@ class CoeAndGradesController
             $coeGradesModel = new CoeGradesModel();
 
             // Get ID parameter if it exists
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $id = Auth::id();
             $tab = $_GET['tab'] ?? null;
             $year_level = $_GET['year_level'] ?? null;
 

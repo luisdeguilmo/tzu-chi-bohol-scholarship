@@ -1,52 +1,110 @@
-import AdminLayout from "./components/Layout/AdminLayout";
-import ScholarLayout from "./components/Layout/ScholarLayout";
-import StaffLayout from "./components/Layout/StaffLayout";
-import HomePageLayout from "./components/Layout/HomePageLayout";
+import React, { Suspense } from "react";
+const AdminLayout = React.lazy(() => import("./components/Layout/AdminLayout"));
+const ScholarLayout = React.lazy(
+    () => import("./components/Layout/ScholarLayout"),
+);
+const StaffLayout = React.lazy(() => import("./components/Layout/StaffLayout"));
+const HomePageLayout = React.lazy(
+    () => import("./components/Layout/HomePageLayout"),
+);
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home/Home";
-import {
-    ApplicationSection,
-    RenewalApplicationSection,
-} from "./pages/Home/ApplicationSection";
-import LoginForm from "./components/LoginForm";
-import NotFound from "./components/NotFound";
-import Dashboard from "./components/Dashboard";
-import EventsPage from "./pages/Staff/Event/EventsPage";
-import HomeVisitation from "./pages/Staff/HomeVisitation/HomeVisitation";
+const Home = React.lazy(() => import("./pages/Home/Home"));
+const ApplicationSection = React.lazy(
+    () => import("./pages/Home/ApplicationSection"),
+);
+const RenewalApplicationSection = React.lazy(
+    () => import("./pages/Home/ApplicationSection"),
+);
+const LoginForm = React.lazy(() => import("./components/LoginForm"));
+const Dashboard = React.lazy(() => import("./components/Dashboard"));
+const EventsPage = React.lazy(() => import("./pages/Staff/Event/EventsPage"));
+const NotFound = React.lazy(() => import("./components/NotFound"));
+const HomeVisitation = React.lazy(
+    () => import("./pages/Staff/HomeVisitation/HomeVisitation"),
+);
 
-// Import JWT components
 import ProtectedRoute from "./routes/ProtectedRoute";
 import "./services/axiosConfig";
-import Applications from "./pages/Staff/Application/Applications";
-import Examination from "./pages/Staff/Examination/Examination";
-import ArchivedActivities from "./pages/Scholar/ArchivedActivities/ArchivedActivities";
-import ScholarAccounts from "./pages/Admin/ScholarAccounts/ScholarAccounts";
-import CommunityServicePage from "./pages/Staff/CommunityServices/CommunityServicePage";
-import ScholarshipCriteria from "./pages/Staff/ScholarshipCriteria/ScholarshipCriteria";
-import ApplicationPeriod from "./pages/Staff/ApplicationPeriod/ApplicationPeriod";
-import Scholars from "./pages/Staff/Scholars/Scholars";
-import ApplicationRecordsPage from "./pages/Staff/ApplicationRecords/ApplicationRecordsPage";
-import StaffAccounts from "./pages/Admin/StaffAccounts/StaffAccounts";
-import ReviewedApplications from "./pages/Staff/ReviewedApplications/ReviewedApplications";
-import UserAccountPage from "./components/UserAccountPage";
-import CommunityServices from "./pages/Scholar/CommunityServices/CommunityServices";
-import Events from "./pages/Scholar/Events/Events";
-import InitialInterview from "./pages/Staff/InitialInterview/InitialInterview";
-import FinalInterview from "./pages/Staff/FinalInterview/FinalInterview";
-import ResetPasswordForm from "./components/ResetPasswordForm";
-import CollegeUniversityManagement from "./pages/Staff/CollegeUniversityManagement/CollegeUniversityManagement";
-import OrientationAndAwarding from "./pages/Staff/OrientationAndAwarding/OrientationAndAwarding";
-import MonthlyAllowanceSummaryPage from "./pages/Staff/MonthlyAllowanceSummary/MonthlyAllowanceSummaryPage";
-import StaffAccount from "./components/StaffAccountPage";
-import AdminAccount from "./components/AdminAccountPage";
-import AboutSection from "./pages/Home/About";
-import OurMission from "./pages/Home/OurMission";
-import ScholarsAndAllowances from "./pages/Staff/ScholarsAndAllowances/ScholarsAndAllowances";
-import CoeGrades from "./pages/Scholar/COEAndGrades/COEAndGrades";
-import SchoolYears from "./pages/Admin/SchoolYears/SchoolYears";
-import AuditLogs from "./pages/Admin/AuditLog/AuditLogs";
+import PageLoader from "./components/PageLoader";
+
+const Applications = React.lazy(
+    () => import("./pages/Staff/Application/Applications"),
+);
+const Examination = React.lazy(
+    () => import("./pages/Staff/Examination/Examination"),
+);
+const ArchivedActivities = React.lazy(
+    () => import("./pages/Scholar/ArchivedActivities/ArchivedActivities"),
+);
+const ScholarAccounts = React.lazy(
+    () => import("./pages/Admin/ScholarAccounts/ScholarAccounts"),
+);
+const CommunityServicePage = React.lazy(
+    () => import("./pages/Staff/CommunityServices/CommunityServicePage"),
+);
+const ScholarshipCriteria = React.lazy(
+    () => import("./pages/Staff/ScholarshipCriteria/ScholarshipCriteria"),
+);
+const ApplicationPeriod = React.lazy(
+    () => import("./pages/Staff/ApplicationPeriod/ApplicationPeriod"),
+);
+const Scholars = React.lazy(() => import("./pages/Staff/Scholars/Scholars"));
+const ApplicationRecordsPage = React.lazy(
+    () => import("./pages/Staff/ApplicationRecords/ApplicationRecordsPage"),
+);
+const StaffAccounts = React.lazy(
+    () => import("./pages/Admin/StaffAccounts/StaffAccounts"),
+);
+const ReviewedApplications = React.lazy(
+    () => import("./pages/Staff/ReviewedApplications/ReviewedApplications"),
+);
+const UserAccountPage = React.lazy(
+    () => import("./components/UserAccountPage"),
+);
+const CommunityServices = React.lazy(
+    () => import("./pages/Scholar/CommunityServices/CommunityServices"),
+);
+const Events = React.lazy(() => import("./pages/Scholar/Events/Events"));
+const InitialInterview = React.lazy(
+    () => import("./pages/Staff/InitialInterview/InitialInterview"),
+);
+const FinalInterview = React.lazy(
+    () => import("./pages/Staff/FinalInterview/FinalInterview"),
+);
+const ResetPasswordForm = React.lazy(
+    () => import("./components/ResetPasswordForm"),
+);
+const CollegeUniversityManagement = React.lazy(
+    () =>
+        import(
+            "./pages/Staff/CollegeUniversityManagement/CollegeUniversityManagement"
+        ),
+);
+const OrientationAndAwarding = React.lazy(
+    () => import("./pages/Staff/OrientationAndAwarding/OrientationAndAwarding"),
+);
+const MonthlyAllowanceSummaryPage = React.lazy(
+    () =>
+        import(
+            "./pages/Staff/MonthlyAllowanceSummary/MonthlyAllowanceSummaryPage"
+        ),
+);
+const StaffAccount = React.lazy(() => import("./components/StaffAccountPage"));
+const AdminAccount = React.lazy(() => import("./components/AdminAccountPage"));
+const AboutSection = React.lazy(() => import("./pages/Home/About"));
+const OurMission = React.lazy(() => import("./pages/Home/OurMission"));
+const ScholarsAndAllowances = React.lazy(
+    () => import("./pages/Staff/ScholarsAndAllowances/ScholarsAndAllowances"),
+);
+const CoeGrades = React.lazy(
+    () => import("./pages/Scholar/COEAndGrades/COEAndGrades"),
+);
+const SchoolYears = React.lazy(
+    () => import("./pages/Admin/SchoolYears/SchoolYears"),
+);
+const AuditLogs = React.lazy(() => import("./pages/Admin/AuditLog/AuditLogs"));
 
 // Component for role-specific login forms
 const RoleSpecificLoginForm = ({ role }) => {
@@ -90,7 +148,9 @@ export function App() {
                 <Route
                     element={
                         <ProtectedRoute allowedRoles={["scholar"]}>
-                            <ScholarLayout />
+                            <Suspense fallback={<PageLoader />}>
+                                <ScholarLayout />
+                            </Suspense>
                         </ProtectedRoute>
                     }
                 >
@@ -107,10 +167,7 @@ export function App() {
                         path="/scholar/community-services"
                         element={<CommunityServices />}
                     />
-                    <Route
-                        path="/scholar/coe-grades"
-                        element={<CoeGrades />}
-                    />
+                    <Route path="/scholar/coe-grades" element={<CoeGrades />} />
                     <Route path="/scholar/events" element={<Events />} />
                     <Route
                         path="/scholar/archived-activities"
@@ -122,7 +179,9 @@ export function App() {
                 <Route
                     element={
                         <ProtectedRoute allowedRoles={["staff"]}>
-                            <StaffLayout />
+                            <Suspense fallback={<PageLoader />}>
+                                <StaffLayout />
+                            </Suspense>
                         </ProtectedRoute>
                     }
                 >
@@ -131,62 +190,68 @@ export function App() {
                         element={<StaffAccount />}
                     />
                     <Route
-                        path="/staff/monthly-allowance-summary"
+                        path="/staff/records/monthly-allowance-summary"
                         element={<MonthlyAllowanceSummaryPage />}
                     />
                     <Route path="/staff/dashboard" element={<Dashboard />} />
                     <Route
-                        path="/staff/scholarship-criteria"
+                        path="/staff/scholarship/scholarship-criteria"
                         element={<ScholarshipCriteria />}
                     />
                     <Route
-                        path="/staff/college-university"
+                        path="/staff/scholarship/college-university"
                         element={<CollegeUniversityManagement />}
                     />
-                    <Route path="/staff/scholars" element={<Scholars />} />
                     <Route
-                        path="/staff/scholars-and-allowances"
+                        path="/staff/records/scholars"
+                        element={<Scholars />}
+                    />
+                    <Route
+                        path="/staff/records/scholars-and-allowances"
                         element={<ScholarsAndAllowances />}
                     />
                     <Route
-                        path="/staff/application-records"
+                        path="/staff/records/applications"
                         element={<ApplicationRecordsPage />}
                     />
                     <Route
-                        path="/staff/applications"
+                        path="/staff/applications/applications-submitted"
                         element={<Applications />}
                     />
                     <Route
-                        path="/staff/reviewed-applications"
+                        path="/staff/applications/reviewed-applications"
                         element={<ReviewedApplications />}
                     />
                     <Route
-                        path="/staff/entrance-examination"
+                        path="/staff/applications/entrance-examination"
                         element={<Examination />}
                     />
                     <Route
-                        path="/staff/application-period"
+                        path="/staff/scholarship/application-period"
                         element={<ApplicationPeriod />}
                     />
                     <Route
-                        path="/staff/initial-interview"
+                        path="/staff/applications/initial-interview"
                         element={<InitialInterview />}
                     />
                     <Route
-                        path="/staff/home-visitation"
+                        path="/staff/applications/home-visitation"
                         element={<HomeVisitation />}
                     />
                     <Route
-                        path="/staff/final-interview"
+                        path="/staff/applications/final-interview"
                         element={<FinalInterview />}
                     />
                     <Route
-                        path="/staff/orientation-awarding-attendance"
+                        path="/staff/applications/orientation-awarding-attendance"
                         element={<OrientationAndAwarding />}
                     />
-                    <Route path="/staff/events" element={<EventsPage />} />
                     <Route
-                        path="/staff/community-services"
+                        path="/staff/events-duty/events"
+                        element={<EventsPage />}
+                    />
+                    <Route
+                        path="/staff/events-duty/community-services"
                         element={<CommunityServicePage />}
                     />
                 </Route>
@@ -195,7 +260,9 @@ export function App() {
                 <Route
                     element={
                         <ProtectedRoute allowedRoles={["admin"]}>
-                            <AdminLayout />
+                            <Suspense fallback={<PageLoader />}>
+                                <AdminLayout />
+                            </Suspense>
                         </ProtectedRoute>
                     }
                 >
@@ -205,21 +272,18 @@ export function App() {
                     />
                     <Route path="/admin/dashboard" element={<Dashboard />} />
                     <Route
-                        path="/admin/scholar-account-management"
+                        path="/admin/users-accounts/scholar-account-management"
                         element={<ScholarAccounts />}
                     />
                     <Route
-                        path="/admin/staff-account-management"
+                        path="/admin/users-accounts/staff-account-management"
                         element={<StaffAccounts />}
                     />
                     <Route
                         path="/admin/school-years"
                         element={<SchoolYears />}
                     />
-                    <Route
-                        path="/admin/audit-logs"
-                        element={<AuditLogs />}
-                    />
+                    <Route path="/admin/audit-logs" element={<AuditLogs />} />
                 </Route>
 
                 {/* 404 Route */}

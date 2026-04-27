@@ -6,10 +6,14 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Constants\Action;
+use App\Models\AuditLogModel;
 use App\Models\CollegeUniversityManagementModel;
 use App\Models\CoursesAcceptedModel;
 use App\Models\ScholarshipCriteriaModel;
+use App\Models\StaffAccountModel;
 use Config\Database;
+use Middleware\Auth;
 
 class CoursesAcceptedController
 {
@@ -71,7 +75,13 @@ class CoursesAcceptedController
                     'success' => true,
                     'data' => $result,
                 ]);
-            } 
+            } else {
+                http_response_code(200);
+                echo json_encode([
+                    'success' => true,
+                    'data' => [],
+                ]);
+            }
 
             // else {
             //     http_response_code(404);
@@ -107,11 +117,60 @@ class CoursesAcceptedController
                 throw new \Exception('No data provided');
             }
 
+            if (!isset($data['id'])) {
+                throw new \Exception('ID is required for update');
+            }
+
+            $id = $data['id'];
+
+            // Process application data
+            $school = new CollegeUniversityManagementModel();
+
+            // Check if qualification exists
+            $existing = $school->getCollegeOrUniversityById($id);
+            if (!$existing) {
+                throw new \Exception('College/University not found');
+            }
+
             // Process application data
             $model = new CoursesAcceptedModel();
 
             if (!$model->create($data)) {
                 throw new \Exception('Failed to save course information');
+            }
+
+            $auditLogModel = new AuditLogModel();
+            $staffModel = new StaffAccountModel();
+            $staffId = Auth::id();
+
+            $staff = $staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::COURSE_CREATED,
+                    'entity_type' => 'course',
+                    'entity_id' => $data['id'],
+
+                    'description' =>
+                        $staff['first_name'] .
+                        ' ' .
+                        $staff['last_name'] .
+                        ' added a course to University of Cebu.',
+
+                    'old_values' => null,
+                    'new_values' => [
+                        $existing['name'] => [
+                            'course' => $data['course_name'],
+                        ],
+                    ],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();
@@ -149,23 +208,71 @@ class CoursesAcceptedController
             }
 
             // Check if ID is provided
-            if (!isset($data['id'])) {
+            if (!isset($data['id']) || !isset($data['school_id'])) {
                 throw new \Exception('ID is required for update');
             }
 
             $id = $data['id'];
+            $school_id = $data['school_id'];
 
             // Process application data
-            $model = new CoursesAcceptedModel();
+            $schoolModel = new CollegeUniversityManagementModel();
 
             // Check if qualification exists
-            $existing = $model->getCourseById($id);
-            if (!$existing) {
+            $school = $schoolModel->getCollegeOrUniversityById($school_id);
+            if (!$school) {
+                throw new \Exception('College/University not found');
+            }
+
+            // Process application data
+            $courseModel = new CoursesAcceptedModel();
+
+            // Check if qualification exists
+            $course = $courseModel->getCourseById($id);
+            if (!$course) {
                 throw new \Exception('Course not found');
             }
 
-            if (!$model->update($data)) {
+            if (!$courseModel->update($data)) {
                 throw new \Exception('Failed to update course information');
+            }
+
+            $auditLogModel = new AuditLogModel();
+            $staffModel = new StaffAccountModel();
+            $staffId = Auth::id();
+
+            $staff = $staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::COURSE_UPDATED,
+                    'entity_type' => 'course',
+                    'entity_id' => $data['id'],
+
+                    'description' =>
+                        $staff['first_name'] .
+                        ' ' .
+                        $staff['last_name'] .
+                        ' updated a course at University of Cebu.',
+
+                    'old_values' => [
+                        $school['name'] => [
+                            'course' => $course['course'],
+                        ],
+                    ],
+                    'new_values' => [
+                        $school['name'] => [
+                            'course' => $data['course_name'],
+                        ],
+                    ],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();
@@ -213,6 +320,36 @@ class CoursesAcceptedController
 
             if (!$model->delete($id)) {
                 throw new \Exception('Failed to delete course');
+            }
+
+            $auditLogModel = new AuditLogModel();
+            $staffModel = new StaffAccountModel();
+            $staffId = Auth::id();
+
+            $staff = $staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::COURSE_DELETED,
+                    'entity_type' => 'course',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $staff['first_name'] .
+                        ' ' .
+                        $staff['last_name'] .
+                        ' deleted a course from University of Cebu.',
+
+                    'old_values' => null,
+                    'new_values' => null,
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();

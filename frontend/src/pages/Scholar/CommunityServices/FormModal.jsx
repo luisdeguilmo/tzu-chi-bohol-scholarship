@@ -20,6 +20,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     const { user } = useAuth();
     const { accountStatus } = useAccountStatus(user.user_id);
     const fileInputRef = useRef(null);
+    const token = localStorage.getItem("token");
 
     // Move this to environment variables or server-side
     const CLOUDCONVERT_API_KEY =
@@ -147,7 +148,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                             },
                         },
                     }),
-                }
+                },
             );
 
             if (!jobResponse.ok) {
@@ -156,7 +157,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
 
             const job = await jobResponse.json();
             const uploadTask = job.data.tasks.find(
-                (task) => task.name === "upload-file"
+                (task) => task.name === "upload-file",
             );
 
             // Upload the file
@@ -181,7 +182,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
 
             if (!uploadResponse.ok) {
                 throw new Error(
-                    `Upload failed! status: ${uploadResponse.status}`
+                    `Upload failed! status: ${uploadResponse.status}`,
                 );
             }
 
@@ -203,12 +204,12 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                         headers: {
                             Authorization: `Bearer ${CLOUDCONVERT_API_KEY}`,
                         },
-                    }
+                    },
                 );
 
                 if (!statusResponse.ok) {
                     throw new Error(
-                        `Status check failed! status: ${statusResponse.status}`
+                        `Status check failed! status: ${statusResponse.status}`,
                     );
                 }
 
@@ -220,7 +221,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
 
             if (jobStatus.data.status === "finished") {
                 const exportTask = jobStatus.data.tasks.find(
-                    (task) => task.name === "export-file"
+                    (task) => task.name === "export-file",
                 );
                 const downloadUrl = exportTask.result.files[0].url;
 
@@ -235,7 +236,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                 const pdfResponse = await fetch(downloadUrl);
                 if (!pdfResponse.ok) {
                     throw new Error(
-                        `Download failed! status: ${pdfResponse.status}`
+                        `Download failed! status: ${pdfResponse.status}`,
                     );
                 }
 
@@ -243,7 +244,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                 const pdfFile = new File(
                     [pdfBlob],
                     file.name.replace(/\.(doc|docx)$/i, ".pdf"),
-                    { type: "application/pdf" }
+                    { type: "application/pdf" },
                 );
 
                 setConversionStatus((prev) => ({
@@ -271,7 +272,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     const handleSubmit = async () => {
         if (accountStatus === "not_renewed") {
             toast.error(
-                `You can’t submit community service until your renewal application is approved.`
+                `You can’t submit community service until your renewal application is approved.`,
             );
             return;
         }
@@ -289,7 +290,6 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
 
             const activityData = {
                 activity: {
-                    application_id: user?.user_id,
                     activity_name: activityName,
                     activity_location: activityLocation,
                     activity_date: activityDate,
@@ -352,16 +352,14 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
             }
 
             // Submit the data
-            const response = await fetch(
-                `${BASE_URL}app/api/activities.php`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(activityData),
-                }
-            );
+            const response = await fetch(`${BASE_URL}app/api/activities.php`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(activityData),
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -442,7 +440,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                             onChange={(e) =>
                                 handleChange(
                                     setActivityLocation,
-                                    e.target.value
+                                    e.target.value,
                                 )
                             }
                             placeholder="Enter activity location"
@@ -559,7 +557,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                     <div className="flex items-center">
                                         {filePreview.type &&
                                             filePreview.type.startsWith(
-                                                "image/"
+                                                "image/",
                                             ) && (
                                                 <img
                                                     src={filePreview.preview}
@@ -571,7 +569,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                             <div className="font-medium text-gray-700 flex items-center">
                                                 {filePreview.name}
                                                 {isDocOrDocx(
-                                                    filePreview.type
+                                                    filePreview.type,
                                                 ) && (
                                                     <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
                                                         Will convert to PDF

@@ -3,7 +3,6 @@ import { useArchive } from "../../../hooks/useArchive";
 import { formatDate } from "../../../utils/formatDate";
 
 const CoeGradesCard = ({
-    userId,
     submission,
     index,
     handleOpenDetails,
@@ -18,10 +17,7 @@ const CoeGradesCard = ({
     onRefresh,
     isArchived = false,
 }) => {
-    const { archiveActivity, unArchiveActivity } = useArchive(
-        activeTab,
-        userId
-    );
+    const { archiveActivity, unArchiveActivity } = useArchive(activeTab);
 
     const handleArchiveToggle = async (e) => {
         e.stopPropagation();
@@ -30,13 +26,13 @@ const CoeGradesCard = ({
 
         try {
             if (isArchived) {
-                await unArchiveActivity(userId, submission.id, "coe_grades");
+                await unArchiveActivity(submission.id, "coe_grades");
             } else {
-                await archiveActivity(userId, submission.id, "coe_grades");
+                await archiveActivity(submission.id, "coe_grades");
             }
 
             if (onRefresh) {
-                await onRefresh(activeTab, userId);
+                await onRefresh(activeTab);
             }
         } catch (error) {
             console.error("Error archiving/unarchiving submission:", error);
@@ -221,7 +217,7 @@ const CoeGradesCard = ({
                         Edit
                     </button>
 
-                    <button
+                    {/* <button
                         onClick={handleArchiveToggle}
                         className={`${
                             submission.submission_status === "Pending"
@@ -230,7 +226,7 @@ const CoeGradesCard = ({
                         } w-full text-left rounded-lg px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors duration-150`}
                     >
                         {isArchived ? "Restore" : "Archive"}
-                    </button>
+                    </button> */}
                 </div>
             )}
         </div>

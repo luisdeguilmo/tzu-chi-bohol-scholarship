@@ -2,16 +2,22 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-export const useCurrentYearLevel = (userId, schoolYear) => {
+export const useCurrentYearLevel = (schoolYear) => {
     const [yearLevel, setYearLevel] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const getCurrentYearLevel = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/year-level.php?scholar_id=${userId}&school_year=${schoolYear}`
+                `${BASE_URL}app/api/year-level.php?school_year=${schoolYear}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             // Set application periods data
             setYearLevel(response.data.data || 0);
@@ -24,10 +30,10 @@ export const useCurrentYearLevel = (userId, schoolYear) => {
     };
 
     useEffect(() => {
-        if (userId && schoolYear) {
+        if (schoolYear) {
             getCurrentYearLevel();
         }
-    }, [userId, schoolYear]);
+    }, [schoolYear]);
 
     return { yearLevel, getCurrentYearLevel };
 };

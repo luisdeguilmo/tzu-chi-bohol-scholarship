@@ -29,12 +29,10 @@ export default function Events() {
 
     const { user } = useAuth();
 
-    const { loading, joinEvent, cancelEvent, events, fetchEvents } = useEvents(
-        activeTab,
-        user.user_id
-    );
+    const { loading, joinEvent, cancelEvent, events, fetchEvents } =
+        useEvents(activeTab);
 
-    const { overviewData } = useScholarOverviewData(user.user_id, "events");
+    const { overviewData } = useScholarOverviewData("events");
 
     const { eventOverviewData } = scholarOverviewData(overviewData);
 
@@ -63,7 +61,7 @@ export default function Events() {
 
     // Filter data based on search term
     const filteredEvents = events.filter((event) =>
-        event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
+        event.event_name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     // Calculate pagination
@@ -72,7 +70,7 @@ export default function Events() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredEvents.slice(
         indexOfFirstItem,
-        indexOfLastItem
+        indexOfLastItem,
     );
 
     const handleOpenDetails = useCallback((event) => {
@@ -86,7 +84,7 @@ export default function Events() {
             fetchEvents(tab, user.user_id);
             setCurrentPage(1);
         },
-        [fetchEvents, user.user_id]
+        [fetchEvents, user.user_id],
     );
 
     const handleOpenDotMenu = useCallback(
@@ -99,7 +97,7 @@ export default function Events() {
             }
             setItemIndex(index);
         },
-        [itemIndex, isDotMenuOpen]
+        [itemIndex, isDotMenuOpen],
     );
 
     const today = new Date();
@@ -127,7 +125,6 @@ export default function Events() {
                     ) : (
                         currentItems.map((event, index) => (
                             <EventCard
-                                userId={user.user_id}
                                 key={index}
                                 event={event}
                                 index={index}

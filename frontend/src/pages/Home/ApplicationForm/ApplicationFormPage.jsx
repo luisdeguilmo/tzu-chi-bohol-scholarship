@@ -33,13 +33,34 @@ function ApplicationForm({ includeRequirements = true }) {
     const [currentStep, setCurrentStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [schoolYear, setSchoolYear] = useState(null);
 
     const { user } = useAuth();
     const { setActiveTab } = useSidebar();
+    // const { applicantInformation } = useApplicantInformation(
+    //     user?.user_id,
+    //     getCurrentSchoolYear(),
+    // );
+
+    useEffect(() => {
+        const fetchSchoolYear = async () => {
+            try {
+                const data = await getSchoolYear("renewal");
+                setSchoolYear(data?.school_year);
+            } catch (err) {
+                console.error(err);
+                setError("Failed to fetch school year");
+            }
+        };
+
+        fetchSchoolYear();
+    }, []);
+
     const { applicantInformation } = useApplicantInformation(
         user?.user_id,
-        getCurrentSchoolYear(),
+        schoolYear,
     );
+
     const { getSchoolYear } = useApplicationPeriods();
 
     // Define steps based on whether requirements are included
@@ -172,6 +193,7 @@ function ApplicationForm({ includeRequirements = true }) {
                     guardian_education: familyInfo?.guardian_education || "",
                     guardian_occupation: familyInfo?.guardian_occupation || "",
                     guardian_income: familyInfo?.guardian_income || "",
+                    guardian_contact: familyInfo?.guardian_contact || "",
                 },
 
                 contact_person: {
@@ -215,18 +237,6 @@ function ApplicationForm({ includeRequirements = true }) {
         }
     }, [applicantInformation]);
 
-    // Generic handler for input changes
-    // const handleInputChange = (section, e) => {
-    //     const { name, value } = e.target;
-    //     setFormData((prevData) => ({
-    //         ...prevData,
-    //         [section]: {
-    //             ...prevData[section],
-    //             [name]: value,
-    //         },
-    //     }));
-    // };
-
     const handleInputChange = (section, fieldName, value) => {
         // const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -261,12 +271,10 @@ function ApplicationForm({ includeRequirements = true }) {
 
     const handleRenewSubmit = async (e) => {
         e.preventDefault();
-        const fetchSchoolYear = async () => {
-            const data = await getSchoolYear("renewal");
-            formData.application_info.school_year = data?.school_year;
-        };
 
-        fetchSchoolYear();
+        const data = await getSchoolYear("renewal");
+        formData.application_info.school_year = data?.school_year;
+
         // formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.application_type = "renew";
         formData.application_info.status = "Old";
@@ -310,12 +318,12 @@ function ApplicationForm({ includeRequirements = true }) {
 
     const handleReSubmitRenew = async (e) => {
         e.preventDefault();
-        const fetchSchoolYear = async () => {
-            const data = await getSchoolYear("renewal");
-            formData.application_info.school_year = data?.school_year;
-        };
 
-        fetchSchoolYear();
+        const data = await getSchoolYear("renewal");
+        formData.application_info.school_year = data?.school_year;
+
+        console.log(data);
+
         // formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.application_type = "resubmit";
         formData.application_info.scholar_id = user.user_id;

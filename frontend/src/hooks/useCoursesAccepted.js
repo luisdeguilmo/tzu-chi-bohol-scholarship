@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
+const token = localStorage.getItem("token");
+
 export const useCoursesAccepted = (id) => {
     const [coursesAccepted, setCoursesAccepted] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +17,7 @@ export const useCoursesAccepted = (id) => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/courses-accepted.php?id=${id}`
+                `${BASE_URL}app/api/courses-accepted.php?id=${id}`,
             );
 
             if (response.data) {
@@ -45,9 +47,10 @@ export const useCoursesAccepted = (id) => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json(); // Parse as JSON instead of text
@@ -69,11 +72,14 @@ export const useCoursesAccepted = (id) => {
         }
     };
 
-    const updateCourse = async (selectedId, courseName) => {
+    const updateCourse = async (selectedId, schoolId, courseName) => {
         const data = {
             id: selectedId,
+            school_id: schoolId,
             course_name: courseName,
         };
+
+        console.log(selectedId);
 
         try {
             setIsLoading(true);
@@ -84,9 +90,10 @@ export const useCoursesAccepted = (id) => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json(); // Parse as JSON instead of text
@@ -112,7 +119,12 @@ export const useCoursesAccepted = (id) => {
         try {
             setIsLoading(true);
             const response = await axios.delete(
-                `${BASE_URL}app/api/courses-accepted.php?id=${id}`
+                `${BASE_URL}app/api/courses-accepted.php?id=${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data) {

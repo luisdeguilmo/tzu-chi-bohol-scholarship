@@ -13,6 +13,9 @@ import { toast } from "react-toastify";
 import { useSchoolYears } from "../../../hooks/useSchoolYears";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useAuditLogs } from "../../../hooks/useAuditLogs";
+import { date } from "../../../utils/getDateAndTime";
+import { formatTimestamp } from "../../../utils/formatTimestamp";
+import { formatDateTime } from "../../../utils/formatDateTime";
 
 const AuditLogs = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -88,32 +91,54 @@ const AuditLogs = () => {
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table tableHeaders={auditLogsHeaders}>
-                        {currentItems.map((auditLog) => (
+                        {currentItems.map((auditLog, index) => (
                             <tr
-                                key={auditLog.id}
-                                className="text-center border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                                key={index}
+                                className="text-center text-xs border-b border-gray-100 hover:bg-gray-50 transition-colors"
                             >
-                                {/* School Year */}
-                                <td className="pr-4 py-2 text-sm text-gray-600 whitespace-nowrap">
-                                    {auditLog.user_id}
+                                <td className="pr-4 py-3 text-gray-600 whitespace-nowrap">
+                                    {auditLog.user_id ? (
+                                        <span>
+                                            {auditLog.user_role === "staff"
+                                                ? auditLog?.staff_first_name +
+                                                  " " +
+                                                  auditLog?.staff_last_name
+                                                : auditLog.user_role ===
+                                                    "scholar"
+                                                  ? auditLog?.scholar_first_name +
+                                                    " " +
+                                                    auditLog?.scholar_last_name
+                                                  : auditLog?.admin_name}
+                                        </span>
+                                    ) : (
+                                        <span>{auditLog.actor}</span>
+                                    )}
                                 </td>
-                                <td className="pr-4 py-2 text-sm text-gray-600 whitespace-nowrap">
-                                    {auditLog.user_role}
+                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
+                                    {auditLog.user_role
+                                        .charAt(0)
+                                        .toUpperCase()
+                                        .concat(
+                                            auditLog.user_role.substring(1),
+                                        )}
                                 </td>
-                                <td className="pr-4 py-2 text-sm text-gray-600 whitespace-nowrap">
+                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
                                     {auditLog.action}
                                 </td>
-                                <td className="pr-4 py-2 text-sm text-gray-600 whitespace-nowrap">
+                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
+                                    {auditLog.description}
+                                </td>
+                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
                                     {auditLog.entity_type}
                                 </td>
-                                 <td className="pr-4 py-2 text-sm text-gray-600 whitespace-nowrap">
+                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
                                     {auditLog.entity_id}
                                 </td>
-                                 <td className="pr-4 py-2 text-sm text-gray-600 whitespace-nowrap">
+                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
                                     --
                                 </td>
-                                 <td className="pr-4 py-2 text-sm text-gray-600 whitespace-nowrap">
-                                    {auditLog.created_at}
+                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
+                                    {formatDateTime(auditLog.created_at)}
                                 </td>
                             </tr>
                         ))}

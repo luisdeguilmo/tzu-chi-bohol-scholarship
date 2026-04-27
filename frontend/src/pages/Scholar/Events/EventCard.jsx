@@ -13,7 +13,6 @@ import { toast } from "react-toastify";
 import { date } from "../../../utils/getDateAndTime";
 
 const EventCard = ({
-    userId,
     event,
     index,
     handleOpenDetails,
@@ -27,10 +26,7 @@ const EventCard = ({
     onRefresh,
     isArchived = false,
 }) => {
-    const { archiveActivity, unArchiveActivity } = useArchive(
-        activeTab,
-        userId
-    );
+    const { archiveActivity, unArchiveActivity } = useArchive(activeTab);
 
     const handleArchiveToggle = async (e) => {
         e.stopPropagation();
@@ -44,13 +40,13 @@ const EventCard = ({
 
         try {
             if (isArchived) {
-                await unArchiveActivity(userId, event.id, "event");
+                await unArchiveActivity(event.id, "event");
             } else {
-                await archiveActivity(userId, event.id, "event");
+                await archiveActivity(event.id, "event");
             }
 
             if (onRefresh) {
-                await onRefresh(activeTab, userId);
+                await onRefresh(activeTab);
             }
         } catch (error) {
             console.error("Error archiving/unarchiving event:", error);

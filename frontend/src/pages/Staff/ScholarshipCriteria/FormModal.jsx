@@ -2,6 +2,7 @@ import useScholarshipCriteriaSubmit from "../../../hooks/useScholarshipCriteriaS
 import InputModal from "../../../components/InputModal";
 import { useCriteria } from "../../../context/CriteriaContext";
 import { useEffect, useState } from "react";
+import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
 
 function FormModal({
     isOpen,
@@ -44,32 +45,34 @@ function FormModal({
         isLoading,
     } = useScholarshipCriteriaSubmit(onSuccess);
 
+    // const { fetchItems } = useScholarshipCriteria(endpoint + "s", null);
+
     const [isValueChanged, setIsValueChanged] = useState(false);
 
     const handleCreate = () => {
         switch (label) {
             case "Strand":
-                createStrand(text, description);
+                createStrand(text, description, onSuccess);
                 break;
 
             case "Course":
-                createCourse(text);
+                createCourse(text, onSuccess);
                 break;
 
             case "Procedure":
-                createProcedure(text);
+                createProcedure(text, onSuccess);
                 break;
 
             case "Qualification":
-                createQualification(text);
+                createQualification(text, onSuccess);
                 break;
 
             case "Instruction":
-                createInstruction(text);
+                createInstruction(description, onSuccess);
                 break;
 
             case "Requirement":
-                createRequirement(quantity, description, submit);
+                createRequirement(quantity, description, submit, onSuccess);
                 break;
 
             default:
@@ -91,6 +94,8 @@ function FormModal({
             data.quantity = quantity;
             data.description = description;
             data.submit = submit;
+        } else if (endpoint === "instruction") {
+            data[endpoint] = description;
         } else {
             data[endpoint] = text;
         }
@@ -195,7 +200,7 @@ function FormModal({
                                     className="w-full resize-none border border-gray-300 rounded-md p-1 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 ></textarea>
                             </label>
-                        ) : null
+                        ) : null,
                     )}
                 </div>
 

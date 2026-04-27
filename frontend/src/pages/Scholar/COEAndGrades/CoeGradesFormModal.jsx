@@ -8,6 +8,7 @@ import BASE_URL from "../../../config";
 import { useAccountStatus } from "../../../hooks/useAccountStatus";
 
 function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
+    const token = localStorage.getItem("token");
     const [semester, setSemester] = useState("");
     const [files, setFiles] = useState([]);
     const [filePreviews, setFilePreviews] = useState([]);
@@ -104,7 +105,6 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
 
             const submissionData = {
                 submission: {
-                    scholar_id: user?.user_id,
                     year_level: yearLevel,
                     semester: semester,
                     submission_status: "Pending",
@@ -139,16 +139,14 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
             }
 
             // Submit the data
-            const response = await fetch(
-                `${BASE_URL}app/api/coe-grades.php`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(submissionData),
-                }
-            );
+            const response = await fetch(`${BASE_URL}app/api/coe-grades.php`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(submissionData),
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -281,7 +279,7 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
                                     <div className="flex items-center">
                                         {filePreview.type &&
                                             filePreview.type.startsWith(
-                                                "image/"
+                                                "image/",
                                             ) && (
                                                 <img
                                                     src={filePreview.preview}

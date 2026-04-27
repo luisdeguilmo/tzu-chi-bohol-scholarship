@@ -5,7 +5,9 @@
             "Config\\": "config/",
             "Services\\": "services/",
             "Controllers\\": "controllers/",
-            "Models\\": "models/"
+            "Models\\": "models/",
+            "Enums\\": "enums/",
+            "Middleware\\": "app/middleware/"
         }
     },
     "require": {

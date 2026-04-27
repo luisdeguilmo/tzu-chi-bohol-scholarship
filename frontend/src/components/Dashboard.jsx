@@ -1,28 +1,47 @@
+import React, { useEffect, useRef, useState } from "react";
 import { date } from "../utils/getDateAndTime";
 import { formatDate } from "../utils/formatDate";
 import { useAuth } from "../context/AuthContext";
 import { useDashboardOverviewData } from "../hooks/useDashboardOverviewData";
 import { dashboardOverviewData } from "../config/dashboardOverviewData";
-import UpcomingEvents from "./UpcomingEvents";
+// import UpcomingEvents from "./UpcomingEvents";
 import { useEvents } from "../hooks/useEvents";
-import RecentActivities from "./RecentActivities";
+// import RecentActivities from "./RecentActivities";
 import { useRecentActivities } from "../hooks/useRecentActivities";
-import LivingInfoFormModal from "./LivingInfoFormModal";
-import { useEffect, useRef, useState } from "react";
+const RecentActivities = React.lazy(() => import("./RecentActivities"));
+const UpcomingEvents = React.lazy(() => import("./UpcomingEvents"));
+
 import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSidebar } from "../context/SidebarContext";
-import FunnelChart from "./FunnelChart";
-import ScholarEngagementChart from "./ScholarEngagementChart";
-import AllowanceChart from "./AllowanceChart";
-import DutyHoursChart from "./DutyHoursChart";
-import ScholarsByProgramChart from "./ScholarsByProgramChart";
-import ApplicationTrendsChart from "./ApplicationTrendsChart";
-import ApprovalRejectionChart from "./ApprovalRejectionChart";
+// import FunnelChart from "./FunnelChart";
+// import ScholarEngagementChart from "./ScholarEngagementChart";
+// import AllowanceChart from "./AllowanceChart";
+// import DutyHoursChart from "./DutyHoursChart";
+// import ScholarsByProgramChart from "./ScholarsByProgramChart";
+// import ApplicationTrendsChart from "./ApplicationTrendsChart";
+// import ApprovalRejectionChart from "./ApprovalRejectionChart";
+const ApprovalRejectionChart = React.lazy(
+    () => import("./ApprovalRejectionChart"),
+);
+const ApplicationTrendsChart = React.lazy(
+    () => import("./ApplicationTrendsChart"),
+);
+const ScholarsByProgramChart = React.lazy(
+    () => import("./ScholarsByProgramChart"),
+);
+const DutyHoursChart = React.lazy(() => import("./DutyHoursChart"));
+const AllowanceChart = React.lazy(() => import("./AllowanceChart"));
+const ScholarEngagementChart = React.lazy(
+    () => import("./ScholarEngagementChart"),
+);
+const FunnelChart = React.lazy(() => import("./FunnelChart"));
+
 import { useScholar } from "../hooks/useScholar";
 
 function QuickOverview() {
     const { pathname } = useLocation();
+    const LivingInfoFormModal = null;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -32,31 +51,50 @@ function QuickOverview() {
     const { dashboardData } = useDashboardOverviewData(
         user.user_id,
         user.type,
-        getCurrentSchoolYear()
+        getCurrentSchoolYear(),
     );
     const { scholarOverviewData, staffOverviewData, adminOverviewData } =
         dashboardOverviewData(dashboardData);
     const { events } = useEvents("upcoming", user.user_id);
     const { events: recentEvents } = useEvents("recent", user.user_id);
     const { recentActivities } = useRecentActivities(
-        user.type === "scholar" ? user.user_id : null
+        user.type === "scholar" ? user.user_id : null,
     );
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const hasInitialized = useRef(false);
 
     const navigate = useNavigate();
 
+    const [ModalComponent, setModalComponent] = useState(null);
+
     useEffect(() => {
         if (
             !hasInitialized.current &&
             dashboardData.hasSubmittedLivingInfo !== undefined
         ) {
-            setIsFormModalOpen(!dashboardData.hasSubmittedLivingInfo);
             hasInitialized.current = true;
+
+            if (!dashboardData.hasSubmittedLivingInfo) {
+                // Only import when actually needed
+                import("./LivingInfoFormModal").then((mod) => {
+                    setModalComponent(() => mod.default);
+                    setIsFormModalOpen(true);
+                });
+            }
         }
     }, [dashboardData.hasSubmittedLivingInfo]);
 
-    console.log(user);
+    // useEffect(() => {
+    //     LivingInfoFormModal = React.lazy(() => import("./LivingInfoFormModal"));
+
+    //     if (
+    //         !hasInitialized.current &&
+    //         dashboardData.hasSubmittedLivingInfo !== undefined
+    //     ) {
+    //         setIsFormModalOpen(!dashboardData.hasSubmittedLivingInfo);
+    //         hasInitialized.current = true;
+    //     }
+    // }, [dashboardData.hasSubmittedLivingInfo]);
 
     return (
         <>
@@ -243,8 +281,16 @@ function QuickOverview() {
                 )}
             </div>
 
-            {!dashboardData.hasSubmittedLivingInfo && (
+            {/* {!dashboardData.hasSubmittedLivingInfo && (
                 <LivingInfoFormModal
+                    label={`Scholar Information Form`}
+                    isOpen={isFormModalOpen}
+                    onClose={setIsFormModalOpen}
+                />
+            )} */}
+
+            {isFormModalOpen && ModalComponent && (
+                <ModalComponent
                     label={`Scholar Information Form`}
                     isOpen={isFormModalOpen}
                     onClose={setIsFormModalOpen}

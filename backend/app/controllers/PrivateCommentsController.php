@@ -11,6 +11,7 @@ use App\Models\EventParticipantsModel;
 use App\Models\NotificationsModel;
 use App\Models\PrivateCommentsModel;
 use Config\Database;
+use Middleware\Auth;
 
 class PrivateCommentsController
 {
@@ -59,7 +60,7 @@ class PrivateCommentsController
 
             // Get ID parameter if it exists
             $eventId = isset($_GET['event_id']) ? $_GET['event_id'] : null;
-            $scholarId = isset($_GET['scholar_id']) ? $_GET['scholar_id'] : null;
+            $scholarId = Auth::id();
             $staffId = isset($_GET['staff_id']) ? $_GET['staff_id'] : null;
             $userType = isset($_GET['user_type']) ? $_GET['user_type'] : null;
 
@@ -104,17 +105,18 @@ class PrivateCommentsController
             }
 
             // Check if ID is provided
-            if (!isset($data['event']['event_id']) || !isset($data['event']['scholar_id'])) {
+            if (!isset($data['event']['event_id'])) {
                 throw new \Exception('ID is required for update');
             }
 
             $eventId = $data['event']['event_id'];
-            $scholarId = $data['event']['scholar_id'];
+            // $scholarId = null;
             $staffId = $data['event']['staff_id'];
             $reason = $data['event']['reason'] ?? '';
             $firstName = $data['event']['first_name'] ?? '';
             $lastName = $data['event']['last_name'] ?? '';
             $userType = $data['event']['user_type'] ?? '';
+            $scholarId = $data['event']['scholar_id'];
 
             // Process procedure data
             $eventParticipant = new EventParticipantsModel();

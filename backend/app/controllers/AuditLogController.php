@@ -80,14 +80,7 @@ class AuditLogController
         try {
             $this->pdo->beginTransaction();
 
-            // Handle data from both FormData and direct JSON
-            if (isset($_POST['instruction'])) {
-                // Handle data from FormData
-                $data = json_decode($_POST['instruction'], true);
-            } else {
-                // Handle direct JSON input
-                $data = json_decode(file_get_contents('php://input'), true);
-            }
+            $data = json_decode(file_get_contents('php://input'), true);
 
             file_put_contents('log.txt', json_encode($data) . PHP_EOL, FILE_APPEND);
 
@@ -96,9 +89,9 @@ class AuditLogController
             }
 
             // Process application data
-            $criteria = new ScholarshipCriteriaModel();
+            $model = new AuditLogModel();
 
-            if (!$criteria->createInstruction($data['instruction'])) {
+            if (!$model->create($data['instruction'])) {
                 throw new \Exception('Failed to save instruction information');
             }
 

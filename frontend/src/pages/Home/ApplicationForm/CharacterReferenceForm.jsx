@@ -85,8 +85,8 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
             </h2>
             <div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
-                    {characterReferenceInputFields.map((input) => (
-                        <div>
+                    {characterReferenceInputFields.map((input, index) => (
+                        <div key={index}>
                             <label className="block mb-1 text-gray-600 text-xs">
                                 {input.label}
                             </label>

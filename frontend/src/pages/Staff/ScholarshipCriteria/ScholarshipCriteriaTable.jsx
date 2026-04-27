@@ -63,15 +63,14 @@ const ScholarshipCriteriaTable = ({
                 searchFields.some((field) =>
                     item[field]
                         ?.toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                )
+                        .includes(searchTerm.toLowerCase()),
+                ),
             ),
-        [items, searchTerm, searchFields]
+        [items, searchTerm, searchFields],
     );
 
     const handleRefresh = () => {
-        fetchApplications(activeTab);
-        setSelectedItems([]);
+        onRefresh();
     };
 
     const handleItemToEdit = (item) => {
@@ -82,11 +81,12 @@ const ScholarshipCriteriaTable = ({
             setQuantity(item.quantity);
             setDescription(item.description);
             setSubmit(item.submit);
+        } else if ("instruction" in item) {
+            setDescription(item.instruction);
         } else if (
             "course" in item ||
             "qualification" in item ||
-            "procedure" in item ||
-            "instruction" in item
+            "procedure" in item
         ) {
             setText(item[searchPlaceholder.slice(0, -1)]);
         }
@@ -148,9 +148,9 @@ const ScholarshipCriteriaTable = ({
                                                     header.name
                                                         .substring(
                                                             1,
-                                                            header.name.length
+                                                            header.name.length,
                                                         )
-                                                        .toLowerCase()
+                                                        .toLowerCase(),
                                                 )}
                                         </p>
                                     ))}
@@ -164,7 +164,7 @@ const ScholarshipCriteriaTable = ({
                                     {fields
                                         .filter(
                                             (field) =>
-                                                field.name !== primaryField
+                                                field.name !== primaryField,
                                         )
                                         .map((field) => (
                                             <p
@@ -174,7 +174,7 @@ const ScholarshipCriteriaTable = ({
                                                 <span className="">
                                                     {field.render
                                                         ? field.render(
-                                                              item[field.name]
+                                                              item[field.name],
                                                           )
                                                         : item[field.name]}
                                                 </span>

@@ -25,13 +25,13 @@ export const scholarSidebarItems = [
         navigate: "/scholar/dashboard",
     },
     {
-        itemName: "coe_grades",
+        itemName: "coe-grades",
         text: "COE and Grades",
         icon: <FileText className="w-5 h-5 text-slate-600" />,
         navigate: "/scholar/coe-grades",
     },
     {
-        itemName: "activities",
+        itemName: "community-services",
         text: "Community Services",
         icon: <HandHeart className="w-5 h-5 text-slate-600" />,
         navigate: "/scholar/community-services",
@@ -84,15 +84,18 @@ export const staffSidebarItems = [
         subItems: [
             {
                 text: "College & University Management",
-                navigate: "/staff/college-university",
+                navigate: "/staff/scholarship/college-university",
+                itemName: "college-university",
             },
             {
                 text: "Scholarship Criteria",
-                navigate: "/staff/scholarship-criteria",
+                navigate: "/staff/scholarship/scholarship-criteria",
+                itemName: "scholarship-criteria",
             },
             {
                 text: "Application Period",
-                navigate: "/staff/application-period",
+                navigate: "/staff/scholarship/application-period",
+                itemName: "application-period",
             },
         ],
     },
@@ -103,14 +106,24 @@ export const staffSidebarItems = [
         subItems: [
             {
                 text: "Scholars and Allowances",
-                navigate: "/staff/scholars-and-allowances",
+                navigate: "/staff/records/scholars-and-allowances",
+                itemName: "scholars-and-allowances",
             },
             {
                 text: "Monthly Allowance Summary",
-                navigate: "/staff/monthly-allowance-summary",
+                navigate: "/staff/records/monthly-allowance-summary",
+                itemName: "monthly-allowance-summary",
             },
-            { text: "Scholars", navigate: "/staff/scholars" },
-            { text: "Applications", navigate: "/staff/application-records" },
+            {
+                text: "Scholars",
+                navigate: "/staff/records/scholars",
+                itemName: "scholars",
+            },
+            {
+                text: "Applications",
+                navigate: "/staff/records/applications",
+                itemName: "applications",
+            },
         ],
     },
     {
@@ -118,33 +131,57 @@ export const staffSidebarItems = [
         itemName: "applications",
         icon: <ScrollText className="w-5 h-5 text-slate-600" />,
         subItems: [
-            { text: "Applications", navigate: "/staff/applications" },
+            {
+                text: "Applications",
+                navigate: "/staff/applications/applications-submitted",
+                itemName: "applications-submitted",
+            },
             {
                 text: "Reviewed Applications",
-                navigate: "/staff/reviewed-applications",
+                navigate: "/staff/applications/reviewed-applications",
+                itemName: "reviewed-applications",
             },
             {
                 text: "Entrance Examination",
-                navigate: "/staff/entrance-examination",
+                navigate: "/staff/applications/entrance-examination",
+                itemName: "entrance-examination",
             },
-            { text: "Initial Interview", navigate: "/staff/initial-interview" },
-            { text: "Home Visitation", navigate: "/staff/home-visitation" },
-            { text: "Final Interview", navigate: "/staff/final-interview" },
+            {
+                text: "Initial Interview",
+                navigate: "/staff/applications/initial-interview",
+                itemName: "initial-interview",
+            },
+            {
+                text: "Home Visitation",
+                navigate: "/staff/applications/home-visitation",
+                itemName: "home-visitation",
+            },
+            {
+                text: "Final Interview",
+                navigate: "/staff/applications/final-interview",
+                itemName: "final-interview",
+            },
             {
                 text: "Orientation & Awarding Attendance",
-                navigate: "/staff/orientation-awarding-attendance",
+                navigate: "/staff/applications/orientation-awarding-attendance",
+                itemName: "orientation-awarding-attendance",
             },
         ],
     },
     {
         text: "Events & Duty",
-        itemName: "events_duty",
+        itemName: "events-duty",
         icon: <Calendar className="w-5 h-5 text-slate-600" />,
         subItems: [
-            { text: "Events", navigate: "/staff/events" },
+            {
+                text: "Events",
+                navigate: "/staff/events-duty/events",
+                itemName: "events",
+            },
             {
                 text: "Community Services",
-                navigate: "/staff/community-services",
+                navigate: "/staff/events-duty/community-services",
+                itemName: "community-services",
             },
         ],
     },
@@ -173,28 +210,30 @@ export const adminSidebarItems = [
     // },
     {
         text: "Users & Accounts",
-        itemName: "manage_accounts",
+        itemName: "users-accounts",
         icon: <UserCog className="w-5 h-5 text-slate-600" />,
         subItems: [
             {
                 text: "Scholars",
-                navigate: "/admin/scholar-account-management",
+                navigate: "/admin/users-accounts/scholar-account-management",
+                itemName: "scholar-account-management",
             },
             {
                 text: "Staff",
-                navigate: "/admin/staff-account-management",
+                navigate: "/admin/users-accounts/staff-account-management",
+                itemName: "staff-account-management",
             },
         ],
     },
     {
         text: "School Years",
-        itemName: "school_years",
+        itemName: "school-years",
         icon: <CalendarRange className="w-5 h-5 text-slate-600" />,
         navigate: "/admin/school-years",
     },
     {
         text: "Audit logs",
-        itemName: "audit_log",
+        itemName: "audit-logs",
         icon: <FileSpreadsheet className="w-5 h-5 text-slate-600" />,
         navigate: "/admin/audit-logs",
     },

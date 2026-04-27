@@ -13,6 +13,7 @@ const EventButton = ({
     joinEvent,
     cancelEvent,
     eventId,
+    eventName,
     scholarId,
     onRefresh,
     activeTab,
@@ -28,7 +29,7 @@ const EventButton = ({
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/event-participants.php?scholar_id=${scholarId}&event_id=${eventId}`
+                `${BASE_URL}app/api/event-participants.php?scholar_id=${scholarId}&event_id=${eventId}`,
             );
 
             if (response.data.success) {
@@ -55,21 +56,21 @@ const EventButton = ({
         try {
             if (accountStatus === "not_renewed") {
                 toast.error(
-                    `You can’t join events until your renewal application is approved.`
+                    `You can’t join events until your renewal application is approved.`,
                 );
                 return;
             }
 
             if (numberOfParticipants === participantLimit) {
                 toast.error(
-                    `This event has reached its participant limit (${numberOfParticipants}/${participantLimit}).`
+                    `This event has reached its participant limit (${numberOfParticipants}/${participantLimit}).`,
                 );
                 return;
             }
 
             setIsOpen(false); // Close modal before joining
             setActionLoading(true);
-            await joinEvent(eventId, scholarId);
+            await joinEvent(eventName, eventId);
             setJoined(true); // Update state after successful join
             onRefresh(activeTab);
         } catch (error) {
@@ -85,7 +86,7 @@ const EventButton = ({
         try {
             setIsOpen(false); // Close modal before cancelling
             setActionLoading(true);
-            await cancelEvent(eventId, scholarId);
+            await cancelEvent(eventName, eventId, scholarId);
             setJoined(false); // Update state after successful cancel
             onRefresh(activeTab);
         } catch (error) {

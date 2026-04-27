@@ -8,12 +8,13 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [strands, setStrands] = useState([]);
+    const token = localStorage.getItem("token");
 
     const fetchItems = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/${endpoint}.php`
+                `${BASE_URL}app/api/${endpoint}.php`,
             );
 
             setItems(response.data.data || []);
@@ -41,16 +42,17 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json();
 
             if (result.success) {
                 const updatedItems = items.map((item) =>
-                    item.id === id ? { ...item, ...updateData } : item
+                    item.id === id ? { ...item, ...updateData } : item,
                 );
                 setItems(updatedItems);
                 toast.success(`${entityName} updated successfully.`);
@@ -67,7 +69,11 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
 
     const deleteItem = async (id) => {
         try {
-            await axios.delete(`${BASE_URL}app/api/${endpoint}.php?id=${id}`);
+            await axios.delete(`${BASE_URL}app/api/${endpoint}.php?id=${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             const updatedItems = items.filter((item) => item.id !== id);
             setItems(updatedItems);

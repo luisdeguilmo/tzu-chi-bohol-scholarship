@@ -13,6 +13,7 @@ export const useApplicationPeriods = (type) => {
     ] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const getSchoolYear = async (type) => {
         try {
@@ -82,6 +83,7 @@ export const useApplicationPeriods = (type) => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
                 },
@@ -113,7 +115,10 @@ export const useApplicationPeriods = (type) => {
                 `${BASE_URL}app/api/application-periods.php?id=${id}`,
                 {
                     method: "DELETE",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
                 },
             );
 
@@ -152,6 +157,8 @@ export const useApplicationPeriods = (type) => {
             },
         };
 
+        console.log(type.type);
+
         try {
             setLoading(true);
             const response = await fetch(
@@ -160,6 +167,7 @@ export const useApplicationPeriods = (type) => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
                 },

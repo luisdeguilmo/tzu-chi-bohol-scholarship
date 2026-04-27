@@ -6,12 +6,18 @@ export const useEventsOnStaff = (year, status, sortBy) => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const fetchEvents = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/events.php?is_staff=true&year=${year}&status=${status}&sort_by=${sortBy}`
+                `${BASE_URL}app/api/events.php?is_staff=true&year=${year}&status=${status}&sort_by=${sortBy}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             // Set application periods data
             setEvents(response.data.data || []);
@@ -20,7 +26,7 @@ export const useEventsOnStaff = (year, status, sortBy) => {
         } catch (err) {
             console.error("Error fetching application period data:", err);
             setError(
-                "Failed to load application period data. Please try again."
+                "Failed to load application period data. Please try again.",
             );
             setLoading(false);
         }

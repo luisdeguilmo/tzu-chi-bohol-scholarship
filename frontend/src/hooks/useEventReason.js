@@ -2,16 +2,22 @@ import { useState, useEffect, use } from "react";
 import axios from "axios";
 import BASE_URL from "../config";
 
-export const useEventReason = (scholarId, eventId) => {
+export const useEventReason = (eventId, type) => {
     const [privateComments, setPrivateComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const fetchPrivateComments = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/event-reason.php?event_id=${eventId}&user_type=staff`
+                `${BASE_URL}app/api/event-reason.php?event_id=${eventId}&user_type=staff`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             // Set application periods data
             setPrivateComments(response.data.data || []);
@@ -20,7 +26,7 @@ export const useEventReason = (scholarId, eventId) => {
         } catch (err) {
             console.error("Error fetching application period data:", err);
             setError(
-                "Failed to load application period data. Please try again."
+                "Failed to load application period data. Please try again.",
             );
             setLoading(false);
         }
@@ -30,7 +36,12 @@ export const useEventReason = (scholarId, eventId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/event-reason.php?scholar_id=${scholarId}&event_id=${eventId}&user_type=scholar`
+                `${BASE_URL}app/api/event-reason.php?event_id=${eventId}&user_type=scholar`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             // Set application periods data
             setPrivateComments(response.data.data || []);
@@ -39,7 +50,7 @@ export const useEventReason = (scholarId, eventId) => {
         } catch (err) {
             console.error("Error fetching application period data:", err);
             setError(
-                "Failed to load application period data. Please try again."
+                "Failed to load application period data. Please try again.",
             );
             setLoading(false);
         }
@@ -52,7 +63,7 @@ export const useEventReason = (scholarId, eventId) => {
         reason,
         firstName,
         lastName,
-        userType
+        userType,
     ) => {
         try {
             // Create the data structure for the update
@@ -76,9 +87,10 @@ export const useEventReason = (scholarId, eventId) => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json();
@@ -119,7 +131,7 @@ export const useEventReason = (scholarId, eventId) => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json();
@@ -142,9 +154,7 @@ export const useEventReason = (scholarId, eventId) => {
     const deletePrivateComment = async (id) => {
         try {
             // Make the API call to delete
-            await axios.delete(
-                `${BASE_URL}app/api/event-reason.php?id=${id}`
-            );
+            await axios.delete(`${BASE_URL}app/api/event-reason.php?id=${id}`);
 
             return true;
         } catch (error) {
@@ -154,12 +164,12 @@ export const useEventReason = (scholarId, eventId) => {
     };
 
     useEffect(() => {
-        if (scholarId && eventId) {
+        if (type === "scholar") {
             fetchScholarPrivateComments();
         } else {
             fetchPrivateComments();
         }
-    }, [eventId]);
+    }, [eventId, type]);
 
     return {
         loading,

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
+const token = localStorage.getItem("token");
+
 export const useCollegesUniversities = () => {
     const [collegesAndUniversities, setCollegesAndUniversities] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -11,7 +13,7 @@ export const useCollegesUniversities = () => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/colleges-universities.php`
+                `${BASE_URL}app/api/colleges-universities.php`,
             );
 
             if (response.data) {
@@ -38,9 +40,10 @@ export const useCollegesUniversities = () => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json(); // Parse as JSON instead of text
@@ -74,9 +77,10 @@ export const useCollegesUniversities = () => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json(); // Parse as JSON instead of text
@@ -102,7 +106,12 @@ export const useCollegesUniversities = () => {
         try {
             setIsLoading(true);
             const response = await axios.delete(
-                `${BASE_URL}app/api/colleges-universities.php?id=${id}`
+                `${BASE_URL}app/api/colleges-universities.php?id=${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data) {

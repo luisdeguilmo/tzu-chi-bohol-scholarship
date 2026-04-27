@@ -6,22 +6,22 @@
  * @author Ronny Sherer <ronny@hoojima.com>
  */
 
-$PHPMAILER_LANG['authenticate']         = 'שגיאת SMTP: פעולת האימות נכשלה.';
-$PHPMAILER_LANG['connect_host']         = 'שגיאת SMTP: לא הצלחתי להתחבר לשרת SMTP.';
-$PHPMAILER_LANG['data_not_accepted']    = 'שגיאת SMTP: מידע לא התקבל.';
-$PHPMAILER_LANG['empty_message']        = 'גוף ההודעה ריק';
-$PHPMAILER_LANG['invalid_address']      = 'כתובת שגויה: ';
-$PHPMAILER_LANG['encoding']             = 'קידוד לא מוכר: ';
-$PHPMAILER_LANG['execute']              = 'לא הצלחתי להפעיל את: ';
-$PHPMAILER_LANG['file_access']          = 'לא ניתן לגשת לקובץ: ';
-$PHPMAILER_LANG['file_open']            = 'שגיאת קובץ: לא ניתן לגשת לקובץ: ';
-$PHPMAILER_LANG['from_failed']          = 'כתובות הנמענים הבאות נכשלו: ';
-$PHPMAILER_LANG['instantiate']          = 'לא הצלחתי להפעיל את פונקציית המייל.';
-$PHPMAILER_LANG['mailer_not_supported'] = ' אינה נתמכת.';
-$PHPMAILER_LANG['provide_address']      = 'חובה לספק לפחות כתובת אחת של מקבל המייל.';
-$PHPMAILER_LANG['recipients_failed']    = 'שגיאת SMTP: הנמענים הבאים נכשלו: ';
-$PHPMAILER_LANG['signing']              = 'שגיאת חתימה: ';
+$PHPMAILER_LANG['authenticate']         = '×©×’×™××ª SMTP: ×¤×¢×•×œ×ª ×”××™×ž×•×ª × ×›×©×œ×”.';
+$PHPMAILER_LANG['connect_host']         = '×©×’×™××ª SMTP: ×œ× ×”×¦×œ×—×ª×™ ×œ×”×ª×—×‘×¨ ×œ×©×¨×ª SMTP.';
+$PHPMAILER_LANG['data_not_accepted']    = '×©×’×™××ª SMTP: ×ž×™×“×¢ ×œ× ×”×ª×§×‘×œ.';
+$PHPMAILER_LANG['empty_message']        = '×’×•×£ ×”×”×•×“×¢×” ×¨×™×§';
+$PHPMAILER_LANG['invalid_address']      = '×›×ª×•×‘×ª ×©×’×•×™×”: ';
+$PHPMAILER_LANG['encoding']             = '×§×™×“×•×“ ×œ× ×ž×•×›×¨: ';
+$PHPMAILER_LANG['execute']              = '×œ× ×”×¦×œ×—×ª×™ ×œ×”×¤×¢×™×œ ××ª: ';
+$PHPMAILER_LANG['file_access']          = '×œ× × ×™×ª×Ÿ ×œ×’×©×ª ×œ×§×•×‘×¥: ';
+$PHPMAILER_LANG['file_open']            = '×©×’×™××ª ×§×•×‘×¥: ×œ× × ×™×ª×Ÿ ×œ×’×©×ª ×œ×§×•×‘×¥: ';
+$PHPMAILER_LANG['from_failed']          = '×›×ª×•×‘×•×ª ×”× ×ž×¢× ×™× ×”×‘××•×ª × ×›×©×œ×•: ';
+$PHPMAILER_LANG['instantiate']          = '×œ× ×”×¦×œ×—×ª×™ ×œ×”×¤×¢×™×œ ××ª ×¤×•× ×§×¦×™×™×ª ×”×ž×™×™×œ.';
+$PHPMAILER_LANG['mailer_not_supported'] = ' ××™× ×” × ×ª×ž×›×ª.';
+$PHPMAILER_LANG['provide_address']      = '×—×•×‘×” ×œ×¡×¤×§ ×œ×¤×—×•×ª ×›×ª×•×‘×ª ××—×ª ×©×œ ×ž×§×‘×œ ×”×ž×™×™×œ.';
+$PHPMAILER_LANG['recipients_failed']    = '×©×’×™××ª SMTP: ×”× ×ž×¢× ×™× ×”×‘××™× × ×›×©×œ×•: ';
+$PHPMAILER_LANG['signing']              = '×©×’×™××ª ×—×ª×™×ž×”: ';
 $PHPMAILER_LANG['smtp_connect_failed']  = 'SMTP Connect() failed.';
-$PHPMAILER_LANG['smtp_error']           = 'שגיאת שרת SMTP: ';
-$PHPMAILER_LANG['variable_set']         = 'לא ניתן לקבוע או לשנות את המשתנה: ';
+$PHPMAILER_LANG['smtp_error']           = '×©×’×™××ª ×©×¨×ª SMTP: ';
+$PHPMAILER_LANG['variable_set']         = '×œ× × ×™×ª×Ÿ ×œ×§×‘×•×¢ ××• ×œ×©× ×•×ª ××ª ×”×ž×©×ª× ×”: ';
 //$PHPMAILER_LANG['extension_missing']    = 'Extension missing: ';

@@ -24,13 +24,16 @@ try {
     error_log('Could not load .env file: ' . $e->getMessage());
 }
 
+use App\Constants\Action;
 use App\Models\ActivityModel;
+use App\Models\AuditLogModel;
 use App\Models\CertificateOfAppearanceModel;
 use App\Models\NotificationsModel;
 use App\Models\ScholarModel;
 use App\Services\ActivityService;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
+use Middleware\Auth;
 
 class ActivityController
 {
@@ -112,6 +115,8 @@ class ActivityController
             // Parse input data
             $data = $this->parseInputData();
 
+            $auditLogModel = new AuditLogModel();
+
             if (!$data || !isset($data['activity'])) {
                 throw new \Exception('No activity data provided');
             }
@@ -120,8 +125,7 @@ class ActivityController
             $files = $_FILES['files'] ?? null;
             $base64Files = $data['uploaded_files'] ?? null;
 
-            $scholarId = $data['activity']['application_id'];
-
+            $scholarId = Auth::id();
             $scholar = $this->scholarModel->getScholarById($scholarId);
 
             if (!$emailService->sendCommunityServiceSubmitted($scholar)) {
@@ -130,10 +134,35 @@ class ActivityController
 
             // Create activity with files
             $activityId = $this->activityService->createActivityWithFiles(
+                $scholarId,
                 $data['activity'],
                 $files,
                 $base64Files,
             );
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $scholarId,
+                    'actor' => "{$scholar['first_name']} {$scholar['last_name']}",
+                    'user_role' => 'scholar',
+                    'action' => Action::DOCUMENT_SUBMITTED,
+                    'entity_type' => 'document',
+                    'entity_id' => $activityId,
+
+                    'description' =>
+                        $scholar['first_name'] .
+                        ' ' .
+                        $scholar['last_name'] .
+                        ' submitted community service report.',
+
+                    'old_values' => null,
+                    'new_values' => ['status' => 'submitted'],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
 
             if (
                 !$this->notificationModel->createNotificationForSubmittedCommunityService($scholar)
@@ -165,6 +194,8 @@ class ActivityController
             // Parse input data
             $data = $this->parseInputData();
 
+            $auditLogModel = new AuditLogModel();
+
             if (!$data || !isset($data['activity'])) {
                 throw new \Exception('No activity data provided');
             }
@@ -173,8 +204,12 @@ class ActivityController
             $files = $_FILES['files'] ?? null;
             $base64Files = $data['uploaded_files'] ?? null;
 
+            $scholarId = Auth::id();
+            $scholar = $this->scholarModel->getScholarById($scholarId);
+
             // Create activity with files
-            $activityId = $this->activityService->updateActivityWithFiles(
+            $activity = $this->activityService->updateActivityWithFiles(
+                $scholarId,
                 $data['activity'],
                 $data['existing_files'],
                 $data['existing_files_removed'],
@@ -182,12 +217,37 @@ class ActivityController
                 $base64Files,
             );
 
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $scholarId,
+                    'actor' => "{$scholar['first_name']} {$scholar['last_name']}",
+                    'user_role' => 'scholar',
+                    'action' => Action::DOCUMENT_UPDATED,
+                    'entity_type' => 'document',
+                    'entity_id' => $activity['activity_id'],
+
+                    'description' =>
+                        $scholar['first_name'] .
+                        ' ' .
+                        $scholar['last_name'] .
+                        ' updated and submitted ' .
+                        "{$activity['activity_name']}.",
+
+                    'old_values' => null,
+                    'new_values' => ['status' => 'updated'],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
             $this->pdo->commit();
 
             $this->sendResponse(201, [
                 'success' => true,
                 'message' => 'Activity created successfully',
-                'activity_id' => $activityId,
+                // 'activity_id' => $activityId,
             ]);
         } catch (\Exception $e) {
             $this->pdo->rollBack();
@@ -219,7 +279,7 @@ class ActivityController
             $activityModel = new ActivityModel();
 
             // Get ID parameter if it exists
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $id = Auth::id();
             $tab = $_GET['tab'] ?? null;
 
             $activities = [];

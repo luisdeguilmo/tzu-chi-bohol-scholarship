@@ -46,12 +46,10 @@ const ApplicationPeriod = () => {
         deleteApplicationPeriod,
     } = useApplicationPeriods();
 
-    
-
     useEffect(() => {
         fetchApplicationPeriods();
     }, []);
-
+    
     const handleDelete = async (id) => {
         await deleteApplicationPeriod(id);
         await fetchApplicationPeriods();

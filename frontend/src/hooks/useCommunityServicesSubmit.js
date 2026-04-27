@@ -4,9 +4,9 @@ import { useState } from "react";
 
 export const useCommunityServicesSubmit = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const token = localStorage.getItem("token");
 
     const resubmit = async (
-        user,
         activity,
         activityName,
         activityLocation,
@@ -23,7 +23,7 @@ export const useCommunityServicesSubmit = () => {
         convertFileToBase64,
         setIsOpen,
         resetForm,
-        onSuccess
+        onSuccess,
     ) => {
         setIsSubmitting(true);
 
@@ -37,7 +37,6 @@ export const useCommunityServicesSubmit = () => {
 
             const activityData = {
                 activity: {
-                    application_id: user?.user_id,
                     activity_id: activity.id,
                     activity_name: activityName,
                     activity_location: activityLocation,
@@ -78,7 +77,7 @@ export const useCommunityServicesSubmit = () => {
 
                     // Find the corresponding preview index for conversion status
                     const previewIndex = filePreviews.findIndex(
-                        (preview) => preview.originalFile === file
+                        (preview) => preview.originalFile === file,
                     );
 
                     try {
@@ -91,7 +90,7 @@ export const useCommunityServicesSubmit = () => {
                             toast.info(`Converting ${file.name} to PDF...`);
                             processedFile = await convertDocToPdf(
                                 file,
-                                previewIndex
+                                previewIndex,
                             );
 
                             // Update the file preview
@@ -129,16 +128,14 @@ export const useCommunityServicesSubmit = () => {
             }
 
             // Submit the data
-            const response = await fetch(
-                `${BASE_URL}app/api/activities.php`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(activityData),
-                }
-            );
+            const response = await fetch(`${BASE_URL}app/api/activities.php`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(activityData),
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -172,7 +169,6 @@ export const useCommunityServicesSubmit = () => {
     };
 
     const editSubmit = async (
-        user,
         activity,
         activityName,
         activityLocation,
@@ -189,7 +185,7 @@ export const useCommunityServicesSubmit = () => {
         convertFileToBase64,
         setIsOpen,
         resetForm,
-        onSuccess
+        onSuccess,
     ) => {
         setIsSubmitting(true);
         setIsLoading(true);
@@ -204,7 +200,6 @@ export const useCommunityServicesSubmit = () => {
 
             const activityData = {
                 activity: {
-                    application_id: user?.user_id,
                     activity_id: activity.id,
                     activity_name: activityName,
                     activity_location: activityLocation,
@@ -245,7 +240,7 @@ export const useCommunityServicesSubmit = () => {
 
                     // Find the corresponding preview index for conversion status
                     const previewIndex = filePreviews.findIndex(
-                        (preview) => preview.originalFile === file
+                        (preview) => preview.originalFile === file,
                     );
 
                     try {
@@ -258,7 +253,7 @@ export const useCommunityServicesSubmit = () => {
                             toast.info(`Converting ${file.name} to PDF...`);
                             processedFile = await convertDocToPdf(
                                 file,
-                                previewIndex
+                                previewIndex,
                             );
 
                             // Update the file preview
@@ -296,16 +291,14 @@ export const useCommunityServicesSubmit = () => {
             }
 
             // Submit the data
-            const response = await fetch(
-                `${BASE_URL}app/api/activities.php`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(activityData),
-                }
-            );
+            const response = await fetch(`${BASE_URL}app/api/activities.php`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(activityData),
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

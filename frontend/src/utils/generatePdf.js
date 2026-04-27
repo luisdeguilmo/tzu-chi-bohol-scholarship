@@ -1,21 +1,45 @@
 import { convertImageToBase64 } from "./convertImageToBase64";
-import { getExaminationFiles } from "./getExaminationFiles";
-import { getFinalInterviewFiles } from "./getFinalInterviewFiles";
-import { getHomeVisitationFiles } from "./getHomeVisitationFilesModel";
-import { getInitialInterviewFiles } from "./getInitialInterviewFiles";
-import { getProfilePicture } from "./getPdfProfilePicture";
-import { getRequirements } from "./getRequirements";
+// import { getExaminationFiles } from "./getExaminationFiles";
+// import { getFinalInterviewFiles } from "./getFinalInterviewFiles";
+// import { getHomeVisitationFiles } from "./getHomeVisitationFilesModel";
+// import { getInitialInterviewFiles } from "./getInitialInterviewFiles";
+// import { getProfilePicture } from "./getPdfProfilePicture";
+// import { getRequirements } from "./getRequirements";
 import FormLogo from "/src/assets/form_logo.png";
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 
 export const generatePDF = async (
     type,
     action,
     applicationId,
     scholarId,
-    applicantData
+    applicantData,
 ) => {
+    const { getExaminationFiles } = await import(
+        "./getExaminationFiles.js"
+    );
+    const { getFinalInterviewFiles } = await import(
+        "./getFinalInterviewFiles.js"
+    );
+    const { getHomeVisitationFiles } = await import(
+        "./getHomeVisitationFilesModel.js"
+    );
+    const { getInitialInterviewFiles } = await import(
+        "./getInitialInterviewFiles.js"
+    );
+    const { getProfilePicture } = await import(
+        "./getPdfProfilePicture.js"
+    );
+    const { getRequirements } = await import(
+        "./getRequirements.js"
+    );
+
+    const pdfMake = await import("pdfmake/build/pdfmake");
+    const pdfFonts = await import("pdfmake/build/vfs_fonts");
+
+    pdfMake.vfs = pdfFonts.vfs;
+
     if (!applicantData) {
         alert("No student data available");
         return;
@@ -32,12 +56,12 @@ export const generatePDF = async (
             if (applicationId) {
                 profilePictureBase64 = await getProfilePicture(
                     applicationId,
-                    "profile-picture"
+                    "profile-picture",
                 );
 
                 if (!profilePictureBase64) {
                     console.warn(
-                        "Failed to get profile picture, PDF will be generated without it"
+                        "Failed to get profile picture, PDF will be generated without it",
                     );
                 }
             }
@@ -45,12 +69,12 @@ export const generatePDF = async (
             if (scholarId) {
                 profilePictureBase64 = await getProfilePicture(
                     scholarId,
-                    "profile-picture"
+                    "profile-picture",
                 );
 
                 if (!profilePictureBase64) {
                     console.warn(
-                        "Failed to get profile picture, PDF will be generated without it"
+                        "Failed to get profile picture, PDF will be generated without it",
                     );
                 }
             }
@@ -62,7 +86,7 @@ export const generatePDF = async (
 
             if (!requirementsBase64) {
                 console.warn(
-                    "Failed to get requirements, PDF will be generated without them"
+                    "Failed to get requirements, PDF will be generated without them",
                 );
             }
         }
@@ -73,7 +97,7 @@ export const generatePDF = async (
 
             if (!examinationFilesBase64) {
                 console.warn(
-                    "Failed to get files, PDF will be generated without them"
+                    "Failed to get files, PDF will be generated without them",
                 );
             }
         }
@@ -85,7 +109,7 @@ export const generatePDF = async (
 
             if (!initialInterviewFilesBase64) {
                 console.warn(
-                    "Failed to get files, PDF will be generated without them"
+                    "Failed to get files, PDF will be generated without them",
                 );
             }
         }
@@ -97,7 +121,7 @@ export const generatePDF = async (
 
             if (!homeVisitationFilesBase64) {
                 console.warn(
-                    "Failed to get files, PDF will be generated without them"
+                    "Failed to get files, PDF will be generated without them",
                 );
             }
         }
@@ -109,7 +133,7 @@ export const generatePDF = async (
 
             if (!finalInterviewFilesBase64) {
                 console.warn(
-                    "Failed to get files, PDF will be generated without them"
+                    "Failed to get files, PDF will be generated without them",
                 );
             }
         }

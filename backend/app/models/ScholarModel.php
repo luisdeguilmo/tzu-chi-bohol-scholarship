@@ -53,11 +53,16 @@ class ScholarModel
 
     public function getScholarById($id)
     {
-        $query =
-            "SELECT s.*, u.status, u.email FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE s.account_id = :account_id AND u.status = 'active'";
+        $query = "
+        SELECT s.*, u.status, u.email 
+        FROM scholars s 
+        JOIN users u ON s.account_id = u.account_id 
+        WHERE s.account_id = :account_id 
+        AND u.status = 'active'
+    ";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':account_id', $id);
+        $stmt->bindParam(':account_id', $id, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }

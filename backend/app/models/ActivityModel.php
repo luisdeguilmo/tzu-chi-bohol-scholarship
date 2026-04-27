@@ -42,7 +42,7 @@ class ActivityModel
         }
     }
 
-    public function createActivity($activity_data, $batch_id)
+    public function createActivity($activity_data, $scholarId, $batch_id)
     {
         $query =
             'INSERT INTO ' .
@@ -62,7 +62,7 @@ class ActivityModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->account_id = htmlspecialchars(strip_tags($activity_data['application_id']));
+        $this->account_id = htmlspecialchars(strip_tags($scholarId));
         $this->activity_name = htmlspecialchars(strip_tags($activity_data['activity_name']));
         $this->activity_location = htmlspecialchars(
             strip_tags($activity_data['activity_location']),
@@ -84,13 +84,13 @@ class ActivityModel
         $stmt->bindParam(':batch_id', $batch_id);
 
         if ($stmt->execute()) {
-            return $this->account_id;
+            return $this->pdo->lastInsertId();
         }
 
         return false;
     }
 
-    public function updateActivity($activity_data, $batch_id)
+    public function updateActivity($activity_data, $scholarId, $batch_id)
     {
         $query =
             'UPDATE ' .
@@ -109,7 +109,7 @@ class ActivityModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->account_id = htmlspecialchars(strip_tags($activity_data['application_id']));
+        $this->account_id = htmlspecialchars(strip_tags($scholarId));
         $this->activity_id = htmlspecialchars(strip_tags($activity_data['activity_id']));
         $this->activity_name = htmlspecialchars(strip_tags($activity_data['activity_name']));
         $this->activity_location = htmlspecialchars(
@@ -133,7 +133,10 @@ class ActivityModel
         $stmt->bindParam(':batch_id', $batch_id);
 
         if ($stmt->execute()) {
-            return $this->account_id;
+            return [
+                'activity_id' => $this->activity_id,
+                'activity_name' => $this->activity_name,
+            ];
         }
 
         return false;

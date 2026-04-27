@@ -2,6 +2,7 @@ import { useState } from "react";
 import InputModal from "./InputModal";
 import { formatCurrency } from "../utils/formatCurrency";
 import { all } from "axios";
+import React from "react";
 
 function ConfirmationModal({
     isOpen,
@@ -72,7 +73,7 @@ function ConfirmationModal({
                                     {formatCurrency(
                                         allowanceSettings?.maximum_hours *
                                             allowanceSettings?.amount_per_hour ||
-                                            0
+                                            0,
                                     )}
                                 </li>
                             </ul>

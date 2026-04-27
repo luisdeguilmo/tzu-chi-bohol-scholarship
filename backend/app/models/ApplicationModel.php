@@ -153,7 +153,7 @@ class ApplicationModel
 
     public function checkEmailAddressForRenewal($email)
     {
-        $query = 'SELECT scholar_id FROM personal_information WHERE email = :email';
+        $query = "SELECT account_id AS scholar_id FROM users WHERE email = :email AND type = 'scholar'";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
@@ -169,20 +169,62 @@ class ApplicationModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function getNewScholarsFromPreviousSchoolYear()
+    // public function getNewScholarsFromPreviousSchoolYear()
+    // {
+    //     $query = "SELECT application_id FROM application_info WHERE type = 'New' AND status = 'scholar' AND school_year = '$this->previousSchoolYear' ORDER BY created_at DESC LIMIT 1";
+    //     $stmt = $this->pdo->prepare($query);
+    //     // $stmt->bindParam(':school_year', $previousSchoolYear);
+    //     $stmt->execute();
+    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    // }
+
+    // public function getOldScholarsFromPreviousSchoolYear()
+    // {
+    //     $query = "SELECT scholar_id FROM application_info WHERE type = 'Old' AND status = 'scholar' AND school_year = '$this->previousSchoolYear' ORDER BY created_at DESC LIMIT 1";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute();
+    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    // }
+
+    public function getNewScholarsFromPreviousSchoolYear($previousSchoolYear)
     {
-        $query = "SELECT application_id FROM application_info WHERE type = 'New' AND status = 'scholar' AND school_year = '$this->previousSchoolYear' ORDER BY created_at DESC LIMIT 1";
+        $query = "
+        SELECT ai.application_id, u.status 
+        FROM application_info ai
+        JOIN users u ON ai.application_id = u.account_id
+        WHERE ai.type = 'New'
+        AND ai.status = 'scholar'
+        AND ai.school_year != :school_year
+        AND u.status = 'active'
+        ORDER BY ai.created_at DESC
+    ";
+
         $stmt = $this->pdo->prepare($query);
-        // $stmt->bindParam(':school_year', $previousSchoolYear);
-        $stmt->execute();
+        $stmt->execute([
+            ':school_year' => $previousSchoolYear,
+        ]);
+
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getOldScholarsFromPreviousSchoolYear()
+    public function getOldScholarsFromPreviousSchoolYear($previousSchoolYear)
     {
-        $query = "SELECT scholar_id FROM application_info WHERE type = 'Old' AND status = 'scholar' AND school_year = '$this->previousSchoolYear' ORDER BY created_at DESC LIMIT 1";
+        $query = "
+            SELECT ai.scholar_id, u.status 
+            FROM application_info ai
+            JOIN users u ON ai.scholar_id = u.account_id
+            WHERE ai.type = 'Old'
+            AND ai.status = 'scholar'
+            AND ai.school_year != :school_year
+            AND u.status = 'active'
+            ORDER BY ai.created_at DESC
+        ";
+
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
+        $stmt->execute([
+            ':school_year' => $previousSchoolYear
+        ]);
+
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 

@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Models\ScholarModel;
 use Config\Database;
+use Middleware\Auth;
 
 class YearLevelController
 {
@@ -46,7 +47,7 @@ class YearLevelController
         try {
             $scholar = new ScholarModel();
 
-            $id = isset($_GET['scholar_id']) ? (int) $_GET['scholar_id'] : null;
+            $id = Auth::id();
             $schoolYear = $_GET['school_year'] ?? null;
 
             $yearLevel = $scholar->getCurrentYearLevel($id, $schoolYear);

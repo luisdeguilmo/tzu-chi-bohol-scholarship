@@ -44,7 +44,7 @@ class CoeGradesModel
         }
     }
 
-    public function createActivity($activity_data)
+    public function createActivity($activity_data, $scholarId)
     {
         $query =
             'INSERT INTO ' .
@@ -57,7 +57,7 @@ class CoeGradesModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->account_id = htmlspecialchars(strip_tags($activity_data['scholar_id']));
+        $this->account_id = htmlspecialchars(strip_tags($scholarId));
         $this->year_level = htmlspecialchars(strip_tags($activity_data['year_level']));
         $this->semester = htmlspecialchars(strip_tags($activity_data['semester']));
 
@@ -67,13 +67,13 @@ class CoeGradesModel
         $stmt->bindParam(':semester', $this->semester);
 
         if ($stmt->execute()) {
-            return $this->account_id;
+            return $this->pdo->lastInsertId();
         }
 
         return false;
     }
 
-    public function updateSubmission($activity_data)
+    public function updateSubmission($activity_data, $scholarId)
     {
         $query =
             'UPDATE ' .
@@ -83,7 +83,7 @@ class CoeGradesModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->account_id = htmlspecialchars(strip_tags($activity_data['scholar_id']));
+        $this->account_id = htmlspecialchars(strip_tags($scholarId));
         $this->year_level = htmlspecialchars(strip_tags($activity_data['year_level']));
         $this->semester = htmlspecialchars(strip_tags($activity_data['semester']));
         $this->id = htmlspecialchars(strip_tags($activity_data['id']));
@@ -100,13 +100,13 @@ class CoeGradesModel
         return false;
     }
 
-    public function checkSubmission($data)
+    public function checkSubmission($data, $scholarId)
     {
         $query =
             'SELECT id FROM coe_and_grades WHERE scholar_id = :scholar_id AND year_level = :year_level AND semester = :semester';
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':scholar_id', $data['scholar_id']);
+        $stmt->bindParam(':scholar_id', $scholarId);
         $stmt->bindParam(':year_level', $data['year_level']);
         $stmt->bindParam(':semester', $data['semester']);
         $stmt->execute();

@@ -90,7 +90,7 @@ const EventDetailsModal = React.memo(
             fetchScholarPrivateComments,
             markCommentAsRead,
             deletePrivateComment,
-        } = useEventReason(userId, localEvent?.id);
+        } = useEventReason(localEvent?.id, user.type);
 
         useEffect(() => {
             const markCommentsRead = async () => {
@@ -98,7 +98,7 @@ const EventDetailsModal = React.memo(
                     const success = await markCommentAsRead(
                         "scholar",
                         localEvent?.id,
-                        user.user_id
+                        user.user_id,
                     );
 
                     if (
@@ -111,7 +111,7 @@ const EventDetailsModal = React.memo(
                     const success = await markCommentAsRead(
                         "staff",
                         localEvent?.id,
-                        user.user_id
+                        user.user_id,
                     );
 
                     if (
@@ -146,10 +146,10 @@ const EventDetailsModal = React.memo(
         useEffect(() => {
             if (method === "automatic") {
                 const startTime = convertTo24HourFormat(
-                    localEvent?.start_time
+                    localEvent?.start_time,
                 ).split(":");
                 const endTime = convertTo24HourFormat(
-                    localEvent?.end_time
+                    localEvent?.end_time,
                 ).split(":");
                 const renderedHours = endTime[0] - startTime[0];
                 setRenderedHours(renderedHours);
@@ -159,7 +159,7 @@ const EventDetailsModal = React.memo(
         }, [method, localEvent]);
 
         const participated = localEvent?.participants.filter(
-            (participant) => participant.is_attended
+            (participant) => participant.is_attended,
         );
 
         const handleCancel = () => {
@@ -188,7 +188,7 @@ const EventDetailsModal = React.memo(
                 participants: prev.participants.map((participant) =>
                     selectedScholars.includes(participant.scholar_id)
                         ? { ...participant, is_attended: true }
-                        : participant
+                        : participant,
                 ),
             }));
 
@@ -207,7 +207,7 @@ const EventDetailsModal = React.memo(
         useMemo(() => {
             if (event?.event_type === "mandatory") {
                 const isExist = event.participants.some(
-                    (item) => item.scholar_id === userId
+                    (item) => item.scholar_id === userId,
                 );
 
                 if (isExist) {
@@ -248,7 +248,7 @@ const EventDetailsModal = React.memo(
                     : staffPrivateComment[groupIndex],
                 firstName,
                 lastName,
-                user.type
+                user.type,
             );
 
             if (success && isScholar) {
@@ -280,7 +280,7 @@ const EventDetailsModal = React.memo(
                 }
                 setItemIndex(index);
             },
-            [itemIndex, isDotMenuOpen]
+            [itemIndex, isDotMenuOpen],
         );
 
         useEffect(() => {
@@ -445,16 +445,16 @@ const EventDetailsModal = React.memo(
                                                                 <input
                                                                     type="checkbox"
                                                                     checked={selectedScholars.includes(
-                                                                        participant.scholar_id
+                                                                        participant.scholar_id,
                                                                     )}
                                                                     onChange={(
-                                                                        e
+                                                                        e,
                                                                     ) =>
                                                                         handleSelectScholar(
                                                                             participant.scholar_id,
                                                                             e
                                                                                 .target
-                                                                                .checked
+                                                                                .checked,
                                                                         )
                                                                     }
                                                                     className={`${
@@ -476,7 +476,7 @@ const EventDetailsModal = React.memo(
                                                     </span>
                                                 </label>
                                             </li>
-                                        )
+                                        ),
                                     )}
                                 </ul>
                             </div>
@@ -538,7 +538,7 @@ const EventDetailsModal = React.memo(
                                                     onChange={(e) => {
                                                         const value =
                                                             numbersOnly(
-                                                                e.target.value
+                                                                e.target.value,
                                                             );
                                                         setRenderedHours(value);
                                                     }}
@@ -587,7 +587,7 @@ const EventDetailsModal = React.memo(
                                                             </span>
                                                             <p className="mb-2 text-[11px] text-gray-500">
                                                                 {formatTimestamp(
-                                                                    comment.created_at
+                                                                    comment.created_at,
                                                                 )}
                                                             </p>
                                                         </div>
@@ -600,7 +600,7 @@ const EventDetailsModal = React.memo(
                                                                 onClick={(e) =>
                                                                     handleOpenDotMenu(
                                                                         e,
-                                                                        index
+                                                                        index,
                                                                     )
                                                                 }
                                                                 type="button"
@@ -617,14 +617,14 @@ const EventDetailsModal = React.memo(
                                                                     <button
                                                                         type="button"
                                                                         onClick={(
-                                                                            e
+                                                                            e,
                                                                         ) => {
                                                                             e.stopPropagation();
                                                                             handleDeleteComment(
-                                                                                comment.id
+                                                                                comment.id,
                                                                             );
                                                                             setIsDostMenuOpen(
-                                                                                false
+                                                                                false,
                                                                             );
                                                                         }}
                                                                         className="w-full text-center rounded-lg px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 transition-colors duration-150"
@@ -654,11 +654,11 @@ const EventDetailsModal = React.memo(
                                                                             e
                                                                                 .target
                                                                                 .value,
-                                                                    })
+                                                                    }),
                                                                 );
 
                                                                 setGroupIndex(
-                                                                    groupIndex
+                                                                    groupIndex,
                                                                 );
                                                             }}
                                                             className="w-[100%] border text-xs border-gray-300 rounded-lg py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
@@ -671,7 +671,7 @@ const EventDetailsModal = React.memo(
                                                                 e.preventDefault();
                                                                 handleSubmit(
                                                                     group[0]
-                                                                        .scholar_id
+                                                                        .scholar_id,
                                                                 );
                                                             }}
                                                             type="button"
@@ -682,7 +682,7 @@ const EventDetailsModal = React.memo(
                                                     </div>
                                                 </div>
                                             </li>
-                                        )
+                                        ),
                                     )}
                                 </ul>
                             </div>
@@ -718,7 +718,7 @@ const EventDetailsModal = React.memo(
                                                     </span>
                                                     <p className="mb-2 text-[11px] text-gray-500">
                                                         {formatTimestamp(
-                                                            comment.created_at
+                                                            comment.created_at,
                                                         )}
                                                     </p>
                                                 </div>
@@ -734,7 +734,7 @@ const EventDetailsModal = React.memo(
                                             <button
                                                 onClick={() =>
                                                     setIsPrivateCommentFieldOpen(
-                                                        true
+                                                        true,
                                                     )
                                                 }
                                                 className="private_comments px-4 pt-3 pb-5 italic text-xs text-green-600 hover:underline"
@@ -757,7 +757,7 @@ const EventDetailsModal = React.memo(
                                                     }
                                                     onChange={(e) =>
                                                         setScholarPrivateComment(
-                                                            e.target.value
+                                                            e.target.value,
                                                         )
                                                     }
                                                     className="w-[100%] border text-xs border-gray-200 rounded-lg py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
@@ -814,6 +814,7 @@ const EventDetailsModal = React.memo(
                                         joinEvent={joinEvent}
                                         cancelEvent={cancelEvent}
                                         eventId={localEvent?.id}
+                                        eventName={localEvent?.event_name}
                                         scholarId={userId}
                                         onRefresh={fetchEvents}
                                         activeTab={activeTab}
@@ -847,7 +848,7 @@ const EventDetailsModal = React.memo(
                 />
             </>
         );
-    }
+    },
 );
 
 export default EventDetailsModal;

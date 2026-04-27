@@ -7,7 +7,10 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/BatchModel.php';
 
+use App\Constants\Action;
+use App\Models\AuditLogModel;
 use App\Models\EducationModel;
+use App\Models\ScholarModel;
 use App\Models\ScholarsModel;
 use App\Models\SchoolTransportInfoModel;
 use Config\Database;
@@ -37,12 +40,6 @@ class SchoolTransportInfoController
                 break;
             case 'POST':
                 $this->handlePost();
-                break;
-            case 'PUT':
-                // $this->handlePut();
-                break;
-            case 'DELETE':
-                // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);
@@ -87,10 +84,11 @@ class SchoolTransportInfoController
             }
 
             $transportModel = new SchoolTransportInfoModel();
-            $scholarModel = new ScholarsModel();
+            $scholarsModel = new ScholarsModel();
             $educationModel = new EducationModel();
+            $scholarId = $data['scholar_id'];
 
-            $isExist = $transportModel->checkTransportInfoRecord($data['scholar_id']);
+            $isExist = $transportModel->checkTransportInfoRecord($scholarId);
 
             if ($isExist) {
                 if (!$transportModel->update($data)) {
@@ -106,7 +104,34 @@ class SchoolTransportInfoController
                 }
             }
 
-            $scholarModel->setIsSubmittedTransportInfo($data['scholar_id']);
+            $scholarModel = new ScholarModel();
+            $scholarsModel->setIsSubmittedTransportInfo($scholarId);
+            $scholar = $scholarModel->getScholarById($scholarId);
+            $auditLogModel = new AuditLogModel();
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $scholarId,
+                    'actor' => "{$scholar['first_name']} {$scholar['last_name']}",
+                    'user_role' => 'scholar',
+                    'action' => Action::FORM_SUBMITTED,
+                    'entity_type' => 'form',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $scholar['first_name'] .
+                        ' ' .
+                        $scholar['last_name'] .
+                        ' submitted scholar information form.',
+
+                    'old_values' => null,
+                    'new_values' => ['status' => 'submitted'],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
 
             $this->pdo->commit();
 

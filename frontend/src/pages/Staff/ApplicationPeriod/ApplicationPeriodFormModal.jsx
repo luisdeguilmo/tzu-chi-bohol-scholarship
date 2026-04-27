@@ -88,7 +88,7 @@ const ApplicationPeriodFormModal = React.memo(
                     schoolYear,
                     announcementMessage,
                     status,
-                    type === "new" ? type : selectedApplicationPeriod,
+                    type === "new" ? type : selectedApplicationPeriod.type,
                 );
                 setIsEditing(false);
                 await onRefresh();

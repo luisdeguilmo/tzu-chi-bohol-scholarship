@@ -46,7 +46,7 @@ class CheckEmailController
         try {
             $model = new ApplicationModel();
 
-            // ✅ Retrieve and sanitize query parameters
+            // âœ… Retrieve and sanitize query parameters
             $email = isset($_GET['email']) ? trim($_GET['email']) : null;
             $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
@@ -59,7 +59,7 @@ class CheckEmailController
                 return;
             }
 
-            // ✅ Renewal check (email + id provided)
+            // âœ… Renewal check (email + id provided)
             if ($id) {
                 $result = $model->checkEmailAddressForRenewal($email);
 
@@ -71,7 +71,7 @@ class CheckEmailController
                     }
 
                     if ($scholarId > 0 && $scholarId === $id) {
-                        // Same scholar – renewal allowed
+                        // Same scholar â€“ renewal allowed
                         http_response_code(200);
                         echo json_encode([
                             'success' => true,
@@ -102,7 +102,7 @@ class CheckEmailController
                 }
             }
 
-            // ✅ New application check (email only)
+            // âœ… New application check (email only)
             else {
                 $result = $model->checkEmailAddressForNew($email);
 

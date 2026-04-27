@@ -22,6 +22,7 @@ use App\Models\ScholarModel;
 use App\Models\ScholarOverviewDataModel;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
+use Middleware\Auth;
 
 class EventsController
 {
@@ -66,7 +67,7 @@ class EventsController
             $joinedScholars = new ScholarOverviewDataModel();
 
             // Get ID parameter if it exists
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $id = Auth::id();
             $tab = $_GET['tab'] ?? null;
             $year = $_GET['year'] ?? null;
             $status = $_GET['status'] ?? null;

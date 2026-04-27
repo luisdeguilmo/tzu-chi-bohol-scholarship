@@ -28,6 +28,7 @@ class ComposerStaticInitf0fd8d94f01f65c4a169b3a5c57bbd10
         'M' => 
         array (
             'Models\\' => 7,
+            'Middleware\\' => 11,
         ),
         'G' => 
         array (
@@ -36,6 +37,10 @@ class ComposerStaticInitf0fd8d94f01f65c4a169b3a5c57bbd10
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
+        ),
+        'E' => 
+        array (
+            'Enums\\' => 6,
         ),
         'D' => 
         array (
@@ -81,6 +86,10 @@ class ComposerStaticInitf0fd8d94f01f65c4a169b3a5c57bbd10
         array (
             0 => __DIR__ . '/../..' . '/models',
         ),
+        'Middleware\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app/middleware',
+        ),
         'GrahamCampbell\\ResultType\\' => 
         array (
             0 => __DIR__ . '/..' . '/graham-campbell/result-type/src',
@@ -88,6 +97,10 @@ class ComposerStaticInitf0fd8d94f01f65c4a169b3a5c57bbd10
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Enums\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/enums',
         ),
         'Dotenv\\' => 
         array (

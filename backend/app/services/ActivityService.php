@@ -23,14 +23,15 @@ class ActivityService
         $this->fileUploadService = new FileUploadService();
     }
 
-    public function createActivityWithFiles($activityData, $files = null, $base64Files = null)
+    public function createActivityWithFiles($scholarId, $activityData, $files = null, $base64Files = null)
     {
         $batch_id = $this->generateBatchId();
         // Validate activity data
         $this->validateActivityData($activityData);
 
         // Create activity
-        $activityId = $this->activityModel->createActivity($activityData, $batch_id);
+        $accountId = $scholarId;
+        $activityId = $this->activityModel->createActivity($activityData, $accountId, $batch_id);
 
         if (!$activityId) {
             throw new \Exception('Failed to create activity');
@@ -42,7 +43,7 @@ class ActivityService
         if ($files) {
             $uploadedFiles = array_merge(
                 $uploadedFiles,
-                $this->fileUploadService->handleFormDataFiles('activities', $files, $activityId),
+                $this->fileUploadService->handleFormDataFiles('activities', $files, $accountId),
             );
         }
 
@@ -52,7 +53,7 @@ class ActivityService
                 $this->fileUploadService->handleBase64Files(
                     'activities',
                     $base64Files,
-                    $activityId,
+                    $accountId,
                 ),
             );
         }
@@ -67,7 +68,7 @@ class ActivityService
                 'requirement_type' => 'certificate_of_appearance',
             ];
 
-            if (!$this->certificateModel->createCOA($fileData, $activityId, $batch_id)) {
+            if (!$this->certificateModel->createCOA($fileData, $accountId, $batch_id)) {
                 throw new \Exception('Failed to save file info: ' . $file['original_name']);
             }
         }
@@ -76,6 +77,7 @@ class ActivityService
     }
 
     public function updateActivityWithFiles(
+        $scholarId,
         $activityData,
         $existingFiles = [],
         $removedExistingFiles = [],
@@ -87,9 +89,10 @@ class ActivityService
         $this->validateActivityData($activityData);
 
         // Create activity
-        $activityId = $this->activityModel->updateActivity($activityData, $batch_id);
+        $accountId = $scholarId;
+        $activity = $this->activityModel->updateActivity($activityData, $scholarId, $batch_id);
 
-        if (!$activityId) {
+        if (!$accountId) {
             throw new \Exception('Failed to create activity');
         }
 
@@ -99,7 +102,7 @@ class ActivityService
         if ($files) {
             $uploadedFiles = array_merge(
                 $uploadedFiles,
-                $this->fileUploadService->handleFormDataFiles('activities', $files, $activityId),
+                $this->fileUploadService->handleFormDataFiles('activities', $files, $accountId),
             );
         }
 
@@ -109,7 +112,7 @@ class ActivityService
                 $this->fileUploadService->handleBase64Files(
                     'activities',
                     $base64Files,
-                    $activityId,
+                    $accountId,
                 ),
             );
         }
@@ -145,18 +148,17 @@ class ActivityService
                 'requirement_type' => 'certificate_of_appearance',
             ];
 
-            if (!$this->certificateModel->createCOA($fileData, $activityId, $batch_id)) {
+            if (!$this->certificateModel->createCOA($fileData, $accountId, $batch_id)) {
                 throw new \Exception('Failed to save file info: ' . $file['original_name']);
             }
         }
 
-        return $activityId;
+        return $activity;
     }
 
     private function validateActivityData($data)
     {
         $required = [
-            'application_id',
             'activity_name',
             'activity_location',
             'activity_date',

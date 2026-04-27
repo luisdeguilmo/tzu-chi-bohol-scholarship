@@ -48,7 +48,7 @@ const NavigationButtons = ({
 
     const { isEmailExist, refetch } = useCheckEmail(
         formData?.personal_information.email,
-        user?.user_id ?? null
+        user?.user_id ?? null,
     );
 
     const { loading, result, validateEmail } = useValidateEmail();
@@ -66,14 +66,14 @@ const NavigationButtons = ({
             const { errors, hasErrors } = validateSection(
                 section1.toString(),
                 formData,
-                formConfig
+                formConfig,
             );
 
             if (section2) {
                 const { errors, hasErrors } = validateSection(
                     section2,
                     formData,
-                    formConfig
+                    formConfig,
                 );
 
                 if (hasErrors) {
@@ -91,12 +91,12 @@ const NavigationButtons = ({
         if (
             (section === "Personal" &&
                 !isValidContactNumber(
-                    formData.personal_information.contact_number
+                    formData.personal_information.contact_number,
                 )) ||
             (section === "Personal" &&
                 formData.personal_information.secondary_contact !== "" &&
                 !isValidContactNumber(
-                    formData.personal_information.secondary_contact
+                    formData.personal_information.secondary_contact,
                 ))
         ) {
             toast.error("Invalid contact number.");
@@ -122,7 +122,7 @@ const NavigationButtons = ({
                 toast.error(
                     user?.user_id
                         ? "Email is already used."
-                        : "An application with this email already exists."
+                        : "An application with this email already exists.",
                 );
                 return;
             }
@@ -131,7 +131,7 @@ const NavigationButtons = ({
         // FIXED: Properly await the validation result
         if (section === "Personal") {
             const isValid = await validateEmail(
-                formData.personal_information.email
+                formData.personal_information.email,
             );
             if (!isValid) {
                 return;
@@ -143,7 +143,7 @@ const NavigationButtons = ({
             !isValidContactNumber(formData.parents_guardian.father_contact)
         ) {
             toast.error(
-                "Father's contact number is invalid. Please enter a valid phone number."
+                "Father's contact number is invalid. Please enter a valid phone number.",
             );
             return;
         }
@@ -153,7 +153,7 @@ const NavigationButtons = ({
             !isValidContactNumber(formData.parents_guardian.mother_contact)
         ) {
             toast.error(
-                "Mother's contact number is invalid. Please enter a valid phone number."
+                "Mother's contact number is invalid. Please enter a valid phone number.",
             );
             return;
         }
@@ -164,7 +164,7 @@ const NavigationButtons = ({
             !isValidContactNumber(formData.parents_guardian.guardian_contact)
         ) {
             toast.error(
-                "Guardian's contact number is invalid. Please enter a valid phone number."
+                "Guardian's contact number is invalid. Please enter a valid phone number.",
             );
             return;
         }
@@ -172,11 +172,11 @@ const NavigationButtons = ({
         if (
             section === "Family" &&
             !isValidContactNumber(
-                formData.contact_person.emergency_contact_number
+                formData.contact_person.emergency_contact_number,
             )
         ) {
             toast.error(
-                "Emergency contact number is invalid. Please provide a valid phone number."
+                "Emergency contact number is invalid. Please provide a valid phone number.",
             );
             return;
         }
@@ -228,7 +228,7 @@ const NavigationButtons = ({
         if (section === "Family") {
             if (isTzuChiSiblingsApplicable === null) {
                 toast.error(
-                    "Please select whether you have siblings who received Tzu Chi Educational Assistance."
+                    "Please select whether you have siblings who received Tzu Chi Educational Assistance.",
                 );
                 return;
             }
@@ -237,7 +237,7 @@ const NavigationButtons = ({
         if (section === "Family") {
             if (isOtherAssistanceApplicable === null) {
                 toast.error(
-                    "Please select whether you received assistance from other organizations."
+                    "Please select whether you received assistance from other organizations.",
                 );
                 return;
             }
@@ -246,7 +246,7 @@ const NavigationButtons = ({
         if (section === "Family") {
             if (isThirdFormApplicable && formData.family_members.length === 0) {
                 toast.error(
-                    "Please provide information for all your siblings."
+                    "Please provide information for all your siblings.",
                 );
                 return;
             }
@@ -258,7 +258,7 @@ const NavigationButtons = ({
                 formData.tzu_chi_siblings.length === 0
             ) {
                 toast.error(
-                    "Please add at least one sibling who received Tzu Chi Educational Assistance."
+                    "Please add at least one sibling who received Tzu Chi Educational Assistance.",
                 );
                 return;
             }
@@ -270,7 +270,7 @@ const NavigationButtons = ({
                 formData.other_assistance.length === 0
             ) {
                 toast.error(
-                    "Please provide the details of the assistance you received."
+                    "Please provide the details of the assistance you received.",
                 );
                 return;
             }
@@ -296,7 +296,7 @@ const NavigationButtons = ({
 
             if (refs.length > 3) {
                 toast.error(
-                    "You can only add a maximum of 3 character references."
+                    "You can only add a maximum of 3 character references.",
                 );
                 return;
             }

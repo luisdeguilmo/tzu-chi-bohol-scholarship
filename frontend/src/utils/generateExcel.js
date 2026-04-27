@@ -1,5 +1,5 @@
 import { saveAs } from "file-saver";
-import ExcelJS from "exceljs";
+// import ExcelJS from "exceljs";
 import BASE_URL from "../config";
 import axios from "axios";
 import { getCurrentSchoolYear } from "./getCurrentSchoolYear";
@@ -15,7 +15,7 @@ export const generateExcel = () => {
             const blob = new Blob([buffer], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             });
-            
+
             // Create FormData to send file
             const formData = new FormData();
             formData.append("file", blob, `${fileName}.xlsx`);
@@ -30,7 +30,7 @@ export const generateExcel = () => {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
-                }
+                },
             );
 
             return response.data;
@@ -41,6 +41,7 @@ export const generateExcel = () => {
     };
 
     const exportAllowancesToExcel = async (data, fileName) => {
+        const ExcelJS = (await import("exceljs")).default;
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Allowances");
 
@@ -311,7 +312,7 @@ export const generateExcel = () => {
                 grandTotalRow.number,
                 3,
                 grandTotalRow.number,
-                4
+                4,
             );
 
             // Style the GRAND TOTAL row
@@ -383,6 +384,7 @@ export const generateExcel = () => {
     };
 
     const exportScholarInformationToExcel = async (dataArray, fileName) => {
+        const ExcelJS = (await import('exceljs')).default
         if (!Array.isArray(dataArray) || dataArray.length === 0) {
             console.error("No valid data found to export");
             return false;
@@ -417,6 +419,7 @@ export const generateExcel = () => {
     };
 
     const exportActiveScholars = async (data, fileName) => {
+        const ExcelJS = (await import('exceljs')).default
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Allowances");
 

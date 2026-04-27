@@ -49,7 +49,7 @@ class AccountStatusController
         try {
             $model = new ScholarsModel();
 
-            // ✅ Retrieve and sanitize query parameters
+            // âœ… Retrieve and sanitize query parameters
             $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
             $accountStatus = $model->getAccountStatus($id);

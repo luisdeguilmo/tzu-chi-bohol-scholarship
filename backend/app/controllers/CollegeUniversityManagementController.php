@@ -6,9 +6,13 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Constants\Action;
+use App\Models\AuditLogModel;
 use App\Models\CollegeUniversityManagementModel;
 use App\Models\ScholarshipCriteriaModel;
+use App\Models\StaffAccountModel;
 use Config\Database;
+use Middleware\Auth;
 
 class CollegeUniversityManagementController
 {
@@ -114,9 +118,35 @@ class CollegeUniversityManagementController
 
             // Process application data
             $model = new CollegeUniversityManagementModel();
+            $auditLogModel = new AuditLogModel();
+            $staffModel = new StaffAccountModel();
+            $staffId = Auth::id();
 
             if (!$model->create($data['college_university'])) {
                 throw new \Exception('Failed to save course information');
+            }
+
+            $staff = $staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::SCHOOL_CREATED,
+                    'entity_type' => 'school',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $staff['first_name'] . ' ' . $staff['last_name'] . ' added new school.',
+
+                    'old_values' => null,
+                    'new_values' => ['school' => $data['college_university']],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();
@@ -173,6 +203,33 @@ class CollegeUniversityManagementController
                 throw new \Exception('Failed to update information');
             }
 
+            $auditLogModel = new AuditLogModel();
+            $staffModel = new StaffAccountModel();
+            $staffId = Auth::id();
+
+            $staff = $staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::SCHOOL_UPDATED,
+                    'entity_type' => 'school',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $staff['first_name'] . ' ' . $staff['last_name'] . ' updated a school.',
+
+                    'old_values' => ['school' => $existing['name']],
+                    'new_values' => ['school' => $data['name']],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
             $this->pdo->commit();
 
             // Return success response
@@ -218,6 +275,33 @@ class CollegeUniversityManagementController
 
             if (!$model->delete($id)) {
                 throw new \Exception('Failed to delete course');
+            }
+
+            $auditLogModel = new AuditLogModel();
+            $staffModel = new StaffAccountModel();
+            $staffId = Auth::id();
+
+            $staff = $staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::SCHOOL_DELETED,
+                    'entity_type' => 'school',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $staff['first_name'] . ' ' . $staff['last_name'] . ' deleted a school.',
+
+                    'old_values' => null,
+                    'new_values' => null,
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();

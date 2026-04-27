@@ -9,6 +9,7 @@ require_once __DIR__ . '/../Models/ArchivedActivitiesModel.php';
 
 use App\Models\ArchivedActivitiesModel;
 use Config\Database;
+use Middleware\Auth;
 
 class ArchivedActivitiesController
 {
@@ -55,6 +56,13 @@ class ArchivedActivitiesController
             $this->pdo->beginTransaction();
 
             $data = json_decode(file_get_contents('php://input'), true);
+            $id = Auth::id();
+
+            file_put_contents(
+                __DIR__ . '/debug.log',
+                'Staff ID: ' . $id . PHP_EOL,
+                FILE_APPEND,
+            );
 
             if (!$data) {
                 throw new \Exception('No data provided');
@@ -63,7 +71,7 @@ class ArchivedActivitiesController
             // Process application data
             $archive = new ArchivedActivitiesModel();
 
-            if (!$archive->archiveActivity($data)) {
+            if (!$archive->archiveActivity($data, $id)) {
                 throw new \Exception('Failed to archive activity');
             }
 
@@ -89,61 +97,13 @@ class ArchivedActivitiesController
         }
     }
 
-    // private function handlePost() {
-    //     try {
-    //         $this->pdo->beginTransaction();
-
-    //         // Handle data from both FormData and direct JSON
-    //         if (isset($_POST['batch'])) {
-    //             // Handle data from FormData
-    //             $data = json_decode($_POST['batch'], true);
-    //         } else {
-    //             // Handle direct JSON input
-    //             $data = json_decode(file_get_contents("php://input"), true);
-    //         }
-
-    //         file_put_contents("log.txt", json_encode($data) . PHP_EOL, FILE_APPEND);
-
-    //         if (!$data) {
-    //             throw new \Exception("No data provided");
-    //         }
-
-    //         // Process application data
-    //         $criteria = new BatchModel();
-
-    //         if (!$criteria->createBatch($data)) {
-    //             throw new \Exception("Failed to save batch information");
-    //         }
-
-    //         $this->pdo->commit();
-
-    //         // Return success response
-    //         http_response_code(201);
-    //         echo json_encode(array(
-    //             "success" => true,
-    //             "message" => "Batch created successfully"
-    //         ));
-    //     } catch (\Exception $e) {
-    //         // Roll back transaction on error
-    //         if ($this->pdo->inTransaction()) {
-    //             $this->pdo->rollBack();
-    //         }
-
-    //         http_response_code(400);
-    //         echo json_encode(array(
-    //             "success" => false,
-    //             "message" => $e->getMessage()
-    //         ));
-    //     }
-    // }
-
     private function handleGet()
     {
         try {
             $archived = new ArchivedActivitiesModel();
 
             // Get ID parameter if it exists
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $id = Auth::id();
             $tab = $_GET['tab'] ?? null;
 
             $result = [];
@@ -191,6 +151,7 @@ class ArchivedActivitiesController
             $this->pdo->beginTransaction();
 
             $data = json_decode(file_get_contents('php://input'), true);
+            $id = Auth::id();
 
             if (!$data) {
                 throw new \Exception('No data provided');
@@ -199,7 +160,7 @@ class ArchivedActivitiesController
             // Process application data
             $archive = new ArchivedActivitiesModel();
 
-            if (!$archive->unArchiveActivity($data)) {
+            if (!$archive->unArchiveActivity($data, $id)) {
                 throw new \Exception('Failed to unarchive activity');
             }
 

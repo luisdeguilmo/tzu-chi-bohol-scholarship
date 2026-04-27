@@ -97,6 +97,25 @@ class NotificationsModel
         }
     }
 
+    public function createNotificationForSubmittedCoeGrades($data)
+    {
+        $id = $this->createNotification([
+            'type' => 'coe_grades',
+            'title' => 'COE and Grades Submitted',
+            'message' =>
+                $data['first_name'] .
+                ' ' .
+                $data['last_name'] .
+                ' has submitted Certificate of Enrollment and Grades.',
+        ]);
+
+        if ($id) {
+            return $this->createStaffNotification($id);
+        } else {
+            return false;
+        }
+    }
+
     public function createNewPendingScholarsNotification($pendingScholarsCount)
     {
         $id = $this->createNotification([
@@ -121,7 +140,7 @@ class NotificationsModel
             'message' =>
                 'A new event "' .
                 $data['event_name'] .
-                '" has been created and you’re invited to join!. Check it out and don’t miss the chance to be part of this event!',
+                '" has been created and youâ€™re invited to join!. Check it out and donâ€™t miss the chance to be part of this event!',
         ]);
 
         if ($id) {
