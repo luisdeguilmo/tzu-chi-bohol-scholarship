@@ -172,16 +172,21 @@ class ApplicationPeriodController
                     'user_id' => $staffId,
                     'actor' => "{$staff['first_name']} {$staff['last_name']}",
                     'user_role' => 'staff',
-                    'action' => Action::APPLICATION_PERIOD_CREATE,
+                    'action' =>
+                        $application['type'] === 'new'
+                            ? Action::APPLICATION_PERIOD_CREATE
+                            : Action::RENEWAL_APPLICATION_PERIOD_CREATE,
                     'entity_type' => 'application_period',
                     'entity_id' => null,
-
-                    'description' =>
-                        $staff['first_name'] .
-                        ' ' .
-                        $staff['last_name'] .
-                        " created an application period from {$application['startDate']} to {$application['endDate']} for S.Y {$application['schoolYear']}.",
-
+                    'description' => sprintf(
+                        '%s %s created %s application period from %s to %s for S.Y. %s.',
+                        $staff['first_name'],
+                        $staff['last_name'],
+                        $application['type'] === 'new' ? 'an' : 'a renewal',
+                        $application['startDate'],
+                        $application['endDate'],
+                        $application['schoolYear'],
+                    ),
                     'old_values' => null,
                     'new_values' => [
                         'application_period' => [
@@ -267,16 +272,21 @@ class ApplicationPeriodController
                     'user_id' => $staffId,
                     'actor' => "{$staff['first_name']} {$staff['last_name']}",
                     'user_role' => 'staff',
-                    'action' => Action::APPLICATION_PERIOD_UPDATE,
+                    'action' =>
+                        $application['type'] === 'new'
+                            ? Action::APPLICATION_PERIOD_UPDATE
+                            : Action::RENEWAL_APPLICATION_PERIOD_UPDATE,
                     'entity_type' => 'application_period',
                     'entity_id' => null,
-
-                    'description' =>
-                        $staff['first_name'] .
-                        ' ' .
-                        $staff['last_name'] .
-                        " updated an application period from {$application['startDate']} to {$application['endDate']} for S.Y {$application['schoolYear']}.",
-
+                    'description' => sprintf(
+                        '%s %s updated %s application period from %s to %s for S.Y. %s.',
+                        $staff['first_name'],
+                        $staff['last_name'],
+                        $application['type'] === 'new' ? 'an' : 'a renewal',
+                        $application['startDate'],
+                        $application['endDate'],
+                        $application['schoolYear'],
+                    ),
                     'old_values' => [
                         'application_period' => [
                             'start_date' => $existing['start_date'],
@@ -337,11 +347,18 @@ class ApplicationPeriodController
 
             $applicationPeriod = new ApplicationPeriodModel();
 
-            if (!$applicationPeriod->getApplicationPeriodById($id)) {
+            $application = $applicationPeriod->getApplicationPeriodById($id);
+
+            if (!$application) {
                 $this->sendError(404, 'Application period not found');
                 $this->rollbackIfActive();
                 return;
             }
+
+            $type = $application['type'] ?? '';
+            $start_date = $application['start_date'] ?? '';
+            $end_date = $application['end_date'] ?? '';
+            $school_year = $application['school_year'] ?? '';
 
             if (!$applicationPeriod->deleteApplicationPeriod($id)) {
                 throw new \RuntimeException('Unable to delete application period');
@@ -355,15 +372,22 @@ class ApplicationPeriodController
                     'user_id' => $staffId,
                     'actor' => "{$staff['first_name']} {$staff['last_name']}",
                     'user_role' => 'staff',
-                    'action' => Action::APPLICATION_PERIOD_DELETE,
+                    'action' =>
+                        $application['type'] === 'new'
+                            ? Action::APPLICATION_PERIOD_DELETE
+                            : Action::RENEWAL_APPLICATION_PERIOD_DELETE,
                     'entity_type' => 'application_period',
                     'entity_id' => null,
 
-                    'description' =>
-                        $staff['first_name'] .
-                        ' ' .
-                        $staff['last_name'] .
-                        ' deleted an application period.',
+                    'description' => sprintf(
+                        '%s %s deleted %s application period from %s to %s for S.Y. %s.',
+                        $staff['first_name'],
+                        $staff['last_name'],
+                        $type === 'new' ? 'an' : 'a renewal',
+                        $start_date,
+                        $end_date,
+                        $school_year,
+                    ),
 
                     'old_values' => null,
                     'new_values' => null,

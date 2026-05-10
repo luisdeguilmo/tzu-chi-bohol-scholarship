@@ -4,15 +4,21 @@ import { formatTime } from "../utils/formatTime";
 import {
     Calendar,
     CheckCircle,
+    CheckSquare,
     CircleAlert,
     Clock,
     MapPin,
+    ReceiptPoundSterling,
+    SquareActivity,
+    SquareCheck,
     X,
 } from "lucide-react";
 import { convertTo24HourFormat } from "../utils/convertTo24HourFormat";
 import { numbersOnly } from "../utils/inputValidations";
 import { useRecordHours } from "../hooks/useRecordHours";
 import BASE_URL from "../config";
+import pdfIcon from "../assets/pdf.png";
+import imgIcon from "../assets/photo.png";
 
 const CommunityServiceDetailsModal = React.memo(
     ({
@@ -44,13 +50,15 @@ const CommunityServiceDetailsModal = React.memo(
             }
         }, [activity]);
 
+        console.log(filePreviews);
+
         useEffect(() => {
             if (method === "automatic") {
                 const startTime = convertTo24HourFormat(
-                    activity?.start_time
+                    activity?.start_time,
                 ).split(":");
                 const endTime = convertTo24HourFormat(activity?.end_time).split(
-                    ":"
+                    ":",
                 );
                 const renderedHours = endTime[0] - startTime[0];
                 setRenderedHours(renderedHours);
@@ -67,7 +75,7 @@ const CommunityServiceDetailsModal = React.memo(
                 year,
                 month,
                 status,
-                sort
+                sort,
             );
             await onClose(false);
             setAction("");
@@ -81,12 +89,13 @@ const CommunityServiceDetailsModal = React.memo(
             await markAsNotRecorded(
                 activity?.id,
                 activity?.application_id,
+                activity,
                 feedback,
                 year,
                 month,
                 status,
                 sort,
-                onRefresh
+                onRefresh,
             );
             await onClose(false);
             setAction("");
@@ -155,7 +164,7 @@ const CommunityServiceDetailsModal = React.memo(
                                     id="modal-title"
                                     className="text-sm text-slate-700 pr-10 leading-tight"
                                 >
-                                    {activity?.activity_name}
+                                    Duty Report Details
                                 </h2>
                                 <button
                                     type="button"
@@ -177,13 +186,16 @@ const CommunityServiceDetailsModal = React.memo(
                             >
                                 {/* Event Details Grid */}
                                 <div className="p-6 space-y-6">
+                                    <h3 className="font-semibold flex items-center gap-2 -mb-3 rounded-md text-sm text-gray-700">
+                                        {activity?.activity_name}
+                                    </h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-4 gap-6 text-xs">
                                         <div className="-mb-3 sm:mb-0 space-y-3">
                                             <div className="flex items-center text-slate-600">
                                                 <Calendar className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
                                                 <span className="text-slate-700 font-medium">
                                                     {formatDate(
-                                                        activity?.activity_date
+                                                        activity?.activity_date,
                                                     )}
                                                 </span>
                                             </div>
@@ -203,11 +215,11 @@ const CommunityServiceDetailsModal = React.memo(
                                                 <Clock className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
                                                 <span className="text-slate-700 font-medium">
                                                     {formatTime(
-                                                        activity?.start_time
+                                                        activity?.start_time,
                                                     )}{" "}
                                                     -{" "}
                                                     {formatTime(
-                                                        activity?.end_time
+                                                        activity?.end_time,
                                                     )}
                                                 </span>
                                             </div>
@@ -241,17 +253,45 @@ const CommunityServiceDetailsModal = React.memo(
                                                         className="p-2 bg-gray-50 rounded-md flex justify-between text-xs items-center text-gray-500 border"
                                                     >
                                                         <div className="flex items-center">
-                                                            {/* PDF Preview */}
-                                                            {isPdf(
-                                                                filePreview.file_type
-                                                            ) && (
-                                                                <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center cursor-pointer hover:bg-red-200 transition-colors">
+                                                            {isImage(
+                                                                filePreview.file_type,
+                                                            ) ? (
+                                                                <img
+                                                                    src={
+                                                                        filePreview.file_url
+                                                                    }
+                                                                    alt={
+                                                                        filePreview.name
+                                                                    }
+                                                                    className="w-12 h-12 object-cover rounded mr-2"
+                                                                    onError={(
+                                                                        e,
+                                                                    ) => {
+                                                                        e.target.style.display =
+                                                                            "none";
+                                                                    }}
+                                                                />
+                                                            ) : isPdf(
+                                                                  filePreview.file_type,
+                                                              ) ? (
+                                                                <img
+                                                                    src={
+                                                                        pdfIcon
+                                                                    }
+                                                                    alt={
+                                                                        filePreview.name
+                                                                    }
+                                                                    className="w-12 h-12 object-cover rounded mr-2"
+                                                                    onError={(
+                                                                        e,
+                                                                    ) => {
+                                                                        e.target.style.display =
+                                                                            "none";
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
                                                                     <svg
-                                                                        onClick={() =>
-                                                                            openPdfViewer(
-                                                                                filePreview
-                                                                            )
-                                                                        }
                                                                         xmlns="http://www.w3.org/2000/svg"
                                                                         className="h-6 w-6 text-red-600"
                                                                         fill="none"
@@ -269,76 +309,66 @@ const CommunityServiceDetailsModal = React.memo(
                                                                     </svg>
                                                                 </div>
                                                             )}
-
-                                                            {/* Image Preview */}
-                                                            {isImage(
-                                                                filePreview.file_type
-                                                            ) && (
-                                                                <img
-                                                                    src={`${URL}/${filePreview.file_path}`}
-                                                                    alt={
-                                                                        filePreview.file_name
-                                                                    }
-                                                                    className="w-12 h-12 object-cover rounded mr-2"
-                                                                />
-                                                            )}
-
                                                             <div className="flex-1">
-                                                                <div className="font-medium text-gray-700 flex items-center">
-                                                                    {
-                                                                        filePreview.file_name
-                                                                    }
-                                                                    {/* {isPdf(
-                                                    filePreview.file_type
-                                                ) && (
-                                                    <span className="ml-2 px-2 py-1 bg-red-100 text-red-800 text-xs rounded">
-                                                        PDF
-                                                    </span>
-                                                )} */}
+                                                                <div className="w-full md:w-[150px] lg:w-[130px] font-medium text-gray-700 flex items-center text-xs">
+                                                                    <p
+                                                                        title={
+                                                                            filePreview.file_name
+                                                                        }
+                                                                        className="truncate"
+                                                                    >
+                                                                        {
+                                                                            filePreview.file_name
+                                                                        }
+                                                                    </p>
                                                                 </div>
-                                                                {/* <div className="text-gray-500">
-                                                    {(
-                                                        filePreview.size / 1024
-                                                    ).toFixed(2)}{" "}
-                                                    KB
-                                                </div> */}
-                                                                {/* {isPdf(filePreview.type) && (
-                                        <button
-                                            onClick={() => openPdfViewer(filePreview)}
-                                            className="text-blue-600 hover:text-blue-800 text-xs mt-1"
-                                        >
-                                            Click to view PDF
-                                        </button>
-                                    )} */}
+
                                                                 {isPdf(
-                                                                    filePreview.file_type
+                                                                    filePreview.file_type,
                                                                 ) && (
                                                                     <button
-                                                                        onClick={() =>
+                                                                        onClick={(
+                                                                            e,
+                                                                        ) => {
+                                                                            e.preventDefault();
+                                                                            // window.open(
+                                                                            //     BASE_PUBLIC_URL +
+                                                                            //         filePreview.file_path,
+                                                                            //     "_blank",
+                                                                            // )
                                                                             window.open(
-                                                                                URL +
-                                                                                    filePreview.file_path,
-                                                                                "_blank"
-                                                                            )
-                                                                        }
-                                                                        className="text-blue-600 hover:text-blue-800 text-xs mt-1"
+                                                                                filePreview.file_url,
+                                                                                "_blank",
+                                                                            );
+                                                                            // setShowPdf(true);
+                                                                            // setFileURL(
+                                                                            //     filePreview.file_url,
+                                                                            // );
+                                                                        }}
+                                                                        className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
                                                                     >
                                                                         Click to
                                                                         view PDF
                                                                     </button>
                                                                 )}
+
                                                                 {isImage(
-                                                                    filePreview.file_type
+                                                                    filePreview.file_type,
                                                                 ) && (
                                                                     <button
+                                                                        type="button"
                                                                         onClick={() =>
+                                                                            // window.open(
+                                                                            //     BASE_PUBLIC_URL +
+                                                                            //         filePreview.file_path,
+                                                                            //     "_blank",
+                                                                            // )
                                                                             window.open(
-                                                                                URL +
-                                                                                    filePreview.file_path,
-                                                                                "_blank"
+                                                                                filePreview.file_url,
+                                                                                "_blank",
                                                                             )
                                                                         }
-                                                                        className="text-blue-600 hover:text-blue-800 text-xs mt-1"
+                                                                        className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
                                                                     >
                                                                         Click to
                                                                         view
@@ -370,7 +400,7 @@ const CommunityServiceDetailsModal = React.memo(
                                         </svg>
                                     </button> */}
                                                     </li>
-                                                )
+                                                ),
                                             )}
                                         </ul>
                                     )}
@@ -388,7 +418,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                         value={action}
                                                         onChange={() => {
                                                             setAction(
-                                                                "approve"
+                                                                "approve",
                                                             );
                                                         }}
                                                         name="action"
@@ -438,7 +468,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                         value={method}
                                                         onChange={() =>
                                                             setMethod(
-                                                                "automatic"
+                                                                "automatic",
                                                             )
                                                         }
                                                         name="rendered"
@@ -476,11 +506,11 @@ const CommunityServiceDetailsModal = React.memo(
                                                             const value =
                                                                 numbersOnly(
                                                                     e.target
-                                                                        .value
+                                                                        .value,
                                                                 );
 
                                                             setRenderedHours(
-                                                                value
+                                                                value,
                                                             );
                                                         }}
                                                         required
@@ -622,7 +652,7 @@ const CommunityServiceDetailsModal = React.memo(
                 )}
             </div>
         );
-    }
+    },
 );
 
 export default CommunityServiceDetailsModal;

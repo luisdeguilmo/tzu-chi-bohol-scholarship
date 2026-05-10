@@ -11,7 +11,7 @@ class Cors
         $allowedOrigins = [
             'http://localhost:5173',
             'http://localhost:3000',
-            $_ENV['APP_URL'] ?? getenv('APP_URL') ?? '',
+            $_ENV['ALLOWED_ORIGIN'] ?? getenv('ALLOWED_ORIGIN') ?? '',
         ];
 
         $origin = $_SERVER['ALLOWED_ORIGIN'] ?? '';

@@ -364,12 +364,9 @@ function ApplicationForm({ includeRequirements = true }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const fetchSchoolYear = async () => {
-            const data = await getSchoolYear("new");
-            formData.application_info.school_year = data?.school_year;
-        };
+        const data = await getSchoolYear("new");
+        formData.application_info.school_year = data?.school_year;
 
-        fetchSchoolYear();
         // formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.status = "New";
         formData.educational_background.year_level = 1;

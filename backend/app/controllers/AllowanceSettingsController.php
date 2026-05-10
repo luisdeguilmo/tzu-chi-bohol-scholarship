@@ -6,17 +6,25 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 
+use App\Constants\Action;
 use App\Models\AllowanceSettingsModel;
+use App\Models\AuditLogModel;
+use App\Models\StaffAccountModel;
 use Config\Database;
+use Middleware\Auth;
 
 class AllowanceSettingsController
 {
     private $pdo;
+    private $auditLogModel;
+    private $staffModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
     public function processRequest()
@@ -95,6 +103,38 @@ class AllowanceSettingsController
 
             if (!$model->setMaximumHoursAndAmountPerHour($data)) {
                 throw new \Exception('Failed to save score information');
+            }
+
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::ALLOWANCE_SETTINGS_UPDATE,
+                    'entity_type' => 'allowance',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $staff['first_name'] .
+                        ' ' .
+                        $staff['last_name'] .
+                        ' updated the allowance settings.',
+
+                    'old_values' => null,
+                    'new_values' => [
+                        'allowance_settings' => [
+                            'maximum_hours' => $data['maximum_hours'],
+                            'amount_per_hour' => $data['amount_per_hour'],
+                        ],
+                    ],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();

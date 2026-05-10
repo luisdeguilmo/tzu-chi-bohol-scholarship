@@ -32,11 +32,11 @@ class MonthlyAllowanceSummaryModel
             $this->table_name;
 
         if ($month !== 'all_months' && $year !== 'all_years') {
-            $query .= " WHERE MONTH(cycle_month) = '$month' AND YEAR(cycle_month)  = '$year'";
+            $query .= " WHERE MONTH(allowance_month) = '$month' AND YEAR(allowance_month)  = '$year'";
         } elseif ($month !== 'all_months' && $year === 'all_years') {
-            $query .= " WHERE MONTH(cycle_month) = '$month'";
+            $query .= " WHERE MONTH(allowance_month) = '$month'";
         } elseif ($month === 'all_months' && $year !== 'all_years') {
-            $query .= " WHERE YEAR(cycle_month)  = '$year'";
+            $query .= " WHERE YEAR(allowance_month)  = '$year'";
         }
 
         // $query .= ' ORDER BY ai.created_at DESC';

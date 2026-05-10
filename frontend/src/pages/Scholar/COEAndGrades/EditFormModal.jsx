@@ -4,6 +4,7 @@ import BASE_URL from "../../../config";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import { useAccountStatus } from "../../../hooks/useAccountStatus";
+import pdfIcon from "../../../assets/pdf.png";
 
 const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
     const [semester, setSemester] = useState(submission.semester || "");
@@ -12,7 +13,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
     const [existingFiles, setExistingFiles] = useState([]);
     const [existingFilesRemoved, setExistingFilesRemoved] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [conversionStatus, setConversionStatus] = useState({});
     const fileInputRef = useRef(null);
     const { user } = useAuth();
     const { accountStatus } = useAccountStatus(user.user_id);
@@ -27,10 +27,10 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                 name: file.file_name,
                 size: file.file_size,
                 type: file.file_type,
+                file_url: file?.file_url,
                 preview: file.file_type.startsWith("image/")
                     ? `${BASE_URL}public/${file.file_path}`
                     : null,
-                isConverting: false,
                 isExisting: true,
                 originalFile: null,
             }));
@@ -48,7 +48,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
             size: file.size,
             type: file.type,
             preview: URL.createObjectURL(file),
-            isConverting: false,
             isExisting: false,
             originalFile: file,
         }));
@@ -87,12 +86,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
         const newPreviews = [...filePreviews];
         newPreviews.splice(index, 1);
         setFilePreviews(newPreviews);
-
-        setConversionStatus((prev) => {
-            const newStatus = { ...prev };
-            delete newStatus[index];
-            return newStatus;
-        });
     };
 
     const handleChange = (setValue, value) => {
@@ -117,7 +110,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
         setFiles([]);
         setFilePreviews([]);
         setExistingFiles([]);
-        setConversionStatus({});
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -135,19 +127,10 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
         });
     };
 
-    const convertDocToPdf = async (file, fileIndex) => {
-        // Keep your existing CloudConvert implementation
-        // ... (same as in your original code)
-    };
+    const isPdf = (type) => type === "application/pdf";
+    const isImage = (type) => type && type.startsWith("image/");
 
     const handleSubmit = async () => {
-        // if (accountStatus === "not_renewed") {
-        //     toast.error(
-        //         `You can't resubmit COE and grades until your renewal application is approved.`
-        //     );
-        //     return;
-        // }
-
         setIsSubmitting(true);
 
         try {
@@ -161,44 +144,19 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                 },
             };
 
-            // Process files
             if (files.length > 0) {
                 const uploadedFiles = [];
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
-                    let processedFile = file;
 
                     try {
-                        if (
-                            file.type === "application/msword" ||
-                            file.type ===
-                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        ) {
-                            toast.info(`Converting ${file.name} to PDF...`);
-                            processedFile = await convertDocToPdf(file, i);
-
-                            setFilePreviews((prev) => {
-                                const newPreviews = [...prev];
-                                if (newPreviews[i]) {
-                                    newPreviews[i] = {
-                                        ...newPreviews[i],
-                                        name: processedFile.name,
-                                        type: processedFile.type,
-                                        size: processedFile.size,
-                                    };
-                                }
-                                return newPreviews;
-                            });
-                        }
-
-                        const base64Data =
-                            await convertFileToBase64(processedFile);
+                        const base64Data = await convertFileToBase64(file);
                         uploadedFiles.push({
-                            filename: processedFile.name,
+                            filename: file.name,
                             base64_data: base64Data,
-                            file_type: processedFile.type,
-                            file_size: processedFile.size,
+                            file_type: file.type,
+                            file_size: file.size,
                         });
                     } catch (error) {
                         console.error("Error processing file:", error);
@@ -245,16 +203,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
         }
     };
 
-    const isDocOrDocx = (fileType) => {
-        return (
-            fileType === "application/msword" ||
-            fileType ===
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        );
-    };
-
-    const isImage = (type) => type && type.startsWith("image/");
-
     return (
         <InputModal
             label={
@@ -274,25 +222,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
             <div>
                 <div className="py-4 overflow-y-auto scroll-smooth max-h-[400px]">
                     <div className="px-8 grid grid-cols-1 gap-2">
-                        {/* <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
-                            Year Level
-                            <select
-                                required
-                                value={yearLevel}
-                                onChange={(e) =>
-                                    handleChange(setYearLevel, e.target.value)
-                                }
-                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            >
-                                <option value="">Select year level</option>
-                                <option value="1st Year">1st Year</option>
-                                <option value="2nd Year">2nd Year</option>
-                                <option value="3rd Year">3rd Year</option>
-                                <option value="4th Year">4th Year</option>
-                                <option value="5th Year">5th Year</option>
-                            </select>
-                        </label> */}
-
                         <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
                             Semester
                             <select
@@ -323,7 +252,7 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                             ref={fileInputRef}
                             onChange={handleFileSelect}
                             multiple
-                            accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
+                            accept=".jpeg,.jpg,.png,.gif,.pdf"
                             style={{ display: "none" }}
                         />
                         <button
@@ -363,20 +292,20 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                                     className="p-2 bg-gray-50 rounded-lg flex justify-between text-xs items-center text-gray-500 border"
                                 >
                                     <div className="flex truncate items-center">
-                                        {filePreview.type &&
-                                        filePreview.type.startsWith("image/") &&
-                                        filePreview.preview ? (
+                                        {isImage(filePreview.type) ? (
                                             <img
                                                 src={filePreview.preview}
                                                 alt={filePreview.name}
                                                 className="w-12 h-12 object-cover rounded mr-2"
-                                                onError={(e) => {
-                                                    e.target.style.display =
-                                                        "none";
-                                                }}
+                                            />
+                                        ) : isPdf(filePreview.type) ? (
+                                            <img
+                                                src={pdfIcon}
+                                                alt={filePreview.name}
+                                                className="w-12 h-12 object-cover rounded mr-2"
                                             />
                                         ) : (
-                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center cursor-pointer hover:bg-red-200 transition-colors">
+                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     className="h-6 w-6 text-red-600"
@@ -395,36 +324,54 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
                                         )}
 
                                         <div>
-                                            <div className="font-medium text-gray-700 flex items-center">
-                                                {filePreview.name}
-                                                {!filePreview.isExisting &&
-                                                    isDocOrDocx(
-                                                        filePreview.type,
-                                                    ) && (
-                                                        <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                                                            Will convert to PDF
-                                                        </span>
-                                                    )}
-                                            </div>
-                                            {conversionStatus[index] && (
-                                                <div
-                                                    className={`text-xs mt-1 ${
-                                                        conversionStatus[index]
-                                                            .status === "error"
-                                                            ? "text-red-500"
-                                                            : conversionStatus[
-                                                                    index
-                                                                ].status ===
-                                                                "completed"
-                                                              ? "text-green-500"
-                                                              : "text-blue-500"
-                                                    }`}
+                                            <div className="w-full md:w-[150px] lg:w-[130px] font-medium text-gray-700 flex items-center text-xs">
+                                                <span
+                                                    title={filePreview.name}
+                                                    className="truncate"
                                                 >
-                                                    {
-                                                        conversionStatus[index]
-                                                            .message
+                                                    {filePreview.name}
+                                                </span>
+                                            </div>
+                                            <div className="text-gray-500">
+                                                {(
+                                                    filePreview.size / 1024
+                                                ).toFixed(2)}{" "}
+                                                KB
+                                            </div>
+
+                                            {isPdf(filePreview.type) && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+
+                                                        window.open(
+                                                            filePreview?.file_url
+                                                                ? filePreview.file_url
+                                                                : filePreview.preview,
+                                                            "_blank",
+                                                        );
+                                                    }}
+                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
+                                                >
+                                                    Click to view PDF
+                                                </button>
+                                            )}
+
+                                            {isImage(filePreview.type) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        window.open(
+                                                            filePreview?.file_url
+                                                                ? filePreview.file_url
+                                                                : filePreview.preview,
+                                                            "_blank",
+                                                        )
                                                     }
-                                                </div>
+                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
+                                                >
+                                                    Click to view image
+                                                </button>
                                             )}
                                         </div>
                                     </div>

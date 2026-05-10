@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import axios from "axios";
@@ -10,7 +11,6 @@ const BatchesTableRow = ({
     currentItems,
     selectedApplicants,
     toggleApplicantSelection,
-    profilePics,
     onRefresh,
 }) => {
     const [edit, setEdit] = useState(false);
@@ -112,7 +112,7 @@ const BatchesTableRow = ({
                         <div className="w-[30%]"></div>
                         <div className="w-[max-content] flex items-center text-left gap-2">
                             <img
-                                src={profilePics[info.application_id]}
+                                src={info[0].profile}
                                 alt="Profile"
                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                             />

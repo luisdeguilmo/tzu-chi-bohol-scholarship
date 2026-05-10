@@ -282,9 +282,17 @@ class CoeAndGradesController
             $coeGradesModel = new CoeGradesModel();
 
             // Get ID parameter if it exists
-            $id = Auth::id();
+            $id = null;
+            $auth_id = Auth::id();
+            $scholar_id = $_GET['scholar_id'];
             $tab = $_GET['tab'] ?? null;
             $year_level = $_GET['year_level'] ?? null;
+
+            if ($coeGradesModel->getCoeGradesById($auth_id)) {
+                $id = $auth_id;
+            } else {
+                $id = $scholar_id;
+            }
 
             $result = [];
             $submissions = [];

@@ -7,7 +7,7 @@ import { useExamination } from "./useExamination";
 export const useAssignBatch = (endpoint) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    // const { fetchApplications } = useExamination(tab);
+    const token = localStorage.getItem("token");
 
     const assignStudents = async (selectedApplicants, selectedBatch) => {
         if (selectedApplicants.length === 0) {
@@ -31,8 +31,9 @@ export const useAssignBatch = (endpoint) => {
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             if (response.data.success) {
@@ -50,7 +51,7 @@ export const useAssignBatch = (endpoint) => {
             console.error("Error assigning batch:", err);
             setError(
                 "Failed to assign batch to applicants: " +
-                    (err.response?.data?.message || err.message)
+                    (err.response?.data?.message || err.message),
             );
             setLoading(false);
             return false;
@@ -79,8 +80,9 @@ export const useAssignBatch = (endpoint) => {
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             if (response.data.success) {
@@ -98,7 +100,7 @@ export const useAssignBatch = (endpoint) => {
             console.error("Error assigning batch:", err);
             setError(
                 "Failed to assign batch to applicants: " +
-                    (err.response?.data?.message || err.message)
+                    (err.response?.data?.message || err.message),
             );
             setLoading(false);
             return false;

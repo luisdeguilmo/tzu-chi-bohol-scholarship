@@ -7,6 +7,7 @@ class AllowanceCycleModel
 {
     private $table_name = 'allowance_cycles';
     private $pdo;
+    private $currentMonth;
     private $currentDate;
     private $currentYearAndMonth;
     private $previousYearAndMonth;
@@ -15,6 +16,7 @@ class AllowanceCycleModel
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->currentMonth = date('m');
         $this->currentDate = date('Y-m-d');
         $this->currentYearAndMonth = date('Y-m');
         // Get previous month in Y-m format
@@ -123,10 +125,15 @@ class AllowanceCycleModel
             return [
                 'success' => true,
                 'rendered_month' => $this->previousYearAndMonth,
+                'allowance_month' => $this->currentMonth,
             ];
         }
 
-        return ['success' => false];
+        return [
+            'success' => false,
+            'rendered_month' => null,
+            'allowance_month' => null,
+        ];
     }
 
     /**

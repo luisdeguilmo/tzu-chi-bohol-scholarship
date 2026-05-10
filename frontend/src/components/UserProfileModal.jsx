@@ -16,7 +16,7 @@ function UserProfileModal({
     };
 
     return (
-        <div>
+        <>
             {isOpen && (
                 <div className="fixed z-50 inset-0 flex items-center justify-center bg-[rgba(0,0,0,.3)] bg-opacity-50">
                     <div className="h-[600px] w-[80%] lg:w-[60%] bg-white rounded-sm shadow-md flex flex-col">
@@ -47,7 +47,7 @@ function UserProfileModal({
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }
 

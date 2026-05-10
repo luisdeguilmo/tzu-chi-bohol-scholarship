@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useBatches } from "../../../hooks/useBatches";
 import { usePagination } from "../../../hooks/usePagination";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import ManageApplicants from "./ManageApplicants";
@@ -70,11 +69,6 @@ export default function OrientationAndAwarding() {
         sortBy
     );
 
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        applications,
-        "profile-picture"
-    );
-
     useEffect(() => {
         fetchBatches();
 
@@ -121,7 +115,7 @@ export default function OrientationAndAwarding() {
         setActiveTab(tab);
         setCurrentPage(1);
         setStatus("all");
-        setSelectedBatch(batches[0].batch_name);
+        setSelectedBatch(batches[0]?.batch_name);
         setSelectedBatchInBatches("all");
         setSelectedApplicants([]);
     };
@@ -295,7 +289,6 @@ export default function OrientationAndAwarding() {
                                         toggleApplicantSelection={
                                             toggleApplicantSelection
                                         }
-                                        profilePics={profilePics}
                                     />
                                 );
                             case "Orientation":
@@ -307,7 +300,6 @@ export default function OrientationAndAwarding() {
                                         toggleApplicantSelection={
                                             toggleApplicantSelection
                                         }
-                                        profilePics={profilePics}
                                         onRefresh={
                                             fetchApplicationsOnOrientationTab
                                         }
@@ -320,7 +312,6 @@ export default function OrientationAndAwarding() {
                                 return (
                                     <AwardingTableRow
                                         currentItems={currentItems}
-                                        profilePics={profilePics}
                                         onOpenModal={setIsChangeStatusModalOpen}
                                         onSelectScholarId={setScholarId}
                                         onSelectScholar={setSelectedScholar}

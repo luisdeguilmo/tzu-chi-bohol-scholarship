@@ -1,23 +1,36 @@
-<?php 
+<?php
 namespace App\Controllers;
 
-header("Content-Type: application/json");
+header('Content-Type: application/json');
 
-require_once __DIR__ . "/../../vendor/autoload.php";
+require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 
+use App\Constants\Action;
 use App\Models\ApplicantModel;
+use App\Models\AuditLogModel;
+use App\Models\PersonalModel;
+use App\Models\SchoolYearModel;
+use App\Models\StaffAccountModel;
 use Config\Database;
+use Middleware\Auth;
 
-class BatchExaminationController {
+class BatchExaminationController
+{
     private $pdo;
-    
-    public function __construct() {
+    private $auditLogModel;
+    private $staffModel;
+
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
-    public function processRequest() {
+    public function processRequest()
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             http_response_code(200);
             return;
@@ -26,137 +39,200 @@ class BatchExaminationController {
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
         switch ($requestMethod) {
-            case "GET":
+            case 'GET':
                 $this->handleGet();
                 break;
-            case "POST":
+            case 'POST':
                 $this->handlePost();
                 break;
-            case "PUT":
+            case 'PUT':
                 $this->handlePut();
                 break;
-            case "DELETE":
+            case 'DELETE':
                 // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);
-                echo json_encode(array("message" => "Method not allowed"));
+                echo json_encode(['message' => 'Method not allowed']);
                 break;
         }
     }
 
-    private function handlePost() {
+    private function handlePost()
+    {
         try {
             $this->pdo->beginTransaction();
-            
+
             // Handle data from both FormData and direct JSON
             if (isset($_POST['applicantIds'])) {
                 // Handle data from FormData
                 $data = $_POST;
             } else {
                 // Handle direct JSON input
-                $data = json_decode(file_get_contents("php://input"), true);
+                $data = json_decode(file_get_contents('php://input'), true);
             }
-            
-            file_put_contents("log.txt", json_encode($data) . PHP_EOL, FILE_APPEND);
-            
+
+            file_put_contents('log.txt', json_encode($data) . PHP_EOL, FILE_APPEND);
+
             if (!$data) {
-                throw new \Exception("No data provided");
+                throw new \Exception('No data provided');
             }
-            
+
             // Check if we have applicantIds and batch
             if (!isset($data['applicantIds']) || !isset($data['batch'])) {
-                throw new \Exception("Missing required fields: applicantIds or batch");
+                throw new \Exception('Missing required fields: applicantIds or batch');
             }
-            
+
             // Process multiple applicants
             $applicationInfo = new ApplicantModel();
+            $personal = new PersonalModel();
             $successCount = 0;
-            
+            $applicant_names = [];
+
             foreach ($data['applicantIds'] as $applicantId) {
                 if ($applicationInfo->assignApplicants($applicantId, $data['batch'])) {
                     $successCount++;
                 }
+
+                $name = $personal->getPersonalInformation($applicantId);
+                $applicant_names[] = "{$name['first_name']} {$name['last_name']}";
             }
-            
+
+            $applicant_list = implode(', ', $applicant_names);
+
             if ($successCount === 0) {
-                throw new \Exception("Failed to add batch information to any applicant");
+                throw new \Exception('Failed to add batch information to any applicant');
             }
-            
+
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::APPLICANT_BATCH_ASSIGN,
+                    'entity_type' => 'examination',
+                    'entity_id' => null,
+                    'description' =>
+                        "{$staff['first_name']} {$staff['last_name']} assigned " .
+                        count($applicant_names) .
+                        " applicants to batch '{$data['batch']}' for the examination: {$applicant_list}.",
+                    'old_values' => null,
+                    'new_values' => [
+                        'batch' => $data['batch'],
+                        'applicants' => $applicant_names,
+                    ],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
             $this->pdo->commit();
-            
+
             // Return success response
             http_response_code(201);
-            echo json_encode(array(
-                "success" => true,
-                "message" => "Batch added successfully to {$successCount} applicant(s)"
-            ));
+            echo json_encode([
+                'success' => true,
+                'message' => "Batch added successfully to {$successCount} applicant(s)",
+            ]);
         } catch (\Exception $e) {
             // Roll back transaction on error
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
-            
+
             http_response_code(400);
-            echo json_encode(array(
-                "success" => false,
-                "message" => $e->getMessage()
-            ));
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
-    private function handlePut() {
+    private function handlePut()
+    {
         try {
             $this->pdo->beginTransaction();
-            
+
             // Handle data from both FormData and direct JSON
             if (isset($_POST['id'])) {
                 // Handle data from FormData
                 $data = $_POST; // No need to json_decode if it's directly in $_POST
             } else {
                 // Handle direct JSON input
-                $data = json_decode(file_get_contents("php://input"), true);
+                $data = json_decode(file_get_contents('php://input'), true);
             }
-            
-            file_put_contents("log.txt", json_encode($data) . PHP_EOL, FILE_APPEND);
-            
+
+            file_put_contents('log.txt', json_encode($data) . PHP_EOL, FILE_APPEND);
+
             if (!$data) {
-                throw new \Exception("No data provided");
+                throw new \Exception('No data provided');
             }
-            
+
             // Process application data
             $applicationInfo = new ApplicantModel();
-            
+            $personal = new PersonalModel();
+
             if (!$applicationInfo->markAsUnassigned($data['id'])) {
-                throw new \Exception("Failed to add batch information");
+                throw new \Exception('Failed to add batch information');
             }
-            
+
+            $applicant = $personal->getPersonalInformation($data['id']);
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::APPLICANT_BATCH_UNASSIGN,
+                    'entity_type' => 'examination',
+                    'entity_id' => null,
+                    'description' => "{$staff['first_name']} {$staff['last_name']} unassigned {$applicant['first_name']} {$applicant['last_name']} from batch '{$data['batch']}' for the examination.",
+                    'old_values' => null,
+                    'new_values' => [
+                        'batch' => $data['batch'],
+                        'applicant' => "{$applicant['first_name']} {$applicant['last_name']}",
+                    ],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
             $this->pdo->commit();
-            
+
             // Return success response
             http_response_code(201);
-            echo json_encode(array(
-                "success" => true,
-                "message" => "Batch added successfully to application_info"
-            ));
+            echo json_encode([
+                'success' => true,
+                'message' => 'Batch added successfully to application_info',
+            ]);
         } catch (\Exception $e) {
             // Roll back transaction on error
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
-            
+
             http_response_code(400);
-            echo json_encode(array(
-                "success" => false,
-                "message" => $e->getMessage()
-            ));
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
-    private function handleGet() {
+    private function handleGet()
+    {
         try {
             $criteria = new ApplicantModel();
-            
+
             // Get ID parameter if it exists
             $id = isset($_GET['batch']) ? $_GET['batch'] : null;
             $hasScore = isset($_GET['score']) ? $_GET['score'] : null;
@@ -164,126 +240,42 @@ class BatchExaminationController {
             $status = $_GET['status'] ?? null;
             $sort = $_GET['sort'] ?? null;
 
+            $schoolYearModel = new SchoolYearModel();
+            $activeSchoolYear = $schoolYearModel->getActiveSchoolYear();
+
             $result = [];
+            $data = [];
 
             if ($id == 'all') {
-                $result = $criteria->getBatches($status, $sort);
-            } else if ($hasScore && $id.str_contains($id, "Batch")) {
-                $result = $criteria->getApplicantsByBatch($status, $sort, $id);
-            } else if (!$hasScore && $id.str_contains($id, "Batch")) {
-                $result = $criteria->getApplicantsByBatch($status, $sort,$id);
-            } 
-                
-            if ($result) {
-                http_response_code(200);
-                echo json_encode(array(
-                    "success" => true,
-                    "data" => $result
-                ));
-            } else {
-                echo json_encode(array(
-                    "message" => "Batch not found",
-                    "data" => $result
-                ));
+                $result = $criteria->getBatches($status, $sort, $activeSchoolYear);
+            } elseif ($hasScore && $id . str_contains($id, 'Batch')) {
+                $result = $criteria->getApplicantsByBatch($status, $sort, $id, $activeSchoolYear);
+            } elseif (!$hasScore && $id . str_contains($id, 'Batch')) {
+                $result = $criteria->getApplicantsByBatch($status, $sort, $id, $activeSchoolYear);
             }
 
-            // if ($id != 'all' && $hasScore) {
-            //     $result = $criteria->getApplicantsByBatchs($id);
-                
-            //     if ($result) {
-            //         http_response_code(200);
-            //         echo json_encode(array(
-            //             "success" => true,
-            //             "data" => $result
-            //         ));
-            //     } else {
-            //         echo json_encode(array(
-            //             "message" => "Batch not found",
-            //             "data" => $result
-            //         ));
-            //     }
-            // } else if ($id != 'all' && $hasScore) {
-            //     $result = $criteria->getApplicantsByBatchs($id);
-                
-            //     if ($result) {
-            //         http_response_code(200);
-            //         echo json_encode(array(
-            //             "success" => true,
-            //             "data" => $result
-            //         ));
-            //     } else {
-            //         echo json_encode(array(
-            //             "message" => "Batch not found",
-            //             "data" => $result
-            //         ));
-            //     }
-            // } else {
-            //     $result = $criteria->getBatches();
-                
-            //     if ($result) {
-            //         http_response_code(200);
-            //         echo json_encode(array(
-            //             "success" => true,
-            //             "data" => $result
-            //         ));
-            //     } else {
-            //         echo json_encode(array(
-            //             "message" => "Batch not found",
-            //             "data" => $result
-            //         ));
-            //     }
-            // }
+            $data = $criteria->getApplicantsWithProfile(null, $result, $criteria);
 
-            
-            
-            // if ($id && $id != 'all' && $hasScore) {
-            //     // Get specific procedure
-            //     $result = $criteria->getApplicantsByBatchs($id);
-                
-            //     if ($result) {
-            //         http_response_code(200);
-            //         echo json_encode(array(
-            //             "success" => true,
-            //             "data" => $result
-            //         ));
-            //     } else {
-            //         echo json_encode(array(
-            //             "message" => "Batch not found",
-            //             "data" => $result
-            //         ));
-            //     }
-            // } else if ($id && $id != 'all' && !$hasScore) {
-            //     $result = $criteria->getApplicantsByBatchs($id);
-                
-            //     if ($result) {
-            //         http_response_code(200);
-            //         echo json_encode(array(
-            //             "success" => true,
-            //             "data" => $result
-            //         ));
-            //     } else {
-            //         echo json_encode(array(
-            //             "message" => "Batch not found",
-            //             "data" => $result
-            //         ));
-            //     }
-            // } else {
-            //     $results = $criteria->getApplicantsByBatchs($id);
-                
-            //     http_response_code(200);
-            //     echo json_encode(array(
-            //         "success" => true,
-            //         "data" => $results
-            //     ));
-            // }
+            if ($result) {
+                http_response_code(200);
+                echo json_encode([
+                    'success' => true,
+                    'data' => $data,
+                ]);
+            } else {
+                echo json_encode([
+                    'message' => 'Batch not found',
+                    'data' => $data,
+                ]);
+            }
         } catch (\Exception $e) {
             http_response_code(500);
-            echo json_encode(array(
-                "success" => false,
-                "message" => $e->getMessage()
-            ));
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
-    } 
+    }
 }
 
 $controller = new BatchExaminationController();

@@ -6,19 +6,29 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 
+use App\Constants\Action;
 use App\Models\ApplicantModel;
+use App\Models\AuditLogModel;
 use App\Models\AwardingModel;
 use App\Models\OrientationModel;
+use App\Models\PersonalModel;
+use App\Models\SchoolYearModel;
+use App\Models\StaffAccountModel;
 use Config\Database;
+use Middleware\Auth;
 
 class AwardingController
 {
     private $pdo;
+    private $auditLogModel;
+    private $staffModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
     public function processRequest()
@@ -133,6 +143,7 @@ class AwardingController
 
             // Process application data
             $model = new AwardingModel();
+            $personal = new PersonalModel();
 
             if ($status === 'pending') {
                 if (!$model->updateStatusToPending($data)) {
@@ -142,9 +153,57 @@ class AwardingController
                 if (!$model->updateStatusToAttended($data)) {
                     throw new \Exception('Failed to update allowance status');
                 }
+
+                $data = $personal->getPersonalInformation($data['account_id']);
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::AWARDING_MARK_ATTENDED,
+                        'entity_type' => 'awarding',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as attended the awarding.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             } elseif ($status === 'not_attended') {
                 if (!$model->updateStatusToNotAttended($data)) {
                     throw new \Exception('Failed to update allowance status');
+                }
+
+                $data = $personal->getPersonalInformation($data['account_id']);
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::AWARDING_MARK_NOT_ATTENDED,
+                        'entity_type' => 'awarding',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as not attended the awarding.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
                 }
             }
 
@@ -174,6 +233,9 @@ class AwardingController
     {
         try {
             $model = new AwardingModel();
+            $application = new ApplicantModel();
+            $schoolYearModel = new SchoolYearModel();
+            $activeSchoolYear = $schoolYearModel->getActiveSchoolYear();
 
             // Get ID parameter if it exists
             $status = $_GET['status'] ?? null;
@@ -181,18 +243,20 @@ class AwardingController
 
             $result = [];
 
-            $result = $model->getApplicants($status, $sort);
+            $result = $model->getApplicants($status, $sort, $activeSchoolYear);
+
+            $data = $application->getApplicantsWithProfile(null, $result, $application);
 
             if ($result) {
                 http_response_code(200);
                 echo json_encode([
                     'success' => true,
-                    'data' => $result,
+                    'data' => $data,
                 ]);
             } else {
                 echo json_encode([
                     'message' => 'Batch not found',
-                    'data' => $result,
+                    'data' => $data,
                 ]);
             }
         } catch (\Exception $e) {

@@ -181,7 +181,6 @@ export const useCommunityServicesSubmit = () => {
         filePreviews,
         setFilePreviews,
         setIsSubmitting,
-        convertDocToPdf,
         convertFileToBase64,
         setIsOpen,
         resetForm,
@@ -236,48 +235,14 @@ export const useCommunityServicesSubmit = () => {
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
-                    let processedFile = file;
-
-                    // Find the corresponding preview index for conversion status
-                    const previewIndex = filePreviews.findIndex(
-                        (preview) => preview.originalFile === file,
-                    );
 
                     try {
-                        // Check if file is DOC or DOCX and convert to PDF
-                        if (
-                            file.type === "application/msword" ||
-                            file.type ===
-                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        ) {
-                            toast.info(`Converting ${file.name} to PDF...`);
-                            processedFile = await convertDocToPdf(
-                                file,
-                                previewIndex,
-                            );
-
-                            // Update the file preview
-                            if (previewIndex !== -1) {
-                                setFilePreviews((prev) => {
-                                    const newPreviews = [...prev];
-                                    newPreviews[previewIndex] = {
-                                        ...newPreviews[previewIndex],
-                                        name: processedFile.name,
-                                        type: processedFile.type,
-                                        size: processedFile.size,
-                                    };
-                                    return newPreviews;
-                                });
-                            }
-                        }
-
-                        const base64Data =
-                            await convertFileToBase64(processedFile);
+                        const base64Data = await convertFileToBase64(file);
                         uploadedFiles.push({
-                            filename: processedFile.name,
+                            filename: file.name,
                             base64_data: base64Data,
-                            file_type: processedFile.type,
-                            file_size: processedFile.size,
+                            file_type: file.type,
+                            file_size: file.size,
                         });
                     } catch (error) {
                         console.error("Error processing file:", error);

@@ -73,7 +73,7 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                             You haven’t participated in any activities recently.
                         </h4>
                         <p className="text-xs md:text-sm text-gray-500 mb-4">
-                            Recent activities like community service submissions
+                            Recent activities like duty report submissions
                             and event participation will appear here.
                         </p>
                         {/* <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">

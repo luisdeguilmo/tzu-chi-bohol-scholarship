@@ -11,6 +11,8 @@ export const usePdfActions = (type, fetchApplicantData) => {
             // Fetch applicant data and wait for it to complete
             const data = await fetchApplicantData(applicationId);
 
+            console.log(data);
+
             // Use the returned data directly instead of relying on state
             if (data) {
                 await generatePDF(type, "view", applicationId, scholarId, data);

@@ -53,6 +53,12 @@ const EventCard = ({
         }
     };
 
+    console.log(
+        date.getCurrentDateAndTime(),
+        event.date + " " + event.start_time,
+        date.getCurrentDateAndTime() < event.date + " " + event.start_time,
+    );
+
     return (
         <div
             key={`${event.id || index}-${event.event_name}`}

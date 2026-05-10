@@ -1,0 +1,12 @@
+[2026-05-02 16:09:05] Incoming request: 8282683Student_Application_8225004.pdf
+[2026-05-02 16:09:05] Base directory: C:\Users\IDEAPAD SLIM 3\tzuchischolarship\backend\public\upload\applications
+[2026-05-02 16:09:05] ERROR: Invalid format: 8282683Student_Application_8225004.pdf
+[2026-05-02 16:14:29] Incoming request: 8282683/files/Student_Application_8225004.pdf
+[2026-05-02 16:14:29] Base directory: C:\Users\IDEAPAD SLIM 3\tzuchischolarship\backend\public\upload\applications
+[2026-05-02 16:14:29] Constructed path: C:\Users\IDEAPAD SLIM 3\tzuchischolarship\backend\public\upload\applications/8282683/files
+[2026-05-02 16:14:29] Serving file: C:\Users\IDEAPAD SLIM 3\tzuchischolarship\backend\public\upload\applications\8282683\files
+[2026-05-02 16:14:29] File served successfully
+[2026-05-02 16:15:51] Incoming request: 8282683/Student_Application_8225004.pdf
+[2026-05-02 16:15:51] Base directory: C:\Users\IDEAPAD SLIM 3\tzuchischolarship\backend\public\upload\applications
+[2026-05-02 16:15:51] Constructed path: C:\Users\IDEAPAD SLIM 3\tzuchischolarship\backend\public\upload\applications/8282683/Student_Application_8225004.pdf
+[2026-05-02 16:15:51] ERROR: File not found after realpath

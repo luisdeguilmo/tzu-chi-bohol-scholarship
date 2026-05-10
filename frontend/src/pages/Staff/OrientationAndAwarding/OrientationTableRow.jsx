@@ -10,7 +10,6 @@ const OrientationTableRow = ({
     currentItems,
     selectedApplicants,
     toggleApplicantSelection,
-    profilePics,
     onRefresh,
     onOpenModal,
     onSelectScholarId,
@@ -32,7 +31,7 @@ const OrientationTableRow = ({
                             type="checkbox"
                             className="h-3.5 w-3.5 accent-green-600 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                             checked={selectedApplicants.includes(
-                                info.application_id
+                                info.application_id,
                             )}
                             onChange={() =>
                                 toggleApplicantSelection(info.application_id)
@@ -46,7 +45,7 @@ const OrientationTableRow = ({
                         <div className="w-[30%]"></div>
                         <div className="w-[max-content] flex items-center text-left gap-2">
                             <img
-                                src={profilePics[info.application_id]}
+                                src={info[0].profile}
                                 alt="Profile"
                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                             />

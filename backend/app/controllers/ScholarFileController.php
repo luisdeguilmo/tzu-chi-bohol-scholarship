@@ -176,7 +176,7 @@ class ScholarFileController
 
             $result = [];
 
-            $result = $model->getAllFiles($id, $type);
+            $result = $model->getFilesByIdAndType($id, $type);
 
             http_response_code(200);
             echo json_encode([

@@ -6,7 +6,6 @@ import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import { useApplicantData } from "../../../hooks/useApplicantData";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import {
     applicationTableHeaders,
@@ -15,7 +14,15 @@ import {
 import { applicationButtons } from "../../../constant/tableToolbarButtons";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import { CheckCircle, DownloadIcon, Eye, Pencil, PencilLine, Plus, XCircle } from "lucide-react";
+import {
+    CheckCircle,
+    DownloadIcon,
+    Eye,
+    Pencil,
+    PencilLine,
+    Plus,
+    XCircle,
+} from "lucide-react";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 import { useWindowSize } from "../../../hooks/useWindowSize";
@@ -36,10 +43,9 @@ export default function Applications() {
     const { loading, error, applications, fetchApplications } =
         useApplications(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics } = useProfilePicture(applications, "profile-picture");
     const { viewPdf, downloadPdf } = usePdfActions(
         activeTab,
-        fetchApplicantData
+        fetchApplicantData,
     );
     const size = useWindowSize();
     const isMobile = size.width < 768;
@@ -78,7 +84,7 @@ export default function Applications() {
         if (activeTab === "new") {
             const success = await rejectApplication(
                 selectedApplicant,
-                feedback
+                feedback,
             );
 
             if (success) {
@@ -88,7 +94,7 @@ export default function Applications() {
         } else if (activeTab === "old") {
             const success = await rejectRenewApplication(
                 selectedApplicant,
-                feedback
+                feedback,
             );
 
             if (success) {
@@ -110,7 +116,7 @@ export default function Applications() {
             applicant.first_name
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
-            applicant.created_at.includes(searchTerm)
+            applicant.created_at.includes(searchTerm),
     );
 
     // Sort applications
@@ -162,7 +168,7 @@ export default function Applications() {
 
     useMemo(() => {
         setTableHeaders(
-            activeTab === "new" ? applicationTableHeaders : renewalTableHeaders
+            activeTab === "new" ? applicationTableHeaders : renewalTableHeaders,
         );
     }, [activeTab]);
 
@@ -205,15 +211,7 @@ export default function Applications() {
                                 <p className="mb-2 font-normal text-gray-600">
                                     <div className="w-[max-content] flex items-center text-left gap-2">
                                         <img
-                                            src={
-                                                item.type === "Old"
-                                                    ? profilePics[
-                                                          item.scholar_id
-                                                      ]
-                                                    : profilePics[
-                                                          item.application_id
-                                                      ]
-                                            }
+                                            src={info[0].profile}
                                             alt="Profile"
                                             className="w-10 h-10 object-cover rounded-full mx-auto"
                                         />
@@ -235,7 +233,7 @@ export default function Applications() {
                                             .filter(
                                                 (item) =>
                                                     item.name !== "Applicant" &&
-                                                    item.name !== "Scholar"
+                                                    item.name !== "Scholar",
                                             )
                                             .map((header, index) => (
                                                 <p
@@ -345,16 +343,7 @@ export default function Applications() {
                                         <div className="w-[30%]"></div>
                                         <div className="w-[max-content] flex items-center text-left gap-2">
                                             <img
-                                                src={
-                                                    info.type === "Old"
-                                                        ? profilePics[
-                                                              info.scholar_id
-                                                          ]
-                                                        : profilePics[
-                                                              info
-                                                                  .application_id
-                                                          ]
-                                                }
+                                                src={info[0].profile}
                                                 alt="Profile"
                                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                                             />
@@ -476,7 +465,7 @@ export default function Applications() {
                     stage={"application"}
                     isOpen={isOpenModal}
                     onClose={setIsOpenModal}
-                    onRefresh={fetchApplicantData}
+                    onRefresh={fetchApplications}
                     firstLabel={"Application Approved Message"}
                     secondLabel={"Application Rejected Message"}
                 />

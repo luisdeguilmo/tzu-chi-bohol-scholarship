@@ -313,7 +313,7 @@ const EventDetailsModal = React.memo(
         return (
             <>
                 <InputModal
-                    label={localEvent?.event_name}
+                    label={"Event Details"}
                     isOpen={isOpen}
                     onClose={onClose}
                     resetFields={() => setScholarPrivateComment("")}
@@ -332,6 +332,11 @@ const EventDetailsModal = React.memo(
                         className={`max-h-[400px] overflow-y-auto scroll-smooth p-6 ${localEvent?.participants.length > 0 && "space-y-6"}`}
                     >
                         {/* Event Details Grid */}
+                        <h3
+                            className={`font-semibold flex items-center gap-2 rounded-md text-sm text-gray-700 ${localEvent?.participants.length > 0 ? "-mb-3" : "mb-3.5"}`}
+                        >
+                            {localEvent?.event_name}
+                        </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-12  text-xs">
                             <div className="mb-3 sm:mb-0 space-y-3">
                                 <div className="flex items-center text-slate-600">

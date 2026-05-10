@@ -5,7 +5,7 @@ date_default_timezone_set('Asia/Manila');
 
 use Config\Database;
 
-class ApplicationFileModel
+class ScholarFileModel
 {
     private $table_name = 'coe_and_grades';
 

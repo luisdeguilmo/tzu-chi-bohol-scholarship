@@ -7,18 +7,19 @@ export const useOrientationAndAwarding = (
     selectedBatchInBatches,
     tab,
     status,
-    sort
+    sort,
 ) => {
     const [applications, setApplications] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const fetchApplicationsOnApplicantsTab = async () => {
         try {
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/api/applicants.php?application_status=orientation&batch=Unassigned`
+                `${BASE_URL}app/api/applicants.php?application_status=orientation&batch=Unassigned`,
             );
             setApplications(response.data.data || []);
             setIsLoading(false);
@@ -34,7 +35,7 @@ export const useOrientationAndAwarding = (
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/api/orientation.php?batch=${selectedBatchInBatches.replace(" ", "%20")}&status=${status}&sort=${sort}`
+                `${BASE_URL}app/api/orientation.php?batch=${selectedBatchInBatches.replace(" ", "%20")}&status=${status}&sort=${sort}`,
             );
             setApplications(response.data.data || []);
             setIsLoading(false);
@@ -50,7 +51,7 @@ export const useOrientationAndAwarding = (
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/api/awarding.php?status=${status}&sort=${sort}`
+                `${BASE_URL}app/api/awarding.php?status=${status}&sort=${sort}`,
             );
             setApplications(response.data.data || []);
             setIsLoading(false);
@@ -73,8 +74,9 @@ export const useOrientationAndAwarding = (
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             const data = response.data;
@@ -107,8 +109,9 @@ export const useOrientationAndAwarding = (
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             const data = response.data;

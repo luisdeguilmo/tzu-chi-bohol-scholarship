@@ -183,6 +183,10 @@ class CoeGradesModel
                     'scholar_id' => $file['scholar_id'],
                     'file_name' => $file['file_name'],
                     'file_path' => $file['file_path'],
+                    'file_url' =>
+                        $_ENV['APP_URL'] .
+                        '/index.php?type=coe_grades&route=file/view&file=' .
+                        urlencode(basename($file['file_path'])),
                     'file_size' => $file['file_size'],
                     'file_type' => $file['file_type'],
                     'uploaded_at' => $file['uploaded_at'],
@@ -216,6 +220,24 @@ class CoeGradesModel
         }
 
         return null;
+    }
+
+    public function getCoeGradesById($id)
+    {
+        $query = "SELECT *
+                FROM coe_and_grades
+                WHERE scholar_id = :scholar_id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':scholar_id', $id);
+        $stmt->execute();
+        $row = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if ($row) {
+            return true;
+        }
+
+        return false;
     }
 }
 ?>

@@ -4,7 +4,6 @@ import { useApplicantData } from "../../../hooks/useApplicantData";
 import { useApprovedApplications } from "../../../hooks/useApprovedApplications";
 import Pagination from "../../../components/Pagination";
 import { usePagination } from "../../../hooks/usePagination";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import {
     approvedApplicationTableHeaders,
@@ -28,20 +27,12 @@ const ReviewedApplications = () => {
 
     const { applications, fetchApplications } = useApprovedApplications();
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        applications,
-        "profile-picture"
-    );
     const { viewPdf, downloadPdf } = usePdfActions(
         activeTab,
-        fetchApplicantData
+        fetchApplicantData,
     );
     const size = useWindowSize();
     const isMobile = size.width < 768;
-
-    useEffect(() => {
-        fetchAllPics();
-    }, []);
 
     // Filter data based on search term
     const filteredApplications = applications.filter((applicant) => {
@@ -111,7 +102,7 @@ const ReviewedApplications = () => {
         setTableHeaders(
             activeTab === "new"
                 ? approvedApplicationTableHeaders
-                : approvedRenewalApplicationTableHeaders
+                : approvedRenewalApplicationTableHeaders,
         );
     }, [activeTab]);
 
@@ -146,13 +137,7 @@ const ReviewedApplications = () => {
                             <p className="mb-2 font-normal text-gray-600">
                                 <div className="w-[max-content] flex items-center text-left gap-2">
                                     <img
-                                        src={
-                                            item.type === "Old"
-                                                ? profilePics[item.scholar_id]
-                                                : profilePics[
-                                                      item.application_id
-                                                  ]
-                                        }
+                                        src={info[0].profile}
                                         alt="Profile"
                                         className="w-10 h-10 object-cover rounded-full mx-auto"
                                     />
@@ -174,7 +159,7 @@ const ReviewedApplications = () => {
                                         .filter(
                                             (item) =>
                                                 item.name !== "Applicant" &&
-                                                item.name !== "Scholar"
+                                                item.name !== "Scholar",
                                         )
                                         .map((header, index) => (
                                             <p
@@ -275,15 +260,7 @@ const ReviewedApplications = () => {
                                     <div className="w-[30%]"></div>
                                     <div className="w-[max-content] flex text-left gap-2">
                                         <img
-                                            src={
-                                                info.type === "Old"
-                                                    ? profilePics[
-                                                          info.scholar_id
-                                                      ]
-                                                    : profilePics[
-                                                          info.application_id
-                                                      ]
-                                            }
+                                            src={info[0].profile}
                                             alt="Profile"
                                             className="w-10 h-10 object-cover rounded-full mx-auto"
                                         />

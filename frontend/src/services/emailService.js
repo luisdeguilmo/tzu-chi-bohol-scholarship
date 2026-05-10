@@ -5,6 +5,7 @@ import { useState } from "react";
 
 export const manageApplication = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const token = localStorage.getItem("token");
 
     const approveApplication = async (applicant) => {
         try {
@@ -19,12 +20,17 @@ export const manageApplication = () => {
                     email: applicant.email,
                     school_year: applicant.school_year,
                     is_application_approved: 1,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
                 toast.success(
-                    "Application approved and notification email sent successfully!"
+                    "Application approved and notification email sent successfully!",
                 );
                 setIsLoading(false);
                 return true;
@@ -54,7 +60,12 @@ export const manageApplication = () => {
                     school_year: applicant.school_year,
                     is_application_approved: 1,
                     status: "scholar",
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
@@ -87,12 +98,17 @@ export const manageApplication = () => {
                     school_year: applicant.school_year,
                     is_application_rejected: 1,
                     feedback: feedback,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
                 toast.success(
-                    "Application rejected and notification email sent successfully!"
+                    "Application rejected and notification email sent successfully!",
                 );
                 setIsLoading(false);
                 return true;
@@ -123,7 +139,12 @@ export const manageApplication = () => {
                     is_application_rejected: 1,
                     status: "application_rejected",
                     feedback: feedback,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
@@ -152,7 +173,12 @@ export const manageApplication = () => {
                 `${BASE_URL}app/api/application-management.php?action=examination_result`,
                 {
                     applicants: applicants,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
@@ -183,12 +209,17 @@ export const manageApplication = () => {
                     last_name: applicant.last_name,
                     email: applicant.email,
                     is_initial_interview_passed: 1,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
                 toast.success(
-                    "Interview marked as passed. Notification email sent to applicant."
+                    "Interview marked as passed. Notification email sent to applicant.",
                 );
                 setIsLoading(false);
                 return true;
@@ -217,11 +248,16 @@ export const manageApplication = () => {
                     last_name: applicant.last_name,
                     email: applicant.email,
                     is_initial_interview_failed: 1,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             if (response.data.success) {
                 toast.success(
-                    "Interview marked as failed. Notification email sent to applicant."
+                    "Interview marked as failed. Notification email sent to applicant.",
                 );
                 setIsLoading(false);
                 return true;
@@ -249,12 +285,17 @@ export const manageApplication = () => {
                     last_name: applicant.last_name,
                     email: applicant.email,
                     is_home_visitation_passed: 1,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
                 toast.success(
-                    "Home Visitation marked as passed. Notification email sent to applicant."
+                    "Home Visitation marked as passed. Notification email sent to applicant.",
                 );
                 setIsLoading(false);
                 return true;
@@ -266,7 +307,7 @@ export const manageApplication = () => {
         } catch (err) {
             console.error("Error updating home visitation status:", err);
             toast.error(
-                "An error occurred while updating home visitation status."
+                "An error occurred while updating home visitation status.",
             );
             setIsLoading(false);
             return false;
@@ -285,11 +326,16 @@ export const manageApplication = () => {
                     last_name: applicant.last_name,
                     email: applicant.email,
                     is_home_visitation_failed: 1,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             if (response.data.success) {
                 toast.success(
-                    "Home Visitation marked as failed. Notification email sent to applicant."
+                    "Home Visitation marked as failed. Notification email sent to applicant.",
                 );
                 setIsLoading(false);
                 return true;
@@ -300,7 +346,7 @@ export const manageApplication = () => {
         } catch (err) {
             console.error("Error updating home visitation status:", err);
             toast.error(
-                "An error occurred while updating home visitation status."
+                "An error occurred while updating home visitation status.",
             );
             setIsLoading(false);
             return false;
@@ -319,12 +365,17 @@ export const manageApplication = () => {
                     last_name: applicant.last_name,
                     email: applicant.email,
                     is_final_interview_passed: 1,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
                 toast.success(
-                    "Interview marked as passed. Notification email sent to applicant."
+                    "Interview marked as passed. Notification email sent to applicant.",
                 );
                 setIsLoading(false);
                 return true;
@@ -353,11 +404,16 @@ export const manageApplication = () => {
                     last_name: applicant.last_name,
                     email: applicant.email,
                     is_final_interview_failed: 1,
-                }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             if (response.data.success) {
                 toast.success(
-                    "Interview marked as failed. Notification email sent to applicant."
+                    "Interview marked as failed. Notification email sent to applicant.",
                 );
                 setIsLoading(false);
                 return true;

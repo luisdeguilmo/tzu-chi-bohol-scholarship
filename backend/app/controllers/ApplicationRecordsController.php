@@ -53,16 +53,16 @@ class ApplicationRecordsController
             $school_year = $_GET['school_year'] ?? null;
             $sort = $_GET['sort'] ?? null;
 
+            $applicants = [];
             $results = [];
 
             if ($tab === 'new') {
-                $results = $applicant->getAllNewApplicants($status, $school_year, $sort);
+                $applicants = $applicant->getAllNewApplicants($status, $school_year, $sort);
             } elseif ($tab === 'old') {
-                $results = $applicant->getAllOldApplicants($status, $school_year, $sort);
+                $applicants = $applicant->getAllOldApplicants($status, $school_year, $sort);
             }
-            // else if ($tab === 'old') {
-            //     $results = $scholar->getOldScholars();
-            // }
+
+            $results = $applicant->getApplicantsWithProfile($tab, $applicants, $applicant);
 
             http_response_code(200);
             echo json_encode([

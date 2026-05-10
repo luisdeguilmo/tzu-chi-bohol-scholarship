@@ -131,7 +131,7 @@ export const dashboardOverviewData = (data) => {
             iconColor: "text-green-600",
         },
         {
-            title: "Community Service Submitted",
+            title: "Duty Reports Submitted",
             status: data?.numberOfCommunityServices ?? 0,
             color: "bg-green-300 text-gray-900",
             icon: <HandHeart className="w-5 h-5 text-gray-600" />,

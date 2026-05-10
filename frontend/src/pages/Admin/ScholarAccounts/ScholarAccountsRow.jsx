@@ -14,68 +14,11 @@ const ScholarAccountsRow = ({
     isLoading,
     onUpdateAccountStatus,
     onRefresh,
+    onSelectScholarId,
+    setIsModalOpen,
+    setModal,
+    onOpenConfirmationModal,
 }) => {
-    const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
-        useState(false);
-    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
-        useState(false);
-    const [selectedScholar, setSelectedScholar] = useState(null);
-    const [accountStatus, setAccountStatus] = useState("");
-    const [action, setAction] = useState("");
-    const [deactivationReason, setDeactivationReason] = useState("");
-    const [scholarId, setScholarId] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const handleOpenConfirmationModal = (
-        accountId,
-        accountStatus,
-        actionType
-    ) => {
-        setAction(actionType);
-        setAccountStatus(accountStatus);
-        setSelectedScholar(accountId);
-        setIsConfirmationModalOpen(true);
-    };
-
-    const handleAccountStatusChange = async (
-        accountId,
-        accountStatus,
-        action
-    ) => {
-        if (action === "activate" && accountStatus === "active") {
-            toast.error("Account is already active.");
-            return;
-        }
-
-        if (
-            action === "deactivate" &&
-            (accountStatus === "graduated" || accountStatus === "terminated")
-        ) {
-            toast.error("Account is already deactivated.");
-            return;
-        }
-
-        try {
-            const success = await onUpdateAccountStatus(
-                accountId,
-                action,
-                deactivationReason
-            );
-            if (success) {
-                toast.success(
-                    `Account ${
-                        action === "activate" ? "activated" : "deactivated"
-                    } successfully.`
-                );
-                setIsConfirmationModalOpen(false);
-                onRefresh();
-            }
-        } catch (error) {
-            console.error("Error updating account status:", error);
-            toast.error(`Failed to ${action} account. Please try again.`);
-        }
-    };
-
     return (
         <>
             {currentItems.map((account, index) => (
@@ -153,7 +96,8 @@ const ScholarAccountsRow = ({
                             <button
                                 onClick={() => {
                                     setIsModalOpen(true);
-                                    setScholarId(account.account_id);
+                                    onSelectScholarId(account.account_id);
+                                    setModal("view_profile_modal");
                                 }}
                                 // className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                                 title="View Profile"
@@ -162,33 +106,38 @@ const ScholarAccountsRow = ({
                             </button>
                             <button
                                 onClick={() => {
-                                    setIsChangePasswordModalOpen(true);
-                                    setSelectedScholar(account.account_id);
+                                    // setIsChangePasswordModalOpen(true);
+                                    // setSelectedScholar(account.account_id);
+                                    setIsModalOpen(true);
+                                    onSelectScholarId(account.account_id);
+                                    setModal("change_password_modal");
                                 }}
                                 title="Change Password"
                             >
                                 <RotateCcw className="w-4 h-4 text-green-600 hover:text-green-800 transition-colors" />
                             </button>
                             <button
-                                onClick={() =>
-                                    handleOpenConfirmationModal(
+                                onClick={() => {
+                                    onOpenConfirmationModal(
                                         account.account_id,
                                         account.status,
-                                        "activate"
-                                    )
-                                }
+                                        "activate",
+                                    );
+                                    setModal("change_status");
+                                }}
                                 title="Activate Account"
                             >
                                 <UserCheck className="w-4 h-4 text-green-600 hover:text-green-800 transition-colors" />
                             </button>
                             <button
-                                onClick={() =>
-                                    handleOpenConfirmationModal(
+                                onClick={() => {
+                                    onOpenConfirmationModal(
                                         account.account_id,
                                         account.status,
-                                        "deactivate"
-                                    )
-                                }
+                                        "deactivate",
+                                    );
+                                    setModal("change_status");
+                                }}
                                 title="Deactivate Account"
                             >
                                 <UserX className="w-4 h-4 text-red-600 hover:text-red-800 transition-colors" />
@@ -197,42 +146,6 @@ const ScholarAccountsRow = ({
                     </td>
                 </tr>
             ))}
-
-            <ScholarProfileModal
-                userId={scholarId}
-                isOpen={isModalOpen}
-                setIsOpen={setIsModalOpen}
-                isScholar={true}
-            />
-
-            <ConfirmationModal
-                isOpen={isConfirmationModalOpen}
-                onClose={setIsConfirmationModalOpen}
-                isLoading={isLoading}
-                label={"Confirmation"}
-                action={action}
-                message={
-                    action === "activate"
-                        ? "Are you sure you want to activate this account?"
-                        : "Are you sure you want to deactivate this account?"
-                }
-                onClick={() =>
-                    handleAccountStatusChange(
-                        selectedScholar,
-                        accountStatus,
-                        action
-                    )
-                }
-                isScholarAccount={true}
-                deactivationReason={deactivationReason}
-                setDeactivationReason={setDeactivationReason}
-            />
-
-            <ChangePasswordModal
-                isOpen={isChangePasswordModalOpen}
-                onClose={setIsChangePasswordModalOpen}
-                userId={selectedScholar}
-            />
         </>
     );
 };

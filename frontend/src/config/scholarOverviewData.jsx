@@ -25,7 +25,7 @@ export const scholarOverviewData = (data) => {
             status: data?.notRecordedActivities ?? 0,
         },
         {
-            label: "Community Services",
+            label: "Duty Reports",
             icon: <HandHeart className="w-4 h-4 text-white" />,
             status: data?.numberOfActivities ?? 0,
         },

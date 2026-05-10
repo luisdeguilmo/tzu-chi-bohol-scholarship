@@ -6,18 +6,25 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Constants\Action;
 use App\Models\AuditLogModel;
 use App\Models\ScholarshipCriteriaModel;
+use App\Models\StaffAccountModel;
 use Config\Database;
+use Middleware\Auth;
 
 class AuditLogController
 {
     private $pdo;
+    private $auditLogModel;
+    private $staffModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
     public function processRequest()
@@ -88,11 +95,27 @@ class AuditLogController
                 throw new \Exception('No data provided');
             }
 
-            // Process application data
-            $model = new AuditLogModel();
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
 
-            if (!$model->create($data['instruction'])) {
-                throw new \Exception('Failed to save instruction information');
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => $data['action'],
+                    'entity_type' => $data['entity_type'],
+                    'entity_id' => $data['entity_id'],
+
+                    'description' => "{$staff['first_name']} {$staff['last_name']} {$data['description']}.",
+
+                    'old_values' => $data['old_values'],
+                    'new_values' => $data['new_values'],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();

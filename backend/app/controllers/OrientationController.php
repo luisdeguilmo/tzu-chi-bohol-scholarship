@@ -6,18 +6,28 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 
+use App\Constants\Action;
 use App\Models\ApplicantModel;
+use App\Models\AuditLogModel;
 use App\Models\OrientationModel;
+use App\Models\PersonalModel;
+use App\Models\SchoolYearModel;
+use App\Models\StaffAccountModel;
 use Config\Database;
+use Middleware\Auth;
 
 class OrientationController
 {
     private $pdo;
+    private $auditLogModel;
+    private $staffModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
     public function processRequest()
@@ -76,16 +86,49 @@ class OrientationController
 
             // Process multiple applicants
             $applicationInfo = new OrientationModel();
+            $personal = new PersonalModel();
             $successCount = 0;
+            $applicant_names = [];
 
             foreach ($data['applicantIds'] as $applicantId) {
                 if ($applicationInfo->assignApplicants($applicantId, $data['batch'])) {
                     $successCount++;
                 }
+
+                $name = $personal->getPersonalInformation($applicantId);
+                $applicant_names[] = "{$name['first_name']} {$name['last_name']}";
             }
 
             if ($successCount === 0) {
                 throw new \Exception('Failed to add batch information to any applicant');
+            }
+
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+            $applicant_list = implode(', ', $applicant_names);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::APPLICANT_BATCH_ASSIGN,
+                    'entity_type' => 'orientation',
+                    'entity_id' => null,
+                    'description' =>
+                        "{$staff['first_name']} {$staff['last_name']} assigned " .
+                        count($applicant_names) .
+                        " applicants to batch '{$data['batch']}' for the orientation: {$applicant_list}.",
+                    'old_values' => null,
+                    'new_values' => [
+                        'batch' => $data['batch'],
+                        'applicants' => $applicant_names,
+                    ],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();
@@ -134,6 +177,7 @@ class OrientationController
 
             // Process application data
             $model = new OrientationModel();
+            $personal = new PersonalModel();
 
             if ($status === 'pending') {
                 if (!$model->updateStatusToPending($data)) {
@@ -143,9 +187,57 @@ class OrientationController
                 if (!$model->updateStatusToAttended($data)) {
                     throw new \Exception('Failed to update allowance status');
                 }
+
+                $data = $personal->getPersonalInformation($data['account_id']);
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::ORIENTATION_MARK_ATTENDED,
+                        'entity_type' => 'orientation',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as attended the orientation.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             } elseif ($status === 'not_attended') {
                 if (!$model->updateStatusToNotAttended($data)) {
                     throw new \Exception('Failed to update allowance status');
+                }
+
+                $data = $personal->getPersonalInformation($data['account_id']);
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::ORIENTATION_MARK_NOT_ATTENDED,
+                        'entity_type' => 'orientation',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as not attended the orientation.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
                 }
             }
 
@@ -175,6 +267,9 @@ class OrientationController
     {
         try {
             $criteria = new OrientationModel();
+            $application = new ApplicantModel();
+            $schoolYearModel = new SchoolYearModel();
+            $activeSchoolYear = $schoolYearModel->getActiveSchoolYear();
 
             // Get ID parameter if it exists
             $id = isset($_GET['batch']) ? $_GET['batch'] : null;
@@ -183,27 +278,26 @@ class OrientationController
             $sort = $_GET['sort'] ?? null;
 
             $result = [];
+            $data = [];
 
             if ($id == 'all') {
-                $result = $criteria->getBatches($status, $sort);
+                $result = $criteria->getBatches($status, $sort, $activeSchoolYear);
             } elseif ($id . str_contains($id, 'Batch')) {
-                $result = $criteria->getApplicantsByBatch($status, $sort, $id);
+                $result = $criteria->getApplicantsByBatch($status, $sort, $id, $activeSchoolYear);
             }
 
-            // elseif (!$hasScore && $id . str_contains($id, 'Batch')) {
-            //     $result = $criteria->getApplicantsByBatch($status, $sort, $id);
-            // }
+            $data = $application->getApplicantsWithProfile(null, $result, $application);
 
             if ($result) {
                 http_response_code(200);
                 echo json_encode([
                     'success' => true,
-                    'data' => $result,
+                    'data' => $data,
                 ]);
             } else {
                 echo json_encode([
                     'message' => 'Batch not found',
-                    'data' => $result,
+                    'data' => $data,
                 ]);
             }
         } catch (\Exception $e) {

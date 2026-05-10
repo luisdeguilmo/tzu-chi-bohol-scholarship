@@ -20,12 +20,12 @@ class OrientationModel
         $this->currentYear = date('Y');
     }
 
-    public function getApplicantsByBatch($status, $sort, $batchValue)
+    public function getApplicantsByBatch($status, $sort, $batchValue, $schoolYear)
     {
         $query = "SELECT pi.*, ai.*, b.* FROM personal_information pi 
             JOIN application_info ai ON ai.application_id = pi.application_id
             JOIN batches b ON ai.batch_for_orientation = b.batch_name 
-            WHERE ai.is_for_orientation = '1' AND b.purpose = 'orientation' AND ai.batch_for_orientation = :batch AND YEAR(ai.created_at) = $this->currentYear";
+            WHERE ai.is_for_orientation = '1' AND b.purpose = 'orientation' AND ai.batch_for_orientation = :batch AND ai.school_year = :school_year";
 
         if ($status === 'all') {
             $query .=
@@ -49,6 +49,7 @@ class OrientationModel
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':batch', $batchValue);
+        $stmt->bindParam(':school_year', $schoolYear, \PDO::PARAM_INT);
         // $stmt->execute();
         // return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -60,13 +61,13 @@ class OrientationModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getBatches($status, $sort)
+    public function getBatches($status, $sort, $schoolYear)
     {
         // Get all students with the specified batch value
         $query = "SELECT pi.*, ai.*, b.purpose, b.schedule FROM personal_information pi 
             JOIN application_info ai ON ai.application_id = pi.application_id
             JOIN batches b ON ai.batch_for_orientation = b.batch_name 
-            WHERE ai.is_for_orientation = '1' AND b.purpose = 'orientation' AND (ai.batch_for_orientation IS NOT NULL AND ai.batch_for_orientation != 'Unassigned') AND YEAR(ai.created_at) = $this->currentYear";
+            WHERE ai.is_for_orientation = '1' AND b.purpose = 'orientation' AND (ai.batch_for_orientation IS NOT NULL AND ai.batch_for_orientation != 'Unassigned') AND ai.school_year = :school_year";
 
         if ($status === 'all') {
             $query .=
@@ -89,6 +90,7 @@ class OrientationModel
         }
 
         $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':school_year', $schoolYear, \PDO::PARAM_INT);
 
         if (!$stmt->execute()) {
             return false;

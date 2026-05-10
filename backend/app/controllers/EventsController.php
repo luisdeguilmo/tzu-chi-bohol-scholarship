@@ -15,11 +15,14 @@ try {
     error_log('Could not load .env file: ' . $e->getMessage());
 }
 
+use App\Constants\Action;
+use App\Models\AuditLogModel;
 use App\Models\EventParticipantsModel;
 use App\Models\EventsModel;
 use App\Models\NotificationsModel;
 use App\Models\ScholarModel;
 use App\Models\ScholarOverviewDataModel;
+use App\Models\StaffAccountModel;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
 use Middleware\Auth;
@@ -27,11 +30,15 @@ use Middleware\Auth;
 class EventsController
 {
     private $pdo;
+    private $auditLogModel;
+    private $staffModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
     public function processRequest()
@@ -173,6 +180,27 @@ class EventsController
                 throw new \Exception('Failed to create notification');
             }
 
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::CREATE_EVENT,
+                    'entity_type' => 'event',
+                    'entity_id' => null,
+                    'description' => "{$staff['first_name']} {$staff['last_name']} created an event.",
+                    'old_values' => null,
+                    'new_values' => ['event' => $data['event']['event_name']],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
             $this->pdo->commit();
 
             // Return success response
@@ -239,6 +267,27 @@ class EventsController
             // if (!$notification->createEventNotification($data['event'])) {
             //     throw new \Exception('Failed to create notification');
             // }
+
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::UPDATE_EVENT,
+                    'entity_type' => 'event',
+                    'entity_id' => null,
+                    'description' => "{$staff['first_name']} {$staff['last_name']} updated an event.",
+                    'old_values' => null,
+                    'new_values' => ['event' => $data['event']['event_name']],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
 
             $this->pdo->commit();
 

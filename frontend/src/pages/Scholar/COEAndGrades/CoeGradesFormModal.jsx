@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import InputModal from "../../../components/InputModal";
 import BASE_URL from "../../../config";
 import { useAccountStatus } from "../../../hooks/useAccountStatus";
+import pdfIcon from "../../../assets/pdf.png";
 
 function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
     const token = localStorage.getItem("token");
@@ -182,6 +183,9 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
         }
     };
 
+    const isPdf = (type) => type === "application/pdf";
+    const isImage = (type) => type && type.startsWith("image/");
+
     return (
         <InputModal
             label={"Submit COE and Grades"}
@@ -196,25 +200,6 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
         >
             <div className="p-6">
                 <div className="grid md:grid-cols-1 gap-2">
-                    {/* <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
-                        Year Level
-                        <select
-                            required
-                            value={yearLevel}
-                            onChange={(e) =>
-                                handleChange(setYearLevel, e.target.value)
-                            }
-                            className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
-                        >
-                            <option value="">Select year level</option>
-                            <option value={1}>1st Year</option>
-                            <option value={2}>2nd Year</option>
-                            <option value={3}>3rd Year</option>
-                            <option value={4}>4th Year</option>
-                            <option value={5}>5th Year</option>
-                        </select>
-                    </label> */}
-
                     <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                         Semester
                         <select
@@ -242,7 +227,7 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
                             ref={fileInputRef}
                             onChange={handleFileSelect}
                             multiple
-                            accept=".jpeg,.jpg,.png"
+                            accept=".jpeg,.jpg,.png,.pdf"
                             style={{ display: "none" }}
                         />
                         <button
@@ -277,19 +262,46 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
                                     className="p-2 bg-gray-50 rounded-lg flex justify-between text-xs items-center text-gray-500 border"
                                 >
                                     <div className="flex items-center">
-                                        {filePreview.type &&
-                                            filePreview.type.startsWith(
-                                                "image/",
-                                            ) && (
-                                                <img
-                                                    src={filePreview.preview}
-                                                    alt={filePreview.name}
-                                                    className="w-12 h-12 object-cover rounded mr-2"
-                                                />
-                                            )}
+                                        {isImage(filePreview.type) ? (
+                                            <img
+                                                src={filePreview.preview}
+                                                alt={filePreview.name}
+                                                className="w-12 h-12 object-cover rounded mr-2"
+                                            />
+                                        ) : isPdf(filePreview.type) ? (
+                                            <img
+                                                src={pdfIcon}
+                                                alt={filePreview.name}
+                                                className="w-12 h-12 object-cover rounded mr-2"
+                                            />
+                                        ) : (
+                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-6 w-6 text-red-600"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                    />
+                                                </svg>
+                                            </div>
+                                        )}
                                         <div>
-                                            <div className="font-medium text-gray-700">
-                                                {filePreview.name}
+                                            <div className="w-full md:w-[150px] lg:w-[130px] font-medium text-gray-700 flex items-center text-xs">
+                                                <span
+                                                    title={
+                                                        filePreview.file_name
+                                                    }
+                                                    className="truncate"
+                                                >
+                                                    {filePreview.name}
+                                                </span>
                                             </div>
                                             <div className="text-gray-500">
                                                 {(
@@ -297,6 +309,36 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
                                                 ).toFixed(2)}{" "}
                                                 KB
                                             </div>
+                                            {isPdf(filePreview.type) && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+
+                                                        window.open(
+                                                            filePreview.preview,
+                                                            "_blank",
+                                                        );
+                                                    }}
+                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
+                                                >
+                                                    Click to view PDF
+                                                </button>
+                                            )}
+
+                                            {isImage(filePreview.type) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        window.open(
+                                                            filePreview.preview,
+                                                            "_blank",
+                                                        )
+                                                    }
+                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
+                                                >
+                                                    Click to view image
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                     <button

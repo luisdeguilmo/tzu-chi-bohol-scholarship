@@ -8,22 +8,31 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Constants\Action;
 use App\Models\AllowanceCycleModel;
+use App\Models\ApplicantModel;
+use App\Models\AuditLogModel;
 use App\Models\ScholarsModel;
+use App\Models\StaffAccountModel;
 use App\Services\AllowanceService;
 use Config\Database;
 use DateTime;
+use Middleware\Auth;
 
 class ScholarsController
 {
     private $pdo;
     private $currentYear;
+    private $auditLogModel;
+    private $staffModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
         $this->currentYear = date('Y');
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
     public function processRequest()
@@ -70,6 +79,7 @@ class ScholarsController
             $sort = $_GET['sort'] ?? null;
 
             $results = [];
+            $data = [];
 
             if ($tab === 'all') {
                 $results = $scholar->getAllScholars($status, $school_year, $sort);
@@ -111,6 +121,8 @@ class ScholarsController
                 $results = $scholar->getNotRenewedScholars($status, $school_year, $school, $course);
             }
 
+            $data = $scholar->getScholarsWithProfile($results, $scholar);
+
             $cycleModel = new AllowanceCycleModel();
 
             $currentMonth = (int) date('n');
@@ -124,7 +136,7 @@ class ScholarsController
             http_response_code(200);
             echo json_encode([
                 'success' => true,
-                'data' => $results,
+                'data' => $data,
             ]);
         } catch (\Exception $e) {
             http_response_code(500);
@@ -155,7 +167,7 @@ class ScholarsController
                 return;
             }
 
-            $allowanceCycleModel->processAllowanceCycle();
+            $result = $allowanceCycleModel->processAllowanceCycle();
 
             $scholarIds = $model->getAllScholarsId();
             $isProcessed = $allowanceCycleModel->isPreviousMonthProcessed();
@@ -170,6 +182,29 @@ class ScholarsController
                         $newRenderedHours,
                     );
                 }
+            }
+
+            $staffId = Auth::id();
+            $staff = $this->staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$this->auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::ALLOWANCE_PROCESS,
+                    'entity_type' => 'allowance',
+                    'entity_id' => null,
+
+                    'description' => "{$staff['first_name']} {$staff['last_name']} processed allowances for {$result['allowance_month']}.",
+
+                    'old_values' => null,
+                    'new_values' => ['status' => 'processed'],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();

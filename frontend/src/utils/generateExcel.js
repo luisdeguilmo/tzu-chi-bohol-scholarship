@@ -4,8 +4,11 @@ import BASE_URL from "../config";
 import axios from "axios";
 import { getCurrentSchoolYear } from "./getCurrentSchoolYear";
 import { date } from "./getDateAndTime";
+import { useAuditLogs } from "../hooks/useAuditLogs";
 
 export const generateExcel = () => {
+    const { createAudit } = useAuditLogs();
+
     const uploadExcelToDatabase = async (workbook, fileName, total) => {
         try {
             // Generate Excel buffer
@@ -384,7 +387,7 @@ export const generateExcel = () => {
     };
 
     const exportScholarInformationToExcel = async (dataArray, fileName) => {
-        const ExcelJS = (await import('exceljs')).default
+        const ExcelJS = (await import("exceljs")).default;
         if (!Array.isArray(dataArray) || dataArray.length === 0) {
             console.error("No valid data found to export");
             return false;
@@ -419,7 +422,7 @@ export const generateExcel = () => {
     };
 
     const exportActiveScholars = async (data, fileName) => {
-        const ExcelJS = (await import('exceljs')).default
+        const ExcelJS = (await import("exceljs")).default;
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Allowances");
 
@@ -595,10 +598,19 @@ export const generateExcel = () => {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
         saveAs(blob, `${fileName}.xlsx`);
+        await createAudit(
+            "EXPORT",
+            "scholar",
+            null,
+            "exported active scholars list",
+            null,
+            null,
+        );
         return true;
     };
 
     const exportGraduatedScholars = async (data, fileName, schoolYear) => {
+        const ExcelJS = (await import("exceljs")).default;
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Allowances");
 
@@ -781,6 +793,14 @@ export const generateExcel = () => {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
         saveAs(blob, `${fileName}.xlsx`);
+        await createAudit(
+            "EXPORT",
+            "scholar",
+            null,
+            "exported graduated scholars list",
+            null,
+            null,
+        );
         return true;
     };
 

@@ -16,22 +16,30 @@ try {
     error_log('Could not load .env file: ' . $e->getMessage());
 }
 
+use App\Constants\Action;
 use App\Models\ApplicantModel;
+use App\Models\AuditLogModel;
 use App\Models\BatchModel;
 use App\Models\EmailMessageModel;
 use App\Models\ScholarsModel;
 use App\Models\SettingsModel;
+use App\Models\StaffAccountModel;
 use App\Services\PHPMailerBrevoService; // Update this line
 use Config\Database;
+use Middleware\Auth;
 
 class ApplicationManagementController
 {
     private $pdo;
+    private $auditLogModel;
+    private $staffModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
     public function processRequest()
@@ -134,6 +142,29 @@ class ApplicationManagementController
                 if (!$applicant->approveApplication($data)) {
                     throw new \Exception('Failed to approve application');
                 }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::APPLICATION_APPROVE,
+                        'entity_type' => 'application',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} approved {$data['first_name']} {$data['last_name']}'s application.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             } elseif ($action === 'approve_renew') {
                 // $message = $messageModel->getPassedMessage('application');
 
@@ -148,6 +179,29 @@ class ApplicationManagementController
                 }
 
                 $scholarModel->setScholarsAsActive($scholarId);
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::RENEWAL_APPLICATION_APPROVE,
+                        'entity_type' => 'application',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} approved {$data['first_name']} {$data['last_name']}'s renewal application.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             } elseif ($action === 'reject') {
                 $message = $messageModel->getFailedMessage('application');
 
@@ -158,6 +212,29 @@ class ApplicationManagementController
                 if (!$applicant->rejectApplication($data)) {
                     throw new \Exception('Failed to reject application');
                 }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::APPLICATION_REJECT,
+                        'entity_type' => 'application',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} rejected {$data['first_name']} {$data['last_name']}'s application.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             } elseif ($action === 'reject_renew') {
                 // $message = $messageModel->getFailedMessage('application');
 
@@ -167,6 +244,29 @@ class ApplicationManagementController
 
                 if (!$applicant->rejectRenewApplication($data)) {
                     throw new \Exception('Failed to reject application');
+                }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::RENEWAL_APPLICATION_REJECT,
+                        'entity_type' => 'application',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} rejected {$data['first_name']} {$data['last_name']}'s renewal application.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
                 }
             } elseif ($action === 'send_schedule') {
                 foreach ($data['applicants'] as $applicant) {
@@ -187,6 +287,34 @@ class ApplicationManagementController
 
                 if (!$batchModel->updateBatch($data['batch_id'])) {
                     throw new \Exception('Failed to update');
+                }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::SEND_SCHEDULE,
+                        'entity_type' => 'application',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} has sent the examination schedule for batch {$data['batch']}.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'batch' => [
+                                'batch' => $data['batch'],
+                                'date' => $data['date'],
+                                'time' => $data['time'],
+                                'venue' => $data['venue'],
+                            ],
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
                 }
             } elseif ($action === 'examination_result') {
                 $passingScoreModel = new SettingsModel();
@@ -224,6 +352,29 @@ class ApplicationManagementController
                         throw new \Exception('Failed to send email');
                     }
                 }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::EXAMINATION_MARK_PASSED,
+                        'entity_type' => 'examination',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked applicant(s) as passed the entrance examination and sent notifications.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicants' => $data['applicants'],
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             } elseif ($action === 'examination_failed') {
                 $message = $messageModel->getFailedMessage('entrance_examination');
 
@@ -231,6 +382,29 @@ class ApplicationManagementController
                     if (!$emailService->sendExaminationFailedEmail($applicant, $message)) {
                         throw new \Exception('Failed to send email');
                     }
+                }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::EXAMINATION_MARK_FAILED,
+                        'entity_type' => 'examination',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked applicant(s) as failed the entrance examination and sent notifications.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicants' => $data['applicants'],
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
                 }
             } elseif ($action === 'interview_passed') {
                 $message = $messageModel->getPassedMessage('initial_interview');
@@ -242,6 +416,29 @@ class ApplicationManagementController
                 if (!$applicant->updateStatusToInitialInterviewPassed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
                 }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::INITIAL_INTERVIEW_MARK_PASSED,
+                        'entity_type' => 'interview',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as passed the initial interview and sent notification.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             } elseif ($action === 'interview_failed') {
                 $message = $messageModel->getFailedMessage('initial_interview');
 
@@ -251,6 +448,29 @@ class ApplicationManagementController
 
                 if (!$applicant->updateStatusToInitialInterviewFailed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
+                }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::INITIAL_INTERVIEW_MARK_FAILED,
+                        'entity_type' => 'interview',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as failed the initial interview and sent notification.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
                 }
             } elseif ($action === 'home_visitation_passed') {
                 $message = $messageModel->getPassedMessage('home_visitation');
@@ -262,6 +482,29 @@ class ApplicationManagementController
                 if (!$applicant->updateStatusToHomeVisitationPassed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
                 }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::HOME_VISITATION_MARK_PASSED,
+                        'entity_type' => 'home_visitation',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as passed the home visitation and sent notification.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             } elseif ($action === 'home_visitation_failed') {
                 $message = $messageModel->getFailedMessage('home_visitation');
 
@@ -271,6 +514,29 @@ class ApplicationManagementController
 
                 if (!$applicant->updateStatusToHomeVisitationFailed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
+                }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::HOME_VISITATION_MARK_FAILED,
+                        'entity_type' => 'home_visitation',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as failed the home visitation and sent notification.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
                 }
             } elseif ($action === 'final_interview_passed') {
                 $message = $messageModel->getPassedMessage('final_interview');
@@ -282,6 +548,29 @@ class ApplicationManagementController
                 if (!$applicant->updateStatusToFinalInterviewPassed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
                 }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::FINAL_INTERVIEW_MARK_PASSED,
+                        'entity_type' => 'interview',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as passed the final interview and sent notification.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             } elseif ($action === 'final_interview_failed') {
                 $message = $messageModel->getFailedMessage('final_interview');
 
@@ -291,6 +580,29 @@ class ApplicationManagementController
 
                 if (!$applicant->updateStatusToFinalInterviewPassed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
+                }
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::FINAL_INTERVIEW_MARK_FAILED,
+                        'entity_type' => 'interview',
+                        'entity_id' => null,
+                        'description' => "{$staff['first_name']} {$staff['last_name']} marked {$data['first_name']} {$data['last_name']} as failed the final interview and sent notification.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'applicant' => "{$data['first_name']} {$data['last_name']}",
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
                 }
             }
 

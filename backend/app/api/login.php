@@ -123,7 +123,7 @@ try {
     // Build JWT
     $now = time();
     $payload = [
-        'iss' => $_ENV['APP_URL'] ?? 'app',
+        'iss' => $_ENV['ALLOWED_ORIGIN'] ?? 'app',
         'iat' => $now,
         'exp' => $now + Jwt::expiry(),
         'user_id' => $user['account_id'],

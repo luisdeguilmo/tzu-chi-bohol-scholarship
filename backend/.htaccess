@@ -23,6 +23,10 @@
     RewriteRule ^ index.php [QSA,L]
 </IfModule>
 
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "http://localhost:5173"
+</IfModule>
+
 # Prevent directory browsing (Security best practice)
 Options -Indexes
 

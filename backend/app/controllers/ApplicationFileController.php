@@ -171,8 +171,13 @@ class ApplicationFileController
             $type = $_GET['type'] ?? null;
 
             $result = [];
-
-            $result = $model->getAllFiles($id, $type);
+            if ($type && $type !== null && $id) {
+                $result = $model->getFilesByIdAndType($id, $type);
+            } elseif ($id) {
+                $result = $model->getFilesById($id);
+            } else {
+                $result = [];
+            }
 
             http_response_code(200);
             echo json_encode([

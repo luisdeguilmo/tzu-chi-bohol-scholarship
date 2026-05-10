@@ -5,6 +5,7 @@ import BASE_URL from "../config";
 export const useAllowanceSettings = () => {
     const [allowanceSettings, setAllowanceSettings] = useState(null);
     const [loading, setLoading] = useState(false);
+    const token = localStorage.getItem("token");
 
     const fetchMaximumHoursAndAmountPerHour = async () => {
         try {
@@ -17,7 +18,7 @@ export const useAllowanceSettings = () => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                }
+                },
             );
 
             const json = await response.json();
@@ -37,7 +38,7 @@ export const useAllowanceSettings = () => {
 
     const setMaximumHoursAndAmountPerHour = async (
         maximumHours,
-        amountPerHour
+        amountPerHour,
     ) => {
         const data = {
             maximum_hours: maximumHours,
@@ -53,9 +54,10 @@ export const useAllowanceSettings = () => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json(); // Parse as JSON instead of text

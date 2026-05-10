@@ -36,10 +36,6 @@ export default function ApplicationRecordsPage() {
     );
 
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        applications,
-        "profile-picture",
-    );
     const { viewPdf, downloadPdf } = usePdfActions(
         activeTab,
         fetchApplicantData,
@@ -48,6 +44,8 @@ export default function ApplicationRecordsPage() {
     useEffect(() => {
         fetchApplications();
     }, [activeTab, status, schoolYear, sortBy]);
+
+    console.log(applications);
 
     // Filter data based on search term
     const filteredApplications = applications.filter((applicant) => {
@@ -168,7 +166,7 @@ export default function ApplicationRecordsPage() {
                             ) : (
                                 <>
                                     <option value="all">All</option>
-                                    <option value="pending">Pending</option>
+                                    <option value="pending">Closed</option>
                                     <option value="fully_qualified">
                                         Fully Qualified
                                     </option>
@@ -210,7 +208,9 @@ export default function ApplicationRecordsPage() {
                     </select>
                 </div>
                 <div className="flex justify-between items-center gap-2">
-                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">School Year:</span>
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                        School Year:
+                    </span>
                     <select
                         value={schoolYear}
                         onChange={(e) => {
@@ -221,7 +221,10 @@ export default function ApplicationRecordsPage() {
                     >
                         <option value="all_years">All Years</option>
                         {schoolYears.map((schoolYear) => (
-                            <option key={schoolYear.id} value={schoolYear.school_year}>
+                            <option
+                                key={schoolYear.id}
+                                value={schoolYear.school_year}
+                            >
                                 {schoolYear.school_year}
                             </option>
                         ))}
@@ -240,13 +243,7 @@ export default function ApplicationRecordsPage() {
                                 <div className="w-[20%]"></div>
                                 <div className="w-[max-content] flex items-center text-left gap-2">
                                     <img
-                                        src={
-                                            info.type === "Old"
-                                                ? profilePics[info.scholar_id]
-                                                : profilePics[
-                                                      info.application_id
-                                                  ]
-                                        }
+                                        src={info[0].profile}
                                         alt="Profile"
                                         className="w-10 h-10 object-cover rounded-full mx-auto"
                                     />
@@ -354,7 +351,7 @@ export default function ApplicationRecordsPage() {
                                                                     ? "bg-red-100 text-red-800"
                                                                     : info.is_application_rejected
                                                                       ? "bg-red-100 text-red-800"
-                                                                      : "bg-yellow-100 text-yellow-800"
+                                                                      : "bg-gray-100 text-gray-800"
                                                 }`}
                                             >
                                                 {info.is_attended_awarding
@@ -373,7 +370,7 @@ export default function ApplicationRecordsPage() {
                                                                 ? "Entrance Examination Failed"
                                                                 : info.is_application_rejected
                                                                   ? "Application Rejected"
-                                                                  : "Pending"}
+                                                                  : "Closed"}
                                             </span>
                                         </td>
                                     )}
@@ -493,6 +490,7 @@ export default function ApplicationRecordsPage() {
             )}
 
             <ApplicantDetailsModal
+                schoolYear={schoolYear}
                 label={"Applicant Details"}
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}

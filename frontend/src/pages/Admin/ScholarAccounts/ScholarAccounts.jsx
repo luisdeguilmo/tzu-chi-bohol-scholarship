@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EmptyState from "../../../components/EmptyState";
 import Pagination from "../../../components/Pagination";
 import { useProfilePicture } from "../../../hooks/useProfilePicture";
@@ -15,6 +15,10 @@ import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { useUserAccount } from "../../../hooks/useUserAccount";
 import { Check } from "lucide-react";
+import ScholarProfileModal from "../../../components/UserProfileModal";
+import ChangePasswordModal from "../../../components/ChangePasswordModal";
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import { toast } from "react-toastify";
 
 const ScholarAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +27,12 @@ const ScholarAccounts = () => {
     const [sortBy, setSortBy] = useState("newest");
     const [activeTab, setActiveTab] = useState("pending");
     const [headers, setHeaders] = useState(pendingScholarHeaders);
+    const [scholarId, setScholarId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modal, setModal] = useState(null);
+    const [accountStatus, setAccountStatus] = useState("");
+    const [action, setAction] = useState("");
+    const [deactivationReason, setDeactivationReason] = useState("");
 
     const { loading, scholars, createScholarAccount, fetchScholars } =
         useScholarAccounts(activeTab);
@@ -32,7 +42,7 @@ const ScholarAccounts = () => {
 
     const { profilePics, fetchAllPics } = useProfilePicture(
         scholars,
-        "profile-picture"
+        "profile-picture",
     );
 
     useEffect(() => {
@@ -65,7 +75,7 @@ const ScholarAccounts = () => {
 
     // Filter data based on search term
     const filteredScholars = scholars.filter((scholar) =>
-        scholar.first_name?.toLowerCase().includes(searchTerm.toLowerCase())
+        scholar.first_name?.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     const sortedScholars = [...filteredScholars].sort((a, b) => {
@@ -101,6 +111,56 @@ const ScholarAccounts = () => {
 
     const handleRefresh = () => {
         fetchScholars(activeTab);
+    };
+
+    const handleOpenConfirmationModal = (
+        accountId,
+        accountStatus,
+        actionType,
+    ) => {
+        setAction(actionType);
+        setAccountStatus(accountStatus);
+        setScholarId(accountId);
+        setIsModalOpen(true);
+    };
+
+    const handleAccountStatusChange = async (
+        accountId,
+        accountStatus,
+        action,
+    ) => {
+        if (action === "activate" && accountStatus === "active") {
+            toast.error("Account is already active.");
+            return;
+        }
+
+        if (
+            action === "deactivate" &&
+            (accountStatus === "graduated" || accountStatus === "terminated")
+        ) {
+            toast.error("Account is already deactivated.");
+            return;
+        }
+
+        try {
+            const success = await updateScholarAccountStatus(
+                accountId,
+                action,
+                deactivationReason,
+            );
+            if (success) {
+                toast.success(
+                    `Account ${
+                        action === "activate" ? "activated" : "deactivated"
+                    } successfully.`,
+                );
+                setIsModalOpen(false);
+                fetchScholars(activeTab);
+            }
+        } catch (error) {
+            console.error("Error updating account status:", error);
+            toast.error(`Failed to ${action} account. Please try again.`);
+        }
     };
 
     return (
@@ -153,6 +213,12 @@ const ScholarAccounts = () => {
                                     updateScholarAccountStatus
                                 }
                                 onRefresh={() => fetchScholars(activeTab)}
+                                onSelectScholarId={setScholarId}
+                                setIsModalOpen={setIsModalOpen}
+                                setModal={setModal}
+                                onOpenConfirmationModal={
+                                    handleOpenConfirmationModal
+                                }
                             />
                         )}
                     </Table>
@@ -172,7 +238,7 @@ const ScholarAccounts = () => {
                                     onClick={() =>
                                         createScholarAccount(
                                             selectedScholars,
-                                            setSelectedScholars
+                                            setSelectedScholars,
                                         )
                                     }
                                     disabled={
@@ -205,6 +271,48 @@ const ScholarAccounts = () => {
                     </div>
                 )}
             </div>
+
+            {modal === "view_profile_modal" && (
+                <ScholarProfileModal
+                    userId={scholarId}
+                    isOpen={isModalOpen}
+                    setIsOpen={setIsModalOpen}
+                    isScholar={true}
+                />
+            )}
+
+            {modal === "change_status" && (
+                <ConfirmationModal
+                    isOpen={isModalOpen}
+                    onClose={setIsModalOpen}
+                    isLoading={isLoading}
+                    label={"Confirmation"}
+                    action={action}
+                    message={
+                        action === "activate"
+                            ? "Are you sure you want to activate this account?"
+                            : "Are you sure you want to deactivate this account?"
+                    }
+                    onClick={() =>
+                        handleAccountStatusChange(
+                            scholarId,
+                            accountStatus,
+                            action,
+                        )
+                    }
+                    isScholarAccount={true}
+                    deactivationReason={deactivationReason}
+                    setDeactivationReason={setDeactivationReason}
+                />
+            )}
+
+            {modal === "change_password_modal" && (
+                <ChangePasswordModal
+                    isOpen={isModalOpen}
+                    onClose={setIsModalOpen}
+                    userId={scholarId}
+                />
+            )}
         </div>
     );
 };

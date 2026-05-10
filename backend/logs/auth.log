@@ -3890,3 +3890,70 @@
 [2026-04-27 07:21:08] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
 [2026-04-27 14:44:09] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
 [2026-04-27 14:44:11] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-28 12:31:49] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-29 13:23:30] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-29 13:23:31] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-30 14:17:41] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-30 14:17:41] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-30 14:20:55] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-04-30 14:21:00] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-04-30 14:21:34] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-04-30 14:21:38] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-04-30 16:08:16] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-01 05:55:47] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-01 05:55:49] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-01 07:33:59] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-01 07:34:49] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-01 07:35:29] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-01 07:35:30] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-01 07:35:31] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-01 07:35:44] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-01 07:35:44] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-01 07:36:26] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-01 07:36:33] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-01 08:12:14] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-05-01 10:49:02] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-01 10:49:04] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-01 14:40:47] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-05-01 14:50:43] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-01 15:04:51] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-02 09:26:05] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-02 09:26:06] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-02 09:26:10] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-02 10:49:49] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-02 10:49:50] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-02 11:01:31] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-02 11:01:32] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-02 11:26:23] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-02 11:36:23] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-02 11:36:25] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-02 11:36:27] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-02 11:38:39] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-02 11:38:40] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-03 06:26:16] [IP: ::1] [Email: deguilmoluis0@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-03 06:26:18] [IP: ::1] [Email: deguilmoluis0@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-03 06:26:25] [IP: ::1] [Email: deguilmoluis0@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-03 06:26:30] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-08 10:01:05] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-08 12:25:12] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-08 13:38:09] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-05-08 14:27:15] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-08 14:28:28] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-05-09 00:59:11] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-09 01:03:45] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-09 01:03:46] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-09 01:04:22] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-09 01:04:37] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-09 01:04:41] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-09 03:11:11] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-09 03:25:30] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-09 03:26:45] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-09 03:38:28] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-09 03:38:30] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-09 03:56:13] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-09 13:43:41] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-05-09 15:28:29] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-10 09:56:59] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN FAILED – bad credentials
+[2026-05-10 09:57:03] [IP: ::1] [Email: deguilmoluis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-05-10 09:57:59] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN FAILED – bad credentials
+[2026-05-10 09:58:00] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS

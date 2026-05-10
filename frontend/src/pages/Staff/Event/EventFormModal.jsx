@@ -18,6 +18,7 @@ const EventFormModal = React.memo(
         const [isLoading, setIsLoading] = useState(false);
         const [selectedScholars, setSelectedScholars] = useState([]);
         const [participantLimit, setParticipantLimit] = useState("");
+        const token = localStorage.getItem("token");
 
         const { scholars } = useScholars(
             "active",
@@ -26,7 +27,7 @@ const EventFormModal = React.memo(
             "all",
             "all",
             "all",
-            "newest"
+            "newest",
         );
 
         useEffect(() => {
@@ -39,7 +40,7 @@ const EventFormModal = React.memo(
                 setEventType(event?.event_type || "");
                 setParticipantLimit(event?.participant_limit || "");
                 setSelectedScholars(
-                    event?.participants.map((e) => e.scholar_id)
+                    event?.participants.map((e) => e.scholar_id),
                 );
             }
         }, [event, action]);
@@ -62,16 +63,14 @@ const EventFormModal = React.memo(
             try {
                 setIsLoading(true);
 
-                const response = await fetch(
-                    `${BASE_URL}app/api/events.php`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json", // Important for JSON body
-                        },
-                        body: JSON.stringify(data),
-                    }
-                );
+                const response = await fetch(`${BASE_URL}app/api/events.php`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(data),
+                });
 
                 const result = await response.json(); // Parse as JSON instead of text
 
@@ -118,16 +117,14 @@ const EventFormModal = React.memo(
             try {
                 setIsLoading(true);
 
-                const response = await fetch(
-                    `${BASE_URL}app/api/events.php`,
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json", // Important for JSON body
-                        },
-                        body: JSON.stringify(data),
-                    }
-                );
+                const response = await fetch(`${BASE_URL}app/api/events.php`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(data),
+                });
 
                 const result = await response.json(); // Parse as JSON instead of text
 
@@ -386,7 +383,7 @@ const EventFormModal = React.memo(
                                     {scholars.map(
                                         (scholar, index) =>
                                             selectedScholars.includes(
-                                                scholar.account_id
+                                                scholar.account_id,
                                             ) && (
                                                 <li
                                                     key={index}
@@ -398,7 +395,7 @@ const EventFormModal = React.memo(
                                                     <button
                                                         onClick={() =>
                                                             toggleScholarSelection(
-                                                                scholar.account_id
+                                                                scholar.account_id,
                                                             )
                                                         }
                                                         className="rounded-full bg-white"
@@ -406,7 +403,7 @@ const EventFormModal = React.memo(
                                                         <X className="w-4 h-4 text-red-600" />
                                                     </button>
                                                 </li>
-                                            )
+                                            ),
                                     )}
                                 </ul>
                             </div>
@@ -422,11 +419,11 @@ const EventFormModal = React.memo(
                                                 className="accent-green-600 hover:accent-green-600"
                                                 type="checkbox"
                                                 checked={selectedScholars.includes(
-                                                    scholar.account_id
+                                                    scholar.account_id,
                                                 )}
                                                 onChange={() =>
                                                     toggleScholarSelection(
-                                                        scholar.account_id
+                                                        scholar.account_id,
                                                     )
                                                 }
                                             />
@@ -447,7 +444,7 @@ const EventFormModal = React.memo(
                 </div>
             </InputModal>
         );
-    }
+    },
 );
 
 export default EventFormModal;

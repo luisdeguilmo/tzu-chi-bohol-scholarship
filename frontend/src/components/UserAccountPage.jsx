@@ -10,12 +10,12 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
     const userId = user.user_id;
     const { imageUrl } = getProfilePicture(
         scholarId ? scholarId : userId,
-        "profile-picture"
+        "profile-picture",
     );
     const currentSchoolYear = getCurrentSchoolYear();
     const { scholarInfo } = useScholarAccountInformation(
         scholarId ? scholarId : userId,
-        currentSchoolYear
+        currentSchoolYear,
     );
     const info = "block md:hidden";
 
@@ -228,9 +228,12 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                             "active"
                                                 ? "Active"
                                                 : scholarInfo?.scholar_status ===
-                                                    "deactivated"
-                                                  ? "Deactivated"
-                                                  : "Not Renewed"
+                                                    "graduated"
+                                                  ? "Graduated"
+                                                  : scholarInfo?.scholar_status ===
+                                                      "terminated"
+                                                    ? "Terminated"
+                                                    : "Not Renewed"
                                         }
                                         mobileClass={info}
                                     />

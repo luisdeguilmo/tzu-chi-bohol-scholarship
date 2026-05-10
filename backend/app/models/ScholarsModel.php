@@ -93,51 +93,6 @@ class ScholarsModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // public function getOldActiveScholars(
-    //     $status,
-    //     $school_year,
-    //     $school,
-    //     $year_level,
-    //     $course,
-    //     $current_school_year,
-    // ) {
-    //     $query =
-    //         'SELECT s.*, u.type, u.status, ai.type, ai.school_year, ai.type, pi.email, eb.incoming_grade, eb.present_school, eb.present_course1, eb.year_level FROM ' .
-    //         $this->table_name .
-    //         " s JOIN personal_information pi ON s.account_id = pi.scholar_id JOIN educational_background eb ON s.account_id = eb.scholar_id JOIN users u ON s.account_id = u.account_id JOIN application_info ai ON s.account_id = ai.scholar_id WHERE u.type = 'scholar' AND u.status = 'active' AND ai.status = 'scholar' AND ai.school_year = :school_year";
-
-    //     if ($status === 'all') {
-    //         $query .= " AND ai.type = 'Old'";
-    //     } elseif ($status === 'new') {
-    //         $query .= " AND ai.type = 'New'";
-    //     } elseif ($status === 'old') {
-    //         $query .= " AND ai.type = 'Old'";
-    //     }
-
-    //     if ($school !== 'all') {
-    //         $query .= " AND eb.present_school = '$school'";
-    //     }
-
-    //     if ($course !== 'all') {
-    //         $query .= " AND eb.present_course1 = '$course'";
-    //     }
-
-    //     if ($year_level !== 'all') {
-    //         $query .= " AND eb.year_level = '$year_level'";
-    //     }
-
-    //     // if ($school_year === 'all_years') {
-    //     //     $query .= '';
-    //     // } elseif ($school_year !== 'all_years') {
-    //     //     $query .= " AND ai.school_year = '$school_year'";
-    //     // }
-
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->bindParam(':school_year', $current_school_year);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
-
     public function getOldActiveScholars($status, $school_year, $school, $year_level, $course)
     {
         $query =
@@ -189,46 +144,8 @@ class ScholarsModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // public function getGraduatedScholars($status, $school_year, $school, $course)
-    // {
-    //     $query =
-    //         'SELECT s.*, u.type, u.status, ai.type, ai.school_year, ai.type, pi.email, eb.incoming_grade, eb.present_school, eb.present_course1 FROM ' .
-    //         $this->table_name .
-    //         " s JOIN personal_information pi ON s.account_id = pi.application_id JOIN educational_background eb ON s.account_id = eb.application_id JOIN users u ON s.account_id = u.account_id JOIN application_info ai ON s.account_id = ai.application_id WHERE u.type = 'scholar' AND u.status = 'graduated'";
-
-    //     if ($status === 'all') {
-    //         $query .= " AND (ai.type = 'New' OR ai.type = 'Old')";
-    //     } elseif ($status === 'new') {
-    //         $query .= " AND ai.type = 'New'";
-    //     } elseif ($status === 'old') {
-    //         $query .= " AND ai.type = 'Old'";
-    //     }
-
-    //     if ($school !== 'all') {
-    //         $query .= " AND eb.present_school = '$school'";
-    //     }
-
-    //     if ($course !== 'all') {
-    //         $query .= " AND eb.present_course1 = '$course'";
-    //     }
-
-    //     if ($school_year === 'all_years') {
-    //         $query .= '';
-    //     } elseif ($school_year !== 'all_years') {
-    //         $query .= " AND ai.school_year = '$school_year'";
-    //     }
-
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
-
-    public function getGraduatedScholars(
-        $status,
-        $school_year,
-        $school,
-        $course,
-    ) {
+    public function getGraduatedScholars($status, $school_year, $school, $course)
+    {
         $query =
             'SELECT 
             s.*, 
@@ -312,40 +229,6 @@ class ScholarsModel
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
-
-    // public function getTerminatedScholars($status, $school_year, $school, $course)
-    // {
-    //     $query =
-    //         'SELECT s.*, u.type, u.status, ai.type, ai.school_year, ai.type, pi.email, eb.incoming_grade, eb.present_school, eb.present_course1 FROM ' .
-    //         $this->table_name .
-    //         " s JOIN personal_information pi ON s.account_id = pi.application_id JOIN educational_background eb ON s.account_id = eb.application_id JOIN users u ON s.account_id = u.account_id JOIN application_info ai ON s.account_id = ai.application_id WHERE u.type = 'scholar' AND u.status = 'terminated'";
-
-    //     if ($status === 'all') {
-    //         $query .= " AND (ai.type = 'New' OR ai.type = 'Old')";
-    //     } elseif ($status === 'new') {
-    //         $query .= " AND ai.type = 'New'";
-    //     } elseif ($status === 'old') {
-    //         $query .= " AND ai.type = 'Old'";
-    //     }
-
-    //     if ($school !== 'all') {
-    //         $query .= " AND eb.present_school = '$school'";
-    //     }
-
-    //     if ($course !== 'all') {
-    //         $query .= " AND eb.present_course1 = '$course'";
-    //     }
-
-    //     if ($school_year === 'all_years') {
-    //         $query .= '';
-    //     } elseif ($school_year !== 'all_years') {
-    //         $query .= " AND ai.school_year = '$school_year'";
-    //     }
-
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
 
     public function getTerminatedScholars($status, $school_year, $school, $course)
     {
@@ -433,40 +316,6 @@ class ScholarsModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // public function getNotRenewedScholars($status, $school_year, $school, $course)
-    // {
-    //     $query =
-    //         'SELECT s.*, u.type, u.status, ai.type, ai.school_year, ai.type, pi.email, eb.incoming_grade, eb.present_school, eb.present_course1 FROM ' .
-    //         $this->table_name .
-    //         " s JOIN personal_information pi ON s.account_id = pi.application_id JOIN educational_background eb ON s.account_id = eb.application_id JOIN users u ON s.account_id = u.account_id JOIN application_info ai ON s.account_id = ai.application_id WHERE u.type = 'scholar' AND u.status = 'not_renewed'";
-
-    //     if ($status === 'all') {
-    //         $query .= " AND (ai.type = 'New' OR ai.type = 'Old')";
-    //     } elseif ($status === 'new') {
-    //         $query .= " AND ai.type = 'New'";
-    //     } elseif ($status === 'old') {
-    //         $query .= " AND ai.type = 'Old'";
-    //     }
-
-    //     if ($school !== 'all') {
-    //         $query .= " AND eb.present_school = '$school'";
-    //     }
-
-    //     if ($course !== 'all') {
-    //         $query .= " AND eb.present_course1 = '$course'";
-    //     }
-
-    //     if ($school_year !== 'all_years') {
-    //         $query .= " AND ai.school_year = '$school_year'";
-    //     }
-
-    //     $query .= ' ORDER BY ai.school_year DESC';
-
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
-
     public function getNotRenewedScholars($status, $school_year, $school, $course)
     {
         $query =
@@ -540,40 +389,6 @@ class ScholarsModel
 
         return null;
     }
-
-    // public function getAllScholarAllowances($school_year, $school)
-    // {
-    //     $query =
-    //         '
-    //     SELECT
-    //         s.first_name,
-    //         s.last_name,
-    //         eb.year_level,
-    //         s.allowance,
-    //         s.transport_allowance,
-    //         s.load_allowance
-    //     FROM ' .
-    //         $this->table_name .
-    //         ' s
-    //     JOIN users u
-    //         ON s.account_id = u.account_id
-    //     JOIN educational_background eb
-    //         ON (eb.application_id = s.account_id OR eb.scholar_id = s.account_id)
-    //     JOIN application_info ai
-    //         ON (ai.application_id = s.account_id OR ai.scholar_id = s.account_id)
-    //     WHERE u.status = "active"
-    //       AND ai.school_year = :school_year AND eb.present_school = :school
-    // ';
-
-    //     // ORDER BY s.last_name ASC, ORDER BY s.first_name ASC
-
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->bindParam(':school_year', $school_year);
-    //     $stmt->bindParam(':school', $school);
-    //     $stmt->execute();
-
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
 
     public function getAllScholarAllowances($school_year, $school)
     {
@@ -732,6 +547,44 @@ class ScholarsModel
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    public function getProfileById($id)
+    {
+        $query = "SELECT *
+                FROM profile_pictures 
+                WHERE application_id = :application_id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':application_id', $id);
+
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        return null;
+    }
+
+    public function getScholarsWithProfile($scholars, $scholarModel)
+    {
+        $data = [];
+
+        foreach ($scholars as $scholar) {
+            $files = $scholarModel->getProfileById($scholar['account_id']);
+
+            foreach ($files as $file) {
+                $scholar[] = [
+                    'profile' =>
+                        $_ENV['APP_URL'] .
+                        '/index.php?route=profile&file=' .
+                        urlencode(basename($file['file_path'])),
+                ];
+            }
+
+            $data[] = $scholar;
+        }
+
+        return $data;
     }
 }
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import { Upload } from "lucide-react";
 
-const ResultTableRow = ({ currentItems, profilePics, onOpenModal }) => {
+const ResultTableRow = ({ currentItems, onOpenModal }) => {
     const [edit, setEdit] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [score, setScore] = useState(0);
@@ -31,7 +31,7 @@ const ResultTableRow = ({ currentItems, profilePics, onOpenModal }) => {
                         <div className="w-[30%]"></div>
                         <div className="w-[max-content] flex  items-center text-left gap-2">
                             <img
-                                src={profilePics[info.application_id]}
+                                src={info[0].profile}
                                 alt="Profile"
                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                             />

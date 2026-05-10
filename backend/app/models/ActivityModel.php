@@ -268,6 +268,10 @@ class ActivityModel
                     'application_id' => $file['application_id'],
                     'file_name' => $file['file_name'],
                     'file_path' => $file['file_path'],
+                    'file_url' =>
+                        $_ENV['APP_URL'] .
+                        '/index.php?type=activities&route=file/view&file=' .
+                        urlencode(basename($file['file_path'])),
                     'file_size' => $file['file_size'],
                     'file_type' => $file['file_type'],
                     'uploaded_at' => $file['uploaded_at'],
@@ -293,6 +297,32 @@ class ActivityModel
         return $data;
     }
 
+    public function getProfileById($id)
+    {
+        $query = "SELECT *
+                FROM profile_pictures 
+                WHERE application_id = :application_id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':application_id', $id);
+
+        if ($stmt->execute()) {
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+
+        return null;
+    }
+
+    // public function getScholarsWithProfile($scholars, $scholarModel)
+    // {
+    //     $data = [];
+
+    //     foreach ($scholars as $scholar) {
+    //     }
+
+    //     return $data;
+    // }
+
     public function getAllScholarsWithFiles($scholars, $activityModel)
     {
         $data = [];
@@ -308,11 +338,17 @@ class ActivityModel
                     'application_id' => $file['application_id'],
                     'file_name' => $file['file_name'],
                     'file_path' => $file['file_path'],
+                    'file_url' =>
+                        $_ENV['APP_URL'] .
+                        '/index.php?type=activities&route=file/view&file=' .
+                        urlencode(basename($file['file_path'])),
                     'file_size' => $file['file_size'],
                     'file_type' => $file['file_type'],
                     'uploaded_at' => $file['uploaded_at'],
                 ];
             }
+
+            $profile = $activityModel->getProfileById($scholar['application_id']);
 
             $data[] = [
                 'id' => $scholar['id'],
@@ -327,6 +363,10 @@ class ActivityModel
                 'status' => $scholar['activity_status'],
                 'date_submitted' => $scholar['uploaded_at'],
                 'files' => $filesList,
+                'profile' =>
+                    $_ENV['APP_URL'] .
+                    '/index.php?route=profile&file=' .
+                    urlencode(basename($profile['file_path'])),
             ];
         }
 

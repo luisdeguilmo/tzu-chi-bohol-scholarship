@@ -10,12 +10,13 @@ export const useScholars = (
     school,
     course,
     yearLevel,
-    sortBy
+    sortBy,
 ) => {
     const [type, setType] = useState("");
     const [scholars, setScholars] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const fetchScholars = async () => {
         try {
@@ -23,7 +24,7 @@ export const useScholars = (
             setError(null);
 
             const response = await fetch(
-                `${BASE_URL}app/api/scholars.php?tab=${tab}&status=${status}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}`
+                `${BASE_URL}app/api/scholars.php?tab=${tab}&status=${status}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}`,
             );
 
             if (!response.ok) {
@@ -49,8 +50,9 @@ export const useScholars = (
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             const data = response.data;
@@ -76,7 +78,7 @@ export const useScholars = (
         status,
         accountId,
         transportAllowance,
-        loadAllowance
+        loadAllowance,
     ) => {
         try {
             setLoading(true);
@@ -91,8 +93,9 @@ export const useScholars = (
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             const data = response.data;

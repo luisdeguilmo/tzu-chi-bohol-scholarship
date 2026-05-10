@@ -37,10 +37,6 @@ export default function InitialInterview() {
     const { loading, error, applications, fetchApplications } =
         useInitialInterview(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        applications,
-        "profile-picture"
-    );
 
     useEffect(() => {
         fetchApplications();
@@ -189,7 +185,6 @@ export default function InitialInterview() {
                                     return (
                                         <ApplicantsTableRow
                                             currentItems={currentItems}
-                                            profilePics={profilePics}
                                             onApprove={
                                                 handleOpenApproveConfirmationModal
                                             }
@@ -204,7 +199,6 @@ export default function InitialInterview() {
                                     return (
                                         <ResultTableRow
                                             currentItems={currentItems}
-                                            profilePics={profilePics}
                                             onOpenModal={
                                                 handleOpenFileUploadFormModal
                                             }

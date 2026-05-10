@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import InputModal from "../../../components/InputModal";
 import { useSubmissions } from "../../../hooks/useSubmissions";
 import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
-import BASE_URL from "../../../config";
+import pdfIcon from "../../../assets/pdf.png";
 
 function CoaGradesModal({ scholarId, isOpen, onClose }) {
-    const URL = `${BASE_URL}public/`;
     const { loading, submissions, fetchSubmissions } = useSubmissions(
         "all",
+        null,
         scholarId,
-        0
     );
 
     useEffect(() => {
@@ -106,18 +105,33 @@ function CoaGradesModal({ scholarId, isOpen, onClose }) {
                                                     >
                                                         <div className="flex items-center w-full">
                                                             {/* PDF Preview */}
-                                                            {isPdf(
-                                                                filePreview.file_type
-                                                            ) && (
-                                                                <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center cursor-pointer hover:bg-red-200 transition-colors flex-shrink-0">
+                                                            {isImage(
+                                                                filePreview.file_type,
+                                                            ) ? (
+                                                                <img
+                                                                    src={
+                                                                        filePreview.file_url
+                                                                    }
+                                                                    alt={
+                                                                        filePreview.name
+                                                                    }
+                                                                    className="w-12 h-12 object-cover rounded mr-2"
+                                                                />
+                                                            ) : isPdf(
+                                                                  filePreview.file_type,
+                                                              ) ? (
+                                                                <img
+                                                                    src={
+                                                                        pdfIcon
+                                                                    }
+                                                                    alt={
+                                                                        filePreview.name
+                                                                    }
+                                                                    className="w-12 h-12 object-cover rounded mr-2"
+                                                                />
+                                                            ) : (
+                                                                <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
                                                                     <svg
-                                                                        onClick={() =>
-                                                                            window.open(
-                                                                                URL +
-                                                                                    filePreview.file_path,
-                                                                                "_blank"
-                                                                            )
-                                                                        }
                                                                         xmlns="http://www.w3.org/2000/svg"
                                                                         className="h-6 w-6 text-red-600"
                                                                         fill="none"
@@ -136,19 +150,6 @@ function CoaGradesModal({ scholarId, isOpen, onClose }) {
                                                                 </div>
                                                             )}
 
-                                                            {/* Image Preview */}
-                                                            {isImage(
-                                                                filePreview.file_type
-                                                            ) && (
-                                                                <img
-                                                                    src={`${URL}${filePreview.file_path}`}
-                                                                    alt={
-                                                                        filePreview.file_name
-                                                                    }
-                                                                    className="w-12 h-12 object-cover rounded mr-2 flex-shrink-0"
-                                                                />
-                                                            )}
-
                                                             <div className="flex-1 min-w-0">
                                                                 <div className="font-medium text-gray-700">
                                                                     <p className="truncate">
@@ -157,15 +158,15 @@ function CoaGradesModal({ scholarId, isOpen, onClose }) {
                                                                         }
                                                                     </p>
                                                                 </div>
+
                                                                 {isPdf(
-                                                                    filePreview.file_type
+                                                                    filePreview.file_type,
                                                                 ) && (
                                                                     <button
                                                                         onClick={() =>
                                                                             window.open(
-                                                                                URL +
-                                                                                    filePreview.file_path,
-                                                                                "_blank"
+                                                                                filePreview.file_url,
+                                                                                "_blank",
                                                                             )
                                                                         }
                                                                         className="text-blue-600 hover:text-blue-800 text-xs mt-1"
@@ -175,14 +176,13 @@ function CoaGradesModal({ scholarId, isOpen, onClose }) {
                                                                     </button>
                                                                 )}
                                                                 {isImage(
-                                                                    filePreview.file_type
+                                                                    filePreview.file_type,
                                                                 ) && (
                                                                     <button
                                                                         onClick={() =>
                                                                             window.open(
-                                                                                URL +
-                                                                                    filePreview.file_path,
-                                                                                "_blank"
+                                                                                filePreview.file_url,
+                                                                                "_blank",
                                                                             )
                                                                         }
                                                                         className="text-blue-600 hover:text-blue-800 text-xs mt-1"
@@ -195,7 +195,7 @@ function CoaGradesModal({ scholarId, isOpen, onClose }) {
                                                             </div>
                                                         </div>
                                                     </li>
-                                                )
+                                                ),
                                             )}
                                         </ul>
                                     </div>

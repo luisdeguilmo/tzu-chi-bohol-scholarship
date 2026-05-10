@@ -56,6 +56,7 @@ export default function CoeGrades() {
     const { loading, submissions, fetchSubmissions } = useSubmissions(
         activeTab,
         yearLevel,
+        null,
     );
 
     useEffect(() => {

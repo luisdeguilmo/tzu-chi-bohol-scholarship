@@ -33,7 +33,7 @@ export default function ArchivedActivities() {
 
     const tabs = [
         { name: "All", value: "all" },
-        { name: "Community Services", value: "volunteer_activities" },
+        { name: "Duty Reports", value: "volunteer_activities" },
         { name: "Events", value: "events" },
     ];
 
@@ -124,7 +124,7 @@ export default function ArchivedActivities() {
                     <SearchInputMobile
                         searchTerm={searchTerm}
                         onSearchChange={setSearchTerm}
-                        placeholder={"Search events and community services..."}
+                        placeholder={"Search events and duty reports..."}
                     />
                 </div>
 

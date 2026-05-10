@@ -5,6 +5,7 @@ import { useState } from "react";
 
 export const useRecordHours = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const token = localStorage.getItem("token");
 
     const recordCommunityServiceHours = async (
         activity,
@@ -13,7 +14,7 @@ export const useRecordHours = () => {
         year,
         month,
         currentStatus,
-        sort
+        sort,
     ) => {
         try {
             setIsLoading(true);
@@ -35,8 +36,9 @@ export const useRecordHours = () => {
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             const data = response.data;
@@ -59,13 +61,15 @@ export const useRecordHours = () => {
     const markAsNotRecorded = async (
         id,
         accountId,
+        activity,
         feedback,
         year,
         month,
         currentStatus,
         sort,
-        onRefresh
+        onRefresh,
     ) => {
+        console.log("SAKSIS");
         try {
             setIsLoading(true);
 
@@ -75,21 +79,28 @@ export const useRecordHours = () => {
                     id: id,
                     account_id: accountId,
                     feedback: feedback,
+                    activity_name: activity?.activity_name,
+                    activity_date: activity?.activity_date,
+                    rendered_hours: 0,
                 },
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             const data = response.data;
 
+            console.log(data);
+
             if (data.success) {
                 toast.success("Marked as not recorded successfully");
                 onRefresh(year, month, currentStatus, sort);
-                setIsLoading(false);
-                return true;
+                console.log("SAKSIS");
+                // setIsLoading(false);
+                // return true;
             }
 
             setIsLoading(false);
@@ -120,8 +131,9 @@ export const useRecordHours = () => {
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             const data = response.data;

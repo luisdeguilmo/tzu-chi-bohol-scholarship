@@ -16,18 +16,18 @@ export const generatePDF = async (
     scholarId,
     applicantData,
 ) => {
-    const { getExaminationFiles } = await import(
-        "./getExaminationFiles.js"
-    );
-    const { getFinalInterviewFiles } = await import(
-        "./getFinalInterviewFiles.js"
-    );
-    const { getHomeVisitationFiles } = await import(
-        "./getHomeVisitationFilesModel.js"
-    );
-    const { getInitialInterviewFiles } = await import(
-        "./getInitialInterviewFiles.js"
-    );
+    // const { getExaminationFiles } = await import(
+    //     "./getExaminationFiles.js"
+    // );
+    // const { getFinalInterviewFiles } = await import(
+    //     "./getFinalInterviewFiles.js"
+    // );
+    // const { getHomeVisitationFiles } = await import(
+    //     "./getHomeVisitationFilesModel.js"
+    // );
+    // const { getInitialInterviewFiles } = await import(
+    //     "./getInitialInterviewFiles.js"
+    // );
     const { getProfilePicture } = await import(
         "./getPdfProfilePicture.js"
     );
@@ -91,52 +91,52 @@ export const generatePDF = async (
             }
         }
 
-        let examinationFilesBase64 = null;
-        if (applicationId) {
-            examinationFilesBase64 = await getExaminationFiles(applicationId);
+        // let examinationFilesBase64 = null;
+        // if (applicationId) {
+        //     examinationFilesBase64 = await getExaminationFiles(applicationId);
 
-            if (!examinationFilesBase64) {
-                console.warn(
-                    "Failed to get files, PDF will be generated without them",
-                );
-            }
-        }
+        //     if (!examinationFilesBase64) {
+        //         console.warn(
+        //             "Failed to get files, PDF will be generated without them",
+        //         );
+        //     }
+        // }
 
-        let initialInterviewFilesBase64 = null;
-        if (applicationId) {
-            initialInterviewFilesBase64 =
-                await getInitialInterviewFiles(applicationId);
+        // let initialInterviewFilesBase64 = null;
+        // if (applicationId) {
+        //     initialInterviewFilesBase64 =
+        //         await getInitialInterviewFiles(applicationId);
 
-            if (!initialInterviewFilesBase64) {
-                console.warn(
-                    "Failed to get files, PDF will be generated without them",
-                );
-            }
-        }
+        //     if (!initialInterviewFilesBase64) {
+        //         console.warn(
+        //             "Failed to get files, PDF will be generated without them",
+        //         );
+        //     }
+        // }
 
-        let homeVisitationFilesBase64 = null;
-        if (applicationId) {
-            homeVisitationFilesBase64 =
-                await getHomeVisitationFiles(applicationId);
+        // let homeVisitationFilesBase64 = null;
+        // if (applicationId) {
+        //     homeVisitationFilesBase64 =
+        //         await getHomeVisitationFiles(applicationId);
 
-            if (!homeVisitationFilesBase64) {
-                console.warn(
-                    "Failed to get files, PDF will be generated without them",
-                );
-            }
-        }
+        //     if (!homeVisitationFilesBase64) {
+        //         console.warn(
+        //             "Failed to get files, PDF will be generated without them",
+        //         );
+        //     }
+        // }
 
-        let finalInterviewFilesBase64 = null;
-        if (applicationId) {
-            finalInterviewFilesBase64 =
-                await getFinalInterviewFiles(applicationId);
+        // let finalInterviewFilesBase64 = null;
+        // if (applicationId) {
+        //     finalInterviewFilesBase64 =
+        //         await getFinalInterviewFiles(applicationId);
 
-            if (!finalInterviewFilesBase64) {
-                console.warn(
-                    "Failed to get files, PDF will be generated without them",
-                );
-            }
-        }
+        //     if (!finalInterviewFilesBase64) {
+        //         console.warn(
+        //             "Failed to get files, PDF will be generated without them",
+        //         );
+        //     }
+        // }
 
         const requirementImages = [];
         if (requirementsBase64 && Array.isArray(requirementsBase64)) {
@@ -152,70 +152,70 @@ export const generatePDF = async (
             });
         }
 
-        const examinationFilesImages = [];
-        if (examinationFilesBase64 && Array.isArray(examinationFilesBase64)) {
-            examinationFilesBase64.forEach((file, index) => {
-                if (file.success && file.base64) {
-                    examinationFilesImages.push({
-                        image: file.base64,
-                        width: 500, // scale down proportionally to fit within 500x300
-                        alignment: "center",
-                        margin: [0, 10, 0, 10], // optional spacing between images
-                    });
-                }
-            });
-        }
+        // const examinationFilesImages = [];
+        // if (examinationFilesBase64 && Array.isArray(examinationFilesBase64)) {
+        //     examinationFilesBase64.forEach((file, index) => {
+        //         if (file.success && file.base64) {
+        //             examinationFilesImages.push({
+        //                 image: file.base64,
+        //                 width: 500, // scale down proportionally to fit within 500x300
+        //                 alignment: "center",
+        //                 margin: [0, 10, 0, 10], // optional spacing between images
+        //             });
+        //         }
+        //     });
+        // }
 
-        const initialInterviewFilesImages = [];
-        if (
-            initialInterviewFilesBase64 &&
-            Array.isArray(initialInterviewFilesBase64)
-        ) {
-            initialInterviewFilesBase64.forEach((file, index) => {
-                if (file.success && file.base64) {
-                    initialInterviewFilesImages.push({
-                        image: file.base64,
-                        width: 500, // scale down proportionally to fit within 500x300
-                        alignment: "center",
-                        margin: [0, 10, 0, 10], // optional spacing between images
-                    });
-                }
-            });
-        }
+        // const initialInterviewFilesImages = [];
+        // if (
+        //     initialInterviewFilesBase64 &&
+        //     Array.isArray(initialInterviewFilesBase64)
+        // ) {
+        //     initialInterviewFilesBase64.forEach((file, index) => {
+        //         if (file.success && file.base64) {
+        //             initialInterviewFilesImages.push({
+        //                 image: file.base64,
+        //                 width: 500, // scale down proportionally to fit within 500x300
+        //                 alignment: "center",
+        //                 margin: [0, 10, 0, 10], // optional spacing between images
+        //             });
+        //         }
+        //     });
+        // }
 
-        const homeVisitationFilesImages = [];
-        if (
-            homeVisitationFilesBase64 &&
-            Array.isArray(homeVisitationFilesBase64)
-        ) {
-            homeVisitationFilesBase64.forEach((file, index) => {
-                if (file.success && file.base64) {
-                    homeVisitationFilesImages.push({
-                        image: file.base64,
-                        width: 500, // scale down proportionally to fit within 500x300
-                        alignment: "center",
-                        margin: [0, 10, 0, 10], // optional spacing between images
-                    });
-                }
-            });
-        }
+        // const homeVisitationFilesImages = [];
+        // if (
+        //     homeVisitationFilesBase64 &&
+        //     Array.isArray(homeVisitationFilesBase64)
+        // ) {
+        //     homeVisitationFilesBase64.forEach((file, index) => {
+        //         if (file.success && file.base64) {
+        //             homeVisitationFilesImages.push({
+        //                 image: file.base64,
+        //                 width: 500, // scale down proportionally to fit within 500x300
+        //                 alignment: "center",
+        //                 margin: [0, 10, 0, 10], // optional spacing between images
+        //             });
+        //         }
+        //     });
+        // }
 
-        const finalInterviewFilesImages = [];
-        if (
-            finalInterviewFilesBase64 &&
-            Array.isArray(finalInterviewFilesBase64)
-        ) {
-            finalInterviewFilesBase64.forEach((file, index) => {
-                if (file.success && file.base64) {
-                    finalInterviewFilesImages.push({
-                        image: file.base64,
-                        width: 500, // scale down proportionally to fit within 500x300
-                        alignment: "center",
-                        margin: [0, 10, 0, 10], // optional spacing between images
-                    });
-                }
-            });
-        }
+        // const finalInterviewFilesImages = [];
+        // if (
+        //     finalInterviewFilesBase64 &&
+        //     Array.isArray(finalInterviewFilesBase64)
+        // ) {
+        //     finalInterviewFilesBase64.forEach((file, index) => {
+        //         if (file.success && file.base64) {
+        //             finalInterviewFilesImages.push({
+        //                 image: file.base64,
+        //                 width: 500, // scale down proportionally to fit within 500x300
+        //                 alignment: "center",
+        //                 margin: [0, 10, 0, 10], // optional spacing between images
+        //             });
+        //         }
+        //     });
+        // }
 
         // Extract data for easier access
         const {
@@ -1273,73 +1273,73 @@ export const generatePDF = async (
                   ]
                 : []),
 
-            ...(examinationFilesImages.length > 0
-                ? [
-                      {
-                          pageBreak: "before",
-                          stack: [
-                              {
-                                  text: "Entrance Examination Files",
-                                  fontSize: 16,
-                                  alignment: "center",
-                                  margin: [0, 0, 0, 10],
-                              },
-                              ...examinationFilesImages,
-                          ],
-                      },
-                  ]
-                : []),
+            // ...(examinationFilesImages.length > 0
+            //     ? [
+            //           {
+            //               pageBreak: "before",
+            //               stack: [
+            //                   {
+            //                       text: "Entrance Examination Files",
+            //                       fontSize: 16,
+            //                       alignment: "center",
+            //                       margin: [0, 0, 0, 10],
+            //                   },
+            //                   ...examinationFilesImages,
+            //               ],
+            //           },
+            //       ]
+            //     : []),
 
-            ...(initialInterviewFilesImages.length > 0
-                ? [
-                      {
-                          pageBreak: "before",
-                          stack: [
-                              {
-                                  text: "Initial Interview Files",
-                                  fontSize: 16,
-                                  alignment: "center",
-                                  margin: [0, 0, 0, 10],
-                              },
-                              ...initialInterviewFilesImages,
-                          ],
-                      },
-                  ]
-                : []),
+            // ...(initialInterviewFilesImages.length > 0
+            //     ? [
+            //           {
+            //               pageBreak: "before",
+            //               stack: [
+            //                   {
+            //                       text: "Initial Interview Files",
+            //                       fontSize: 16,
+            //                       alignment: "center",
+            //                       margin: [0, 0, 0, 10],
+            //                   },
+            //                   ...initialInterviewFilesImages,
+            //               ],
+            //           },
+            //       ]
+            //     : []),
 
-            ...(homeVisitationFilesImages.length > 0
-                ? [
-                      {
-                          pageBreak: "before",
-                          stack: [
-                              {
-                                  text: "Home Visitation Files",
-                                  fontSize: 16,
-                                  alignment: "center",
-                                  margin: [0, 0, 0, 10],
-                              },
-                              ...homeVisitationFilesImages,
-                          ],
-                      },
-                  ]
-                : []),
+            // ...(homeVisitationFilesImages.length > 0
+            //     ? [
+            //           {
+            //               pageBreak: "before",
+            //               stack: [
+            //                   {
+            //                       text: "Home Visitation Files",
+            //                       fontSize: 16,
+            //                       alignment: "center",
+            //                       margin: [0, 0, 0, 10],
+            //                   },
+            //                   ...homeVisitationFilesImages,
+            //               ],
+            //           },
+            //       ]
+            //     : []),
 
-            ...(finalInterviewFilesImages.length > 0
-                ? [
-                      {
-                          pageBreak: "before",
-                          stack: [
-                              {
-                                  text: "Final Interview Files",
-                                  fontSize: 16,
-                                  alignment: "center",
-                                  margin: [0, 0, 0, 10],
-                              },
-                              ...finalInterviewFilesImages,
-                          ],
-                      },
-                  ]
-                : []),
+            // ...(finalInterviewFilesImages.length > 0
+            //     ? [
+            //           {
+            //               pageBreak: "before",
+            //               stack: [
+            //                   {
+            //                       text: "Final Interview Files",
+            //                       fontSize: 16,
+            //                       alignment: "center",
+            //                       margin: [0, 0, 0, 10],
+            //                   },
+            //                   ...finalInterviewFilesImages,
+            //               ],
+            //           },
+            //       ]
+            //     : []),
         ];
 
         const docDefinition = {

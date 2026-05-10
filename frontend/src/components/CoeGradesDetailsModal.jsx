@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
-import BASE_URL from "../config";
+import pdfIcon from "../assets/pdf.png";
 
 const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
-    const URL = `${BASE_URL}public/`;
     const [filePreviews, setFilePreviews] = useState([]);
     useEffect(() => {
         // Reset file previews when scholar data changes
@@ -107,17 +106,31 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                                     className="p-2 bg-gray-50 rounded-lg flex justify-between text-xs items-center text-gray-500 border"
                                                 >
                                                     <div className="flex items-center">
-                                                        {/* PDF Preview */}
-                                                        {isPdf(
-                                                            filePreview.file_type
-                                                        ) && (
-                                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center cursor-pointer hover:bg-red-200 transition-colors">
+                                                        {isImage(
+                                                            filePreview.file_type,
+                                                        ) ? (
+                                                            <img
+                                                                src={
+                                                                    filePreview.file_url
+                                                                }
+                                                                alt={
+                                                                    filePreview.name
+                                                                }
+                                                                className="w-12 h-12 object-cover rounded mr-2"
+                                                            />
+                                                        ) : isPdf(
+                                                              filePreview.file_type,
+                                                          ) ? (
+                                                            <img
+                                                                src={pdfIcon}
+                                                                alt={
+                                                                    filePreview.name
+                                                                }
+                                                                className="w-12 h-12 object-cover rounded mr-2"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
                                                                 <svg
-                                                                    onClick={() =>
-                                                                        openPdfViewer(
-                                                                            filePreview
-                                                                        )
-                                                                    }
                                                                     xmlns="http://www.w3.org/2000/svg"
                                                                     className="h-6 w-6 text-red-600"
                                                                     fill="none"
@@ -136,19 +149,6 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                                             </div>
                                                         )}
 
-                                                        {/* Image Preview */}
-                                                        {isImage(
-                                                            filePreview.file_type
-                                                        ) && (
-                                                            <img
-                                                                src={`${URL}/${filePreview.file_path}`}
-                                                                alt={
-                                                                    filePreview.file_name
-                                                                }
-                                                                className="w-12 h-12 object-cover rounded mr-2"
-                                                            />
-                                                        )}
-
                                                         <div className="flex-1">
                                                             <div className="font-medium text-gray-700 flex items-center">
                                                                 <p
@@ -163,14 +163,13 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                                                 </p>
                                                             </div>
                                                             {isPdf(
-                                                                filePreview.file_type
+                                                                filePreview.file_type,
                                                             ) && (
                                                                 <button
                                                                     onClick={() =>
                                                                         window.open(
-                                                                            URL +
-                                                                                filePreview.file_path,
-                                                                            "_blank"
+                                                                            filePreview.file_url,
+                                                                            "_blank",
                                                                         )
                                                                     }
                                                                     className="text-blue-600 hover:text-blue-800 text-xs mt-1"
@@ -180,14 +179,13 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                                                 </button>
                                                             )}
                                                             {isImage(
-                                                                filePreview.file_type
+                                                                filePreview.file_type,
                                                             ) && (
                                                                 <button
                                                                     onClick={() =>
                                                                         window.open(
-                                                                            URL +
-                                                                                filePreview.file_path,
-                                                                            "_blank"
+                                                                            filePreview.file_url,
+                                                                            "_blank",
                                                                         )
                                                                     }
                                                                     className="text-blue-600 hover:text-blue-800 text-xs mt-1"
@@ -199,7 +197,7 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                                         </div>
                                                     </div>
                                                 </li>
-                                            )
+                                            ),
                                         )}
                                     </ul>
                                 )}

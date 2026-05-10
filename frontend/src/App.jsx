@@ -164,7 +164,7 @@ export function App() {
                         element={<RenewalApplicationSection />}
                     />
                     <Route
-                        path="/scholar/community-services"
+                        path="/scholar/duty-reports"
                         element={<CommunityServices />}
                     />
                     <Route path="/scholar/coe-grades" element={<CoeGrades />} />
@@ -251,7 +251,7 @@ export function App() {
                         element={<EventsPage />}
                     />
                     <Route
-                        path="/staff/events-duty/community-services"
+                        path="/staff/events-duty/duty-reports"
                         element={<CommunityServicePage />}
                     />
                 </Route>

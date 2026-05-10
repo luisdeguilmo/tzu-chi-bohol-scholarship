@@ -7,7 +7,6 @@ const UnassignedTableRow = ({
     currentItems,
     selectedApplicants,
     toggleApplicantSelection,
-    profilePics,
 }) => {
     const { fetchApplicantData } = useApplicantData();
     const { viewPdf } = usePdfActions(fetchApplicantData);
@@ -25,7 +24,7 @@ const UnassignedTableRow = ({
                             type="checkbox"
                             className="h-3.5 w-3.5 accent-green-600 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                             checked={selectedApplicants.includes(
-                                info.application_id
+                                info.application_id,
                             )}
                             onChange={() =>
                                 toggleApplicantSelection(info.application_id)
@@ -39,7 +38,7 @@ const UnassignedTableRow = ({
                         <div className="w-[25%]"></div>
                         <div className="w-[max-content] flex items-center text-left gap-2">
                             <img
-                                src={profilePics[info.application_id]}
+                                src={info[0].profile}
                                 alt="Profile"
                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                             />
@@ -74,21 +73,21 @@ const UnassignedTableRow = ({
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                class="w-4 h-4 text-blue-600"
+                                className="w-4 h-4 text-blue-600"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
                             >
                                 <path
                                     strokeLinecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                                 />
                                 <path
                                     strokeLinecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                 />
                             </svg>

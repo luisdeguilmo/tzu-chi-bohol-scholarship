@@ -13,7 +13,7 @@ export const useApplications = (status) => {
             const response = await axios.get(
                 `${BASE_URL}app/api/applicants.php?application_status=pending&status=${status}`
             );
-            setApplications(response.data.personalInfo || []);
+            setApplications(response.data.data || []);
             setLoading(false);
         } catch (err) {
             console.error("Error fetching student data:", err);

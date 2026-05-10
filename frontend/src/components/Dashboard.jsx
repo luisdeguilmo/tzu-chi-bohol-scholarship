@@ -38,6 +38,7 @@ const ScholarEngagementChart = React.lazy(
 const FunnelChart = React.lazy(() => import("./FunnelChart"));
 
 import { useScholar } from "../hooks/useScholar";
+import { useApplicationFiles } from "../hooks/useApplicationFiles";
 
 function QuickOverview() {
     const { pathname } = useLocation();

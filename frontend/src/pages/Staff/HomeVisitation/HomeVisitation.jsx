@@ -4,7 +4,6 @@ import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import { useApplicantData } from "../../../hooks/useApplicantData";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import {
     homeVisitationResultTableHeaders,
@@ -38,10 +37,6 @@ export default function HomeVisitation() {
     const { loading, error, applications, fetchApplications } =
         useHomeVisitation(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        applications,
-        "profile-picture"
-    );
     const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
 
     useEffect(() => {
@@ -192,7 +187,6 @@ export default function HomeVisitation() {
                                     return (
                                         <ApplicantsTableRow
                                             currentItems={currentItems}
-                                            profilePics={profilePics}
                                             onApprove={handleOpenApproveModal}
                                             onReject={handleOpenRejectModal}
                                             onSuccess={fetchApplications}
@@ -203,7 +197,6 @@ export default function HomeVisitation() {
                                     return (
                                         <ResultTableRow
                                             currentItems={currentItems}
-                                            profilePics={profilePics}
                                             onOpenModal={
                                                 handleOpenFileUploadFormModal
                                             }

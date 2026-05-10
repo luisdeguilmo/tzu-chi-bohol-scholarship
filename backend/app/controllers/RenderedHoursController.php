@@ -17,23 +17,31 @@ try {
     error_log('Could not load .env file: ' . $e->getMessage());
 }
 
+use App\Constants\Action;
 use App\Models\ActivityModel;
+use App\Models\AuditLogModel;
 use App\Models\EventParticipantsModel;
 use App\Models\NotificationsModel;
 use App\Models\RecentActivityModel;
 use Config\Database;
 use App\Models\RenderedHoursModel;
 use App\Models\ScholarModel;
+use App\Models\StaffAccountModel;
 use App\Services\PHPMailerBrevoService;
+use Middleware\Auth;
 
 class RenderedHoursController
 {
     private $pdo;
+    private $auditLogModel;
+    private $staffModel;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->auditLogModel = new AuditLogModel();
+        $this->staffModel = new StaffAccountModel();
     }
 
     public function ProcessRequest()
@@ -66,6 +74,7 @@ class RenderedHoursController
         try {
             $this->pdo->beginTransaction();
 
+            $hours = null;
             $renderedHours = new RenderedHoursModel();
             $scholarId = isset($_GET['account_id']) ? (int) $_GET['account_id'] : null;
 
@@ -174,6 +183,33 @@ class RenderedHoursController
                     $activity->updateActivityStatus($data);
                     $notification->createActivityNotification($data);
                     $recentActivity->createRecentCommunityService($data);
+
+                    $staffId = Auth::id();
+                    $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                    if (
+                        !$this->auditLogModel->create([
+                            'user_id' => $staffId,
+                            'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                            'user_role' => 'staff',
+                            'action' => Action::RECORD_RENDERED_HOURS,
+                            'entity_type' => 'community service',
+                            'entity_id' => null,
+                            'description' => "{$staff['first_name']} {$staff['last_name']} recorded {$scholarInfo['first_name']} {$scholarInfo['last_name']}'s community service hours for '{$data['activity_name']}'.",
+                            'old_values' => null,
+                            'new_values' => [
+                                'activity_name' => $data['activity_name'],
+                                'activity_date' => $data['activity_date'],
+                                'scholar' =>
+                                    $scholarInfo['first_name'] . ' ' . $scholarInfo['last_name'],
+                                'rendered_hours' => $data['rendered_hours'],
+                            ],
+                            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                        ])
+                    ) {
+                        throw new \Exception('Failed to create audit log');
+                    }
                 } elseif ($action === 'reject') {
                     $scholarInfo = $scholarModel->getScholarById($data['account_id']);
                     $activityRenderedHours = $activity->getRenderedHoursById($data['id']);
@@ -201,8 +237,43 @@ class RenderedHoursController
                     $notification->createActivityNotification($data);
                     $recentActivity->removeRecentActivityById($data['id']);
                     $renderedHours->removeCommunityServiceEntry($data['id']);
+
+                    $staffId = Auth::id();
+                    $staff = $this->staffModel->getStaffInfoById($staffId);
+
+                    if (
+                        !$this->auditLogModel->create([
+                            'user_id' => $staffId,
+                            'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                            'user_role' => 'staff',
+                            'action' => Action::REJECT_SUBMISSION,
+                            'entity_type' => 'community service',
+                            'entity_id' => null,
+                            'description' => "{$staff['first_name']} {$staff['last_name']} rejected {$scholarInfo['first_name']} {$scholarInfo['last_name']}'s community service submission for '{$data['activity_name']}' due to the following: {$data['feedback']}.",
+                            'old_values' => null,
+                            'new_values' => [
+                                'activity_name' => $data['activity_name'],
+                                'activity_date' => $data['activity_date'],
+                                'scholar' =>
+                                    $scholarInfo['first_name'] . ' ' . $scholarInfo['last_name'],
+                                'rendered_hours' => $data['rendered_hours'],
+                            ],
+                            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                        ])
+                    ) {
+                        throw new \Exception('Failed to create audit log');
+                    }
                 }
             } elseif ($dutyType === 'event') {
+                $scholarNames = [];
+                $scholarModel = new ScholarModel();
+
+                // foreach ($data['selected_scholars'] as $scholarId) {
+                //     $name = $scholarModel->getScholarById($scholarId);
+                //     $scholarNames = ['name' => "{$name['first_name']} {$name['last_name']}"];
+                // }
+
                 foreach ($data['selected_scholars'] as $scholarId) {
                     if (
                         !$renderedHours->recordEventRenderedHours(
@@ -213,9 +284,9 @@ class RenderedHoursController
                         throw new \Exception('Failed to record hours');
                     }
 
-                    if (!$renderedHours->recordHours($scholarId, $data['rendered_hours'])) {
-                        throw new \Exception('Failed to record hours');
-                    }
+                    // if (!$renderedHours->recordHours($scholarId, $data['rendered_hours'])) {
+                    //     throw new \Exception('Failed to record hours');
+                    // }
 
                     if (!$renderedHours->recordHours($scholarId)) {
                         throw new \Exception('Failed to record hours');
@@ -228,6 +299,41 @@ class RenderedHoursController
                     $recentActivity->createRecentEvent($scholarId, $data);
 
                     $scholar->setScholarAsAttended($data['event_id'], $scholarId);
+
+                    $name = $scholarModel->getScholarById($scholarId);
+                    $scholarNames[] = "{$name['first_name']} {$name['last_name']}";
+                }
+
+                // $scholarNames = $data['selected_scholars']->pluck('name')->implode(', ');
+
+                $staffId = Auth::id();
+                $staff = $this->staffModel->getStaffInfoById($staffId);
+                $scholarList = implode(', ', $scholarNames);
+
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::RECORD_RENDERED_HOURS,
+                        'entity_type' => 'event',
+                        'entity_id' => null,
+                        'description' =>
+                            "{$staff['first_name']} {$staff['last_name']} recorded rendered hours for event '{$data['event_name']}' for " .
+                            count($scholarNames) .
+                            " scholar(s): {$scholarList}. Hours: {$data['rendered_hours']}.",
+                        'old_values' => null,
+                        'new_values' => [
+                            'event_name' => $data['event_name'],
+                            'event_date' => $data['event_date'],
+                            'scholars' => $scholarNames,
+                            'rendered_hours' => $data['rendered_hours'],
+                        ],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
                 }
             }
 

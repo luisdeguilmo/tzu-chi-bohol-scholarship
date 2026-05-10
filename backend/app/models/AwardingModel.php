@@ -20,10 +20,10 @@ class AwardingModel
         $this->currentYear = date('Y');
     }
 
-    public function getApplicants($status, $sort)
+    public function getApplicants($status, $sort, $schoolYear)
     {
         $query = "SELECT pi.*, ai.* FROM personal_information pi 
-            JOIN application_info ai ON ai.application_id = pi.application_id WHERE ai.is_for_awarding = '1' AND YEAR(ai.created_at) = $this->currentYear";
+            JOIN application_info ai ON ai.application_id = pi.application_id WHERE ai.is_for_awarding = '1' AND ai.school_year = :school_year";
 
         if ($status === 'all') {
             $query .=
@@ -45,6 +45,7 @@ class AwardingModel
         }
 
         $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':school_year', $schoolYear, \PDO::PARAM_INT);
 
         if (!$stmt->execute()) {
             return false;

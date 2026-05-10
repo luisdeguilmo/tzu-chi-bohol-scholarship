@@ -119,12 +119,12 @@ export default function CommunityServices() {
     return (
         <div className="min-h-screen bg-gray-50">
             <OverviewCard
-                label={"Community Services"}
+                label={"Duty Reports"}
                 activeTab={activeTab}
                 handleTabChange={handleTabChange}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
-                placeholder={"community services"}
+                placeholder={"duty reports"}
                 tabs={tabs}
                 overviewData={communityServiceOverviewData}
             />
@@ -169,18 +169,18 @@ export default function CommunityServices() {
                             searchTerm
                                 ? "No Results Found"
                                 : activeTab === "all"
-                                  ? "You haven’t submitted any community service yet."
+                                  ? "You haven’t submitted any duty report yet."
                                   : activeTab === "this_month"
-                                    ? "No community service submitted this month."
-                                    : "No past community service submissions found."
+                                    ? "No duty report submitted this month."
+                                    : "No past duty report submissions found."
                         }
                         subHeader={
                             searchTerm
-                                ? `No activities match your search for "${searchTerm}"`
+                                ? `No duty reports match your search for "${searchTerm}"`
                                 : activeTab === "all"
-                                  ? "Start making a difference in your community and track your impact here."
+                                  ? "Start making a difference and track your impact here."
                                   : activeTab === "this_month"
-                                    ? "Add your first service for this month!"
+                                    ? "Add your first duty report for this month!"
                                     : "Once you submit and a new month starts, past entries will appear here."
                         }
                     />

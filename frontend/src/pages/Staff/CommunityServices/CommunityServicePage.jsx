@@ -5,7 +5,6 @@ import { volunteerActivitiesTableHeaders } from "../../../constant/tableHeaders"
 import { usePagination } from "../../../hooks/usePagination";
 import { useScholarsAndActivities } from "../../../hooks/useScholarsAndActivities";
 import { formatDateTime } from "../../../utils/formatDateTime";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import CommunityServiceDetailsModal from "../../../components/CommunityServiceDetailsModal";
 import TableToolbar from "../../../components/TableToolbar";
 import { Eye } from "lucide-react";
@@ -30,11 +29,6 @@ const CommunityServicePage = () => {
         month,
         status,
         sortBy,
-    );
-
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        scholars,
-        "profile-picture",
     );
 
     useEffect(() => {
@@ -91,8 +85,8 @@ const CommunityServicePage = () => {
             <div className="w-[100%] mx-auto bg-white rounded-md shadow p-6">
                 <TableToolbar
                     items={scholars}
-                    label={"Community Services"}
-                    placeholder={"community services"}
+                    label={"Duty Reports"}
+                    placeholder={"duty reports"}
                     activeTab={status}
                     searchTerm={searchTerm}
                     itemsPerPage={itemsPerPage}
@@ -123,7 +117,9 @@ const CommunityServicePage = () => {
                         </select>
                     </div>
                     <div className="flex justify-between items-center gap-2">
-                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Year:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Year:
+                        </span>
                         <select
                             value={year}
                             onChange={(e) => setYear(e.target.value)}
@@ -137,7 +133,9 @@ const CommunityServicePage = () => {
                         </select>
                     </div>
                     <div className="flex justify-between items-center gap-2">
-                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Month:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Month:
+                        </span>
                         <select
                             value={month}
                             onChange={(e) => setMonth(e.target.value)}
@@ -170,9 +168,7 @@ const CommunityServicePage = () => {
                                     <div className="w-[25%]"></div>
                                     <div className="w-[max-content] flex items-center text-left gap-2">
                                         <img
-                                            src={
-                                                profilePics[info.application_id]
-                                            }
+                                            src={info.profile}
                                             alt="Profile"
                                             className="w-10 h-10 object-cover rounded-full mx-auto"
                                         />

@@ -10,7 +10,6 @@ const ApplicantsTableRow = ({
     onReject,
     selectedApplicants,
     toggleApplicantSelection,
-    profilePics,
     onSuccess,
 }) => {
     const { fetchApplicantData } = useApplicantData();
@@ -36,7 +35,7 @@ const ApplicantsTableRow = ({
                         <div className="w-[30%]"></div>
                         <div className="w-[max-content] flex items-center text-left gap-2">
                             <img
-                                src={profilePics[info.application_id]}
+                                src={info[0].profile}
                                 alt="Profile"
                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                             />

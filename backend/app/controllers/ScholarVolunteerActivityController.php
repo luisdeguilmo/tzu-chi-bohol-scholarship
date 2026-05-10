@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/BatchModel.php';
 
 use App\Models\ActivityModel;
+use App\Models\ScholarsModel;
 use Config\Database;
 use Exception;
 
@@ -46,6 +47,7 @@ class ScholarVolunteerActivityController
     {
         try {
             $activity = new ActivityModel();
+            $scholar = new ScholarsModel();
 
             // Get ID parameter if it exists
             $id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -58,7 +60,6 @@ class ScholarVolunteerActivityController
             $activities = [];
 
             $activities = $activity->getActivitiesByTab($year, $month, $status, $sort);
-
             $result = $activity->getAllScholarsWithFiles($activities, $activity);
 
             http_response_code(200);

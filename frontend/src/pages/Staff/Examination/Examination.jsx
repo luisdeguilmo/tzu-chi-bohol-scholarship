@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useBatches } from "../../../hooks/useBatches";
 import { useExamination } from "../../../hooks/useExamination";
 import { usePagination } from "../../../hooks/usePagination";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import ManageApplicants from "./ManageApplicants";
@@ -42,7 +41,7 @@ export default function Examination() {
     const [searchTerm, setSearchTerm] = useState("");
     const [activeTab, setActiveTab] = useState(examinationTableButtons[0].name);
     const { batches, setBatches, deleteBatch, fetchBatches } = useBatches(
-        "entrance_examination"
+        "entrance_examination",
     );
 
     const [isOpen, setIsOpen] = useState(false);
@@ -82,20 +81,16 @@ export default function Examination() {
         fetchApplicationsOnResultTab,
     } = useExamination(selectedBatchInBatches, activeTab, status, sortBy);
 
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        applications,
-        "profile-picture"
-    );
     const { isLoading, sendExaminationResult } = manageApplication();
 
     const { passingScore, createPassingScore } = useSettings();
 
     const passedApplicants = applications.filter(
-        (application) => application.score >= passingScore
+        (application) => application.score >= passingScore,
     );
 
     const failedApplicants = applications.filter(
-        (application) => application.score < passingScore
+        (application) => application.score < passingScore,
     );
 
     useEffect(() => {
@@ -151,7 +146,7 @@ export default function Examination() {
         setActiveTab(tab);
         setCurrentPage(1);
         setStatus("all");
-        setSelectedBatch(batches[0].batch_name);
+        setSelectedBatch(batches[0]?.batch_name);
         setSelectedBatchInBatches("all");
         setSelectedApplicants([]);
     };
@@ -239,7 +234,7 @@ export default function Examination() {
                 ? unassignedTableHeaders
                 : activeTab === "Batches"
                   ? batchesTableHeaders
-                  : resultTableHeaders
+                  : resultTableHeaders,
         );
     }, [activeTab]);
 
@@ -291,7 +286,9 @@ export default function Examination() {
 
                 {activeTab !== "Applicants" && (
                     <div className="flex justify-between items-center gap-2">
-                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Batches:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Batches:
+                        </span>
                         <select
                             value={selectedBatchInBatches}
                             onChange={(e) => handleBatchChange(e.target.value)}
@@ -308,7 +305,7 @@ export default function Examination() {
                 )}
             </TableToolbar>
 
-            {applications.length > 0 && (
+            {/* {applications.length > 0 && (
                 <label className="mb-2 flex items-center gap-2 text-xs tracking-wider text-gray-700">
                     <input
                         type="checkbox"
@@ -321,7 +318,7 @@ export default function Examination() {
                     />
                     Select All
                 </label>
-            )}
+            )} */}
 
             <div
                 className={`${isMobile && "flex flex-col gap-2"} overflow-x-auto rounded-[4px]`}
@@ -337,7 +334,6 @@ export default function Examination() {
                                                 index={index}
                                                 item={item}
                                                 tableHeaders={tableHeaders}
-                                                profilePics={profilePics}
                                                 selectedApplicants={
                                                     selectedApplicants
                                                 }
@@ -353,7 +349,6 @@ export default function Examination() {
                                                 index={index}
                                                 item={item}
                                                 tableHeaders={tableHeaders}
-                                                profilePics={profilePics}
                                                 selectedApplicants={
                                                     selectedApplicants
                                                 }
@@ -372,7 +367,6 @@ export default function Examination() {
                                                 item={item}
                                                 tableHeaders={tableHeaders}
                                                 currentItems={currentItems}
-                                                profilePics={profilePics}
                                                 onOpenModal={
                                                     handleOpenFileFormModal
                                                 }
@@ -412,7 +406,6 @@ export default function Examination() {
                                             toggleApplicantSelection={
                                                 toggleApplicantSelection
                                             }
-                                            profilePics={profilePics}
                                         />
                                     );
                                 case "Batches":
@@ -426,7 +419,6 @@ export default function Examination() {
                                             toggleApplicantSelection={
                                                 toggleApplicantSelection
                                             }
-                                            profilePics={profilePics}
                                             onRefresh={
                                                 fetchApplicationsOnBatchesTab
                                             }
@@ -436,7 +428,6 @@ export default function Examination() {
                                     return (
                                         <ResultTableRow
                                             currentItems={currentItems}
-                                            profilePics={profilePics}
                                             onOpenModal={
                                                 handleOpenFileFormModal
                                             }

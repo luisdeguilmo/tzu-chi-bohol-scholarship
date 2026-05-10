@@ -119,6 +119,48 @@ class ApplicationRecordsModel
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function getProfileById($id)
+    {
+        $query = "SELECT *
+                FROM profile_pictures 
+                WHERE application_id = :application_id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':application_id', $id);
+
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        return null;
+    }
+
+    public function getApplicantsWithProfile($tab, $applicants, $applicationModel)
+    {
+        $data = [];
+
+        foreach ($applicants as $applicant) {
+            $files = $applicationModel->getProfileById(
+                $tab === 'new' ? $applicant['application_id'] : $applicant['scholar_id'],
+            );
+
+            $filesList = [];
+
+            foreach ($files as $file) {
+                $applicant[] = [
+                    'profile' =>
+                        $_ENV['APP_URL'] .
+                        '/index.php?route=profile&file=' .
+                        urlencode(basename($file['file_path'])),
+                ];
+            }
+
+            $data[] = $applicant;
+        }
+
+        return $data;
+    }
 }
 
 ?>

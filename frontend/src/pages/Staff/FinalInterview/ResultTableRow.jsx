@@ -4,7 +4,7 @@ import { useApplicantData } from "../../../hooks/useApplicantData";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import { formatDateTime } from "../../../utils/formatDateTime";
 
-const ResultTableRow = ({ currentItems, selectedApplicants, profilePics, onOpenModal }) => {
+const ResultTableRow = ({ currentItems, selectedApplicants, onOpenModal }) => {
     const { fetchApplicantData } = useApplicantData();
     const { viewPdf } = usePdfActions(fetchApplicantData);
 
@@ -28,7 +28,7 @@ const ResultTableRow = ({ currentItems, selectedApplicants, profilePics, onOpenM
                         <div className="w-[30%]"></div>
                         <div className="w-[max-content] flex items-center text-left gap-2">
                             <img
-                                src={profilePics[info.application_id]}
+                                src={info[0].profile}
                                 alt="Profile"
                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                             />

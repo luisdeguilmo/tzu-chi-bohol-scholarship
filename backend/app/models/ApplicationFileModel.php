@@ -68,7 +68,7 @@ class ApplicationFileModel
         return $stmt->execute();
     }
 
-    public function getFilesByIdAndType($applicationId, $type)
+    public function fetchFilesByIdAndType($applicationId, $type)
     {
         $query =
             "SELECT *
@@ -88,11 +88,30 @@ class ApplicationFileModel
         return null;
     }
 
-    public function getAllFiles($applicationId, $type)
+    public function fetchFilesById($applicationId)
+    {
+        $query =
+            "SELECT *
+                FROM " .
+            $this->table_name .
+            "
+                WHERE application_id = :application_id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':application_id', $applicationId);
+
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        return null;
+    }
+
+    public function getFilesByIdAndType($applicationId, $type)
     {
         $data = [];
 
-        $files = $this->getFilesByIdAndType($applicationId, $type);
+        $files = $this->fetchFilesByIdAndType($applicationId, $type);
 
         $filesList = [];
 
@@ -102,6 +121,44 @@ class ApplicationFileModel
                 'application_id' => $file['application_id'],
                 'file_name' => $file['file_name'],
                 'file_path' => $file['file_path'],
+                // 'file_url' =>
+                //     'http://localhost:8000/index.php?route=file/view&file=' .
+                //     urlencode(str_replace('/upload/applications/', '', $file['file_path'])),
+                'file_url' =>
+                    $_ENV['APP_URL'] .
+                    '/index.php?type=applications&route=file/view&file=' .
+                    urlencode(basename($file['file_path'])),
+                'file_size' => $file['file_size'],
+                'file_type' => $file['file_type'],
+                'uploaded_at' => $file['uploaded_at'],
+            ];
+        }
+
+        $data[] = [
+            'files' => $filesList,
+        ];
+
+        return $data;
+    }
+
+    public function getFilesById($applicationId)
+    {
+        $data = [];
+
+        $files = $this->fetchFilesById($applicationId);
+
+        $filesList = [];
+
+        foreach ($files as $file) {
+            $filesList[] = [
+                'id' => $file['id'],
+                'application_id' => $file['application_id'],
+                'file_name' => $file['file_name'],
+                'file_path' => $file['file_path'],
+                'file_url' =>
+                    $_ENV['APP_URL'] .
+                    '/index.php?type=applications&route=file/view&file=' .
+                    urlencode(basename($file['file_path'])),
                 'file_size' => $file['file_size'],
                 'file_type' => $file['file_type'],
                 'uploaded_at' => $file['uploaded_at'],

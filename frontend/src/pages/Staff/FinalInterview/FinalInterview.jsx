@@ -4,7 +4,6 @@ import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import { useApplicantData } from "../../../hooks/useApplicantData";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import {
     finalInterviewApplicationsTableHeaders,
@@ -37,10 +36,6 @@ export default function FinalInterview() {
     const { loading, error, applications, fetchApplications } =
         useFinalInterview(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        applications,
-        "profile-picture"
-    );
     const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
 
     useEffect(() => {
@@ -188,7 +183,6 @@ export default function FinalInterview() {
                                     return (
                                         <ApplicantsTableRow
                                             currentItems={currentItems}
-                                            profilePics={profilePics}
                                             onApprove={handleOpenApproveModal}
                                             onReject={handleOpenRejectModal}
                                             onSuccess={fetchApplications}
@@ -199,7 +193,6 @@ export default function FinalInterview() {
                                     return (
                                         <ResultTableRow
                                             currentItems={currentItems}
-                                            profilePics={profilePics}
                                             onOpenModal={
                                                 handleOpenFileUploadFormModal
                                             }

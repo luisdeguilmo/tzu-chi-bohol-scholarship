@@ -19,6 +19,7 @@ import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
 import CoaGradesModal from "./CoaGradesModal";
 import { DataListView } from "../../../components/DataListView";
 import { FilterDropdown } from "../../../components/FilterDropdown";
+import { useSubmissions } from "../../../hooks/useSubmissions";
 
 export default function Scholars() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -42,7 +43,7 @@ export default function Scholars() {
         school,
         course,
         yearLevel,
-        sortBy
+        sortBy,
     );
 
     const { collegesAndUniversities } = useCollegesUniversities();
@@ -56,12 +57,11 @@ export default function Scholars() {
             school,
             course,
             yearLevel,
-            sortBy
+            sortBy,
         );
 
     const { exportActiveScholars, exportGraduatedScholars } = generateExcel();
 
-    const { profilePics } = useProfilePicture(scholars, "profile-picture");
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -78,7 +78,7 @@ export default function Scholars() {
         if (activeTab === "active") {
             const success = await exportActiveScholars(
                 scholarsInformation,
-                fileName
+                fileName,
             );
 
             if (success) {
@@ -88,7 +88,7 @@ export default function Scholars() {
             const success = await exportGraduatedScholars(
                 scholarsInformation,
                 fileName,
-                schoolYear
+                schoolYear,
             );
 
             if (success) {
@@ -106,7 +106,7 @@ export default function Scholars() {
             applicant?.first_name
                 ?.toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
-            applicant?.created_at?.includes(searchTerm)
+            applicant?.created_at?.includes(searchTerm),
     );
 
     const {
@@ -159,7 +159,9 @@ export default function Scholars() {
                 disabledButtonExport={scholars.length === 0}
             >
                 <div className="flex justify-between items-center gap-2">
-                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-700">School:</span>
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-700">
+                        School:
+                    </span>
                     <select
                         value={school}
                         onChange={(e) => setSchool(e.target.value)}
@@ -180,7 +182,9 @@ export default function Scholars() {
                     options={collegesAndUniversities}
                 /> */}
                 <div className="flex justify-between items-center gap-2">
-                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Course:</span>
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                        Course:
+                    </span>
                     <select
                         value={course}
                         onChange={(e) => setCourse(e.target.value)}
@@ -240,7 +244,9 @@ export default function Scholars() {
 
                 {activeTab !== "graduated" && (
                     <div className="flex justify-between items-center gap-2">
-                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Status:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Status:
+                        </span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
@@ -323,9 +329,7 @@ export default function Scholars() {
                                     <div className="w-[20%]"></div>
                                     <div className="w-[max-content] flex text-left gap-2">
                                         <img
-                                            src={
-                                                profilePics[scholar.account_id]
-                                            }
+                                            src={scholar[0].profile}
                                             alt="Profile"
                                             className="w-10 h-10 object-cover rounded-full mx-auto"
                                         />
@@ -372,7 +376,7 @@ export default function Scholars() {
                                             onClick={() => {
                                                 setIsModalOpen(true);
                                                 setScholarId(
-                                                    scholar.account_id
+                                                    scholar.account_id,
                                                 );
                                             }}
                                             className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
@@ -384,7 +388,7 @@ export default function Scholars() {
                                             onClick={() => {
                                                 setIsCoeGradeModalOpen(true);
                                                 setScholarId(
-                                                    scholar.account_id
+                                                    scholar.account_id,
                                                 );
                                             }}
                                             className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"

@@ -15,6 +15,7 @@ import {
     FileText,
     FileSpreadsheet,
     CalendarRange,
+    Files,
 } from "lucide-react";
 
 export const scholarSidebarItems = [
@@ -27,14 +28,14 @@ export const scholarSidebarItems = [
     {
         itemName: "coe-grades",
         text: "COE and Grades",
-        icon: <FileText className="w-5 h-5 text-slate-600" />,
+        icon: <Files className="w-5 h-5 text-slate-600" />,
         navigate: "/scholar/coe-grades",
     },
     {
-        itemName: "community-services",
-        text: "Community Services",
-        icon: <HandHeart className="w-5 h-5 text-slate-600" />,
-        navigate: "/scholar/community-services",
+        itemName: "duty-reports",
+        text: "Duty Reports",
+        icon: <FileText className="w-5 h-5 text-slate-600" />,
+        navigate: "/scholar/duty-reports",
     },
     {
         itemName: "events",
@@ -179,9 +180,9 @@ export const staffSidebarItems = [
                 itemName: "events",
             },
             {
-                text: "Community Services",
-                navigate: "/staff/events-duty/community-services",
-                itemName: "community-services",
+                text: "Duty Reports",
+                navigate: "/staff/events-duty/duty-reports",
+                itemName: "duty-reports",
             },
         ],
     },

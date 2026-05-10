@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-export const useSubmissions = (tab, yearLevel) => {
+export const useSubmissions = (tab, yearLevel, id) => {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ export const useSubmissions = (tab, yearLevel) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/coe-grades.php?tab=${tab}&year_level=${yearLevel}`,
+                `${BASE_URL}app/api/coe-grades.php?tab=${tab}&year_level=${yearLevel}&scholar_id=${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

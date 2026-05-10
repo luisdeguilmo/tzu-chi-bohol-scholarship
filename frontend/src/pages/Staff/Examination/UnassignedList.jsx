@@ -30,7 +30,7 @@ export const UnassignedList = ({
             <div className="mb-2 font-normal text-gray-600">
                 <div className="w-[max-content] flex items-center text-left gap-2">
                     <img
-                        src={profilePics[item.application_id]}
+                        src={item[0].profile}
                         alt="Profile"
                         className="w-10 h-10 object-cover rounded-full mx-auto"
                     />

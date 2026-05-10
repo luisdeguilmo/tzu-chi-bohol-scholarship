@@ -8,11 +8,17 @@ export const useApplicationFiles = (type, applicationId) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchApplicationFiles = async (type, applicationId) => {
+    const fetchApplicationFiles = async (type = null, applicationId) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/application-files.php?type=${type}&id=${applicationId}`
+                `${BASE_URL}app/api/application-files.php`,
+                {
+                    params: {
+                        type: type ?? null,
+                        id: applicationId,
+                    },
+                },
             );
             // Set application periods data
             setApplicationFiles(response.data.data || []);
@@ -21,7 +27,7 @@ export const useApplicationFiles = (type, applicationId) => {
         } catch (err) {
             console.error("Error fetching application period data:", err);
             setError(
-                "Failed to load application period data. Please try again."
+                "Failed to load application period data. Please try again.",
             );
             setLoading(false);
         }
@@ -38,7 +44,7 @@ export const useApplicationFiles = (type, applicationId) => {
         convertFileToBase64,
         setIsOpen,
         resetForm,
-        onSuccess
+        onSuccess,
     ) => {
         setIsSubmitting(true);
 
@@ -80,7 +86,7 @@ export const useApplicationFiles = (type, applicationId) => {
 
                     // Find the corresponding preview index for conversion status
                     const previewIndex = filePreviews.findIndex(
-                        (preview) => preview.originalFile === file
+                        (preview) => preview.originalFile === file,
                     );
 
                     try {
@@ -118,7 +124,7 @@ export const useApplicationFiles = (type, applicationId) => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(activityData),
-                }
+                },
             );
 
             if (!response.ok) {
@@ -159,8 +165,8 @@ export const useApplicationFiles = (type, applicationId) => {
     };
 
     useEffect(() => {
-        if (type && applicationId) {
-            fetchApplicationFiles(type, applicationId);
+        if (applicationId) {
+            fetchApplicationFiles(applicationId);
         }
     }, [type, applicationId]);
 

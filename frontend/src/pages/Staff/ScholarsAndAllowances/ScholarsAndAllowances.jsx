@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import { useScholars } from "../../../hooks/useScholars";
 import {
     scholarsAndAllowancesTableHeaders,
@@ -77,7 +76,6 @@ export default function ScholarsAndAllowances() {
     );
     const { exportAllowancesToExcel, exportScholarInformationToExcel } =
         generateExcel();
-    const { profilePics } = useProfilePicture(scholars, "profile-picture");
     const { allowanceSettings, fetchMaximumHoursAndAmountPerHour } =
         useAllowanceSettings();
 
@@ -255,7 +253,7 @@ export default function ScholarsAndAllowances() {
                                     <div className="w-[max-content] flex text-left gap-2">
                                         <img
                                             src={
-                                                profilePics[scholar.account_id]
+                                                scholar[0].profile
                                             }
                                             alt="Profile"
                                             className="w-10 h-10 object-cover rounded-full mx-auto"

@@ -21,13 +21,13 @@ function ChangeStatusModal({
                     ? "attended"
                     : scholar.is_not_attended_orientation
                       ? "not_attended"
-                      : "pending";
+                      : "";
             } else if (tab === "Awarding") {
                 return scholar.is_attended_awarding
                     ? "attended"
                     : scholar.is_not_attended_awarding
                       ? "not_attended"
-                      : "pending";
+                      : "";
             }
         });
     }, [tab, scholar]); // Add 'scholar' to dependencies
@@ -78,11 +78,12 @@ function ChangeStatusModal({
                         className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     >
-                        <option value="" disabled>
-                            Select
+                        <option value="" disabled={allowanceStatus !== ""}>
+                            --Select--
                         </option>
-                        {/* <option value="pending">Pending</option> */}
+
                         <option value="attended">Attended</option>
+
                         <option value="not_attended">Not Attended</option>
                     </select>
                 </div>

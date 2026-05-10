@@ -5,6 +5,7 @@ import InputModal from "../../../components/InputModal";
 import BASE_URL from "../../../config";
 import { useAccountStatus } from "../../../hooks/useAccountStatus";
 import { formatTime } from "../../../utils/formatTime";
+import pdfIcon from "../../../assets/pdf.png";
 
 function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     const [activityName, setActivityName] = useState("");
@@ -16,15 +17,10 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     const [filePreviews, setFilePreviews] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [conversionStatus, setConversionStatus] = useState({});
     const { user } = useAuth();
     const { accountStatus } = useAccountStatus(user.user_id);
     const fileInputRef = useRef(null);
     const token = localStorage.getItem("token");
-
-    // Move this to environment variables or server-side
-    const CLOUDCONVERT_API_KEY =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOTIyMmViOTZjYTQzZTMyZWM0YTliYTdiOTNkODFhNTBmZDZkYTFmNjUzNzdiMTRkODhjMzVkM2JhM2U1NzEyNDM3MmM4MDYwYjhkZThhMjkiLCJpYXQiOjE3NTAzMjA3NzQuOTAzMzE1LCJuYmYiOjE3NTAzMjA3NzQuOTAzMzE2LCJleHAiOjQ5MDU5OTQzNzQuODk3ODAzLCJzdWIiOiI3MjI0MzYxOCIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwid2ViaG9vay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.";
 
     const handleFileSelect = (event) => {
         const selectedFiles = Array.from(event.target.files);
@@ -35,7 +31,6 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
             size: file.size,
             type: file.type,
             preview: URL.createObjectURL(file),
-            isConverting: false,
             originalFile: file,
         }));
 
@@ -57,22 +52,18 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
         const newFiles = [...files];
         newFiles.splice(index, 1);
         setFiles(newFiles);
-
-        setConversionStatus((prev) => {
-            const newStatus = { ...prev };
-            delete newStatus[index];
-            return newStatus;
-        });
     };
 
     const handleChange = (setValue, value) => {
         setValue(value);
     };
 
+    const isPdf = (type) => type === "application/pdf";
+    const isImage = (type) => type && type.startsWith("image/");
+
     const handleCancel = (e) => {
         e.preventDefault();
 
-        // Clean up object URLs
         filePreviews.forEach((preview) => {
             if (preview.preview) {
                 URL.revokeObjectURL(preview.preview);
@@ -91,7 +82,6 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
         setEndTime("");
         setFiles([]);
         setFilePreviews([]);
-        setConversionStatus({});
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -109,170 +99,12 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
         });
     };
 
-    const convertDocToPdf = async (file, fileIndex) => {
-        if (!CLOUDCONVERT_API_KEY) {
-            throw new Error("CloudConvert API key not configured");
-        }
-
-        try {
-            setConversionStatus((prev) => ({
-                ...prev,
-                [fileIndex]: {
-                    status: "uploading",
-                    message: "Uploading file...",
-                },
-            }));
-
-            // Create a job
-            const jobResponse = await fetch(
-                "https://api.cloudconvert.com/v2/jobs",
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${CLOUDCONVERT_API_KEY}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        tasks: {
-                            "upload-file": {
-                                operation: "import/upload",
-                            },
-                            "convert-file": {
-                                operation: "convert",
-                                input: "upload-file",
-                                output_format: "pdf",
-                            },
-                            "export-file": {
-                                operation: "export/url",
-                                input: "convert-file",
-                            },
-                        },
-                    }),
-                },
-            );
-
-            if (!jobResponse.ok) {
-                throw new Error(`HTTP error! status: ${jobResponse.status}`);
-            }
-
-            const job = await jobResponse.json();
-            const uploadTask = job.data.tasks.find(
-                (task) => task.name === "upload-file",
-            );
-
-            // Upload the file
-            setConversionStatus((prev) => ({
-                ...prev,
-                [fileIndex]: {
-                    status: "uploading",
-                    message: "Uploading to CloudConvert...",
-                },
-            }));
-
-            const formData = new FormData();
-            Object.keys(uploadTask.result.form.parameters).forEach((key) => {
-                formData.append(key, uploadTask.result.form.parameters[key]);
-            });
-            formData.append("file", file);
-
-            const uploadResponse = await fetch(uploadTask.result.form.url, {
-                method: "POST",
-                body: formData,
-            });
-
-            if (!uploadResponse.ok) {
-                throw new Error(
-                    `Upload failed! status: ${uploadResponse.status}`,
-                );
-            }
-
-            // Wait for conversion to complete
-            setConversionStatus((prev) => ({
-                ...prev,
-                [fileIndex]: {
-                    status: "converting",
-                    message: "Converting to PDF...",
-                },
-            }));
-
-            let jobStatus;
-            do {
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                const statusResponse = await fetch(
-                    `https://api.cloudconvert.com/v2/jobs/${job.data.id}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${CLOUDCONVERT_API_KEY}`,
-                        },
-                    },
-                );
-
-                if (!statusResponse.ok) {
-                    throw new Error(
-                        `Status check failed! status: ${statusResponse.status}`,
-                    );
-                }
-
-                jobStatus = await statusResponse.json();
-            } while (
-                jobStatus.data.status === "waiting" ||
-                jobStatus.data.status === "processing"
-            );
-
-            if (jobStatus.data.status === "finished") {
-                const exportTask = jobStatus.data.tasks.find(
-                    (task) => task.name === "export-file",
-                );
-                const downloadUrl = exportTask.result.files[0].url;
-
-                setConversionStatus((prev) => ({
-                    ...prev,
-                    [fileIndex]: {
-                        status: "downloading",
-                        message: "Downloading converted PDF...",
-                    },
-                }));
-
-                const pdfResponse = await fetch(downloadUrl);
-                if (!pdfResponse.ok) {
-                    throw new Error(
-                        `Download failed! status: ${pdfResponse.status}`,
-                    );
-                }
-
-                const pdfBlob = await pdfResponse.blob();
-                const pdfFile = new File(
-                    [pdfBlob],
-                    file.name.replace(/\.(doc|docx)$/i, ".pdf"),
-                    { type: "application/pdf" },
-                );
-
-                setConversionStatus((prev) => ({
-                    ...prev,
-                    [fileIndex]: {
-                        status: "completed",
-                        message: "Conversion completed!",
-                    },
-                }));
-
-                return pdfFile;
-            } else {
-                throw new Error(`Conversion failed: ${jobStatus.data.status}`);
-            }
-        } catch (error) {
-            console.error("CloudConvert error:", error);
-            setConversionStatus((prev) => ({
-                ...prev,
-                [fileIndex]: { status: "error", message: "Conversion failed" },
-            }));
-            throw error;
-        }
-    };
+    console.log(filePreviews);
 
     const handleSubmit = async () => {
         if (accountStatus === "not_renewed") {
             toast.error(
-                `You can’t submit community service until your renewal application is approved.`,
+                `You can't submit community service until your renewal application is approved.`,
             );
             return;
         }
@@ -281,7 +113,6 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
         setIsLoading(true);
 
         try {
-            // Validate time inputs
             if (startTime >= endTime) {
                 toast.error("Start time must be before end time");
                 setIsSubmitting(false);
@@ -299,46 +130,19 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                 },
             };
 
-            // Process files
             if (files.length > 0) {
                 const uploadedFiles = [];
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
-                    let processedFile = file;
 
                     try {
-                        // Check if file is DOC or DOCX and convert to PDF
-                        if (
-                            file.type === "application/msword" ||
-                            file.type ===
-                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        ) {
-                            toast.info(`Converting ${file.name} to PDF...`);
-                            processedFile = await convertDocToPdf(file, i);
-
-                            // Update the file preview
-                            setFilePreviews((prev) => {
-                                const newPreviews = [...prev];
-                                if (newPreviews[i]) {
-                                    newPreviews[i] = {
-                                        ...newPreviews[i],
-                                        name: processedFile.name,
-                                        type: processedFile.type,
-                                        size: processedFile.size,
-                                    };
-                                }
-                                return newPreviews;
-                            });
-                        }
-
-                        const base64Data =
-                            await convertFileToBase64(processedFile);
+                        const base64Data = await convertFileToBase64(file);
                         uploadedFiles.push({
-                            filename: processedFile.name,
+                            filename: file.name,
                             base64_data: base64Data,
-                            file_type: processedFile.type,
-                            file_size: processedFile.size,
+                            file_type: file.type,
+                            file_size: file.size,
                         });
                     } catch (error) {
                         console.error("Error processing file:", error);
@@ -351,7 +155,6 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                 activityData.uploaded_files = uploadedFiles;
             }
 
-            // Submit the data
             const response = await fetch(`${BASE_URL}app/api/activities.php`, {
                 method: "POST",
                 headers: {
@@ -370,7 +173,6 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
             if (result.success) {
                 toast.success(result.message + ".");
 
-                // Clean up object URLs
                 filePreviews.forEach((preview) => {
                     if (preview.preview) {
                         URL.revokeObjectURL(preview.preview);
@@ -395,17 +197,9 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
         }
     };
 
-    const isDocOrDocx = (fileType) => {
-        return (
-            fileType === "application/msword" ||
-            fileType ===
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        );
-    };
-
     return (
         <InputModal
-            label={"Submit Community Service"}
+            label={"Submit Duty Report"}
             isOpen={isOpen}
             onClose={setIsOpen}
             resetFields={null}
@@ -450,12 +244,6 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
 
                     <label className="relative py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
                         Date
-                        {/* Fake placeholder */}
-                        {/* {!activityDate && (
-                            <span className="pointer-events-none absolute left-2.5 top-[34px] text-gray-400 text-xs">
-                                Date
-                            </span>
-                        )} */}
                         <input
                             type="date"
                             required
@@ -513,14 +301,14 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                 </div>
 
                 <div className="">
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
-                        Certificate of Appearance
+                    <label className="py-2.5 flex flex-col gap-[1px] text-gray-500 text-xs">
+                        Upload files
                         <input
                             type="file"
                             ref={fileInputRef}
                             onChange={handleFileSelect}
                             multiple
-                            accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
+                            accept=".jpeg,.jpg,.png,.gif,.pdf"
                             style={{ display: "none" }}
                         />
                         <button
@@ -543,7 +331,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                                 />
                             </svg>
-                            Add File
+                            Add file
                         </button>
                     </label>
 
@@ -555,26 +343,46 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                     className="p-2 bg-gray-50 rounded-lg flex justify-between text-xs items-center text-gray-500 border"
                                 >
                                     <div className="flex items-center">
-                                        {filePreview.type &&
-                                            filePreview.type.startsWith(
-                                                "image/",
-                                            ) && (
-                                                <img
-                                                    src={filePreview.preview}
-                                                    alt={filePreview.name}
-                                                    className="w-12 h-12 object-cover rounded mr-2"
-                                                />
-                                            )}
+                                        {isImage(filePreview.type) ? (
+                                            <img
+                                                src={filePreview.preview}
+                                                alt={filePreview.name}
+                                                className="w-12 h-12 object-cover rounded mr-2"
+                                            />
+                                        ) : isPdf(filePreview.type) ? (
+                                            <img
+                                                src={pdfIcon}
+                                                alt={filePreview.name}
+                                                className="w-12 h-12 object-cover rounded mr-2"
+                                            />
+                                        ) : (
+                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-6 w-6 text-red-600"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                    />
+                                                </svg>
+                                            </div>
+                                        )}
                                         <div>
-                                            <div className="font-medium text-gray-700 flex items-center">
-                                                {filePreview.name}
-                                                {isDocOrDocx(
-                                                    filePreview.type,
-                                                ) && (
-                                                    <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                                                        Will convert to PDF
-                                                    </span>
-                                                )}
+                                            <div className="w-full md:w-[150px] lg:w-[130px] font-medium text-gray-700 flex items-center text-xs">
+                                                <span
+                                                    title={
+                                                        filePreview.file_name
+                                                    }
+                                                    className="truncate"
+                                                >
+                                                    {filePreview.name}
+                                                </span>
                                             </div>
                                             <div className="text-gray-500">
                                                 {(
@@ -582,25 +390,36 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                                 ).toFixed(2)}{" "}
                                                 KB
                                             </div>
-                                            {conversionStatus[index] && (
-                                                <div
-                                                    className={`text-xs mt-1 ${
-                                                        conversionStatus[index]
-                                                            .status === "error"
-                                                            ? "text-red-500"
-                                                            : conversionStatus[
-                                                                    index
-                                                                ].status ===
-                                                                "completed"
-                                                              ? "text-green-500"
-                                                              : "text-blue-500"
-                                                    }`}
+
+                                            {isPdf(filePreview.type) && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+
+                                                        window.open(
+                                                            filePreview.preview,
+                                                            "_blank",
+                                                        );
+                                                    }}
+                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
                                                 >
-                                                    {
-                                                        conversionStatus[index]
-                                                            .message
+                                                    Click to view PDF
+                                                </button>
+                                            )}
+
+                                            {isImage(filePreview.type) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        window.open(
+                                                            filePreview.preview,
+                                                            "_blank",
+                                                        )
                                                     }
-                                                </div>
+                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
+                                                >
+                                                    Click to view image
+                                                </button>
                                             )}
                                         </div>
                                     </div>
@@ -629,28 +448,6 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                             ))}
                         </ul>
                     )}
-
-                    {/* <div className="flex gap-2 mt-4">
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                            className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
-                            disabled={isSubmitting}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors ${
-                                isSubmitting
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : ""
-                            }`}
-                        >
-                            {isSubmitting ? "Processing..." : "Submit"}
-                        </button>
-                    </div> */}
                 </div>
             </div>
         </InputModal>

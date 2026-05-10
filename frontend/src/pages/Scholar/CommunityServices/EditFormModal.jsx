@@ -5,6 +5,8 @@ import { useAuth } from "../../../context/AuthContext";
 import { useCommunityServicesSubmit } from "../../../hooks/useCommunityServicesSubmit";
 import { toast } from "react-toastify";
 import { useAccountStatus } from "../../../hooks/useAccountStatus";
+import pdfIcon from "../../../assets/pdf.png";
+import { UploadCloud } from "lucide-react";
 
 const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const [activityName, setActivityName] = useState(activity.activity_name);
@@ -16,40 +18,33 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const [endTime, setEndTime] = useState(activity.end_time);
     const [files, setFiles] = useState([]);
     const [filePreviews, setFilePreviews] = useState([]);
-    const [existingFiles, setExistingFiles] = useState([]); // Track existing server files
-    const [existingFilesRemoved, setExistingFilesRemoved] = useState([]); // Track existing server files
+    const [existingFiles, setExistingFiles] = useState([]);
+    const [existingFilesRemoved, setExistingFilesRemoved] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [conversionStatus, setConversionStatus] = useState({});
     const fileInputRef = useRef(null);
     const { user } = useAuth();
     const { accountStatus } = useAccountStatus(user.user_id);
 
     useEffect(() => {
         if (activity?.files?.length > 0) {
-            // Store existing files separately without creating dummy File objects
             setExistingFiles(activity.files);
-            // setExistingFilesRemoved(activity.files);
 
-            // Create previews for existing files
             const existingPreviews = activity.files.map((file) => ({
-                id: file.id, // Add ID to identify existing files
+                id: file.id,
                 name: file.file_name,
                 size: file.file_size,
                 type: file.file_type,
+                file_url: file?.file_url,
                 preview: file.file_type.startsWith("image/")
                     ? `${BASE_URL}public/${file.file_path}`
-                    : null, // Only create preview URL for images
-                isConverting: false,
-                isExisting: true, // Flag to identify existing files
-                originalFile: null, // No file object for existing files
+                    : null,
+                isExisting: true,
+                originalFile: null,
             }));
 
             setFilePreviews(existingPreviews);
         }
     }, [activity]);
-
-    const CLOUDCONVERT_API_KEY =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOTIyMmViOTZjYTQzZTMyZWM0YTliYTdiOTNkODFhNTBmZDZkYTFmNjUzNzdiMTRkODhjMzVkM2JhM2U1NzEyNDM3MmM4MDYwYjhkZThhMjkiLCJpYXQiOjE3NTAzMjA3NzQuOTAzMzE1LCJuYmYiOjE3NTAzMjA3NzQuOTAzMzE2LCJleHAiOjQ5MDU5OTQzNzQuODk3ODAzLCJzdWIiOiI3MjI0MzYxOCIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwid2ViaG9vay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.nwD5LxxkLos3LEJkPHefZTJyYPm3qHaCFFu5whQx7SNTZBNC8mbYShHivCQvDww9a524ZSlh7acKDVYrPWBNHubErUzoZx2QZNGs8UPc3K3WDLy382eXkXWgeUMtyaWfF9U7YvlSg46D9RWIeWHpqGJrimtLVDgVUoiKANimtUEBzNweOORNoQBezyO08RcrhsDThuYBv24XvB7s7bHr48kF0ZjoxATeBjn3dqvj-c8GtNwB-PeZzmvEO6gvIjWXZ1qwrzVehncPW-0FzZXo4CQCzGaH8vaiAFvXzbLPy88brqCr8r22Q1d6yxXPhAr9mftnZjVclfa0Qqt25Kz5opdFjMOCDBz1z5M2cRsKzB6_ZENdyiFAgQeLOnf8biB8yxGWnec6HTrVv486FEbr-Yqz7Gs-eFGRSdYNCK67h1SPiFYsypaj_ehUO18eNJMV_hvy0t9yrwfB8vS6tSaYvNTXd-IP8GD_R0TwTYxVF41QUGilKLtRQ8NLL8NtSiZA5-JAcKmEiYIdd6f0V5ZFZamFt8w2SeoQ9gYQS9Onz5NRLVw63V191Zszo3kUZ-tAoJ9_CwvBkDRJP0lzNFciOMpsxJGN5jRNC0OaxLAHabK61WaBL4YlucWU-e-MlxfPmpCXqd8K7omu7fgKJ3xbmxmF6YbJfMz_WPxKvIm5C-M";
 
     const handleFileSelect = (event) => {
         const selectedFiles = Array.from(event.target.files);
@@ -60,8 +55,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
             size: file.size,
             type: file.type,
             preview: URL.createObjectURL(file),
-            isConverting: false,
-            isExisting: false, // New files are not existing
+            isExisting: false,
             originalFile: file,
         }));
 
@@ -72,19 +66,19 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
         fileInputRef.current?.click();
     };
 
+    console.log(activity);
+    console.log(filePreviews);
+
     const removeFile = (index) => {
         const fileToRemove = filePreviews[index];
 
         if (fileToRemove.isExisting) {
-            // Remove from existing files array
             const fileId = fileToRemove.id;
             setExistingFiles((prev) =>
                 prev.filter((file) => file.id !== fileId),
             );
-
             setExistingFilesRemoved([...existingFilesRemoved, { id: fileId }]);
         } else {
-            // Remove from new files array
             const newFilesIndex = files.findIndex(
                 (file) => file === fileToRemove.originalFile,
             );
@@ -94,23 +88,14 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                 setFiles(newFiles);
             }
 
-            // Clean up object URL for new files
             if (fileToRemove.preview && !fileToRemove.isExisting) {
                 URL.revokeObjectURL(fileToRemove.preview);
             }
         }
 
-        // Remove from previews
         const newPreviews = [...filePreviews];
         newPreviews.splice(index, 1);
         setFilePreviews(newPreviews);
-
-        // Clean up conversion status
-        setConversionStatus((prev) => {
-            const newStatus = { ...prev };
-            delete newStatus[index];
-            return newStatus;
-        });
     };
 
     const handleChange = (setValue, value) => {
@@ -120,7 +105,6 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const handleCancel = (e) => {
         e.preventDefault();
 
-        // Clean up object URLs only for new files
         filePreviews.forEach((preview) => {
             if (preview.preview && !preview.isExisting) {
                 URL.revokeObjectURL(preview.preview);
@@ -140,11 +124,13 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
         setFiles([]);
         setFilePreviews([]);
         setExistingFiles([]);
-        setConversionStatus({});
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
     };
+
+    const isPdf = (type) => type === "application/pdf";
+    const isImage = (type) => type && type.startsWith("image/");
 
     const convertFileToBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -158,174 +144,12 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
         });
     };
 
-    const convertDocToPdf = async (file, fileIndex) => {
-        if (!CLOUDCONVERT_API_KEY) {
-            throw new Error("CloudConvert API key not configured");
-        }
-
-        try {
-            setConversionStatus((prev) => ({
-                ...prev,
-                [fileIndex]: {
-                    status: "uploading",
-                    message: "Uploading file...",
-                },
-            }));
-
-            // Create a job
-            const jobResponse = await fetch(
-                "https://api.cloudconvert.com/v2/jobs",
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${CLOUDCONVERT_API_KEY}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        tasks: {
-                            "upload-file": {
-                                operation: "import/upload",
-                            },
-                            "convert-file": {
-                                operation: "convert",
-                                input: "upload-file",
-                                output_format: "pdf",
-                            },
-                            "export-file": {
-                                operation: "export/url",
-                                input: "convert-file",
-                            },
-                        },
-                    }),
-                },
-            );
-
-            if (!jobResponse.ok) {
-                throw new Error(`HTTP error! status: ${jobResponse.status}`);
-            }
-
-            const job = await jobResponse.json();
-            const uploadTask = job.data.tasks.find(
-                (task) => task.name === "upload-file",
-            );
-
-            // Upload the file
-            setConversionStatus((prev) => ({
-                ...prev,
-                [fileIndex]: {
-                    status: "uploading",
-                    message: "Uploading to CloudConvert...",
-                },
-            }));
-
-            const formData = new FormData();
-            Object.keys(uploadTask.result.form.parameters).forEach((key) => {
-                formData.append(key, uploadTask.result.form.parameters[key]);
-            });
-            formData.append("file", file);
-
-            const uploadResponse = await fetch(uploadTask.result.form.url, {
-                method: "POST",
-                body: formData,
-            });
-
-            if (!uploadResponse.ok) {
-                throw new Error(
-                    `Upload failed! status: ${uploadResponse.status}`,
-                );
-            }
-
-            // Wait for conversion to complete
-            setConversionStatus((prev) => ({
-                ...prev,
-                [fileIndex]: {
-                    status: "converting",
-                    message: "Converting to PDF...",
-                },
-            }));
-
-            let jobStatus;
-            do {
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                const statusResponse = await fetch(
-                    `https://api.cloudconvert.com/v2/jobs/${job.data.id}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${CLOUDCONVERT_API_KEY}`,
-                        },
-                    },
-                );
-
-                if (!statusResponse.ok) {
-                    throw new Error(
-                        `Status check failed! status: ${statusResponse.status}`,
-                    );
-                }
-
-                jobStatus = await statusResponse.json();
-            } while (
-                jobStatus.data.status === "waiting" ||
-                jobStatus.data.status === "processing"
-            );
-
-            if (jobStatus.data.status === "finished") {
-                const exportTask = jobStatus.data.tasks.find(
-                    (task) => task.name === "export-file",
-                );
-                const downloadUrl = exportTask.result.files[0].url;
-
-                setConversionStatus((prev) => ({
-                    ...prev,
-                    [fileIndex]: {
-                        status: "downloading",
-                        message: "Downloading converted PDF...",
-                    },
-                }));
-
-                const pdfResponse = await fetch(downloadUrl);
-                if (!pdfResponse.ok) {
-                    throw new Error(
-                        `Download failed! status: ${pdfResponse.status}`,
-                    );
-                }
-
-                const pdfBlob = await pdfResponse.blob();
-                const pdfFile = new File(
-                    [pdfBlob],
-                    file.name.replace(/\.(doc|docx)$/i, ".pdf"),
-                    { type: "application/pdf" },
-                );
-
-                setConversionStatus((prev) => ({
-                    ...prev,
-                    [fileIndex]: {
-                        status: "completed",
-                        message: "Conversion completed!",
-                    },
-                }));
-
-                return pdfFile;
-            } else {
-                throw new Error(`Conversion failed: ${jobStatus.data.status}`);
-            }
-        } catch (error) {
-            console.error("CloudConvert error:", error);
-            setConversionStatus((prev) => ({
-                ...prev,
-                [fileIndex]: { status: "error", message: "Conversion failed" },
-            }));
-            throw error;
-        }
-    };
-
     const { isLoading, editSubmit } = useCommunityServicesSubmit();
-
-    const handleResubmit = () => {};
 
     const handleSubmit = async () => {
         if (accountStatus === "not_renewed") {
             toast.error(
-                `You can’t resubmit community service until your renewal application is approved.`,
+                `You can't resubmit community service until your renewal application is approved.`,
             );
             return;
         }
@@ -343,7 +167,6 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
             filePreviews,
             setFilePreviews,
             setIsSubmitting,
-            convertDocToPdf,
             convertFileToBase64,
             setIsOpen,
             resetForm,
@@ -355,20 +178,12 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
         }
     };
 
-    const isDocOrDocx = (fileType) => {
-        return (
-            fileType === "application/msword" ||
-            fileType ===
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        );
-    };
-
     return (
         <InputModal
             label={
                 activity.activity_status === "Not Recorded"
-                    ? "Resubmit Activity"
-                    : "Edit Activity"
+                    ? "Resubmit Duty Report"
+                    : "Edit Duty Report"
             }
             isOpen={isOpen}
             onClose={setIsOpen}
@@ -465,13 +280,13 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                     </div>
 
                     <label className="px-8 pt-2 pb-3 flex flex-col gap-[1px] text-gray-600 text-xs">
-                        Certificate of Appearance
+                        Upload files
                         <input
                             type="file"
                             ref={fileInputRef}
                             onChange={handleFileSelect}
                             multiple
-                            accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
+                            accept=".jpeg,.jpg,.png,.gif,.pdf"
                             style={{ display: "none" }}
                         />
                         <button
@@ -494,7 +309,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                                 />
                             </svg>
-                            Add File
+                            Add file
                         </button>
                     </label>
 
@@ -510,21 +325,20 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                     className="p-2 bg-gray-50 rounded-lg flex justify-between text-xs items-center text-gray-500 border"
                                 >
                                     <div className="flex items-center">
-                                        {filePreview.type &&
-                                        filePreview.type.startsWith("image/") &&
-                                        filePreview.preview ? (
+                                        {isImage(filePreview.type) ? (
                                             <img
                                                 src={filePreview.preview}
                                                 alt={filePreview.name}
                                                 className="w-12 h-12 object-cover rounded mr-2"
-                                                onError={(e) => {
-                                                    // Handle image load errors
-                                                    e.target.style.display =
-                                                        "none";
-                                                }}
+                                            />
+                                        ) : isPdf(filePreview.type) ? (
+                                            <img
+                                                src={pdfIcon}
+                                                alt={filePreview.name}
+                                                className="w-12 h-12 object-cover rounded mr-2"
                                             />
                                         ) : (
-                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center cursor-pointer hover:bg-red-200 transition-colors">
+                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     className="h-6 w-6 text-red-600"
@@ -542,47 +356,54 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                             </div>
                                         )}
                                         <div>
-                                            <div className="font-medium text-gray-700 flex items-center">
-                                                {filePreview.name}
-                                                {/* {filePreview.isExisting && (
-                                                    <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
-                                                        Existing
-                                                    </span>
-                                                )} */}
-                                                {!filePreview.isExisting &&
-                                                    isDocOrDocx(
-                                                        filePreview.type,
-                                                    ) && (
-                                                        <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                                                            Will convert to PDF
-                                                        </span>
-                                                    )}
+                                            <div className="w-full md:w-[150px] lg:w-[130px] font-medium text-gray-700 flex items-center text-xs">
+                                                <span
+                                                    title={filePreview.name}
+                                                    className="truncate"
+                                                >
+                                                    {filePreview.name}
+                                                </span>
                                             </div>
-                                            {/* <div className="text-gray-500">
+                                            <div className="text-gray-500">
                                                 {(
                                                     filePreview.size / 1024
                                                 ).toFixed(2)}{" "}
                                                 KB
-                                            </div> */}
-                                            {conversionStatus[index] && (
-                                                <div
-                                                    className={`text-xs mt-1 ${
-                                                        conversionStatus[index]
-                                                            .status === "error"
-                                                            ? "text-red-500"
-                                                            : conversionStatus[
-                                                                    index
-                                                                ].status ===
-                                                                "completed"
-                                                              ? "text-green-500"
-                                                              : "text-blue-500"
-                                                    }`}
+                                            </div>
+
+                                            {isPdf(filePreview.type) && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+
+                                                        window.open(
+                                                            filePreview?.file_url
+                                                                ? filePreview.file_url
+                                                                : filePreview.preview,
+                                                            "_blank",
+                                                        );
+                                                    }}
+                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
                                                 >
-                                                    {
-                                                        conversionStatus[index]
-                                                            .message
+                                                    Click to view PDF
+                                                </button>
+                                            )}
+
+                                            {isImage(filePreview.type) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        window.open(
+                                                            filePreview?.file_url
+                                                                ? filePreview.file_url
+                                                                : filePreview.preview,
+                                                            "_blank",
+                                                        )
                                                     }
-                                                </div>
+                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
+                                                >
+                                                    Click to view image
+                                                </button>
                                             )}
                                         </div>
                                     </div>
@@ -623,49 +444,6 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                         </div>
                     )}
                 </div>
-
-                {/* <div className="pb-6 px-6 border-t">
-                    <div className="flex gap-2 mt-4">
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                            className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
-                            disabled={isSubmitting}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors ${
-                                isSubmitting
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : ""
-                            } ${
-                                activity.activity_status === "Not Recorded"
-                                    ? "hidden"
-                                    : "block"
-                            }`}
-                        >
-                            {isSubmitting ? "Processing..." : "Save"}
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors ${
-                                isSubmitting
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : ""
-                            } ${
-                                activity.activity_status === "Not Recorded"
-                                    ? "block"
-                                    : "hidden"
-                            }`}
-                        >
-                            {isSubmitting ? "Processing..." : "Resubmit"}
-                        </button>
-                    </div>
-                </div> */}
             </div>
         </InputModal>
     );
