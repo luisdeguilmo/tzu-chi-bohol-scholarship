@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import InputModal from "../../../components/InputModal";
 import BASE_URL from "../../../config";
-import { useAccountStatus } from "../../../hooks/useAccountStatus";
 import pdfIcon from "../../../assets/pdf.png";
 
 function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
@@ -16,7 +15,6 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { user } = useAuth();
-    const { accountStatus } = useAccountStatus(user?.user_id);
     const fileInputRef = useRef(null);
 
     const handleFileSelect = (event) => {

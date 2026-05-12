@@ -260,7 +260,6 @@ class PHPMailerBrevoService
         <p style=\"margin-bottom: 16px;\">
             For security, please log in and change your password immediately after your first login.
         </p>
-        <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p>
         <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
         <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
         <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">Contact: {$this->contactInfo}</p>
@@ -414,7 +413,7 @@ class PHPMailerBrevoService
             <p style=\"margin-bottom: 16px;\">
                 A new event " .
             $data['event_name'] .
-            " has been created and you are invited to join!. Check it out and donâ€™t miss the chance to be part of this event!
+            " has been created and you are invited to join!. Check it out and don't miss the chance to be part of this event!
             </p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
@@ -443,17 +442,16 @@ class PHPMailerBrevoService
     public function sendActivityRecordedEmail($studentInfo, $data)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
-        $subject = 'Activity Recorded';
+        $subject = 'Duty Report Recorded';
         $htmlContent =
             "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
             <p style=\"margin-bottom: 16px;\">
-                Your community service " .
+                Your duty report " .
             $data['activity_name'] .
             " has been successfully recorded.
             </p>
-            <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">Contact: {$this->contactInfo}</p>
@@ -465,17 +463,16 @@ class PHPMailerBrevoService
     public function sendActivityNotRecordedEmail($studentInfo, $data)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
-        $subject = 'Activity Not Recorded';
+        $subject = 'Duty Report Not Recorded';
         $htmlContent =
             "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
             <p style=\"margin-bottom: 16px;\">
-                Your community service " .
+                Your duty report " .
             $data['activity_name'] .
             " was not recorded. Please check the feedback for details.
             </p>
-            <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">Contact: {$this->contactInfo}</p>
@@ -500,7 +497,6 @@ class PHPMailerBrevoService
             $previousDate .
             ".
             </p>
-            <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">Contact: {$this->contactInfo}</p>
@@ -512,7 +508,7 @@ class PHPMailerBrevoService
     public function sendCommunityServiceSubmitted($studentInfo)
     {
         $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
-        $subject = 'New Community Service Submitted';
+        $subject = 'New Duty Report Submitted';
         $htmlContent =
             "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
@@ -521,9 +517,8 @@ class PHPMailerBrevoService
                 " .
             $studentInfo['first_name'] .
             $studentInfo['last_name'] .
-            " has submitted a new Community Service Report.
+            " has submitted a new Duty Report.
             </p>
-            <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">Contact: {$this->contactInfo}</p>

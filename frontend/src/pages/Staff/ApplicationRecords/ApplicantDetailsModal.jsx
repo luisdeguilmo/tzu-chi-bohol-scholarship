@@ -83,9 +83,6 @@ function ApplicantDetailsModal({
         }
     }, [applicationFiles]);
 
-    console.log(applicationFiles);
-    console.log(filePreviews);
-
     const { getActiveSchoolYear } = useSchoolYears();
 
     useEffect(() => {

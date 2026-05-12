@@ -13,7 +13,6 @@ import FORM_SECTIONS from "../../../constant/application/formSections";
 import ReviewSection from "./ReviewSection";
 import BASE_URL from "../../../config";
 import OtherInformationSection from "./OtherInformationSection";
-import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import { useAuth } from "../../../context/AuthContext";
 import { useApplicantInformation } from "../../../hooks/useApplicantInformation";
 import { useSidebar } from "../../../context/SidebarContext";
@@ -37,10 +36,6 @@ function ApplicationForm({ includeRequirements = true }) {
 
     const { user } = useAuth();
     const { setActiveTab } = useSidebar();
-    // const { applicantInformation } = useApplicantInformation(
-    //     user?.user_id,
-    //     getCurrentSchoolYear(),
-    // );
 
     useEffect(() => {
         const fetchSchoolYear = async () => {
@@ -274,8 +269,6 @@ function ApplicationForm({ includeRequirements = true }) {
 
         const data = await getSchoolYear("renewal");
         formData.application_info.school_year = data?.school_year;
-
-        // formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.application_type = "renew";
         formData.application_info.status = "Old";
         formData.application_info.scholar_id = user.user_id;
@@ -321,10 +314,6 @@ function ApplicationForm({ includeRequirements = true }) {
 
         const data = await getSchoolYear("renewal");
         formData.application_info.school_year = data?.school_year;
-
-        console.log(data);
-
-        // formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.application_type = "resubmit";
         formData.application_info.scholar_id = user.user_id;
 
@@ -366,8 +355,6 @@ function ApplicationForm({ includeRequirements = true }) {
 
         const data = await getSchoolYear("new");
         formData.application_info.school_year = data?.school_year;
-
-        // formData.application_info.school_year = getCurrentSchoolYear();
         formData.application_info.status = "New";
         formData.educational_background.year_level = 1;
         // console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
@@ -540,8 +527,8 @@ function NewApplicationForm() {
     return <ApplicationForm includeRequirements={true} />;
 }
 
-function RenewalApplicationForm(userId) {
-    return <ApplicationForm includeRequirements={false} userId={userId} />;
+function RenewalApplicationForm() {
+    return <ApplicationForm includeRequirements={false} />;
 }
 
 export { ApplicationForm, NewApplicationForm, RenewalApplicationForm };

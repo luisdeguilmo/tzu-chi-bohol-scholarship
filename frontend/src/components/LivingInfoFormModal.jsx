@@ -4,8 +4,6 @@ import { useSchoolTransportInfo } from "../hooks/useSchoolTransportInfo";
 import { useAuth } from "../context/AuthContext";
 import { useCoursesAccepted } from "../hooks/useCoursesAccepted";
 import { useCollegesUniversities } from "../hooks/useCollegesUniversities";
-import { useScholar } from "../hooks/useScholar";
-import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
 import { numbersOnly } from "../utils/inputValidations";
 
 function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
@@ -16,10 +14,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
     const [routeAndCost, setRouteAndCost] = useState("");
 
     const { user } = useAuth();
-    const { type } = useScholar(user.user_id, getCurrentSchoolYear());
-    const { transportInfo, addTransportInfo } = useSchoolTransportInfo(
-        user.user_id,
-    );
+    const { transportInfo, addTransportInfo } = useSchoolTransportInfo();
 
     const [university, setUniversity] = useState("");
     const [course, setCourse] = useState("");
@@ -60,8 +55,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
 
     const handleSubmit = async () => {
         const success = await addTransportInfo(
-            user.user_id,
-            type,
+            user?.scholar_type,
             university,
             course,
             stayingArrangement,
@@ -89,7 +83,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
             // isScholar={true}
         >
             <div className="py-4 px-6 max-h-[500px]">
-                {type === "New" && (
+                {user?.scholar_type === "New" && (
                     <>
                         <div className="block w-full relative">
                             <h2 className="mt-2 mb-3 font-bold text-xs text-gray-700">
@@ -160,7 +154,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                 )}
 
                 <div
-                    className={`block w-full relative ${type === "New" ? "pt-4" : ""}`}
+                    className={`block w-full relative ${user?.scholar_type === "New" ? "pt-4" : ""}`}
                 >
                     <h2 className="mt-2 mb-3 font-bold text-xs text-gray-700">
                         Living Situation

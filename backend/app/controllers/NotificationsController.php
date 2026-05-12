@@ -20,6 +20,7 @@ use App\Models\NotificationsModel;
 use App\Models\ScholarModel;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
+use Middleware\Auth;
 
 class NotificationsController
 {
@@ -65,7 +66,7 @@ class NotificationsController
         try {
             $notification = new NotificationsModel();
 
-            $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+            $id = Auth::id();
 
             if (!$id) {
                 throw new \Exception('ID is required.');
@@ -169,7 +170,7 @@ class NotificationsController
             $this->pdo->beginTransaction();
 
             $id = isset($_GET['id']) ? $_GET['id'] : null;
-            $userId = isset($_GET['user_id']) ? $_GET['user_id'] : null;
+            $userId = Auth::id();
 
             // Process application data
             $notification = new NotificationsModel();
@@ -206,7 +207,7 @@ class NotificationsController
 
             // Get ID parameter
             $id = isset($_GET['id']) ? $_GET['id'] : null;
-            $userId = isset($_GET['user_id']) ? $_GET['user_id'] : null;
+            $userId = Auth::id();
             $type = isset($_GET['type']) ? $_GET['type'] : null;
 
             if (!$id) {

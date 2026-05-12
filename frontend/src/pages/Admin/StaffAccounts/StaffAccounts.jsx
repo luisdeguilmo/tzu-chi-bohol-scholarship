@@ -14,7 +14,6 @@ import ChangePasswordModal from "../../../components/ChangePasswordModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useUserAccount } from "../../../hooks/useUserAccount";
 import { toast } from "react-toastify";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 
 const StaffAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -31,15 +30,10 @@ const StaffAccounts = () => {
         useState(false);
     const [selectedStaff, setSelectedStaff] = useState(null);
     const { staffAccounts, fetchStaffAccounts } = useStaffAccounts();
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        staffAccounts,
-        "user-profile-picture",
-    );
     const { loading: isLoading, updateScholarAccountStatus } = useUserAccount();
 
     useEffect(() => {
         fetchStaffAccounts();
-        fetchAllPics();
     }, []);
 
     // Filter data based on search term
@@ -161,13 +155,9 @@ const StaffAccounts = () => {
                                 <td className="py-2 flex justify-start whitespace-nowrap text-sm text-gray-700">
                                     <div className="w-[30%]"></div>
                                     <div className="w-[max-content] flex items-center text-left gap-2">
-                                        {profilePics[staff.account_id] ? (
+                                        {staff[0].profile ? (
                                             <img
-                                                src={
-                                                    profilePics[
-                                                        staff.account_id
-                                                    ]
-                                                }
+                                                src={staff[0].profile}
                                                 alt="Profile"
                                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                                             />

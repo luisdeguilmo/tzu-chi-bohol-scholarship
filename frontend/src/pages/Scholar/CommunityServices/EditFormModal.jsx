@@ -4,7 +4,6 @@ import BASE_URL from "../../../config";
 import { useAuth } from "../../../context/AuthContext";
 import { useCommunityServicesSubmit } from "../../../hooks/useCommunityServicesSubmit";
 import { toast } from "react-toastify";
-import { useAccountStatus } from "../../../hooks/useAccountStatus";
 import pdfIcon from "../../../assets/pdf.png";
 import { UploadCloud } from "lucide-react";
 
@@ -23,7 +22,6 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef(null);
     const { user } = useAuth();
-    const { accountStatus } = useAccountStatus(user.user_id);
 
     useEffect(() => {
         if (activity?.files?.length > 0) {
@@ -65,9 +63,6 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const handleAddFileClick = () => {
         fileInputRef.current?.click();
     };
-
-    console.log(activity);
-    console.log(filePreviews);
 
     const removeFile = (index) => {
         const fileToRemove = filePreviews[index];
@@ -147,7 +142,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const { isLoading, editSubmit } = useCommunityServicesSubmit();
 
     const handleSubmit = async () => {
-        if (accountStatus === "not_renewed") {
+        if (user?.account_status === "not_renewed") {
             toast.error(
                 `You can't resubmit community service until your renewal application is approved.`,
             );

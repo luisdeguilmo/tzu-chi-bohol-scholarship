@@ -4,6 +4,10 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../middleware/Cors.php';
 require_once __DIR__ . '/../config/jwt.php';
 
+use App\Models\ScholarModel;
+use App\Models\ScholarsModel;
+use App\Models\SchoolYearModel;
+use App\Models\UserAccountModel;
 use Config\Database;
 use Config\Jwt;
 use Firebase\JWT\JWT as FirebaseJWT;
@@ -135,15 +139,30 @@ try {
 
     logAuth('LOGIN SUCCESS', $email, $userType);
 
+    $accountModel = new UserAccountModel();
+    $scholar = new ScholarModel();
+    $schoolYear = new SchoolYearModel();
+
+    $schoolYear = $schoolYear->getActiveSchoolYear();
+
+    $profile = $accountModel->getAccountProfile(
+        $user['type'] === 'scholar' ? 'applications' : 'users',
+        $user['account_id'],
+        $accountModel,
+    );
+    $scholar_type = $scholar->getScholarType($user['account_id'], $schoolYear);
+
     respond(true, [
         'token' => $jwt,
         'user' => [
             'user_id' => $user['account_id'],
             'email' => $user['email'],
             'type' => $user['type'],
+            'scholar_type' => $scholar_type,
             'account_status' => $user['status'],
             'first_name' => $name['first_name'] ?? null,
             'last_name' => $name['last_name'] ?? null,
+            'profile' => $profile,
             'name' => $name['name'] ?? null,
         ],
     ]);

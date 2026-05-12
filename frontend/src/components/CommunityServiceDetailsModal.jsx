@@ -50,8 +50,6 @@ const CommunityServiceDetailsModal = React.memo(
             }
         }, [activity]);
 
-        console.log(filePreviews);
-
         useEffect(() => {
             if (method === "automatic") {
                 const startTime = convertTo24HourFormat(

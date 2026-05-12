@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 const AdminLayout = React.lazy(() => import("./components/Layout/AdminLayout"));
 const ScholarLayout = React.lazy(
     () => import("./components/Layout/ScholarLayout"),
@@ -14,6 +14,8 @@ const Home = React.lazy(() => import("./pages/Home/Home"));
 const ApplicationSection = React.lazy(
     () => import("./pages/Home/ApplicationSection"),
 );
+
+// import { ApplicationSection } from "./pages/Home/ApplicationSection";use
 const RenewalApplicationSection = React.lazy(
     () => import("./pages/Home/ApplicationSection"),
 );
@@ -112,11 +114,80 @@ const RoleSpecificLoginForm = ({ role }) => {
 };
 
 export function App() {
+    // const [devtoolsOpen, setDevtoolsOpen] = useState(false);
+
+    // useEffect(() => {
+    //     const handleContextMenu = (e) => {
+    //         e.preventDefault();
+    //     };
+
+    //     const handleKeyDown = (e) => {
+    //         const key = e.key.toUpperCase();
+
+    //         if (
+    //             key === "F12" ||
+    //             (e.ctrlKey &&
+    //                 e.shiftKey &&
+    //                 ["I", "J", "C", "K"].includes(key)) ||
+    //             (e.ctrlKey && ["U", "S"].includes(key))
+    //         ) {
+    //             e.preventDefault();
+    //             e.stopPropagation();
+    //         }
+    //     };
+
+    //     const detectDevTools = () => {
+    //         const widthThreshold = window.outerWidth - window.innerWidth > 160;
+
+    //         const heightThreshold =
+    //             window.outerHeight - window.innerHeight > 160;
+
+    //         setDevtoolsOpen(widthThreshold || heightThreshold);
+    //     };
+
+    //     document.addEventListener("contextmenu", handleContextMenu);
+    //     document.addEventListener("keydown", handleKeyDown);
+
+    //     const interval = setInterval(detectDevTools, 1000);
+
+    //     return () => {
+    //         document.removeEventListener("contextmenu", handleContextMenu);
+
+    //         document.removeEventListener("keydown", handleKeyDown);
+
+    //         clearInterval(interval);
+    //     };
+    // }, []);
+
+    // if (devtoolsOpen) {
+    //     return (
+    //         <div
+    //             style={{
+    //                 height: "100vh",
+    //                 display: "flex",
+    //                 justifyContent: "center",
+    //                 alignItems: "center",
+    //                 background: "#111",
+    //                 color: "#fff",
+    //                 fontSize: "24px",
+    //             }}
+    //         >
+    //             Developer tools detected
+    //         </div>
+    //     );
+    // }
+
     return (
         <Router>
             <Routes>
                 {/* Public Routes - HomePageLayout */}
-                <Route element={<HomePageLayout />}>
+                <Route
+                    element={
+                        <Suspense fallback={<PageLoader />}>
+                            <HomePageLayout />
+                        </Suspense>
+                    }
+                >
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<AboutSection />} />
                     <Route path="/our-mission" element={<OurMission />} />

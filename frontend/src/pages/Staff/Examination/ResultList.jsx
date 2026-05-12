@@ -7,7 +7,6 @@ export const ResultList = ({
     item,
     index,
     tableHeaders,
-    profilePics,
     onOpenModal,
 }) => {
     return (

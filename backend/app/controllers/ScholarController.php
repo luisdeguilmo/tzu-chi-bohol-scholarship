@@ -9,7 +9,9 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use App\Models\ApplicantModel;
 use App\Models\ApplicationModel;
 use App\Models\ScholarModel;
+use App\Models\SchoolYearModel;
 use Config\Database;
+use Middleware\Auth;
 
 class ScholarController
 {
@@ -50,9 +52,10 @@ class ScholarController
     {
         try {
             $scholar = new ScholarModel();
+            $schoolYear = new SchoolYearModel();
 
-            $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
-            $schoolYear = $_GET['school_year'] ?? null;
+            $id = Auth::id();
+            $schoolYear = $schoolYear->getActiveSchoolYear();
 
             $type = $scholar->getScholarType($id, $schoolYear);
 

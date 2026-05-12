@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import InputModal from "../../../components/InputModal";
 import BASE_URL from "../../../config";
-import { useAccountStatus } from "../../../hooks/useAccountStatus";
 import { formatTime } from "../../../utils/formatTime";
 import pdfIcon from "../../../assets/pdf.png";
 
@@ -18,7 +17,6 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { user } = useAuth();
-    const { accountStatus } = useAccountStatus(user.user_id);
     const fileInputRef = useRef(null);
     const token = localStorage.getItem("token");
 
@@ -99,10 +97,8 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
         });
     };
 
-    console.log(filePreviews);
-
     const handleSubmit = async () => {
-        if (accountStatus === "not_renewed") {
+        if (user?.account_status === "not_renewed") {
             toast.error(
                 `You can't submit community service until your renewal application is approved.`,
             );

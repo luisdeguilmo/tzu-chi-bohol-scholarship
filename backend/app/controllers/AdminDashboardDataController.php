@@ -9,6 +9,7 @@ require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/BatchModel.php';
 
 use App\Models\AdminDashboardDataModel;
+use App\Models\SchoolYearModel;
 use Config\Database;
 
 class AdminDashboardDataController
@@ -47,9 +48,9 @@ class AdminDashboardDataController
             $data = [];
 
             $dashboardData = new AdminDashboardDataModel();
+            $schoolYear = new SchoolYearModel();
 
-            $id = $_GET['id'] ?? null;
-            $school_year = $_GET['school_year'] ?? null;
+            $school_year = $schoolYear->getActiveSchoolYear();
 
             $numberOfAllScholars = $dashboardData->getNumberOfAllScholars();
             $numberOfPendingScholars = $dashboardData->getNumberOfPendingScholars();

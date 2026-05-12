@@ -10,7 +10,6 @@ const ScholarAccountsRow = ({
     currentItems,
     selectedAccounts,
     toggleAccountSelection,
-    profilePics,
     isLoading,
     onUpdateAccountStatus,
     onRefresh,
@@ -49,7 +48,7 @@ const ScholarAccountsRow = ({
                         <div className="w-[30%]"></div>
                         <div className="w-[max-content] flex items-center text-left gap-2">
                             <img
-                                src={profilePics[account.account_id]}
+                                src={account[0].profile}
                                 alt="Profile"
                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                             />

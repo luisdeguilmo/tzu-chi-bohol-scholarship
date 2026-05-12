@@ -12,9 +12,11 @@ require_once __DIR__ . '/../Models/BatchModel.php';
 
 use App\Models\NotificationsModel;
 use App\Models\ScholarAccountModel;
+use App\Models\SchoolYearModel;
 use App\Models\YearModel;
 use App\Models\StaffDashboardDataModel;
 use Config\Database;
+use Middleware\Auth;
 
 class StaffDashboardDataController
 {
@@ -58,16 +60,16 @@ class StaffDashboardDataController
             $dashboardData = new StaffDashboardDataModel();
             $notificationModel = new NotificationsModel();
             $scholarModel = new ScholarAccountModel();
-            $yearModel = new YearModel();
+            $yearModel = new SchoolYearModel();
 
-            $id = $_GET['id'] ?? null;
-            $school_year = $_GET['school_year'] ?? null;
+            $id = Auth::id();
+            $school_year = $yearModel->getActiveSchoolYear();
 
             $userName = $dashboardData->getUserName($id);
-            $numberOfNewApplications = $dashboardData->getNumberOfNewApplications();
-            $numberOfOldApplications = $dashboardData->getNumberOfOldApplications();
-            $numberOfApprovedApplications = $dashboardData->getNumberOfApprovedApplications();
-            $numberOfRejectedApplications = $dashboardData->getNumberOfRejectedApplications();
+            $numberOfNewApplications = $dashboardData->getNumberOfNewApplications($school_year);
+            $numberOfOldApplications = $dashboardData->getNumberOfOldApplications($school_year);
+            $numberOfApprovedApplications = $dashboardData->getNumberOfApprovedApplications($school_year);
+            $numberOfRejectedApplications = $dashboardData->getNumberOfRejectedApplications($school_year);
             $numberOfActiveScholars = $dashboardData->getNumberOfActiveScholars();
             $numberOfNewCommunityServices = $dashboardData->getNumberOfNewCommunityServices();
             $applicationData = $dashboardData->getApplicationData($school_year);
@@ -78,10 +80,6 @@ class StaffDashboardDataController
 
             $data = [
                 'userName' => $userName,
-                'numberOfNewApplications' => $numberOfNewApplications,
-                'numberOfOldApplications' => $numberOfOldApplications,
-                'numberOfApprovedApplications' => $numberOfApprovedApplications,
-                'numberOfRejectedApplications' => $numberOfRejectedApplications,
                 'numberOfActiveScholars' => $numberOfActiveScholars,
                 'numberOfApplicationsSubmitted' =>
                     $numberOfNewApplications + $numberOfOldApplications,

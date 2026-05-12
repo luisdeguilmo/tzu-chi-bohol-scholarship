@@ -9,6 +9,7 @@ require_once __DIR__ . '/../models/RecentActivityModel.php';
 
 use App\Models\RecentActivityModel;
 use Config\Database;
+use Middleware\Auth;
 
 class RecentActivityController {
     private $pdo;
@@ -44,7 +45,7 @@ class RecentActivityController {
         try {
             $recent_activity = new RecentActivityModel();
 
-            $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+            $id = Auth::id();
 
             if (!$id) {
                 throw new \Exception('ID is required.');

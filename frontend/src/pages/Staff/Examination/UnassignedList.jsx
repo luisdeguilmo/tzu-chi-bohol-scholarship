@@ -8,7 +8,6 @@ export const UnassignedList = ({
     item,
     index,
     tableHeaders,
-    profilePics,
     selectedApplicants,
     toggleApplicantSelection,
 }) => {

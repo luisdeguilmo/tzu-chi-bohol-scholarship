@@ -223,5 +223,43 @@ class StaffAccountModel
 
         return $stmt->execute();
     }
+
+    public function getProfileById($id)
+    {
+        $query = "SELECT *
+                FROM profile_pictures 
+                WHERE application_id = :account_id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':account_id', $id);
+
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        return null;
+    }
+
+    public function getAllStaffWithProfile($staffs, $staffModel)
+    {
+        $data = [];
+
+        foreach ($staffs as $staff) {
+            $files = $staffModel->getProfileById($staff['account_id']);
+
+            foreach ($files as $file) {
+                $staff[] = [
+                    'profile' =>
+                        $_ENV['APP_URL'] .
+                        '/index.php?type=users&route=profile&file=' .
+                        urlencode(basename($file['file_path'])),
+                ];
+            }
+
+            $data[] = $staff;
+        }
+
+        return $data;
+    }
 }
 ?>

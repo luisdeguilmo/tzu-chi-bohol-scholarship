@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../../../config";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
-import { useAccountStatus } from "../../../hooks/useAccountStatus";
 
 const EventButton = ({
     numberOfParticipants,
@@ -21,15 +20,20 @@ const EventButton = ({
     const [joined, setJoined] = useState(false); // Start with false instead of true
     const [loading, setLoading] = useState(true); // Add loading state
     const [actionLoading, setActionLoading] = useState(false); // Add action loading state
+    const token = localStorage.getItem("token");
 
     const { user } = useAuth();
-    const { accountStatus } = useAccountStatus(user.user_id);
 
     const isUserParticipant = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/event-participants.php?scholar_id=${scholarId}&event_id=${eventId}`,
+                `${BASE_URL}app/api/event-participants.php?event_id=${eventId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
@@ -47,14 +51,14 @@ const EventButton = ({
 
     useEffect(() => {
         // Only check participation if both eventId and scholarId are available
-        if (eventId && scholarId) {
+        if (eventId) {
             isUserParticipant();
         }
-    }, [eventId, scholarId]); // Add dependencies
+    }, [eventId]); // Add dependencies
 
     const handleJoin = async () => {
         try {
-            if (accountStatus === "not_renewed") {
+            if (user?.account_status === "not_renewed") {
                 toast.error(
                     `You can’t join events until your renewal application is approved.`,
                 );
@@ -86,7 +90,7 @@ const EventButton = ({
         try {
             setIsOpen(false); // Close modal before cancelling
             setActionLoading(true);
-            await cancelEvent(eventName, eventId, scholarId);
+            await cancelEvent(eventName, eventId);
             setJoined(false); // Update state after successful cancel
             onRefresh(activeTab);
         } catch (error) {

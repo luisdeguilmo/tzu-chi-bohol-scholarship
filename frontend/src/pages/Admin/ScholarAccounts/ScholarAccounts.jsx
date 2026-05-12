@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import EmptyState from "../../../components/EmptyState";
 import Pagination from "../../../components/Pagination";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import { usePagination } from "../../../hooks/usePagination";
 import { useScholarAccounts } from "../../../hooks/useScholarAccounts";
 import {
@@ -40,14 +39,8 @@ const ScholarAccounts = () => {
     const { loading: isLoading, updateScholarAccountStatus } =
         useScholarAccounts();
 
-    const { profilePics, fetchAllPics } = useProfilePicture(
-        scholars,
-        "profile-picture",
-    );
-
     useEffect(() => {
         fetchScholars(activeTab);
-        fetchAllPics();
     }, [activeTab]);
 
     // Toggle scholar selection
@@ -199,7 +192,6 @@ const ScholarAccounts = () => {
                                 currentItems={currentItems}
                                 selectedScholars={selectedScholars}
                                 toggleScholarSelection={toggleScholarSelection}
-                                profilePics={profilePics}
                                 onCreateAccount={createScholarAccount}
                             />
                         ) : (
@@ -207,7 +199,6 @@ const ScholarAccounts = () => {
                                 currentItems={currentItems}
                                 selectedAccounts={selectedScholars}
                                 toggleAccountSelection={toggleScholarSelection}
-                                profilePics={profilePics}
                                 isLoading={isLoading}
                                 onUpdateAccountStatus={
                                     updateScholarAccountStatus

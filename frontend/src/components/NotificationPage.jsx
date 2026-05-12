@@ -4,7 +4,6 @@ import React from "react";
 const NotificationPage = React.forwardRef(
     (
         {
-            userId,
             notifications,
             isOpen,
             onOpen,
@@ -12,7 +11,7 @@ const NotificationPage = React.forwardRef(
             onRefresh,
             onMarkAsRead,
         },
-        ref
+        ref,
     ) => {
         const formatRelativeTime = (timestamp) => {
             const now = new Date();
@@ -111,7 +110,7 @@ const NotificationPage = React.forwardRef(
                                     <div className="mt-2.5 flex justify-between items-center">
                                         <time className="text-xs font-medium text-gray-400">
                                             {formatRelativeTime(
-                                                notification.created_at
+                                                notification.created_at,
                                             )}
                                         </time>
 
@@ -120,7 +119,7 @@ const NotificationPage = React.forwardRef(
                                                 <button
                                                     onClick={() => {
                                                         handleMarkAsRead(
-                                                            notification.id
+                                                            notification.id,
                                                         );
                                                     }}
                                                     className="flex items-center gap-1.5 py-1.5 px-3 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-colors duration-150"
@@ -133,7 +132,7 @@ const NotificationPage = React.forwardRef(
                                                 onClick={() =>
                                                     handleDelete(
                                                         notification.id,
-                                                        notification.type
+                                                        notification.type,
                                                     )
                                                 }
                                                 className="flex items-center gap-1.5 py-1.5 px-3 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-colors duration-150"
@@ -163,7 +162,7 @@ const NotificationPage = React.forwardRef(
                 )}
             </div>
         );
-    }
+    },
 );
 
 export default NotificationPage;

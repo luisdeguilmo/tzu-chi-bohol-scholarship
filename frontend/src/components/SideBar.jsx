@@ -1,11 +1,9 @@
-
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { AlignJustify, ChevronDown, ChevronUp, X } from "lucide-react";
 import { useApplicationPeriods } from "../hooks/useApplicationPeriods";
-import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
 import { useDashboardOverviewData } from "../hooks/useDashboardOverviewData";
 import { useSidebar } from "../context/SidebarContext";
 import ConfirmationModal from "./ConfirmationModal";
@@ -28,19 +26,17 @@ function SideBar({ items }) {
     const scholarId = { id: user.user_id };
 
     const { dashboardData, fetchScholarDashboardData } =
-        useDashboardOverviewData(
-            user.user_id,
-            user.type,
-            getCurrentSchoolYear(),
-        );
+        useDashboardOverviewData(user.type);
 
     const { applicationPeriods, fetchApplicationPeriods } =
         useApplicationPeriods("renewal");
 
     useEffect(() => {
-        fetchApplicationPeriods();
+        if (user?.type === "scholar") {
+            fetchApplicationPeriods();
+        }
         fetchScholarDashboardData();
-    }, [activeTab]);
+    }, [activeTab, user?.type]);
 
     // Auto-expand the dropdown that matches the current route on mount / path change
     useEffect(() => {

@@ -8,7 +8,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function HeroSection() {
     const navigate = useNavigate();
-    const { applicationPeriods } = useApplicationPeriods("new");
+    const { applicationPeriods, fetchApplicationPeriods } =
+        useApplicationPeriods("new");
+
+    useEffect(() => {
+        fetchApplicationPeriods();
+    }, []);
+    console.log(applicationPeriods);
 
     const today = new Date().toISOString().split("T")[0];
 

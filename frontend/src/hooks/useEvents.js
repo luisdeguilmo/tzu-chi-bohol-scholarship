@@ -75,7 +75,7 @@ export const useEvents = (tab) => {
         }
     };
 
-    const cancelEvent = async (eventName, eventId, scholarId) => {
+    const cancelEvent = async (eventName, eventId) => {
         try {
             const response = await axios.delete(
                 `${BASE_URL}app/api/event-participants.php`,

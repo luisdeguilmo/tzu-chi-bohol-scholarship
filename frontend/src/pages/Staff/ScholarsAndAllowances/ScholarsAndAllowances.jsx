@@ -10,7 +10,6 @@ import {
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { Eye, PenLine, SettingsIcon } from "lucide-react";
-import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import ScholarProfileModal from "../../../components/UserProfileModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useAllowanceCycle } from "../../../hooks/useAllowanceCycle";
@@ -23,6 +22,7 @@ import ChangeStatusModal from "./ChangeStatusModal";
 import AllowanceSettingsModal from "./AllowanceSettingsModal";
 import { useAllowanceSettings } from "../../../hooks/useAllowanceSettings";
 import { toast } from "react-toastify";
+import { useSchoolYears } from "../../../hooks/useSchoolYears";
 
 export default function ScholarsAndAllowances() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -44,7 +44,7 @@ export default function ScholarsAndAllowances() {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("active");
     const [status, setStatus] = useState("all");
-    const [schoolYear, setSchoolYear] = useState(getCurrentSchoolYear());
+    const [schoolYear, setSchoolYear] = useState(null);
     const [sortBy, setSortBy] = useState("newest");
 
     const {
@@ -60,7 +60,7 @@ export default function ScholarsAndAllowances() {
         school,
         course,
         yearLevel,
-        sortBy
+        sortBy,
     );
 
     const {
@@ -71,13 +71,28 @@ export default function ScholarsAndAllowances() {
     } = useAllowanceCycle();
 
     const { resetAllowances } = useResetAllowances();
-    const { scholarAllowances, fetchScholarAllowances } = useScholarAllowances(
-        getCurrentSchoolYear()
-    );
+    const { scholarAllowances, fetchScholarAllowances } =
+        useScholarAllowances();
     const { exportAllowancesToExcel, exportScholarInformationToExcel } =
         generateExcel();
     const { allowanceSettings, fetchMaximumHoursAndAmountPerHour } =
         useAllowanceSettings();
+
+    const { getActiveSchoolYear } = useSchoolYears();
+
+    useEffect(() => {
+        const fetchSchoolYear = async () => {
+            try {
+                const data = await getActiveSchoolYear();
+                setSchoolYear(data);
+            } catch (err) {
+                console.error(err);
+                setError("Failed to fetch school year");
+            }
+        };
+
+        fetchSchoolYear();
+    }, []);
 
     useEffect(() => {
         fetchScholars();
@@ -96,7 +111,7 @@ export default function ScholarsAndAllowances() {
                 allowanceSettings?.amount_per_hour === 0
             ) {
                 toast.error(
-                    "Please set the allowance settings before processing allowances."
+                    "Please set the allowance settings before processing allowances.",
                 );
                 setIsConfirmationModalOpen(false);
                 return;
@@ -111,7 +126,7 @@ export default function ScholarsAndAllowances() {
                 // Step 2: Export to Excel (this also uploads to database)
                 const exported = await exportAllowancesToExcel(
                     scholarAllowances,
-                    fileName
+                    fileName,
                 );
 
                 if (exported) {
@@ -152,7 +167,7 @@ export default function ScholarsAndAllowances() {
             applicant?.first_name
                 ?.toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
-            applicant?.created_at?.includes(searchTerm)
+            applicant?.created_at?.includes(searchTerm),
     );
 
     const {
@@ -205,7 +220,9 @@ export default function ScholarsAndAllowances() {
                     onOpen={setIsConfirmationModalOpen}
                 >
                     <div className="flex items-center gap-2">
-                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Status:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Status:
+                        </span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
@@ -252,9 +269,7 @@ export default function ScholarsAndAllowances() {
                                     <div className="w-[30%]"></div>
                                     <div className="w-[max-content] flex text-left gap-2">
                                         <img
-                                            src={
-                                                scholar[0].profile
-                                            }
+                                            src={scholar[0].profile}
                                             alt="Profile"
                                             className="w-10 h-10 object-cover rounded-full mx-auto"
                                         />
@@ -307,7 +322,7 @@ export default function ScholarsAndAllowances() {
                                             onClick={() => {
                                                 setIsModalOpen(true);
                                                 setScholarId(
-                                                    scholar.account_id
+                                                    scholar.account_id,
                                                 );
                                             }}
                                             className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
@@ -319,10 +334,10 @@ export default function ScholarsAndAllowances() {
                                             <button
                                                 onClick={() => {
                                                     setIsChangeStatusModalOpen(
-                                                        true
+                                                        true,
                                                     );
                                                     setScholarId(
-                                                        scholar.account_id
+                                                        scholar.account_id,
                                                     );
                                                     setSelectedScholar(scholar);
                                                 }}

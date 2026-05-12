@@ -3,7 +3,6 @@ import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import { useApplicantData } from "../../../hooks/useApplicantData";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import {
     interviewApplicationsTableHeaders,
     interviewResultTableHeaders,

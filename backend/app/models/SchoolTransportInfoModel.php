@@ -23,7 +23,7 @@ class SchoolTransportInfoModel
         $this->pdo = $db->getConnection();
     }
 
-    public function create($data)
+    public function create($data, $scholarId)
     {
         $query =
             'INSERT INTO ' .
@@ -39,7 +39,7 @@ class SchoolTransportInfoModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->scholarId = strip_tags($data['scholar_id']);
+        $this->scholarId = $scholarId;
         $this->stayType = strip_tags($data['stay_type']);
         $this->address = strip_tags($data['address']);
         $this->dailyTransportCost = strip_tags($data['daily_transport_cost']);
@@ -55,7 +55,7 @@ class SchoolTransportInfoModel
         return $stmt->execute();
     }
 
-    public function update($data)
+    public function update($data, $scholarId)
     {
         $query =
             'UPDATE ' .
@@ -71,7 +71,7 @@ class SchoolTransportInfoModel
         $stmt = $this->pdo->prepare($query);
 
         // Sanitize inputs
-        $this->scholarId = strip_tags($data['scholar_id']);
+        $this->scholarId = $scholarId;
         $this->stayType = strip_tags($data['stay_type']);
         $this->address = strip_tags($data['address']);
         $this->dailyTransportCost = strip_tags($data['daily_transport_cost']);

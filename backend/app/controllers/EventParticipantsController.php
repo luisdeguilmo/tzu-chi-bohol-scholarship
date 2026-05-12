@@ -58,8 +58,7 @@ class EventParticipantsController
     {
         try {
             $eventId = isset($_GET['event_id']) ? (int) $_GET['event_id'] : null;
-            $scholarId = isset($_GET['scholar_id']) ? (int) $_GET['scholar_id'] : null; // Changed from user_id
-            $names = isset($_GET['names']) ? $_GET['names'] : null;
+            $scholarId = Auth::id(); // Changed from user_id
 
             if (!$eventId || $eventId <= 0) {
                 throw new Exception('Valid Event ID is required');

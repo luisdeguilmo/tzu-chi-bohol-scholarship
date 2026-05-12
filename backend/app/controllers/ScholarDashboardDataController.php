@@ -14,6 +14,7 @@ require_once __DIR__ . '/../models/ScholarDashboardDataModel.php';
 use App\Models\ScholarDashboardDataModel;
 use App\Models\ScholarsModel;
 use Config\Database;
+use Middleware\Auth;
 
 class ScholarDashboardDataController
 {
@@ -53,8 +54,7 @@ class ScholarDashboardDataController
             $dashboardData = new ScholarDashboardDataModel();
             $scholarModel = new ScholarsModel();
 
-            $id = $_GET['id'] ?? null;
-            $school_year = $_GET['school_year'] ?? null;
+            $id = Auth::id();
 
             $userName = $dashboardData->getUserName($id);
             $hasSubmitted = $dashboardData->isSubmittedLivingInfo($id);
@@ -62,10 +62,7 @@ class ScholarDashboardDataController
             $attendedEvents = $dashboardData->getAttendedEvents($id);
             $numberOfUpcomingEvents = $dashboardData->getNumberOfUpcomingEvents();
             $numberOfCommunityServices = $dashboardData->getNumberOfCommunityServices($id);
-            $renewalApplicationStatus = $dashboardData->getRenewalApplicationStatus(
-                $id,
-                $school_year,
-            );
+            $renewalApplicationStatus = $dashboardData->getRenewalApplicationStatus($id);
 
             $status = [];
 

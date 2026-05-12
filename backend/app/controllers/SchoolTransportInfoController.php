@@ -14,6 +14,7 @@ use App\Models\ScholarModel;
 use App\Models\ScholarsModel;
 use App\Models\SchoolTransportInfoModel;
 use Config\Database;
+use Middleware\Auth;
 
 class SchoolTransportInfoController
 {
@@ -54,7 +55,7 @@ class SchoolTransportInfoController
             $model = new SchoolTransportInfoModel();
 
             // Get ID parameter if it exists
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $id = Auth::id();
 
             $results = $model->getTransportInfoById($id);
 
@@ -86,20 +87,20 @@ class SchoolTransportInfoController
             $transportModel = new SchoolTransportInfoModel();
             $scholarsModel = new ScholarsModel();
             $educationModel = new EducationModel();
-            $scholarId = $data['scholar_id'];
+            $scholarId = Auth::id();
 
             $isExist = $transportModel->checkTransportInfoRecord($scholarId);
 
             if ($isExist) {
-                if (!$transportModel->update($data)) {
+                if (!$transportModel->update($data, $scholarId)) {
                     throw new \Exception('Failed to update school transport information');
                 }
             } else {
-                if (!$transportModel->create($data)) {
+                if (!$transportModel->create($data, $scholarId)) {
                     throw new \Exception('Failed to save school transport information');
                 }
 
-                if (!$educationModel->updateSchoolAndCourse($data)) {
+                if (!$educationModel->updateSchoolAndCourse($data, $scholarId)) {
                     throw new \Exception('Failed to update school and course');
                 }
             }

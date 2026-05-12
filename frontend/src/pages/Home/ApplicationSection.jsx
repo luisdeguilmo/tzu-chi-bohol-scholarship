@@ -16,11 +16,10 @@ function ApplicationSection() {
 
 function RenewalApplicationSection() {
     const location = useLocation();
-    let userId = location.state?.id;
 
     return (
         <div className="py-5 bg-white">
-            <RenewalApplicationForm userId={userId} />
+            <RenewalApplicationForm />
         </div>
     );
 }

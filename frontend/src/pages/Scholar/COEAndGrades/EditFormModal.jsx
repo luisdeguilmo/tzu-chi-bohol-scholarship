@@ -3,7 +3,6 @@ import InputModal from "../../../components/InputModal";
 import BASE_URL from "../../../config";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
-import { useAccountStatus } from "../../../hooks/useAccountStatus";
 import pdfIcon from "../../../assets/pdf.png";
 
 const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
@@ -15,7 +14,6 @@ const EditFormModal = ({ isOpen, setIsOpen, submission, onSuccess }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef(null);
     const { user } = useAuth();
-    const { accountStatus } = useAccountStatus(user.user_id);
     const token = localStorage.getItem("token");
 
     useEffect(() => {

@@ -3,15 +3,21 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-export const useNotifications = (userId) => {
+export const useNotifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const token = localStorage.getItem("token");
 
     const fetchNotifications = async () => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/notifications.php?id=${userId}`
+                `${BASE_URL}app/api/notifications.php`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data) {
@@ -29,7 +35,13 @@ export const useNotifications = (userId) => {
     const markAsRead = async (id) => {
         try {
             const response = await axios.put(
-                `${BASE_URL}app/api/notifications.php?id=${id}&user_id=${userId}`
+                `${BASE_URL}app/api/notifications.php?id=${id}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data) {
@@ -46,7 +58,12 @@ export const useNotifications = (userId) => {
     const deleteNotification = async (id, type) => {
         try {
             const response = await axios.delete(
-                `${BASE_URL}app/api/notifications.php?id=${id}&type=${type}&user_id=${userId}`
+                `${BASE_URL}app/api/notifications.php?id=${id}&type=${type}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data) {

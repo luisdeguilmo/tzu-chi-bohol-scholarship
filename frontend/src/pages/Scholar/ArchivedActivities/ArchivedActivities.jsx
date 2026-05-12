@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import SearchInputMobile from "../../../components/SearchInputMobile";
 import { useArchive } from "../../../hooks/useArchive";
 import TabNavigation from "../TabNavigation";
-import { useAuth } from "../../../context/AuthContext";
 import EmptyState from "../EmptyState";
 import EventDetailsModal from "../../../components/EventDetailsModal";
 import CommunityServiceDetailsModal from "../../../components/CommunityServiceDetailsModal";
@@ -15,7 +14,6 @@ export default function ArchivedActivities() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [activeTab, setActiveTab] = useState("all");
-    const { user } = useAuth();
     const itemsPerPage = 6;
     const [isDotMenuOpen, setIsDotMenuOpen] = useState(false);
     const [itemIndex, setItemIndex] = useState(-1);
@@ -26,10 +24,8 @@ export default function ArchivedActivities() {
         window.scrollTo(0, 0);
     }, [pathname]);
 
-    const { loading, archivedActivities, fetchArchivedActivities } = useArchive(
-        activeTab,
-        user.user_id
-    );
+    const { loading, archivedActivities, fetchArchivedActivities } =
+        useArchive(activeTab);
 
     const tabs = [
         { name: "All", value: "all" },
@@ -61,7 +57,7 @@ export default function ArchivedActivities() {
 
     useEffect(() => {
         fetchArchivedActivities();
-    }, [activeTab, user.user_id]);
+    }, [activeTab]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -84,14 +80,10 @@ export default function ArchivedActivities() {
         }
     }, []);
 
-    const handleTabChange = useCallback(
-        (tab) => {
-            setActiveTab(tab);
-            fetchArchivedActivities(tab, user.user_id);
-            setCurrentPage(1);
-        },
-        [user.user_id]
-    );
+    const handleTabChange = useCallback((tab) => {
+        setActiveTab(tab);
+        setCurrentPage(1);
+    }, []);
 
     const handleOpenDotMenu = useCallback(
         async (event, index) => {
@@ -103,7 +95,7 @@ export default function ArchivedActivities() {
             }
             setItemIndex(index);
         },
-        [itemIndex, isDotMenuOpen]
+        [itemIndex, isDotMenuOpen],
     );
 
     const today = new Date();
@@ -146,7 +138,6 @@ export default function ArchivedActivities() {
                             <div key={index}>
                                 {activity.event_name ? (
                                     <EventCard
-                                        userId={user.user_id}
                                         event={activity}
                                         index={index}
                                         handleOpenDetails={handleOpenDetails}
@@ -162,7 +153,6 @@ export default function ArchivedActivities() {
                                     />
                                 ) : (
                                     <CommunityServiceCard
-                                        userId={user.user_id}
                                         key={index}
                                         activity={activity}
                                         index={index}

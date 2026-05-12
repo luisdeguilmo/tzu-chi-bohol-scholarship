@@ -5,20 +5,29 @@ class ProfileController
     public function view()
     {
         $fileName = basename($_GET['file'] ?? '');
+        $type = $_GET['type'] ?? ''; // activities | applications
 
-        if (!$fileName) {
+        if (!$fileName || !$type) {
             http_response_code(400);
-            exit('File required');
+            exit('File and type are required');
         }
 
-        $baseDir = realpath(__DIR__ . '/../../public/upload/applications');
+        // Allowed upload roots
+        $allowedTypes = ['applications', 'users'];
+
+        if (!in_array($type, $allowedTypes, true)) {
+            http_response_code(400);
+            exit('Invalid type');
+        }
+
+        // Dynamically resolve base directory
+        $baseDir = realpath(__DIR__ . "/../../public/upload/{$type}");
 
         if (!$baseDir) {
             http_response_code(500);
             exit('Server error');
         }
 
-        // Search recursively in all applications/*/files/
         $pattern = $baseDir . '/*/profile/' . $fileName;
         $matches = glob($pattern);
 
@@ -29,6 +38,7 @@ class ProfileController
 
         $fullPath = realpath($matches[0]);
 
+        // Security check
         if (!$fullPath || strpos($fullPath, $baseDir) !== 0) {
             http_response_code(403);
             exit('Invalid file');
@@ -38,18 +48,7 @@ class ProfileController
             ob_end_clean();
         }
 
-        $allowedMethods = ['GET', 'POST', 'OPTIONS'];
-        $allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With'];
-
         require_once __DIR__ . '/../../config/bootstrap.php';
-
-        // header('Content-Type: application/pdf');
-        // header('Content-Disposition: inline; filename="' . basename($fullPath) . '"');
-        // header('Content-Length: ' . filesize($fullPath));
-        // header('Cache-Control: public, max-age=0');
-
-        // readfile($fullPath);
-        // exit();
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($finfo, $fullPath);

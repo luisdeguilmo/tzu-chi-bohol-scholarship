@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 export const useApplicationPeriods = (type) => {
     const [applicationPeriods, setApplicationPeriods] = useState([]);
@@ -157,8 +158,6 @@ export const useApplicationPeriods = (type) => {
             },
         };
 
-        console.log(type.type);
-
         try {
             setLoading(true);
             const response = await fetch(
@@ -190,9 +189,17 @@ export const useApplicationPeriods = (type) => {
         }
     };
 
+    const { pathname } = useLocation();
+
     useEffect(() => {
-        fetchApplicationPeriods();
-    }, []);
+        if (
+            pathname.includes("about") ||
+            pathname.includes("our-mission") 
+            // pathname.includes("staff/scholarship/application-period")
+        ) {
+            fetchApplicationPeriods();
+        }
+    }, [pathname]);
 
     return {
         loading,

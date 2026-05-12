@@ -37,7 +37,7 @@ export default function OurMission() {
                 </p>
 
                 <div className="w-[90%] md:w-[60%] mx-auto">
-                    <div class="quote">
+                    <div className="quote">
                         “The hope of society lies in its talented human
                         resources; <br />
                         while the hope of these talents comes from education.”

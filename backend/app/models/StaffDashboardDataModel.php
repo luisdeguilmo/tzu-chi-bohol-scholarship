@@ -61,12 +61,39 @@ class StaffDashboardDataModel
         return $result['application_count'] ?? 0;
     }
 
-    public function getNumberOfNewApplications()
+    public function getNumberOfNewApplications($school_year)
     {
         $query = "SELECT COUNT(*) AS application_count FROM application_info
-                  WHERE is_application_approved = '0' AND is_application_rejected = '0' AND type = 'New' AND YEAR(created_at) = $this->currentYear";
+                  WHERE is_application_approved = '0' AND is_application_rejected = '0' AND type = 'New' AND school_year = :school_year";
 
         $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":school_year", $school_year);
+        $stmt->execute();
+
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['application_count'] ?? 0;
+    }
+
+    public function getNumberOfOldApplications($school_year)
+    {
+        $query = "SELECT COUNT(*) AS application_count FROM application_info
+                  WHERE is_application_approved = '0' AND is_application_rejected = '0' AND type = 'Old' AND school_year = :school_year";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(":school_year", $school_year);
+        $stmt->execute();
+
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['application_count'] ?? 0;
+    }
+
+    public function getNumberOfApprovedApplications($school_year)
+    {
+        $query = "SELECT COUNT(*) AS application_count FROM application_info
+                  WHERE is_application_approved = '1' AND school_year = :school_year";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':school_year', $school_year);
 
         $stmt->execute();
 
@@ -74,38 +101,13 @@ class StaffDashboardDataModel
         return $result['application_count'] ?? 0;
     }
 
-    public function getNumberOfOldApplications()
+    public function getNumberOfRejectedApplications($school_year)
     {
         $query = "SELECT COUNT(*) AS application_count FROM application_info
-                  WHERE is_application_approved = '0' AND is_application_rejected = '0' AND type = 'Old' AND YEAR(created_at) = $this->currentYear";
+                  WHERE is_application_rejected = '1'AND school_year = :school_year";
 
         $stmt = $this->pdo->prepare($query);
-
-        $stmt->execute();
-
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result['application_count'] ?? 0;
-    }
-
-    public function getNumberOfApprovedApplications()
-    {
-        $query = "SELECT COUNT(*) AS application_count FROM application_info
-                  WHERE is_application_approved = '1' AND YEAR(created_at) = $this->currentYear";
-
-        $stmt = $this->pdo->prepare($query);
-
-        $stmt->execute();
-
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result['application_count'] ?? 0;
-    }
-
-    public function getNumberOfRejectedApplications()
-    {
-        $query = "SELECT COUNT(*) AS application_count FROM application_info
-                  WHERE is_application_rejected = '1'AND YEAR(created_at) = $this->currentYear";
-
-        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':school_year', $school_year);
 
         $stmt->execute();
 
@@ -258,7 +260,7 @@ class StaffDashboardDataModel
     public function getApplicationData($school_year)
     {
         $query = "SELECT 
-            (SELECT COUNT(*) FROM application_info) AS application,
+            (SELECT COUNT(*) FROM application_info WHERE school_year = :school_year) AS application,
             (SELECT COUNT(*) FROM application_info WHERE is_eligible_for_exam = 1 AND school_year = :school_year) AS exam,
             (SELECT COUNT(*) FROM application_info WHERE is_for_initial_interview = 1 AND school_year = :school_year) AS interview,
             (SELECT COUNT(*) FROM application_info WHERE is_for_home_visitation = 1 AND school_year = :school_year) AS home_visit,

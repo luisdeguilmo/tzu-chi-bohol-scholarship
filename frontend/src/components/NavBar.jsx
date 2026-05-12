@@ -62,7 +62,7 @@ function NavLinks({ isMobile = false, onLinkClick }) {
                         <span className="absolute -bottom-0.5 left-0 w-0 h-1 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
                     </Link>
                 </li>
-                <li>
+                {/* <li>
                     <button
                         onClick={() => handleNavigation("/login/staff")}
                         className="hover:text-green-700 transition-colors duration-200 relative group"
@@ -79,7 +79,7 @@ function NavLinks({ isMobile = false, onLinkClick }) {
                         Admin
                         <span className="absolute -bottom-0.5 left-0 w-0 h-1 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
                     </button>
-                </li>
+                </li> */}
             </ul>
         </div>
     );
@@ -89,6 +89,7 @@ function NavBar({ isScrolled }) {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showBorder, setShowBorder] = useState(false);
+
     const { applicationPeriods, fetchApplicationPeriods } =
         useApplicationPeriods("new");
 
@@ -97,6 +98,25 @@ function NavBar({ isScrolled }) {
     }, []);
 
     const today = new Date().toISOString().split("T")[0];
+
+    const handleClick = () => {
+        if (
+            applicationPeriods.status === "Active" &&
+            today >= applicationPeriods.start_date &&
+            today <= applicationPeriods.end_date
+        ) {
+            navigate("/application");
+        } else if (
+            today > applicationPeriods.end_date ||
+            applicationPeriods.status === "Closed"
+        ) {
+            toast.error("The online application has been closed.");
+        } else {
+            toast.info(
+                "The online application is not available at the moment.",
+            );
+        }
+    };
 
     // const toggleMobileMenu = () => {
     //     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -114,25 +134,6 @@ function NavBar({ isScrolled }) {
         }
 
         setIsMobileMenuOpen((prev) => !prev);
-    };
-
-    const handleClick = () => {
-        if (
-            applicationPeriods.status === "Active" &&
-            today >= applicationPeriods.start_date &&
-            today <= applicationPeriods.end_date
-        ) {
-            navigate("/application");
-        } else if (
-            today > applicationPeriods.end_date ||
-            applicationPeriods.status === "Closed"
-        ) {
-            toast.error("The online application has been closed.");
-        } else {
-            toast.info(
-                "The online application is not available at the moment."
-            );
-        }
     };
 
     return (
@@ -248,7 +249,7 @@ function NavBar({ isScrolled }) {
 
                                         <button
                                             onClick={() => {
-                                                navigate("/application");
+                                                handleClick();
                                                 toggleMobileMenu();
                                             }}
                                             className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-xs sm:text[15px] px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md  hover:shadow-lg transform hover:-translate-y-0.5"

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import { scholarButtons } from "../../../constant/tableToolbarButtons";
 import { useScholars } from "../../../hooks/useScholars";
 import { scholarTableHeaders } from "../../../constant/tableHeaders";

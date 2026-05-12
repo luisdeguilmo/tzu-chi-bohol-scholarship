@@ -19,6 +19,7 @@ try {
 }
 
 use App\Models\ScholarAccountModel;
+use App\Models\ScholarsModel;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
 
@@ -188,30 +189,35 @@ class ScholarAccountController
     {
         try {
             $model = new ScholarAccountModel();
+            $scholar = new ScholarsModel();
 
             // Get ID parameter if it exists
             $application_status = isset($_GET['application_status'])
                 ? $_GET['application_status']
                 : null;
 
+            $results = [];
+
             if ($application_status === 'created') {
                 // Get specific scholar
-                $result = $model->getCreatedAccounts() ?? [];
+                $results = $model->getCreatedAccounts() ?? [];
 
-                http_response_code(200);
-                echo json_encode([
-                    'success' => true,
-                    'data' => $result,
-                ]);
+                // http_response_code(200);
+                // echo json_encode([
+                //     'success' => true,
+                //     'data' => $result,
+                // ]);
             } elseif ($application_status === 'pending') {
                 $results = $model->getPendingScholars();
-
-                http_response_code(200);
-                echo json_encode([
-                    'success' => true,
-                    'data' => $results,
-                ]);
             }
+
+            $data = $scholar->getScholarsWithProfile($results, $scholar);
+
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'data' => $data,
+            ]);
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode([

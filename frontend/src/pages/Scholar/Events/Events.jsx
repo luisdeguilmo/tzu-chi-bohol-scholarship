@@ -45,7 +45,7 @@ export default function Events() {
 
     useEffect(() => {
         fetchEvents();
-    }, [activeTab, user.user_id]);
+    }, [activeTab]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -78,14 +78,10 @@ export default function Events() {
         setIsDetailsOpen(true);
     }, []);
 
-    const handleTabChange = useCallback(
-        (tab) => {
-            setActiveTab(tab);
-            fetchEvents(tab, user.user_id);
-            setCurrentPage(1);
-        },
-        [fetchEvents, user.user_id],
-    );
+    const handleTabChange = useCallback((tab) => {
+        setActiveTab(tab);
+        setCurrentPage(1);
+    }, []);
 
     const handleOpenDotMenu = useCallback(
         async (event, index) => {

@@ -198,7 +198,7 @@ class EducationModel
         return $stmt->execute();
     }
 
-    public function updateSchoolAndCourse($data)
+    public function updateSchoolAndCourse($data, $scholarId)
     {
         $query =
             'UPDATE ' .
@@ -207,7 +207,7 @@ class EducationModel
 
         $stmt = $this->pdo->prepare($query);
 
-        $scholar_id = strip_tags($data['scholar_id']);
+        $scholar_id = $scholarId;
         $this->school = strip_tags($data['university']);
         $this->first_course = strip_tags($data['course'] ?? '');
 

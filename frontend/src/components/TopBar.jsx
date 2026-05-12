@@ -1,12 +1,10 @@
 import Logo from "/src/assets/tzu_chi_logo.png";
 import { useAuth } from "../context/AuthContext";
-import { getProfilePicture } from "../utils/getProfilePicture";
 import { useEffect, useState, useRef } from "react";
 import { Bell, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../hooks/useNotifications";
 import NotificationPage from "./NotificationPage";
-import { useAdminAccountInformation } from "../hooks/useAdminAccountInformation";
 import { toast } from "react-toastify";
 
 function TopBar() {
@@ -20,21 +18,13 @@ function TopBar() {
     const bellButtonRef = useRef(null);
 
     const { user, logout } = useAuth();
-    const userId = user.user_id;
-    const { imageUrl } = getProfilePicture(
-        userId,
-        user.type === "scholar" ? "profile-picture" : "user-profile-picture"
-    );
     const navigate = useNavigate();
     const {
         notifications,
         markAsRead,
         deleteNotification,
         fetchNotifications,
-    } = useNotifications(userId);
-    const { adminInfo } = useAdminAccountInformation(
-        user.type === "admin" && userId
-    );
+    } = useNotifications();
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -120,7 +110,7 @@ function TopBar() {
                         <span
                             className={`${
                                 notifications.filter(
-                                    (notification) => !notification.is_read
+                                    (notification) => !notification.is_read,
                                 ).length > 0
                                     ? "block"
                                     : "hidden"
@@ -128,7 +118,7 @@ function TopBar() {
                         >
                             {
                                 notifications.filter(
-                                    (notification) => !notification.is_read
+                                    (notification) => !notification.is_read,
                                 ).length
                             }
                         </span>
@@ -150,7 +140,7 @@ function TopBar() {
                             {user.type === "scholar" ? (
                                 <>
                                     <img
-                                        src={imageUrl}
+                                        src={user.profile}
                                         className="w-9 h-9 rounded-full"
                                     />
                                     <p
@@ -163,9 +153,9 @@ function TopBar() {
                                 <>
                                     {user.type === "staff" ? (
                                         <>
-                                            {imageUrl ? (
+                                            {user?.profile ? (
                                                 <img
-                                                    src={imageUrl}
+                                                    src={user.profile}
                                                     className="w-9 h-9 rounded-full"
                                                 />
                                             ) : (
@@ -184,17 +174,15 @@ function TopBar() {
                                         </>
                                     ) : (
                                         <>
-                                            {imageUrl ? (
+                                            {user?.profile ? (
                                                 <img
-                                                    src={imageUrl}
+                                                    src={user.profile}
                                                     className="w-9 h-9 rounded-full"
                                                 />
                                             ) : (
                                                 <div className="w-9 h-9 rounded-full text-white text-sm bg-black flex justify-center items-center">
                                                     {
-                                                        adminInfo
-                                                            ?.basic_information
-                                                            ?.name[0]
+                                                        user?.name[0]
                                                     }
                                                 </div>
                                             )}
@@ -203,8 +191,7 @@ function TopBar() {
                                                 className={`text-gray-500 text-xs hidden sm:block`}
                                             >
                                                 {
-                                                    adminInfo?.basic_information
-                                                        ?.name
+                                                   user?.name
                                                 }
                                             </p>
                                         </>
@@ -250,7 +237,6 @@ function TopBar() {
 
             <NotificationPage
                 ref={notificationPanelRef}
-                userId={userId}
                 notifications={notifications}
                 isOpen={isNotificationPanelOpen}
                 onOpen={setIsNotificationPanelOpen}

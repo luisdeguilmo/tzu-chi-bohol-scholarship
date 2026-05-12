@@ -4,7 +4,6 @@ import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import { useApplicantData } from "../../../hooks/useApplicantData";
-import { useProfilePicture } from "../../../hooks/useProfilePicture";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import { applicationButtons } from "../../../constant/tableToolbarButtons";
 import { useApplicationRecords } from "../../../hooks/useApplicationRecords";
@@ -44,8 +43,6 @@ export default function ApplicationRecordsPage() {
     useEffect(() => {
         fetchApplications();
     }, [activeTab, status, schoolYear, sortBy]);
-
-    console.log(applications);
 
     // Filter data based on search term
     const filteredApplications = applications.filter((applicant) => {

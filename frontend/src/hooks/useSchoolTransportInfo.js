@@ -3,15 +3,21 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-export const useSchoolTransportInfo = (id) => {
+export const useSchoolTransportInfo = () => {
     const [transportInfo, setTransportInfo] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const token = localStorage.getItem("token");
 
     const fetchSchoolTransportInfo = async () => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/school-transport-info.php?id=${id}`
+                `${BASE_URL}app/api/school-transport-info.php`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data) {
@@ -27,17 +33,15 @@ export const useSchoolTransportInfo = (id) => {
     };
 
     const addTransportInfo = async (
-        scholarId,
         type,
         university,
         course,
         stayType,
         address,
         dailyTransportCost,
-        routeExplanation
+        routeExplanation,
     ) => {
         const data = {
-            scholar_id: scholarId,
             type: type,
             university: university,
             course: course,
@@ -56,9 +60,10 @@ export const useSchoolTransportInfo = (id) => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json(); // Parse as JSON instead of text
@@ -84,7 +89,7 @@ export const useSchoolTransportInfo = (id) => {
         try {
             setIsLoading(true);
             const response = await axios.delete(
-                `${BASE_URL}app/api/courses-accepted.php?id=${id}`
+                `${BASE_URL}app/api/courses-accepted.php?id=${id}`,
             );
 
             if (response.data) {
@@ -102,10 +107,8 @@ export const useSchoolTransportInfo = (id) => {
     };
 
     useEffect(() => {
-        if (id) {
-            fetchSchoolTransportInfo();
-        }
-    }, [id]);
+        fetchSchoolTransportInfo();
+    }, []);
 
     return {
         isLoading,

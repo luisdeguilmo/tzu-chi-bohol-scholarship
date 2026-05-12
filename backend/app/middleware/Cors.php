@@ -1,6 +1,4 @@
 <?php
-// middleware/Cors.php
-// Call Cors::handle() at the very top of every API entry point.
 
 namespace Middleware;
 
@@ -8,13 +6,14 @@ class Cors
 {
     public static function handle(): void
     {
-        $allowedOrigins = [
-            'http://localhost:5173',
-            'http://localhost:3000',
-            $_ENV['ALLOWED_ORIGIN'] ?? getenv('ALLOWED_ORIGIN') ?? '',
-        ];
+        $allowedOrigins = array_filter(
+            array_map(
+                'trim',
+                explode(',', $_ENV['ALLOWED_ORIGIN'] ?? (getenv('ALLOWED_ORIGIN') ?? '')),
+            ),
+        );
 
-        $origin = $_SERVER['ALLOWED_ORIGIN'] ?? '';
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
         if (in_array($origin, $allowedOrigins, true)) {
             header("Access-Control-Allow-Origin: $origin");

@@ -4,7 +4,6 @@ const PendingScholarsRow = ({
     currentItems,
     selectedScholars,
     toggleScholarSelection,
-    profilePics,
     onCreateAccount,
 }) => {
     return (
@@ -38,7 +37,7 @@ const PendingScholarsRow = ({
                         <div className="w-[30%]"></div>
                         <div className="w-[max-content] flex items-centerS text-left gap-2">
                             <img
-                                src={profilePics[scholar.application_id]}
+                                src={scholar[0].profile}
                                 alt="Profile"
                                 className="w-8 h-8 object-cover rounded-full mx-auto"
                             />

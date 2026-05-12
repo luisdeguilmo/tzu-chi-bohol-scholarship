@@ -25,6 +25,11 @@ export const useScholars = (
 
             const response = await fetch(
                 `${BASE_URL}app/api/scholars.php?tab=${tab}&status=${status}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (!response.ok) {
@@ -47,6 +52,7 @@ export const useScholars = (
             setLoading(true);
             const response = await axios.put(
                 `${BASE_URL}app/api/process-allowance.php`,
+                {},
                 {
                     headers: {
                         "Content-Type": "application/json",

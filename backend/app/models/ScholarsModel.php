@@ -576,7 +576,7 @@ class ScholarsModel
                 $scholar[] = [
                     'profile' =>
                         $_ENV['APP_URL'] .
-                        '/index.php?route=profile&file=' .
+                        '/index.php?type=applications&route=profile&file=' .
                         urlencode(basename($file['file_path'])),
                 ];
             }

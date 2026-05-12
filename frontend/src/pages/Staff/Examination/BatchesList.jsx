@@ -10,7 +10,6 @@ export const BatchesList = ({
     item,
     index,
     tableHeaders,
-    profilePics,
     selectedApplicants,
     toggleApplicantSelection,
     onRefresh,

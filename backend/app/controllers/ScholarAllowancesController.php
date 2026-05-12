@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Models\CollegeUniversityManagementModel;
 use App\Models\ScholarsModel;
+use App\Models\SchoolYearModel;
 use Config\Database;
 
 class ScholarAllowancesController
@@ -47,8 +48,9 @@ class ScholarAllowancesController
         try {
             $model = new ScholarsModel();
             $school = new CollegeUniversityManagementModel();
+            $schoolYear = new SchoolYearModel();
 
-            $school_year = $_GET['school_year'] ?? null;
+            $school_year = $schoolYear->getActiveSchoolYear();
 
             $collegesAndUniversities = $school->getAllCollegesAndUniversitiesAlphabetically();
 

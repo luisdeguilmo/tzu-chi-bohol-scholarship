@@ -11,7 +11,6 @@ import SearchInputMobile from "../../../components/SearchInputMobile";
 import TabNavigation from "../TabNavigation";
 import CoeGradesDetailsModal from "../../../components/CoeGradesDetailsModal";
 import { useCurrentYearLevel } from "../../../hooks/useCurrentYearLevel";
-import { getCurrentSchoolYear } from "../../../utils/getCurrentSchoolYear";
 import { useLocation } from "react-router-dom";
 import { useSchoolYears } from "../../../hooks/useSchoolYears";
 
