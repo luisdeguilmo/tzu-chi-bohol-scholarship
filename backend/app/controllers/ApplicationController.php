@@ -65,12 +65,22 @@ class ApplicationController
                 throw new \Exception('No data provided');
             }
 
+            $is_existing_scholar = $data['application_info']['is_existing_scholar'];
+
             // Process application data
             $application = new ApplicationModel();
-            $application_id = $application->create(
-                $data['application_info'],
-                $data['other_information'],
-            );
+
+            if ($is_existing_scholar) {
+                $application_id = $application->createExistingScholar(
+                    $data,
+                    $data['other_information'],
+                );
+            } else {
+                $application_id = $application->create(
+                    $data['application_info'],
+                    $data['other_information'],
+                );
+            }
 
             if (!$application_id) {
                 throw new \Exception('Failed to create application');
@@ -984,74 +994,6 @@ class ApplicationController
             throw new \Exception('Failed to upload profile picture boi');
         }
     }
-
-    // private function handleProfilePictureUpload($file, $application_id)
-    // {
-    //     // Check for upload errors first
-    //     if ($file['error'] !== UPLOAD_ERR_OK) {
-    //         switch ($file['error']) {
-    //             case UPLOAD_ERR_INI_SIZE:
-    //             case UPLOAD_ERR_FORM_SIZE:
-    //                 throw new \Exception('File size exceeds the maximum allowed (5MB)');
-    //             case UPLOAD_ERR_PARTIAL:
-    //                 throw new \Exception('File was only partially uploaded');
-    //             case UPLOAD_ERR_NO_FILE:
-    //                 throw new \Exception('No file was uploaded');
-    //             default:
-    //                 throw new \Exception('Upload error occurred');
-    //         }
-    //     }
-
-    //     $filesize = $file['size'];
-    //     $max_size = 5 * 1024 * 1024; // 5MB in bytes
-
-    //     // Validate file size
-    //     if ($filesize > $max_size) {
-    //         throw new \Exception('File size must not exceed 5MB');
-    //     }
-
-    //     $base_upload_dir = __DIR__ . '/../../public/upload/';
-    //     $upload_dir = $base_upload_dir . 'applications/' . $application_id . '/profile/';
-
-    //     // Create directories if they don't exist
-    //     if (!is_dir($upload_dir)) {
-    //         mkdir($upload_dir, 0777, true);
-    //     }
-
-    //     $filename = $file['name'];
-    //     $tmp_name = $file['tmp_name'];
-    //     $filetype = $file['type'];
-
-    //     // Get custom filename if provided
-    //     $custom_filename = null;
-    //     if (isset($_POST['pictureInfo'])) {
-    //         $pictureInfo = json_decode($_POST['pictureInfo'], true);
-    //         $custom_filename = $pictureInfo['filename'] ?? null;
-    //     }
-
-    //     $file_extension = pathinfo($filename, PATHINFO_EXTENSION);
-    //     $unique_filename = $custom_filename ?: 'profile_' . uniqid() . '.' . $file_extension;
-    //     $target_file = $upload_dir . $unique_filename;
-
-    //     if (move_uploaded_file($tmp_name, $target_file)) {
-    //         $db_file_path =
-    //             '/upload/applications/' . $application_id . '/profile/' . $unique_filename;
-    //         $profilePictureModel = new ProfilePictureModel();
-
-    //         $file_data = [
-    //             'file_name' => $filename,
-    //             'file_path' => $db_file_path,
-    //             'file_type' => $filetype,
-    //             'file_size' => $filesize,
-    //         ];
-
-    //         if (!$profilePictureModel->create($file_data, $application_id)) {
-    //             throw new \Exception('Failed to save profile picture info');
-    //         }
-    //     } else {
-    //         throw new \Exception('Failed to upload profile picture');
-    //     }
-    // }
 
     private function handleRequirementFilesUpload($files, $application_id)
     {

@@ -51,7 +51,7 @@ class StaffDashboardDataModel
     public function getNumberOfAllApplications()
     {
         $query = "SELECT COUNT(*) AS application_count FROM application_info
-                  WHERE (is_application_approved = '0' OR is_application_approved = '1' OR is_application_rejected = '1') AND YEAR(created_at) = $this->currentYear";
+                  WHERE is_added_from_admin = '0' AND (is_application_approved = '0' OR is_application_approved = '1' OR is_application_rejected = '1') AND YEAR(created_at) = $this->currentYear";
 
         $stmt = $this->pdo->prepare($query);
 
@@ -64,10 +64,10 @@ class StaffDashboardDataModel
     public function getNumberOfNewApplications($school_year)
     {
         $query = "SELECT COUNT(*) AS application_count FROM application_info
-                  WHERE is_application_approved = '0' AND is_application_rejected = '0' AND type = 'New' AND school_year = :school_year";
+                  WHERE is_added_from_admin = '0' AND is_application_approved = '0' AND is_application_rejected = '0' AND type = 'New' AND school_year = :school_year";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(":school_year", $school_year);
+        $stmt->bindParam(':school_year', $school_year);
         $stmt->execute();
 
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -80,7 +80,7 @@ class StaffDashboardDataModel
                   WHERE is_application_approved = '0' AND is_application_rejected = '0' AND type = 'Old' AND school_year = :school_year";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(":school_year", $school_year);
+        $stmt->bindParam(':school_year', $school_year);
         $stmt->execute();
 
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -90,7 +90,7 @@ class StaffDashboardDataModel
     public function getNumberOfApprovedApplications($school_year)
     {
         $query = "SELECT COUNT(*) AS application_count FROM application_info
-                  WHERE is_application_approved = '1' AND school_year = :school_year";
+                  WHERE is_added_from_admin = '0' AND is_application_approved = '1' AND school_year = :school_year";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':school_year', $school_year);
@@ -260,7 +260,7 @@ class StaffDashboardDataModel
     public function getApplicationData($school_year)
     {
         $query = "SELECT 
-            (SELECT COUNT(*) FROM application_info WHERE school_year = :school_year) AS application,
+            (SELECT COUNT(*) FROM application_info WHERE is_added_from_admin = 0 AND school_year = :school_year) AS application,
             (SELECT COUNT(*) FROM application_info WHERE is_eligible_for_exam = 1 AND school_year = :school_year) AS exam,
             (SELECT COUNT(*) FROM application_info WHERE is_for_initial_interview = 1 AND school_year = :school_year) AS interview,
             (SELECT COUNT(*) FROM application_info WHERE is_for_home_visitation = 1 AND school_year = :school_year) AS home_visit,
@@ -275,19 +275,6 @@ class StaffDashboardDataModel
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result;
     }
-
-    // public function getOrientationAndAwardingData()
-    // {
-    //     $query = "SELECT
-    //         (SELECT COUNT(*) FROM application_info WHERE is_for_orientation = 1) AS orientation,
-    //         (SELECT COUNT(*) FROM application_info WHERE is_for_awarding = 1) AS awarding
-    //     ";
-
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->execute();
-    //     $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-    //     return $result;
-    // }
 
     public function getMonthlyAllowanceDistributionData()
     {

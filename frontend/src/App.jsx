@@ -11,14 +11,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 const Home = React.lazy(() => import("./pages/Home/Home"));
-const ApplicationSection = React.lazy(
-    () => import("./pages/Home/ApplicationSection"),
-);
-
-// import { ApplicationSection } from "./pages/Home/ApplicationSection";use
-const RenewalApplicationSection = React.lazy(
-    () => import("./pages/Home/ApplicationSection"),
-);
+import {
+    ApplicationSection,
+    RenewalApplicationSection,
+} from "./pages/Home/ApplicationSection";
 const LoginForm = React.lazy(() => import("./components/LoginForm"));
 const Dashboard = React.lazy(() => import("./components/Dashboard"));
 const EventsPage = React.lazy(() => import("./pages/Staff/Event/EventsPage"));

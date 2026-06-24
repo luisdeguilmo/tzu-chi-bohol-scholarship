@@ -70,7 +70,7 @@ class ScholarAllowancesController
                     ];
                 }, $scholarAllowances);
 
-                $result[] = ['School' => $school['name'], 'Scholar' => $formattedScholars];
+                $result[] = ['School' => $school['name'], 'Type' => $school['type'], 'Scholar' => $formattedScholars];
             }
 
             http_response_code(200);

@@ -38,6 +38,7 @@ const NavigationButtons = ({
     isFirstFormApplicable = false,
     isSecondFormApplicable = false,
     isThirdFormApplicable = false,
+    isForExistingScholar,
 }) => {
     const { user } = useAuth();
     const {
@@ -48,7 +49,6 @@ const NavigationButtons = ({
 
     const { isEmailExist, refetch } = useCheckEmail(
         formData?.personal_information.email,
-        user?.user_id ?? null,
     );
 
     const { loading, result, validateEmail } = useValidateEmail();
@@ -129,7 +129,7 @@ const NavigationButtons = ({
         }
 
         // FIXED: Properly await the validation result
-        if (section === "Personal") {
+        if (section === "Personal" && !user?.user_id) {
             const isValid = await validateEmail(
                 formData.personal_information.email,
             );
@@ -276,11 +276,28 @@ const NavigationButtons = ({
             }
         }
 
+        // if (!sections && section === "Requirements" && isForExistingScholar) {
+        //     if (formData.picture_file === null) {
+        //         toast.error("1x1 ID Photo cannot be empty");
+        //         return;
+        //     }
+        // } else if (!sections && section === "Requirements") {
+        //     if (
+        //         formData.picture_file === null ||
+        //         formData.uploaded_files.length === 0
+        //     ) {
+        //         toast.error("Please fill in all required fields");
+        //         return;
+        //     }
+        // }
+
         if (!sections && section === "Requirements") {
-            if (
-                formData.picture_file === null ||
-                formData.uploaded_files.length === 0
-            ) {
+            if (formData.picture_file === null) {
+                toast.error("Please upload a 1x1 ID photo.");
+                return;
+            }
+
+            if (!isForExistingScholar && formData.uploaded_files.length === 0) {
                 toast.error("Please fill in all required fields");
                 return;
             }

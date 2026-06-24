@@ -9,9 +9,6 @@ use App\Models\SchoolYearModel;
 header('Content-Type: application/json; charset=UTF-8');
 
 try {
-    // $applicant = new ApplicantModel();
-    // $data = $applicant->getAllApplicants();
-    // echo json_encode(["personalInfo" => $data]);
 
     $applicant = new ApplicantModel();
     $applicationRecord = new ApplicationRecordsModel();
@@ -21,6 +18,7 @@ try {
     $status = $_GET['status'] ?? null;
     $batch = $_GET['batch'] ?? null;
     $tab = $_GET['tab'] ?? null;
+    $sort = $_GET['sort'] ?? null;
 
     $approved = $_GET['approved'] ?? null;
     $entrance_examination = $_GET['entrance_examination'] ?? null;
@@ -81,7 +79,7 @@ try {
             // return;
         }
     } elseif ($application_status === 'examination' && $batch === 'Unassigned') {
-        $data = $applicant->getUnassignedApplicants($activeSchoolYear);
+        $data = $applicant->getUnassignedApplicants($activeSchoolYear, $sort);
         // echo json_encode(['data' => $data]);
         // return;
     } elseif ($application_status === 'orientation' && $batch === 'Unassigned') {

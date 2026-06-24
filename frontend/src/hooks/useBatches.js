@@ -12,7 +12,7 @@ export const useBatches = (purpose) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/batches.php?purpose=${purpose}`
+                `${BASE_URL}app/api/batches.php?purpose=${purpose}`,
             );
             setBatches(response.data.data || []);
             setLoading(false);
@@ -57,24 +57,29 @@ export const useBatches = (purpose) => {
         batchToDelete,
         setBatches,
         selectedBatchInBatches,
-        onSuccess
+        onSuccess,
     ) => {
         try {
             // Make the API call to delete
             await axios.delete(
-                `${BASE_URL}app/api/batches.php?id=${batchToDelete.batch_name}&purpose=${purpose}`
+                `${BASE_URL}app/api/batches.php?id=${batchToDelete.batch_name}&purpose=${purpose}`,
             );
 
             // Update local state after successful deletion
             const updatedBatches = batches.filter(
-                (batch) => batch.id !== batchToDelete.id
+                (batch) => batch.id !== batchToDelete.id,
             );
             setBatches(updatedBatches);
             toast.success(`${selectedBatchInBatches} deleted successfully`);
-            if (onSuccess) onSuccess();
+            if (onSuccess) {
+                onSuccess();
+            }
+
+            return true;
         } catch (error) {
             console.error("Error deleting batch:", error);
             alert("Failed to delete batch");
+            return true;
         }
     };
 

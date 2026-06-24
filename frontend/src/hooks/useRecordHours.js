@@ -69,7 +69,6 @@ export const useRecordHours = () => {
         sort,
         onRefresh,
     ) => {
-        console.log("SAKSIS");
         try {
             setIsLoading(true);
 
@@ -151,10 +150,47 @@ export const useRecordHours = () => {
         }
     };
 
+    const setRenderedHours = async (id, renderedHours) => {
+        try {
+            setIsLoading(true);
+
+            const response = await axios.patch(
+                `${BASE_URL}app/api/rendered-hours.php`,
+                {
+                    account_id: id,
+                    initial_rendered_hours: renderedHours,
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+
+            const data = response.data;
+
+            if (data.success) {
+                toast.success("Initial rendered hours added successfully");
+                // onRefresh(activeTab, year, month);
+                setIsLoading(false);
+                return true;
+            }
+            setIsLoading(false);
+            return true;
+        } catch (error) {
+            console.log("Error: ", error);
+            alert("Failed: ", error);
+            setIsLoading(false);
+            return false;
+        }
+    };
+
     return {
         isLoading,
         recordCommunityServiceHours,
         markAsNotRecorded,
         recordEventHours,
+        setRenderedHours,
     };
 };

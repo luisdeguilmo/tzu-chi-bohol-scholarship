@@ -8,6 +8,7 @@ import { useRecentActivities } from "../hooks/useRecentActivities";
 import { useRecentAndUpcomingEvents } from "../hooks/useRecentAndUpcomingEvents";
 import { useNavigate } from "react-router-dom";
 import { useSidebar } from "../context/SidebarContext";
+import RenderedHoursHistory from "./RenderedHoursHistory";
 
 const RecentActivities = React.lazy(() => import("./RecentActivities"));
 const UpcomingEvents = React.lazy(() => import("./UpcomingEvents"));
@@ -19,6 +20,8 @@ function ScholarDashboard() {
     const { events } = useRecentAndUpcomingEvents("upcoming");
     const { recentActivities } = useRecentActivities();
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+    const [isRenderedHoursModalOpen, setIsRenderedHoursModalOpen] =
+        useState(false);
     const [ModalComponent, setModalComponent] = useState(null);
     const hasInitialized = useRef(false);
 
@@ -39,7 +42,7 @@ function ScholarDashboard() {
     }, [dashboardData.hasSubmittedLivingInfo]);
 
     const filtered = scholarOverviewData.filter((item) => {
-        if (user?.scholar_type === "New") {
+        if (item.status === "Not Submitted") {
             return item.title !== "Renewal Application";
         }
         return true;
@@ -51,7 +54,13 @@ function ScholarDashboard() {
                 <WelcomeBanner user={user} />
 
                 <div className="mb-4 sm:mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                    <OverviewDataCards overviewData={filtered} userType={user.type} />
+                    <OverviewDataCards
+                        overviewData={filtered}
+                        userType={user.type}
+                        setIsRenderedHoursModalOpen={
+                            setIsRenderedHoursModalOpen
+                        }
+                    />
                 </div>
 
                 <UpcomingEvents events={events} />
@@ -66,6 +75,14 @@ function ScholarDashboard() {
                     label="Scholar Information Form"
                     isOpen={isFormModalOpen}
                     onClose={setIsFormModalOpen}
+                />
+            )}
+
+            {isRenderedHoursModalOpen && (
+                <RenderedHoursHistory
+                    isOpen={isRenderedHoursModalOpen}
+                    onClose={setIsRenderedHoursModalOpen}
+                    label={"Rendered Hours History"}
                 />
             )}
         </>
@@ -91,7 +108,11 @@ export function WelcomeBanner({ user }) {
     );
 }
 
-export function OverviewDataCards({ overviewData, userType }) {
+export function OverviewDataCards({
+    overviewData,
+    userType,
+    setIsRenderedHoursModalOpen,
+}) {
     const navigate = useNavigate();
     const { setActiveTab } = useSidebar();
 
@@ -133,6 +154,20 @@ export function OverviewDataCards({ overviewData, userType }) {
                                         className="text-[10px] text-blue-500 hover:text-blue-600 hover:underline"
                                     >
                                         View Details
+                                    </button>
+                                </div>
+                            )}
+
+                        {userType === "scholar" &&
+                            item.title === "Rendered Hours" && (
+                                <div className="mt-1">
+                                    <button
+                                        onClick={() => {
+                                            setIsRenderedHoursModalOpen(true);
+                                        }}
+                                        className="absolute truncate right-6 bottom-5 text-[10px] text-blue-500 hover:text-blue-600 hover:underline"
+                                    >
+                                        View Rendered Hours History
                                     </button>
                                 </div>
                             )}

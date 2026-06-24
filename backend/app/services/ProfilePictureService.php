@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\ApplicationFileModel;
-use App\Models\CertificateOfAppearanceModel;
 use App\Models\ProfilePictureModel;
 
 class ProfilePictureService

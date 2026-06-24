@@ -60,7 +60,6 @@ export const scholarSidebarItems = [
         text: "Renew",
         icon: <RotateCcw className="w-5 h-5 text-slate-600" />,
         navigate: "/scholar/renew",
-        // state: { userId: user }
     },
     {
         text: "Logout",

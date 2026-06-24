@@ -305,6 +305,30 @@ class PHPMailerBrevoService
         return $this->sendEmail($email, $subject, $htmlContent);
     }
 
+    public function sendTempPasswordEmail($email, $password)
+    {
+        $subject = 'Your Temporary Password';
+        $htmlContent =
+            "
+    <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
+       
+        <p style=\"margin-bottom: 8px;\">
+           Your admin has reset your password. Your temporary password is: " .
+            $password .
+            "
+        </p>
+        <p style=\"margin-bottom: 8px;\">
+            Please note that this temporary password expires in 24 hours.
+        </p>
+       
+        <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
+        <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
+        <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">Contact: {$this->contactInfo}</p>
+    </div>";
+
+        return $this->sendEmail($email, $subject, $htmlContent);
+    }
+
     public function sendEmailVerificationLink($email, $token, $firstName = '', $lastName = '')
     {
         $fullName = trim($firstName . ' ' . $lastName);
@@ -347,6 +371,8 @@ class PHPMailerBrevoService
     public function sendExaminationScheduleEmail($applicant, $batch, $date, $time, $venue)
     {
         $fullName = $applicant['first_name'] . ' ' . $applicant['last_name'];
+        $formattedDate = date('F d, Y', strtotime($date));
+        $formattedTime = date('h:i A', strtotime($time));
         $subject = 'Scholarship Examination Schedule';
         $htmlContent = "
             <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
@@ -358,8 +384,8 @@ class PHPMailerBrevoService
                 </p>
                 <p style=\"margin-bottom: 16px;\">
                         <strong>Batch:</strong> {$batch}<br>
-                        <strong>Date :</strong> {$date}<br>
-                        <strong>Time :</strong> {$time}<br>
+                        <strong>Date :</strong> {$formattedDate}<br>
+                        <strong>Time :</strong> {$formattedTime}<br>
                         <strong>Venue:</strong> {$venue}
                 </p>
                 <p style=\"margin-bottom: 16px;\">
@@ -377,6 +403,8 @@ class PHPMailerBrevoService
     public function sendOrientationScheduleEmail($applicant, $batch, $date, $time, $venue)
     {
         $fullName = $applicant['first_name'] . ' ' . $applicant['last_name'];
+        $formattedDate = date('F d, Y', strtotime($date));
+        $formattedTime = date('h:i A', strtotime($time));
         $subject = 'Orientation Schedule';
         $htmlContent = "
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
@@ -389,8 +417,8 @@ class PHPMailerBrevoService
             </p>
             <p style=\"margin-bottom: 16px;\">
                     <strong>Batch:</strong> {$batch}<br>
-                    <strong>Date :</strong> {$date}<br>
-                    <strong>Time :</strong> {$time}<br>
+                    <strong>Date :</strong> {$formattedDate}<br>
+                    <strong>Time :</strong> {$formattedTime}<br>
                     <strong>Venue:</strong> {$venue}
             </p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>

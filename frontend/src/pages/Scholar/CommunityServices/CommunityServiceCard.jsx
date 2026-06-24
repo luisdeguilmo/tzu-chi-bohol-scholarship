@@ -78,7 +78,7 @@ const CommunityServiceCard = ({
 
             <div className="relative">
                 <h3
-                    className={`font-bold text-lg md:text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
+                    className={`font-bold text-[16px] md:text-lg leading-tight mb-2 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
                         isArchived
                             ? "italic text-slate-400 decoration-slate-400"
                             : "text-slate-700"
@@ -87,17 +87,21 @@ const CommunityServiceCard = ({
                     {activity.activity_name}
                 </h3>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                     <div
                         className={`flex items-center text-sm ${
-                            isArchived ? "text-slate-400" : "text-slate-600"
+                            isArchived ? "text-slate-400" : "text-gray-600"
                         }`}
                     >
-                        <Calendar
-                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived ? "text-slate-400" : "text-slate-600"
-                            }`}
-                        />
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <Calendar
+                                className={`w-3.5 h-3.5 flex-shrink-0 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-slate-600"
+                                }`}
+                            />
+                        </span>
                         <span
                             className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
@@ -110,11 +114,16 @@ const CommunityServiceCard = ({
                             isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
-                        <Clock
-                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived ? "text-slate-400" : "text-slate-600"
-                            }`}
-                        />
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <Clock
+                                className={`w-3.5 h-3.5 flex-shrink-0 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-slate-600"
+                                }`}
+                            />
+                        </span>
+
                         <span
                             className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
@@ -128,11 +137,16 @@ const CommunityServiceCard = ({
                             isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
-                        <MapPin
-                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived ? "text-slate-400" : "text-slate-600"
-                            }`}
-                        />
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <MapPin
+                                className={`w-3.5 h-3.5 flex-shrink-0 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-slate-600"
+                                }`}
+                            />
+                        </span>
+
                         <span
                             className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
@@ -145,23 +159,26 @@ const CommunityServiceCard = ({
                             isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
-                        {activity.activity_status === "Pending" ? (
-                            <AlertCircle
-                                className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                    isArchived
-                                        ? "text-slate-400"
-                                        : "text-slate-600"
-                                }`}
-                            />
-                        ) : (
-                            <CheckCircle
-                                className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                    isArchived
-                                        ? "text-slate-400"
-                                        : "text-slate-600"
-                                }`}
-                            />
-                        )}
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            {activity.activity_status === "Pending" ? (
+                                <AlertCircle
+                                    className={`w-3.5 h-3.5 flex-shrink-0 ${
+                                        isArchived
+                                            ? "text-slate-400"
+                                            : "text-slate-600"
+                                    }`}
+                                />
+                            ) : (
+                                <CheckCircle
+                                    className={`w-3.5 h-3.5 flex-shrink-0 ${
+                                        isArchived
+                                            ? "text-slate-400"
+                                            : "text-slate-600"
+                                    }`}
+                                />
+                            )}
+                        </span>
+
                         <span
                             className={`mt-[1px] rounded-lg text-xs font-medium ${
                                 isArchived

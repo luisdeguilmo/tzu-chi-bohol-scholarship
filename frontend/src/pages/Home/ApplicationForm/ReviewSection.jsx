@@ -20,7 +20,7 @@ const ReviewSection = ({ formData, prevStep, handleSubmit }) => {
     return (
         <div className="w-[85%] lg:w-[65%] mx-auto">
             {/* <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">Review Information</h2> */}
-            <h2 className="mb-12 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 md:text-lg text-sm">
+            <h2 className="mb-12 px-4 py-3 font-bold bg-green-600 rounded-lg text-white md:text-lg text-sm">
                 Review Information
             </h2>
             <ReviewPage

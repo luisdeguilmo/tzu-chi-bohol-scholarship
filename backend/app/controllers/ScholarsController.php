@@ -12,7 +12,10 @@ use App\Constants\Action;
 use App\Models\AllowanceCycleModel;
 use App\Models\ApplicantModel;
 use App\Models\AuditLogModel;
+use App\Models\RenderedHoursHistoryModel;
+use App\Models\ScholarAccountInformationModel;
 use App\Models\ScholarsModel;
+use App\Models\SchoolYearModel;
 use App\Models\StaffAccountModel;
 use App\Services\AllowanceService;
 use Config\Database;
@@ -67,6 +70,8 @@ class ScholarsController
             $scholar = new ScholarsModel();
             $service = new AllowanceService();
             $cycleModel = new AllowanceCycleModel();
+            $schoolYearModel = new SchoolYearModel();
+            $info = new ScholarAccountInformationModel();
 
             // Get ID parameter if it exists
             $id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -76,9 +81,11 @@ class ScholarsController
             $school = $_GET['school'] ?? null;
             $course = $_GET['course'] ?? null;
             $year_level = $_GET['year_level'] ?? null;
+            $filter = $_GET['filter'] ?? null;
             $sort = $_GET['sort'] ?? null;
 
             $results = [];
+            $scholars = [];
             $data = [];
 
             if ($tab === 'all') {
@@ -97,31 +104,92 @@ class ScholarsController
                     }
                 }
 
-                $newScholars = $scholar->getNewActiveScholars(
-                    $status,
-                    $school_year,
-                    $school,
-                    $year_level,
-                    $course,
-                );
-                $oldScholars = $scholar->getOldActiveScholars(
-                    $status,
-                    $school_year,
-                    $school,
-                    $year_level,
-                    $course,
-                );
+                $activeSchoolYear = $schoolYearModel->getActiveSchoolYear();
+                $newScholars = [];
+                $oldScholars = [];
 
-                $results = [...$newScholars, ...$oldScholars];
+                // if ($status === 'all') {
+                //     $newScholars = $scholar->getNewActiveScholars(
+                //         $status,
+                //         $activeSchoolYear,
+                //         $school,
+                //         $year_level,
+                //         $course,
+                //     );
+
+                //     $oldScholars = $scholar->getOldActiveScholars(
+                //         $status,
+                //         $activeSchoolYear,
+                //         $school,
+                //         $year_level,
+                //         $course,
+                //     );
+                // } elseif ($status === 'new') {
+                //     $newScholars = $scholar->getNewActiveScholars(
+                //         $status,
+                //         $activeSchoolYear,
+                //         $school,
+                //         $year_level,
+                //         $course,
+                //     );
+                // } elseif ($status === 'old') {
+                //     $oldScholars = $scholar->getOldActiveScholars(
+                //         $status,
+                //         $activeSchoolYear,
+                //         $school,
+                //         $year_level,
+                //         $course,
+                //     );
+                // }
+
+                // $scholars = [...$newScholars, ...$oldScholars];
+
+                $scholars = $scholar->getActiveScholars(
+                    $status,
+                    $activeSchoolYear,
+                    $school,
+                    $year_level,
+                    $course,
+                    $sort,
+                    $filter,
+                );
             } elseif ($tab === 'graduated') {
-                $results = $scholar->getGraduatedScholars($status, $school_year, $school, $course);
+                $scholars = $scholar->getGraduatedScholars($status, $school_year, $school, $course);
             } elseif ($tab === 'terminated') {
-                $results = $scholar->getTerminatedScholars($status, $school_year, $school, $course);
+                $scholars = $scholar->getTerminatedScholars(
+                    $status,
+                    $school_year,
+                    $school,
+                    $course,
+                );
             } elseif ($tab === 'not_renewed') {
-                $results = $scholar->getNotRenewedScholars($status, $school_year, $school, $course);
+                $scholars = $scholar->getNotRenewedScholars(
+                    $status,
+                    $school_year,
+                    $school,
+                    $course,
+                );
             }
 
-            $data = $scholar->getScholarsWithProfile($results, $scholar);
+            foreach ($scholars as $s) {
+                $basicInfo = $info->getBasicInformation($s['account_id']);
+                $academicInfo = $info->getAcademicInfo($s['account_id']);
+                $transportDetails = $info->getTransportDetails($s['account_id']);
+                $scholarStatus = $info->getScholarStatus($s['account_id']);
+                $renderedHours = $info->getRenderedHours($s['account_id']);
+
+                $s[] = [
+                    'basic_information' => $basicInfo,
+                    'academic_information' => $academicInfo,
+                    'transport_details' => $transportDetails,
+                    'scholar_status' => $scholarStatus,
+                    'rendered_hours' => $renderedHours,
+                ];
+
+                $results[] = $s;
+            }
+
+            $data = $scholar->getScholarsWithProfile($results, $scholar, 'created');
 
             $cycleModel = new AllowanceCycleModel();
 
@@ -155,6 +223,7 @@ class ScholarsController
             $model = new ScholarsModel();
             $service = new AllowanceService();
             $allowanceCycleModel = new AllowanceCycleModel();
+            $hoursModel = new RenderedHoursHistoryModel();
 
             // Check if there's a cycle ready to process
             if (!$allowanceCycleModel->hasCycleReadyToProcess()) {
@@ -169,15 +238,27 @@ class ScholarsController
 
             $result = $allowanceCycleModel->processAllowanceCycle();
 
-            $scholarIds = $model->getAllScholarsId();
+            $scholars = $model->getAllScholarsId();
             $isProcessed = $allowanceCycleModel->isPreviousMonthProcessed();
 
             if ($isProcessed) {
-                foreach ($scholarIds as $scholarId) {
-                    $renderedHours = $model->getScholarRenderedHours($scholarId['account_id']);
+                foreach ($scholars as $scholar) {
+                    $renderedHours = $model->getScholarRenderedHours($scholar['account_id']);
                     [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
+
+                    $hours = $renderedHours >= 20 ? 20 : $renderedHours;
+
+                    $hoursModel->createHistory([
+                        'account_id' => $scholar['account_id'],
+                        'transaction_type' => 'deduct',
+                        'event_name' =>
+                            $result['allowance_month'] . ' ' . $result['year'] . ' Allowance',
+                        'source_type' => 'allowance',
+                        'hours' => $hours,
+                    ]);
+
                     $model->processScholarsAllowance(
-                        $scholarId['account_id'],
+                        $scholar['account_id'],
                         $allowance,
                         $newRenderedHours,
                     );

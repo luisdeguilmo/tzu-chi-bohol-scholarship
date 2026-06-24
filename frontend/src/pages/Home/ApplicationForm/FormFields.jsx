@@ -11,6 +11,7 @@ import {
 } from "../../../utils/inputValidations";
 
 const FormFields = ({
+    isForExistingScholar,
     fields,
     section,
     formData,
@@ -56,7 +57,7 @@ const FormFields = ({
     const present = section === FORM_SECTIONS.EDUCATION ? fields.slice(6) : [];
 
     const filteredPresent = present.filter((field) => {
-        if (!isRenewal) {
+        if (!isRenewal && isForExistingScholar) {
             return field.name !== "year_level";
         } else if (isRenewal) {
             return field.name !== "present_course2";
@@ -84,11 +85,19 @@ const FormFields = ({
     // Memoize mapped arrays
     const collegesAndUniversitiesArray = useMemo(
         () =>
-            collegesAndUniversities.map((item) => ({
-                key: item.id,
-                name: item.name,
-            })),
-        [collegesAndUniversities]
+            collegesAndUniversities
+                .filter((item) => {
+                    if (isRenewal) {
+                        return true;
+                    }
+
+                    return item.is_visible;
+                })
+                .map((item) => ({
+                    key: item.id,
+                    name: item.name,
+                })),
+        [collegesAndUniversities],
     );
 
     const coursesAcceptedArr = useMemo(
@@ -97,7 +106,7 @@ const FormFields = ({
                 key: item.school_id,
                 name: item.course,
             })),
-        [coursesAccepted]
+        [coursesAccepted],
     );
 
     // Update form config options - wrap in useMemo to prevent mutations on every render
@@ -149,14 +158,14 @@ const FormFields = ({
                                         if (field.validate) {
                                             value =
                                                 validators[field.validate](
-                                                    value
+                                                    value,
                                                 );
                                         }
 
                                         handleInputChange(
                                             inputSection,
                                             field.name,
-                                            value
+                                            value,
                                         );
                                     }}
                                     placeholder={`${field.placeholder}`}
@@ -201,7 +210,7 @@ const FormFields = ({
                                                 handleInputChange(
                                                     inputSection,
                                                     field.name,
-                                                    e.target.value
+                                                    e.target.value,
                                                 );
 
                                                 if (
@@ -216,11 +225,11 @@ const FormFields = ({
 
                                                     const id =
                                                         selectedOption.getAttribute(
-                                                            "data-id"
+                                                            "data-id",
                                                         );
 
                                                     setSelectedCollegeOrUniversity(
-                                                        id
+                                                        id,
                                                     );
                                                 }
                                             }}
@@ -252,7 +261,7 @@ const FormFields = ({
                                                                     ? "-- Select --"
                                                                     : option.name}
                                                             </option>
-                                                        )
+                                                        ),
                                                     )}
                                                 </>
                                             ) : (
@@ -275,7 +284,7 @@ const FormFields = ({
                                                                     ? "-- Select --"
                                                                     : option.name}
                                                             </option>
-                                                        )
+                                                        ),
                                                     )}
                                                 </>
                                             )}
@@ -313,7 +322,7 @@ const FormFields = ({
                                                 handleInputChange(
                                                     inputSection,
                                                     field.name,
-                                                    value
+                                                    value,
                                                 );
                                             }}
                                             placeholder={`${field.placeholder}`}
@@ -354,7 +363,7 @@ const FormFields = ({
                                             handleInputChange(
                                                 inputSection,
                                                 field.name,
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                         className="w-full border text-gray-800 text-xs border-gray-300 bg-white rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
@@ -396,7 +405,7 @@ const FormFields = ({
                                             handleInputChange(
                                                 inputSection,
                                                 field.name,
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                         placeholder={`${field.placeholder}`}
@@ -497,7 +506,7 @@ const FormFields = ({
                                             if (field.validate) {
                                                 value =
                                                     validators[field.validate](
-                                                        value
+                                                        value,
                                                     );
                                             }
 
@@ -507,13 +516,13 @@ const FormFields = ({
                                             handleInputChange(
                                                 inputSection,
                                                 field.name,
-                                                value
+                                                value,
                                             );
                                         }}
                                         autoCapitalize={
-                                            field.type === "text" && "on"
+                                            field.type === "text" ? "on" : "off"
                                         }
-                                        min={field.name === "age" && 15}
+                                        min={field.name === "age" ? 15 : 0}
                                         max={
                                             field.name === "age"
                                                 ? 100
@@ -521,7 +530,7 @@ const FormFields = ({
                                                   ? maxBirthdate
                                                   : 0
                                         }
-                                        placeholder={`${field.placeholder}`}
+                                        placeholder={`${isForExistingScholar === true ? field.placeholder.replace("your ", "") : field.placeholder}`}
                                         className="w-full border text-xs text-slate-800 border-gray-300 bg-white rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required
                                     />

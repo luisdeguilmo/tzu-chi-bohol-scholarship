@@ -114,30 +114,6 @@ class ApplicationFileService
 
         return $applicationId;
     }
-
-    // private function validateActivityData($data)
-    // {
-    //     $required = [
-    //         'application_id',
-    //         'activity_name',
-    //         'activity_location',
-    //         'activity_date',
-    //         'start_time',
-    //         'end_time',
-    //         'activity_status',
-    //     ];
-
-    //     foreach ($required as $field) {
-    //         if (!isset($data[$field]) || empty(trim($data[$field]))) {
-    //             throw new \Exception('Required field missing: ' . $field);
-    //         }
-    //     }
-
-    //     // Additional validation logic here
-    //     if (!strtotime($data['activity_date'])) {
-    //         throw new \Exception('Invalid activity date format');
-    //     }
-    // }
 }
 
 ?>

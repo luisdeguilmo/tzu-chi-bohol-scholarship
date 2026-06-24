@@ -22,12 +22,16 @@ const generateInitialState = (fieldsConfig) => {
     const initialState = {};
     fieldsConfig.forEach((field) => {
         initialState[field.name] =
-            field.type === "select" ? field.defaultValue || "" : "";
+            field.type === "select" ? field.defaultValue || "s" : "s";
     });
     return initialState;
 };
 
-function ApplicationForm({ includeRequirements = true }) {
+function ApplicationForm({
+    isForExistingScholar,
+    includeRequirements = true,
+    onClose,
+}) {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -355,8 +359,11 @@ function ApplicationForm({ includeRequirements = true }) {
 
         const data = await getSchoolYear("new");
         formData.application_info.school_year = data?.school_year;
+        formData.application_info.is_existing_scholar = isForExistingScholar;
         formData.application_info.status = "New";
-        formData.educational_background.year_level = 1;
+        formData.educational_background.year_level = isForExistingScholar
+            ? formData.educational_background.year_level
+            : 1;
         // console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
 
         const submitStudentData = async () => {
@@ -415,9 +422,19 @@ function ApplicationForm({ includeRequirements = true }) {
 
                 toast.success("Application submitted successfully!");
                 setLoading(false);
-                setTimeout(() => {
-                    navigate("/");
-                }, 1000);
+
+                if (isForExistingScholar) {
+                    setTimeout(() => {
+                        navigate(
+                            "/admin/users-accounts/scholar-account-management",
+                        );
+                    }, 1000);
+                    onClose(false);
+                } else {
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 1000);
+                }
             } catch (err) {
                 console.error("Error submitting data:", err);
                 setError("Failed to submit. Please try again.");
@@ -435,6 +452,7 @@ function ApplicationForm({ includeRequirements = true }) {
             case 1:
                 return (
                     <PersonalSection
+                        isForExistingScholar={isForExistingScholar}
                         formData={formData}
                         handleInputChange={handleInputChange}
                         prevStep={prevStep}
@@ -444,6 +462,7 @@ function ApplicationForm({ includeRequirements = true }) {
             case 2:
                 return (
                     <EducationSection
+                        isForExistingScholar={isForExistingScholar}
                         formData={formData}
                         handleInputChange={handleInputChange}
                         prevStep={prevStep}
@@ -454,6 +473,7 @@ function ApplicationForm({ includeRequirements = true }) {
             case 3:
                 return (
                     <FamilySection
+                        isForExistingScholar={isForExistingScholar}
                         formData={formData}
                         setFormData={setFormData}
                         handleInputChange={handleInputChange}
@@ -484,6 +504,7 @@ function ApplicationForm({ includeRequirements = true }) {
             case 5:
                 return (
                     <OtherInformationSection
+                        isForExistingScholar={isForExistingScholar}
                         formData={formData}
                         setFormData={setFormData}
                         handleInputChange={handleInputChange}
@@ -517,14 +538,24 @@ function ApplicationForm({ includeRequirements = true }) {
 
     return (
         <div className="flex flex-col items-center">
-            <ProgressIndicator steps={steps} currentStep={currentStep} />
+            <ProgressIndicator
+                includeRequirements={includeRequirements}
+                steps={steps}
+                currentStep={currentStep}
+            />
             {renderStep()}
         </div>
     );
 }
 
-function NewApplicationForm() {
-    return <ApplicationForm includeRequirements={true} />;
+function NewApplicationForm({ isForExistingScholar = false, onClose }) {
+    return (
+        <ApplicationForm
+            isForExistingScholar={isForExistingScholar}
+            onClose={onClose}
+            includeRequirements={true}
+        />
+    );
 }
 
 function RenewalApplicationForm() {

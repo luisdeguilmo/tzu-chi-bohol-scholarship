@@ -4,16 +4,17 @@ import {
     Ban,
     Calendar,
     Download,
+    Files,
     FileText,
     Hash,
     Loader,
     User,
 } from "lucide-react";
 import { formatDate } from "../../../utils/formatDate";
-import { useSchoolYears } from "../../../hooks/useSchoolYears";
 import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 import BASE_URL from "../../../config";
 import pdfIcon from "../../../assets/pdf.png";
+import { useSchoolYearContext } from "../../../context/SchoolYearContext";
 
 function ApplicantDetailsModal({
     schoolYear,
@@ -50,7 +51,6 @@ function ApplicantDetailsModal({
     const [existingFiles, setExistingFiles] = useState([]);
     const [existingFilesRemoved, setExistingFilesRemoved] = useState([]);
 
-    const [activeSchoolYear, setActiveSchoolYear] = useState(null);
     const { applicationFiles, fetchApplicationFiles } = useApplicationFiles();
 
     useEffect(() => {
@@ -83,21 +83,7 @@ function ApplicantDetailsModal({
         }
     }, [applicationFiles]);
 
-    const { getActiveSchoolYear } = useSchoolYears();
-
-    useEffect(() => {
-        const fetchSchoolYear = async () => {
-            try {
-                const data = await getActiveSchoolYear();
-                setActiveSchoolYear(data);
-            } catch (err) {
-                console.error(err);
-                setError("Failed to fetch school year");
-            }
-        };
-
-        fetchSchoolYear();
-    }, []);
+    const { activeSchoolYear } = useSchoolYearContext();
 
     const isPdf = (type) => type === "application/pdf";
     const isImage = (type) => type && type.startsWith("image/");
@@ -284,7 +270,11 @@ function ApplicantDetailsModal({
                                     <div className="flex items-center">
                                         {isImage(filePreview.type) ? (
                                             <img
-                                                src={filePreview.preview}
+                                                src={
+                                                    filePreview?.file_url
+                                                        ? filePreview?.file_url
+                                                        : filePreview.preview
+                                                }
                                                 alt={filePreview.name}
                                                 className="w-12 h-12 object-cover rounded mr-2"
                                                 onError={(e) => {
@@ -403,7 +393,8 @@ function ApplicantDetailsModal({
                     )}
 
                     {filePreviews.length < 1 && (
-                        <p className="text-center text-xs text-gray-600">
+                        <p className="text-center text-xs text-gray-500 flex flex-col items-center gap-1">
+                            <Files className="w-6 h-6 text-gray-500/80" />
                             No applications files.
                         </p>
                     )}

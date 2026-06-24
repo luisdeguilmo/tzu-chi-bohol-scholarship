@@ -3,16 +3,17 @@ import BASE_URL from "../config";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const useStaffAccounts = () => {
+export const useStaffAccounts = (status) => {
     const [staffAccounts, setStaffAccounts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const fetchStaffAccounts = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/staff-accounts.php`
+                `${BASE_URL}app/api/staff-accounts.php?status=${status}`,
             );
             setStaffAccounts(response.data.data || []);
             setLoading(false);
@@ -34,7 +35,7 @@ export const useStaffAccounts = () => {
         address,
         facebook,
         email,
-        password
+        password,
     ) => {
         const data = {
             staff: {
@@ -63,7 +64,7 @@ export const useStaffAccounts = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json();
@@ -86,15 +87,32 @@ export const useStaffAccounts = () => {
         }
     };
 
-    const editStaff = async (id) => {
+    const editStaff = async (
+        firstName,
+        middleName,
+        lastName,
+        contactNumber,
+        suffix,
+        age,
+        gender,
+        address,
+        facebook,
+        email,
+    ) => {
         try {
             // Create the data structure
             const data = {
                 staff: {
-                    id: id,
-                    name: newName,
-                    email: newEmail,
-                    // role: newRole,
+                    first_name: firstName,
+                    middle_name: middleName,
+                    last_name: lastName,
+                    contact_number: contactNumber,
+                    suffix: suffix,
+                    age: age,
+                    gender: gender,
+                    address: address,
+                    facebook: facebook,
+                    email: email,
                 },
             };
 
@@ -104,9 +122,10 @@ export const useStaffAccounts = () => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(data),
-                }
+                },
             );
 
             const result = await response.json();
@@ -114,24 +133,26 @@ export const useStaffAccounts = () => {
             // Check for success and update the UI
             if (result.success) {
                 // Update the local state to reflect the change
-                const updatedStaffAccounts = staffAccounts.map((item) =>
-                    item.id === id
-                        ? {
-                              ...item,
-                              name: newName,
-                              email: newEmail,
-                              //   role: newRole,
-                          }
-                        : item
-                );
-
+                // const updatedStaffAccounts = staffAccounts.map((item) =>
+                //     item.id === id
+                //         ? {
+                //               ...item,
+                //               name: newName,
+                //               email: newEmail,
+                //               //   role: newRole,
+                //           }
+                //         : item,
+                // );
                 toast.success("Staff account updated successfully.");
+                return true;
             } else {
                 alert("Error: " + result.message);
+                return false;
             }
         } catch (error) {
             console.error("Error updating staff account:", error);
             alert("Failed to update staff account");
+            return false;
         }
     };
 
@@ -139,12 +160,12 @@ export const useStaffAccounts = () => {
         try {
             // Make the API call to delete
             await axios.delete(
-                `${BASE_URL}app/api/staff-accounts.php?id=${id}`
+                `${BASE_URL}app/api/staff-accounts.php?id=${id}`,
             );
 
             // Update local state after successful deletion
             const updatedStaffAccounts = staffAccounts.filter(
-                (staff) => staff.id !== id
+                (staff) => staff.id !== id,
             );
 
             toast.success("Staff account deleted successfully.");

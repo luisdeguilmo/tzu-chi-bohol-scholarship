@@ -16,7 +16,7 @@ const assistanceInputFields = [
     {
         label: "Amount",
         name: "amount",
-        type: "number",
+        type: "text",
         placeholder: "Enter amount",
     },
 ];

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useBatches } from "../../../hooks/useBatches";
 import { useExamination } from "../../../hooks/useExamination";
 import { usePagination } from "../../../hooks/usePagination";
@@ -6,12 +6,15 @@ import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import ManageApplicants from "./ManageApplicants";
 import BatchActions from "./BatchActions";
+// const UnassignedTableRow = React.lazy(() => import("./UnassignedTableRow"));
+const BatchesTableRow = React.lazy(() => import("./BatchesTableRow"));
+const ResultTableRow = React.lazy(() => import("./ResultTableRow"));
 import UnassignedTableRow from "./UnassignedTableRow";
-import BatchesTableRow from "./BatchesTableRow";
-import ResultTableRow from "./ResultTableRow";
+// import BatchesTableRow from "./BatchesTableRow";
+// import ResultTableRow from "./ResultTableRow";
 import { useBatch } from "../../../context/BatchContext";
 import { examinationTableButtons } from "../../../constant/tableToolbarButtons";
-import CreateBatchModal from "./CreateBatchModal";
+// import CreateBatchModal from "./CreateBatchModal";
 import TableToolbar from "../../../components/TableToolbar";
 import PageContent from "../../../components/PageContent";
 import Table from "../../../components/Table";
@@ -22,7 +25,7 @@ import {
 } from "../../../constant/tableHeaders";
 import { manageApplication } from "../../../services/emailService";
 import SendEmailButton from "./SendEmailButtton";
-import PassingScoreModal from "./PassingScoreModal";
+// import PassingScoreModal from "./PassingScoreModal";
 import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 import FileUploadFormModal from "../../../components/FileUploadFormModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
@@ -31,9 +34,15 @@ import { useSettings } from "../../../hooks/useSettings";
 import { DownloadIcon, Eye, Pencil, Plus } from "lucide-react";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { TableButtonAction } from "../../../components/TableButtonAction";
-import { UnassignedList } from "./UnassignedList";
-import { BatchesList } from "./BatchesList";
-import { ResultList } from "./ResultList";
+// import { UnassignedList } from "./UnassignedList";
+// import { BatchesList } from "./BatchesList";
+// import { ResultList } from "./ResultList";
+
+const CreateBatchModal = React.lazy(() => import("./CreateBatchModal"));
+const PassingScoreModal = React.lazy(() => import("./PassingScoreModal"));
+const UnassignedList = React.lazy(() => import("./UnassignedList"));
+const BatchesList = React.lazy(() => import("./BatchesList"));
+const ResultList = React.lazy(() => import("./ResultList"));
 
 export default function Examination() {
     const [isEmailSent, setIsEmailSent] = useState(false);
@@ -75,6 +84,7 @@ export default function Examination() {
     } = useBatch();
 
     const {
+        isLoading: loading,
         applications,
         fetchApplicationsOnApplicantsTab,
         fetchApplicationsOnBatchesTab,
@@ -95,13 +105,42 @@ export default function Examination() {
 
     useEffect(() => {
         fetchBatches();
+    }, [
+        activeTab,
+        // selectedBatchInBatches,
+        selectedApplicants,
+        isRefresh,
+        // isCreateBatchModalOpen,
+        // isModalOpen,
+        batches.length,
+    ]);
+
+    useEffect(() => {
+        // if (activeTab === "Applicants") {
+        //     fetchApplicationsOnApplicantsTab();
+        // } else if (activeTab === "Batches") {
+        //     fetchApplicationsOnBatchesTab();
+        // } else if (activeTab === "Result" && status && sortBy) {
+        //     fetchApplicationsOnResultTab();
+        // }
 
         if (activeTab === "Applicants") {
             fetchApplicationsOnApplicantsTab();
-        } else if (activeTab === "Batches") {
+        } else if (
+            activeTab === "Batches" &&
+            selectedBatchInBatches &&
+            sortBy
+        ) {
             fetchApplicationsOnBatchesTab();
-        } else if (activeTab === "Result" && status && sortBy) {
+        } else if (
+            activeTab === "Result" &&
+            selectedBatchInBatches &&
+            status &&
+            sortBy
+        ) {
             fetchApplicationsOnResultTab();
+        } else {
+            console.log("Conditions not met for API call");
         }
 
         const currentBatch = () => {
@@ -130,13 +169,17 @@ export default function Examination() {
         selectedBatchInBatches,
         selectedApplicants,
         isRefresh,
-        isCreateBatchModalOpen,
-        isModalOpen,
+        // isCreateBatchModalOpen,
+        // isModalOpen,
         batches.length,
     ]);
 
-    const { loading, applicationFiles, fetchApplicationFiles, reUploadFiles } =
-        useApplicationFiles("entrance_examination", selectedId);
+    const {
+        loadingFiles,
+        applicationFiles,
+        fetchApplicationFiles,
+        reUploadFiles,
+    } = useApplicationFiles("entrance_examination", selectedId);
 
     useEffect(() => {
         fetchApplicationFiles("entrance_examination", selectedId);
@@ -249,6 +292,20 @@ export default function Examination() {
                 searchTerm={searchTerm}
                 itemsPerPage={itemsPerPage}
                 sortBy={sortBy}
+                sortItems={[
+                    {
+                        label: "Newest First",
+                        value: "newest",
+                    },
+                    {
+                        label: "Oldest First",
+                        value: "oldest",
+                    },
+                    {
+                        label: "Name (A-Z)",
+                        value: "name",
+                    },
+                ]}
                 sortedItems={filteredApplications}
                 onRefresh={handleRefresh}
                 onSort={setSortBy}
@@ -399,6 +456,7 @@ export default function Examination() {
                                 case "Applicants":
                                     return (
                                         <UnassignedTableRow
+                                            loading={loading}
                                             currentItems={currentItems}
                                             selectedApplicants={
                                                 selectedApplicants
@@ -411,6 +469,7 @@ export default function Examination() {
                                 case "Batches":
                                     return (
                                         <BatchesTableRow
+                                            loading={loading}
                                             tab={activeTab}
                                             currentItems={currentItems}
                                             selectedApplicants={
@@ -427,6 +486,7 @@ export default function Examination() {
                                 default:
                                     return (
                                         <ResultTableRow
+                                            loading={loading}
                                             currentItems={currentItems}
                                             onOpenModal={
                                                 handleOpenFileFormModal
@@ -439,7 +499,7 @@ export default function Examination() {
                 )}
 
                 {/* Empty state */}
-                {currentItems.length === 0 && (
+                {currentItems.length === 0 && !loading && (
                     <EmptyState message="No applications found." />
                 )}
             </div>
@@ -547,56 +607,69 @@ export default function Examination() {
                 )}
             </div>
 
-            <ConfirmationModal
-                label={"Send Results Notifications"}
-                isOpen={isConfirmationModalOpen}
-                onClose={setIsConfirmationModalOpen}
-                message={
-                    passedApplicants.length > 0 && failedApplicants.length > 0
-                        ? `You’re about to email ${passedApplicants.length} passed and ${failedApplicants.length} failed applicants.`
-                        : `You’re about to email ${passedApplicants.length} passed applicants.`
-                }
-                onClick={handleSendEmail}
-                buttonLabel={"Confirm"}
-                isLoading={isLoading}
-            />
+            {isConfirmationModalOpen && (
+                <ConfirmationModal
+                    label={"Send Results Notifications"}
+                    isOpen={isConfirmationModalOpen}
+                    onClose={setIsConfirmationModalOpen}
+                    message={
+                        passedApplicants.length > 0 &&
+                        failedApplicants.length > 0
+                            ? `You’re about to email ${passedApplicants.length} passed and ${failedApplicants.length} failed applicants.`
+                            : `You’re about to email ${passedApplicants.length} passed applicants.`
+                    }
+                    passedApplicants={passedApplicants}
+                    failedApplicants={failedApplicants}
+                    onClick={handleSendEmail}
+                    buttonLabel={"Confirm"}
+                    isLoading={isLoading}
+                />
+            )}
 
-            <CreateBatchModal
-                batchName={batchName}
-                isOpen={isCreateBatchModalOpen}
-                onClose={setIsCreateBatchModalOpen}
-                onRefresh={fetchBatches}
-            />
+            {isCreateBatchModalOpen && (
+                <CreateBatchModal
+                    batchName={batchName}
+                    isOpen={isCreateBatchModalOpen}
+                    onClose={setIsCreateBatchModalOpen}
+                    onRefresh={fetchBatches}
+                />
+            )}
 
-            <PassingScoreModal
-                passingScore={passingScore}
-                onSetPassingScore={createPassingScore}
-                isOpen={isPassingScoreModalOpen}
-                onClose={setIsPassingScoreModalOpen}
-                onRefresh={fetchApplicationsOnResultTab}
-            />
+            {isPassingScoreModalOpen && (
+                <PassingScoreModal
+                    passingScore={passingScore}
+                    onSetPassingScore={createPassingScore}
+                    isOpen={isPassingScoreModalOpen}
+                    onClose={setIsPassingScoreModalOpen}
+                    onRefresh={fetchApplicationsOnResultTab}
+                />
+            )}
 
-            <EmailMessageFormModal
-                stage={"entrance_examination"}
-                isOpen={isMessageModalOpen}
-                onClose={setIsMessageModalOpen}
-                onRefresh={fetchApplicationsOnBatchesTab}
-                firstLabel={"Examination Passed Message"}
-                secondLabel={"Examination Failed Message"}
-            />
+            {isMessageModalOpen && (
+                <EmailMessageFormModal
+                    stage={"entrance_examination"}
+                    isOpen={isMessageModalOpen}
+                    onClose={setIsMessageModalOpen}
+                    onRefresh={fetchApplicationsOnBatchesTab}
+                    firstLabel={"Examination Passed Message"}
+                    secondLabel={"Examination Failed Message"}
+                />
+            )}
 
-            <FileUploadFormModal
-                label={"Entrance Examination Files"}
-                type={"entrance_examination"}
-                isOpen={isDocumentFormModalOpen}
-                setIsOpen={setIsDocumentFormModalOpen}
-                onSuccess={fetchApplicationsOnResultTab}
-                selectedId={selectedId}
-                applicationFiles={applicationFiles}
-                onReUploadFiles={reUploadFiles}
-                isLoading={loading}
-                onRefresh={fetchApplicationsOnResultTab}
-            />
+            {isDocumentFormModalOpen && (
+                <FileUploadFormModal
+                    label={"Entrance Examination Files"}
+                    type={"entrance_examination"}
+                    isOpen={isDocumentFormModalOpen}
+                    setIsOpen={setIsDocumentFormModalOpen}
+                    onSuccess={fetchApplicationsOnResultTab}
+                    selectedId={selectedId}
+                    applicationFiles={applicationFiles}
+                    onReUploadFiles={reUploadFiles}
+                    isLoading={loadingFiles}
+                    onRefresh={fetchApplicationsOnResultTab}
+                />
+            )}
         </PageContent>
     );
 }

@@ -7,6 +7,7 @@ import { useApplicationPeriods } from "../hooks/useApplicationPeriods";
 import { useDashboardOverviewData } from "../hooks/useDashboardOverviewData";
 import { useSidebar } from "../context/SidebarContext";
 import ConfirmationModal from "./ConfirmationModal";
+import { useSchoolYearContext } from "../context/SchoolYearContext";
 
 function SideBar({ items }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,8 @@ function SideBar({ items }) {
 
     const { applicationPeriods, fetchApplicationPeriods } =
         useApplicationPeriods("renewal");
+
+    const { activeSchoolYear } = useSchoolYearContext();
 
     useEffect(() => {
         if (user?.type === "scholar") {
@@ -57,11 +60,11 @@ function SideBar({ items }) {
         setActiveTab(tab);
     };
 
-    const handleRenew = (path, tab, state) => {
-        navigate(path, { state });
-        setIsOpen(false);
-        setActiveTab(tab);
-    };
+    // const handleRenew = (path, tab) => {
+    //     navigate(path);
+    //     setIsOpen(false);
+    //     setActiveTab(tab);
+    // };
 
     const handleClickRenew = () => {
         if (
@@ -82,7 +85,7 @@ function SideBar({ items }) {
                 );
                 return false;
             }
-            return true;
+            navigate("/scholar/renew");
         } else if (
             today > applicationPeriods.end_date ||
             applicationPeriods.status === "Closed"
@@ -100,7 +103,7 @@ function SideBar({ items }) {
     const handleLogout = async () => {
         try {
             const userType = user.type || "scholar";
-            toast.success("Logging out...");
+            toast.success("Logged out successfully");
             await logout();
             if (userType === "scholar") {
                 navigate("/login/scholar");
@@ -132,7 +135,10 @@ function SideBar({ items }) {
             {/* Backdrop (mobile) */}
             {isOpen && (
                 <div
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => {
+                        setOpenDropdown(null);
+                        setIsOpen(false);
+                    }}
                     className="absolute bg-[rgba(0,0,0,.4)] lg:bg-transparent top-0 left-0 z-10 w-full h-full"
                 />
             )}
@@ -157,7 +163,10 @@ function SideBar({ items }) {
                 {/* Mobile close button */}
                 {isOpen && (
                     <X
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => {
+                            setOpenDropdown(null);
+                            setIsOpen(false);
+                        }}
                         className="w-10 h-10 text-gray-600 hover:bg-gray-100 p-2 rounded-lg cursor-pointer absolute z-20 top-2 right-3.5 lg:hidden"
                         title="Close sidebar"
                     />
@@ -252,14 +261,7 @@ function SideBar({ items }) {
                                         if (item.itemName === "logout") {
                                             setIsModalOpen(true);
                                         } else if (item.itemName === "renew") {
-                                            const success = handleClickRenew();
-                                            if (success) {
-                                                handleRenew(
-                                                    item.navigate,
-                                                    item.itemName,
-                                                    scholarId,
-                                                );
-                                            }
+                                            handleClickRenew();
                                         } else {
                                             handleClick(
                                                 item.navigate,
@@ -288,11 +290,13 @@ function SideBar({ items }) {
             </nav>
 
             <ConfirmationModal
-                label={"Logout"}
+                label={"Logout?"}
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
                 message={"Are you sure you want to log out?"}
                 onClick={handleLogout}
+                submitButtonLabel={"Yes"}
+                closeButtonLabel={"No"}
             />
         </>
     );

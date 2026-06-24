@@ -91,3 +91,21 @@ input[type="date"]:valid::before,
 input[type="date"]:focus::before {
     content: "";
 } */
+
+@keyframes wave {
+    0%,
+    100% {
+        transform: scaleY(0.5);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scaleY(1.4);
+        opacity: 1;
+    }
+}
+
+.animate-wave {
+    animation: wave 1s ease-in-out infinite;
+    transform-origin: bottom;
+}

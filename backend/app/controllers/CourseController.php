@@ -64,6 +64,8 @@ class CourseController
 
             // Get ID parameter if it exists
             $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $filter = $_GET['filter'] ?? null;
+
 
             if ($id) {
                 // Get specific qualification
@@ -84,7 +86,7 @@ class CourseController
                 }
             } else {
                 // Get all qualifications
-                $results = $criteria->getAllCourses();
+                $results = $criteria->getAllCourses($filter);
 
                 http_response_code(200);
                 echo json_encode([
@@ -221,7 +223,7 @@ class CourseController
                         $staff['first_name'] . ' ' . $staff['last_name'] . ' updated a course.',
 
                     'old_values' => null,
-                    'new_values' => ['qualification' => $data['course']['course']],
+                    'new_values' => ['course' => $data['course']['course']],
                     'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
                     'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
                 ])

@@ -3,17 +3,23 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-export const useScholarAccountInformation = (userId, currentSchoolYear) => {
+export const useScholarAccountInformation = () => {
     const [scholarInfo, setScholarInfo] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const fetchScholarInfo = async () => {
         try {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `${BASE_URL}app/api/scholar-info.php?scholar_id=${userId}&current_school_year=${currentSchoolYear}`
+                `${BASE_URL}app/api/scholar-info.php`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
@@ -31,10 +37,8 @@ export const useScholarAccountInformation = (userId, currentSchoolYear) => {
     };
 
     useEffect(() => {
-        if (userId) {
-            fetchScholarInfo();
-        }
-    }, [userId]);
+        fetchScholarInfo();
+    }, []);
 
     return {
         loading,

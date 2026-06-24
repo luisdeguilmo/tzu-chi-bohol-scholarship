@@ -11,6 +11,7 @@ require_once __DIR__ . '/../Models/StaffAccountModel.php';
 
 use App\Models\StaffAccountModel;
 use Config\Database;
+use Middleware\Auth;
 
 class StaffAccountController
 {
@@ -59,6 +60,7 @@ class StaffAccountController
 
             // Get ID parameter if it exists
             $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $status = $_GET['status'] ?? null;
 
             if ($id) {
                 // Get specific procedure
@@ -78,7 +80,7 @@ class StaffAccountController
                     ]);
                 }
             } else {
-                $results = $criteria->getAllStaffs();
+                $results = $criteria->getAllStaffs($status);
                 $data = $staff->getAllStaffWithProfile($results, $staff);
 
                 http_response_code(200);
@@ -157,12 +159,7 @@ class StaffAccountController
                 throw new \Exception('No data provided');
             }
 
-            // Check if ID is provided
-            if (!isset($data['staff']['id'])) {
-                throw new \Exception('ID is required for update');
-            }
-
-            $id = $data['staff']['id'];
+            $id = Auth::id();
 
             // Process procedure data
             $criteria = new StaffAccountModel();

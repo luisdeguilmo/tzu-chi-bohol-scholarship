@@ -81,5 +81,20 @@ class SchoolYearModel
 
         return $stmt->execute();
     }
+
+    public function getCurrentSchoolYear()
+    {
+        $query =
+            'SELECT * FROM ' .
+            $this->table_name .
+            ' 
+              WHERE status = "active" 
+              LIMIT 1';
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
 }
 ?>

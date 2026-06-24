@@ -86,10 +86,10 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                 {user?.scholar_type === "New" && (
                     <>
                         <div className="block w-full relative">
-                            <h2 className="mt-2 mb-3 font-bold text-xs text-gray-700">
+                            {/* <h2 className="mt-2 mb-3 font-bold text-xs text-gray-700">
                                 Scholar Academic Info
-                            </h2>
-                            <label className="block mb-1 text-gray-500 text-xs">
+                            </h2> */}
+                            <label className="block mb-1 text-gray-800 text-xs">
                                 University/School
                             </label>
                             <select
@@ -108,7 +108,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
 
                                     setSelectedCollegeOrUniversity(id);
                                 }}
-                                className="w-full border text-gray-800 text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="mt-1.5 w-full border text-gray-800 text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                             >
                                 <option value={""} disabled={university !== ""}>
@@ -127,13 +127,13 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                         </div>
 
                         <div className="block w-full relative pt-4">
-                            <label className="block mb-1 text-gray-500 text-xs">
+                            <label className="block mb-1 text-gray-800 text-xs">
                                 Course
                             </label>
                             <select
                                 value={course}
                                 onChange={(e) => setCourse(e.target.value)}
-                                className="w-full border text-gray-800 text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="mt-1.5 w-full border text-gray-800 text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 required
                             >
                                 <option value={""} disabled={course !== ""}>
@@ -156,13 +156,13 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                 <div
                     className={`block w-full relative ${user?.scholar_type === "New" ? "pt-4" : ""}`}
                 >
-                    <h2 className="mt-2 mb-3 font-bold text-xs text-gray-700">
+                    {/* <h2 className="mt-2 mb-3 font-bold text-xs text-gray-700">
                         Living Situation
-                    </h2>
-                    <label className="block mb-2 text-gray-500 text-xs font-medium">
+                    </h2> */}
+                    <label className="block mb-2 text-gray-800 text-xs font-medium">
                         Where do you stay during the school term?
                     </label>
-                    <div className="space-y-2">
+                    <div className="mt-2 space-y-1.5">
                         <label className="flex items-center text-xs text-gray-600">
                             <input
                                 type="radio"
@@ -245,7 +245,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
 
                 {stayingArrangement !== "At home" && (
                     <div className="block w-full relative pt-4">
-                        <label className="block mb-1 text-gray-500 text-xs">
+                        <label className="block mb-1 text-gray-800 text-xs">
                             Address
                         </label>
                         <input
@@ -254,7 +254,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                             value={address}
                             placeholder="Complete address"
                             onChange={(e) => setAddress(e.target.value)}
-                            className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="mt-1.5 w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
                             required
                         />
                     </div>
@@ -264,7 +264,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                 {(stayingArrangement === "At home" ||
                     stayingArrangement === "Others") && (
                     <div className="block w-full relative pt-4">
-                        <label className="block mb-1 text-gray-500 text-xs">
+                        <label className="block mb-1 text-gray-800 text-xs">
                             Estimated daily transport cost (₱)
                         </label>
                         <input
@@ -277,17 +277,17 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                                 const value = numbersOnly(e.target.value);
                                 setDailyTransportCost(value);
                             }}
-                            className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="mt-1.5 w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
                             required
                         />
                     </div>
                 )}
 
                 <div className="block w-full relative pt-4">
-                    <h2 className="mt-2 mb-3 font-bold text-xs text-gray-700">
+                    {/* <h2 className="mt-2 mb-3 font-bold text-xs text-gray-700">
                         Transport Details
-                    </h2>
-                    <label className="block mb-1 text-gray-500 text-xs">
+                    </h2> */}
+                    <label className="block mb-1 text-gray-800 text-xs">
                         Travel Route & Cost
                     </label>
                     <textarea
@@ -295,7 +295,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
                         value={routeAndCost}
                         onChange={(e) => setRouteAndCost(e.target.value)}
                         placeholder="(e.g., Loon → Tagbilaran = ₱50)"
-                        className="w-full border resize-none text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="mt-1.5 w-full border resize-none text-xs border-gray-300 rounded-md px-2 py-2.5 text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     ></textarea>
                 </div>
@@ -304,7 +304,7 @@ function LivingInfoFormModal({ isOpen, onClose, label, isLoading, onRefresh }) {
 
                 <div className="py-4">
                     <p className="text-xs italic">
-                        Tip:{" "}
+                        Note:{" "}
                         <span className="text-gray-600">
                             This information is required before allowance
                             release.

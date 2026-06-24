@@ -28,7 +28,7 @@ const RequirementsSection = ({ formData, setFormData, prevStep, nextStep }) => {
             {/* <h2 className="pb-12 font-bold text-gray-700 md:text-lg text-sm">
                 Requirements
             </h2> */}
-            <h2 className="mb-12 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 md:text-lg text-sm">
+            <h2 className="mb-12 px-4 py-3 font-bold bg-green-600 rounded-lg text-white md:text-lg text-sm">
                 Requirements
             </h2>
             <FileUploadForm

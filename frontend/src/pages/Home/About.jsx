@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import img1 from "../../assets/this_is_tzu_chi.jpg";
+import img2 from "../../assets/our_founder.jpg";
+import img3 from "../../assets/tzu_chi_bohol.jpg";
 
 export default function AboutSection() {
     const { pathname } = useLocation();
@@ -14,7 +17,7 @@ export default function AboutSection() {
             id: 1,
             title: "This is Tzu Chi",
             sub_title: "Jing Si Abode, Hualien, Taiwan",
-            image: "/src/assets/this_is_tzu_chi.jpg",
+            image: img1,
             text1: 'Tzu Chi Foundation is a non-profit organization founded in 1966 by Dharma Master Cheng Yen in the impoverished east coast of Taiwan. The Foundation has been contributing to better social and community services, medical care, education and humanism in Taiwan for 58 years now. Master Cheng Yen firmly believes that suffering in this world is caused by material deprivation and spiritual poverty. She felt that "lack of love for others" has been the root of many problems in this world. "To save the world, we must begin by transforming human hearts."',
             text2: "A volunteer-based, spiritual as well as welfare organization, Tzu Chi's missions focus on giving material aid and inspiring love and humanity in both the givers and receivers. Since its founding, Tzu Chi has dedicated itself in the fields of charity, medicine, education, environmental protection, as well as the promotion of humanistic values and community volunteerism. The humanitarian work is both a means to help those in need and a way to open the eyes of the volunteers to the harsher side of life, so that through giving, they may find spiritual happiness and life's true meaning.",
             text3: "A home-grown Taiwanese organization, Tzu Chi volunteers living abroad began setting up overseas chapters in 1985. They used money that they have earned in their country of residence to help the poor and needy in their local communities.",
@@ -27,7 +30,7 @@ export default function AboutSection() {
             title: "Our Founder",
             sub_title: "Dharma Master Cheng Yen",
             sub_title2: "Founder, Buddhist Tzu Chi Foundation",
-            image: "/src/assets/our_founder.jpg",
+            image: img2,
             text1: "Dharma Master Cheng Yen was born in 1937 in a small town in Taichung County, Taiwan. When she was twenty-three years old, she left home to become a Buddhist nun and was instructed by her mentor, Venerable Master Yin Shun, to work for Buddha's teachings, for sentient beings.",
             text2: 'In 1966, she founded a charity organization, which later became the Buddhist Tzu Chi Foundation. Its purpose was "to help the poor and educate the rich" - that is, to give material aid to the needy and inspire love and humanitarian spirit in both the giver and the receiver.',
             text3: "In recent years, Master Cheng Yen's contributions have been increasingly recognized by the global community.",
@@ -41,7 +44,7 @@ export default function AboutSection() {
             id: 3,
             title: "Tzu Chi Bohol",
             sub_title: "Bohol, Philippines",
-            image: "/src/assets/tzu_chi_bohol.jpg",
+            image: img3,
             text1: '"Keep up with our commitment to help Bohol."',
             text2: "Dharma Master Cheng Yen said these words after Tzu Chi volunteers went on to respond to the devastations caused by Super Typhoon Haiyan, which struck the Philippines on November 8, 2013. This powerful typhoon, the most destructive of all time, happened shortly after the 7.2 magnitude earthquake that devastated Bohol on October 15, 2013.",
             text3: "Tzu Chi volunteers were already holding relief operations for the earthquake survivors in Bohol when it was suddenly put on hold to address a disaster of a much larger scale. Having swiftly mobilized its resources and concluded the emergency relief operations in the province of Leyte, Tzu Chi volunteers returned to Taiwan to provide updates to the head office. It was during this time when Master Cheng Yen gently reminded the volunteers to keep up with Tzu Chi's commitment to help Bohol. Her words led Tzu Chi to continue its relief and rehabilitation projects in Bohol, which include donating prefabricated classrooms and shelters, conducting more relief aid distributions, Jing Si books distributions, and medical missions.",
@@ -93,9 +96,9 @@ export default function AboutSection() {
                                     </h4>
                                 </div>
                                 <div className="mx-auto">
-                                    <div class="quote">{section.quote}</div>
+                                    <div className="quote">{section.quote}</div>
 
-                                    <div class="author">— {section.author}</div>
+                                    <div className="author">— {section.author}</div>
                                 </div>
                             </div>
 

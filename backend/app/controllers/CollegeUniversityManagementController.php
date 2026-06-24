@@ -44,6 +44,9 @@ class CollegeUniversityManagementController
             case 'PUT':
                 $this->handlePut();
                 break;
+            case 'PATCH':
+                $this->handlePatch();
+                break;
             case 'DELETE':
                 $this->handleDelete();
                 break;
@@ -61,6 +64,7 @@ class CollegeUniversityManagementController
 
             // Get ID parameter if it exists
             $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $filter = $_GET['filter'] ?? null;
 
             if ($id) {
                 // Get specific qualification
@@ -81,7 +85,7 @@ class CollegeUniversityManagementController
                 }
             } else {
                 // Get all qualifications
-                $results = $model->getAllCollegesAndUniversities();
+                $results = $model->getAllCollegesAndUniversities($filter);
 
                 http_response_code(200);
                 echo json_encode([
@@ -122,7 +126,7 @@ class CollegeUniversityManagementController
             $staffModel = new StaffAccountModel();
             $staffId = Auth::id();
 
-            if (!$model->create($data['college_university'])) {
+            if (!$model->create($data)) {
                 throw new \Exception('Failed to save course information');
             }
 
@@ -156,6 +160,87 @@ class CollegeUniversityManagementController
             echo json_encode([
                 'success' => true,
                 'message' => 'College/University created successfully',
+            ]);
+        } catch (\Exception $e) {
+            // Roll back transaction on error
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function handlePatch()
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            // Get data from request body
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (!$data) {
+                throw new \Exception('No data provided');
+            }
+
+            // Check if ID is provided
+            if (!isset($data['id'])) {
+                throw new \Exception('ID is required for update');
+            }
+
+            $id = $data['id'];
+
+            // Process application data
+            $criteria = new CollegeUniversityManagementModel();
+
+            // Check if qualification exists
+            $existing = $criteria->getCollegeOrUniversityById($id);
+            if (!$existing) {
+                throw new \Exception('College/University not found');
+            }
+
+            if (!$criteria->updateCollegeVisibility($id, $data)) {
+                throw new \Exception('Failed to update information');
+            }
+
+            $auditLogModel = new AuditLogModel();
+            $staffModel = new StaffAccountModel();
+            $staffId = Auth::id();
+
+            $staff = $staffModel->getStaffInfoById($staffId);
+
+            if (
+                !$auditLogModel->create([
+                    'user_id' => $staffId,
+                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                    'user_role' => 'staff',
+                    'action' => Action::SCHOOL_UPDATED,
+                    'entity_type' => 'school',
+                    'entity_id' => null,
+
+                    'description' =>
+                        $staff['first_name'] . ' ' . $staff['last_name'] . ' updated a school.',
+
+                    'old_values' => ['school' => $existing['name']],
+                    'new_values' => ['school' => $data['name']],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
+
+            $this->pdo->commit();
+
+            // Return success response
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'message' => 'College/University updated successfully',
             ]);
         } catch (\Exception $e) {
             // Roll back transaction on error

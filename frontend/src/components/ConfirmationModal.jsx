@@ -3,12 +3,15 @@ import InputModal from "./InputModal";
 import { formatCurrency } from "../utils/formatCurrency";
 import { all } from "axios";
 import React from "react";
+import { Check, X } from "lucide-react";
 
 function ConfirmationModal({
     isOpen,
     onClose,
     isLoading,
     label,
+    submitButtonLabel,
+    closeButtonLabel,
     message,
     action = "",
     onClick,
@@ -20,6 +23,8 @@ function ConfirmationModal({
     isScholarAccount = false,
     isForProcessAllowance = false,
     allowanceSettings = null,
+    passedApplicants = [],
+    failedApplicants = [],
 }) {
     const resetFields = () => {
         if (action === "reject") {
@@ -39,7 +44,8 @@ function ConfirmationModal({
             resetFields={resetFields}
             onClose={onClose}
             removeBackground={removeBackground}
-            buttonLabel={"Confirm"}
+            buttonLabel={submitButtonLabel ? submitButtonLabel : "Confirm"}
+            closeButtonLabel={closeButtonLabel ? closeButtonLabel : null}
             onCancel={handleCancel}
             onSubmit={onClick}
             isLoading={isLoading}
@@ -86,9 +92,55 @@ function ConfirmationModal({
                             </ul>
                         </>
                     )}
-                    <p className="py-2.5 text-justify text-xs text-gray-600">
+                    <p className="mb-1 py-2.5 text-justify text-sm text-gray-700">
                         {message}
                     </p>
+                    {(passedApplicants.length > 0 ||
+                        failedApplicants.length < 0) && (
+                        <div>
+                            <p className="mb-1 text-gray-800 text-sm">Passed: </p>
+                            <ul className="text-xs text-gray-700">
+                                {passedApplicants.map((applicant) => (
+                                    <li
+                                        key={applicant.id}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <Check className="w-4 h-4 text-green-600" />
+                                        <span>
+                                            {applicant.last_name +
+                                                ", " +
+                                                applicant.first_name}{" "}
+                                            {applicant.middle_name
+                                                ? applicant.middle_name[0] + "."
+                                                : ""}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <p className="mb-1 mt-4 text-gray-800 text-sm">
+                                Failed:{" "}
+                            </p>
+                            <ul className="text-xs text-gray-700">
+                                {failedApplicants.map((applicant) => (
+                                    <li
+                                        key={applicant.id}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <X className="w-4 h-4 text-red-600" />
+                                        <span>
+                                            {applicant.last_name +
+                                                ", " +
+                                                applicant.first_name}{" "}
+                                            {applicant.middle_name
+                                                ? applicant.middle_name[0] + "."
+                                                : ""}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                     {action === "reject" && (
                         <label className="py-2 flex flex-col gap-[1px] text-gray-500 text-xs">
                             Reason for rejection (optional):
@@ -104,6 +156,7 @@ function ConfirmationModal({
                             ></textarea>
                         </label>
                     )}
+
                     {isScholarAccount && action === "deactivate" && (
                         <div className="mt-2 block w-full relative">
                             <label className="block mb-1 text-gray-600 text-xs">

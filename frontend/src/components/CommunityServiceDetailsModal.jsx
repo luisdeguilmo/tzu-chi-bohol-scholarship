@@ -148,8 +148,8 @@ const CommunityServiceDetailsModal = React.memo(
                     >
                         <div
                             className={`
-                        relative bg-white rounded-sm shadow-2xl w-full
-                        sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[35%]
+                        relative bg-white rounded-lg shadow-2xl w-full
+                        sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[40%]
                         transition-transform duration-300
                         ${isOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}
 
@@ -157,7 +157,7 @@ const CommunityServiceDetailsModal = React.memo(
                     `}
                         >
                             {/* Header */}
-                            <div className="relative px-4 py-4 rounded-t-sm border-b bg-gray-100 border-slate-200">
+                            <div className="relative px-4 py-4 rounded-t-lg border-b bg-gray-50 border-slate-200">
                                 <h2
                                     id="modal-title"
                                     className="text-sm text-slate-700 pr-10 leading-tight"
@@ -170,21 +170,18 @@ const CommunityServiceDetailsModal = React.memo(
                                         setIsRevoked(false);
                                         onClose(false);
                                     }}
-                                    className="absolute top-2 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-200 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                    className="absolute top-2 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-200 active:ring-1 active:ring-gray-300 active:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
                                     aria-label="Close modal"
                                 >
-                                    <X size={18} />
+                                    <X size={16} />
                                 </button>
                             </div>
 
                             {/* Content */}
-                            <form
-                                onSubmit={handleSubmit}
-                                className="max-h-[550px] overflow-y-auto scroll-smooth "
-                            >
+                            <form onSubmit={handleSubmit} className="">
                                 {/* Event Details Grid */}
-                                <div className="p-6 space-y-6">
-                                    <h3 className="font-semibold flex items-center gap-2 -mb-3 rounded-md text-sm text-gray-700">
+                                <div className="p-6 space-y-6 max-h-[550px] overflow-y-auto scroll-smooth">
+                                    <h3 className="flex items-center gap-2 -mt-1 -mb-3 rounded-md text-[16px] text-gray-800">
                                         {activity?.activity_name}
                                     </h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-4 gap-6 text-xs">
@@ -199,17 +196,6 @@ const CommunityServiceDetailsModal = React.memo(
                                             </div>
 
                                             <div className="flex items-center text-slate-600">
-                                                <MapPin className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                                <span className="text-slate-700 font-medium truncate">
-                                                    {
-                                                        activity?.activity_location
-                                                    }
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-3">
-                                            <div className="flex items-center text-slate-600">
                                                 <Clock className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
                                                 <span className="text-slate-700 font-medium">
                                                     {formatTime(
@@ -219,6 +205,17 @@ const CommunityServiceDetailsModal = React.memo(
                                                     {formatTime(
                                                         activity?.end_time,
                                                     )}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <div className="flex items-center text-slate-600">
+                                                <MapPin className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
+                                                <span className="text-slate-700 font-medium truncate">
+                                                    {
+                                                        activity?.activity_location
+                                                    }
                                                 </span>
                                             </div>
 
@@ -547,7 +544,7 @@ const CommunityServiceDetailsModal = React.memo(
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className="flex justify-end gap-2 p-3.5 border-t border-gray-300">
+                                <div className="flex justify-end gap-2 p-3.5 rounded-b-lg border-t bg-gray-50 border-gray-300">
                                     <button
                                         onClick={() => {
                                             onClose(false);
@@ -555,7 +552,7 @@ const CommunityServiceDetailsModal = React.memo(
                                             setAction("");
                                         }}
                                         type="button"
-                                        className="w-[20%] text-sm bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-200 transition-colors duration-200"
+                                        className="w-[20%] text-sm bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-300 transition-colors duration-200"
                                     >
                                         Close
                                     </button>

@@ -1,8 +1,6 @@
 <?php
-// ApplicationFileController.php
 namespace App\Controllers;
 
-// CRITICAL: Suppress all output before JSON response
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
@@ -49,9 +47,6 @@ class ApplicationFileController
                 break;
             case 'PUT':
                 $this->updateFiles();
-                break;
-            case 'DELETE':
-                // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);

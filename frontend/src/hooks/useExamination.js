@@ -12,7 +12,7 @@ export const useExamination = (selectedBatchInBatches, tab, status, sort) => {
             setIsLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}app/api/applicants.php?application_status=examination&batch=Unassigned`
+                `${BASE_URL}app/api/applicants.php?application_status=examination&batch=Unassigned&sort=${sort}`
             );
             setApplications(response.data.data || []);
             setIsLoading(false);

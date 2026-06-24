@@ -28,6 +28,8 @@ export const useSchedule = () => {
             batch: selectedBatch,
         };
 
+        console.log(data);
+
         try {
             setLoading(true);
             const response = await fetch(

@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Models\ApplicationModel;
 use Config\Database;
+use Middleware\Auth;
 
 class CheckEmailController
 {
@@ -41,91 +42,188 @@ class CheckEmailController
         }
     }
 
+    // private function handleGet()
+    // {
+    //     try {
+    //         $model = new ApplicationModel();
+
+    //         // âœ… Retrieve and sanitize query parameters
+    //         $email = isset($_GET['email']) ? trim($_GET['email']) : null;
+    //         $id = Auth::id();
+
+    //         if (!$email) {
+    //             http_response_code(200);
+    //             echo json_encode([
+    //                 'success' => false,
+    //                 'message' => 'Email parameter is missing.',
+    //             ]);
+    //             return;
+    //         }
+
+    //         // âœ… Renewal check (email + id provided)
+    //         if ($id) {
+    //             $result = $model->checkEmailAddressForRenewal($email);
+
+    //             if ($result && array_key_exists('scholar_id', $result)) {
+    //                 $scholarId = $result['scholar_id']; // may be null or int
+
+    //                 if ($scholarId !== null) {
+    //                     $scholarId = (int) $scholarId;
+    //                 }
+
+    //                 if ($scholarId > 0 && $scholarId === $id) {
+    //                     // Same scholar â€“ renewal allowed
+    //                     http_response_code(200);
+    //                     echo json_encode([
+    //                         'success' => true,
+    //                         'data' => false,
+    //                     ]);
+    //                 } elseif ($scholarId === null || $scholarId !== $id) {
+    //                     // Scholar ID is null OR belongs to another scholar
+    //                     http_response_code(200);
+    //                     echo json_encode([
+    //                         'success' => true,
+    //                         'data' => true,
+    //                     ]);
+    //                 } else {
+    //                     // Fallback (should not be reached)
+    //                     http_response_code(200);
+    //                     echo json_encode([
+    //                         'success' => true,
+    //                         'data' => false,
+    //                     ]);
+    //                 }
+    //             } else {
+    //                 // No record found for this email
+    //                 http_response_code(200);
+    //                 echo json_encode([
+    //                     'success' => true,
+    //                     'data' => false,
+    //                 ]);
+    //             }
+    //         }
+
+    //         // âœ… New application check (email only)
+    //         else {
+    //             $result = $model->checkEmailAddressForNew($email);
+
+    //             if ($result) {
+    //                 http_response_code(200);
+    //                 echo json_encode([
+    //                     'success' => true,
+    //                     'data' => true,
+    //                 ]);
+    //             } else {
+    //                 http_response_code(200);
+    //                 echo json_encode([
+    //                     'success' => true,
+    //                     'data' => false,
+    //                     'message' => 'Email not found',
+    //                 ]);
+    //             }
+    //         }
+    //     } catch (\Exception $e) {
+    //         http_response_code(500);
+    //         echo json_encode([
+    //             'success' => false,
+    //             'message' => 'Server error: ' . $e->getMessage(),
+    //         ]);
+    //     }
+    // }
+
     private function handleGet()
     {
         try {
             $model = new ApplicationModel();
 
-            // âœ… Retrieve and sanitize query parameters
+            // Get and sanitize email
             $email = isset($_GET['email']) ? trim($_GET['email']) : null;
-            $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
             if (!$email) {
-                http_response_code(200);
+                http_response_code(400);
+
                 echo json_encode([
                     'success' => false,
                     'message' => 'Email parameter is missing.',
                 ]);
+
                 return;
             }
 
-            // âœ… Renewal check (email + id provided)
+            // Safely get authenticated user ID
+            $id = null;
+
+            try {
+                $id = Auth::id();
+            } catch (\Exception $e) {
+                $id = null;
+            }
+
+            /**
+             * =========================================
+             * RENEWAL CHECK (LOGGED IN USER)
+             * =========================================
+             */
             if ($id) {
                 $result = $model->checkEmailAddressForRenewal($email);
 
-                if ($result && array_key_exists('scholar_id', $result)) {
-                    $scholarId = $result['scholar_id']; // may be null or int
-
-                    if ($scholarId !== null) {
-                        $scholarId = (int) $scholarId;
-                    }
-
-                    if ($scholarId > 0 && $scholarId === $id) {
-                        // Same scholar â€“ renewal allowed
-                        http_response_code(200);
-                        echo json_encode([
-                            'success' => true,
-                            'data' => false,
-                        ]);
-                    } elseif ($scholarId === null || $scholarId !== $id) {
-                        // Scholar ID is null OR belongs to another scholar
-                        http_response_code(200);
-                        echo json_encode([
-                            'success' => true,
-                            'data' => true,
-                        ]);
-                    } else {
-                        // Fallback (should not be reached)
-                        http_response_code(200);
-                        echo json_encode([
-                            'success' => true,
-                            'data' => false,
-                        ]);
-                    }
-                } else {
-                    // No record found for this email
+                // No existing email found
+                if (!$result) {
                     http_response_code(200);
+
                     echo json_encode([
                         'success' => true,
                         'data' => false,
                     ]);
+
+                    return;
                 }
-            }
 
-            // âœ… New application check (email only)
-            else {
-                $result = $model->checkEmailAddressForNew($email);
+                $scholarId = isset($result['scholar_id']) ? (int) $result['scholar_id'] : null;
 
-                if ($result) {
+                // Same user = allowed
+                if ($scholarId === (int) $id) {
                     http_response_code(200);
-                    echo json_encode([
-                        'success' => true,
-                        'data' => true,
-                    ]);
-                } else {
-                    http_response_code(200);
+
                     echo json_encode([
                         'success' => true,
                         'data' => false,
-                        'message' => 'Email not found',
                     ]);
+
+                    return;
                 }
+
+                // Email already belongs to another user
+                http_response_code(200);
+
+                echo json_encode([
+                    'success' => true,
+                    'data' => true,
+                ]);
+
+                return;
             }
+
+            /**
+             * =========================================
+             * NEW APPLICATION CHECK
+             * =========================================
+             */
+            $result = $model->checkEmailAddressForNew($email);
+
+            http_response_code(200);
+
+            echo json_encode([
+                'success' => true,
+                'data' => (bool) $result,
+            ]);
         } catch (\Exception $e) {
             http_response_code(500);
+
             echo json_encode([
                 'success' => false,
-                'message' => 'Server error: ' . $e->getMessage(),
+                'message' => 'Server error',
+                'error' => $e->getMessage(),
             ]);
         }
     }

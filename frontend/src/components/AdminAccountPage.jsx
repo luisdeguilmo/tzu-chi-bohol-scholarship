@@ -1,6 +1,5 @@
 import { Camera, Info, Settings } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { getProfilePicture } from "../utils/getProfilePicture";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useEffect, useState } from "react";
 import { useAdminAccountInformation } from "../hooks/useAdminAccountInformation";
@@ -12,12 +11,9 @@ const AdminAccount = ({ adminId = false, isModal = false }) => {
     const [email, setEmail] = useState("");
     const { user } = useAuth();
     const userId = user.user_id;
-    const { imageUrl, fetchProfilePicture } = getProfilePicture(
-        userId,
-        "user-profile-picture"
-    );
+    const imageUrl = null;
     const { adminInfo, updateAdminInfo, fetchAdminInfo } =
-        useAdminAccountInformation(userId);
+        useAdminAccountInformation();
     const info = "block md:hidden";
 
     useEffect(() => {
@@ -27,7 +23,7 @@ const AdminAccount = ({ adminId = false, isModal = false }) => {
 
     const handleUpdateInfo = async (e) => {
         e.preventDefault();
-        const success = await updateAdminInfo(userId, name, email);
+        const success = await updateAdminInfo(name, email);
 
         if (success) {
             fetchAdminInfo();
@@ -64,10 +60,10 @@ const AdminAccount = ({ adminId = false, isModal = false }) => {
                             )}
 
                             <div className="flex items-center gap-5">
-                                {imageUrl ? (
+                                {user?.profile ? (
                                     <div className="relative">
                                         <img
-                                            src={imageUrl}
+                                            src={user?.profile}
                                             alt="Profile"
                                             className="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-gray-100 shadow-sm object-cover"
                                         />
@@ -220,17 +216,16 @@ const AdminAccount = ({ adminId = false, isModal = false }) => {
                                             Must be at least 8 characters long.
                                         </p>
                                     </div>
-                                    <ChangePasswordForm userId={user.user_id} />
+                                    <ChangePasswordForm />
                                 </div>
                             </section>
                         )}
                     </div>
 
                     <ProfilePhotoUpload
-                        userId={user.user_id}
                         isOpen={isOpenProfileUpload}
                         onOpenModal={setIsOpenProfileUpload}
-                        onRefresh={fetchProfilePicture}
+                        // onRefresh={fetchProfilePicture}
                     />
                 </div>
             </div>

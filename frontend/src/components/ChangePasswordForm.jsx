@@ -4,7 +4,7 @@ import { useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-const ChangePasswordForm = ({ userId }) => {
+const ChangePasswordForm = () => {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -15,6 +15,7 @@ const ChangePasswordForm = ({ userId }) => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
@@ -23,7 +24,6 @@ const ChangePasswordForm = ({ userId }) => {
             setLoading(true);
 
             const data = new URLSearchParams();
-            data.append("account_id", userId);
             data.append("current_password", currentPassword);
             data.append("new_password", newPassword);
             data.append("confirm_password", confirmNewPassword);
@@ -34,8 +34,9 @@ const ChangePasswordForm = ({ userId }) => {
                 {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             if (response.data.success) {

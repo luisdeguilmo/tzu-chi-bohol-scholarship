@@ -6,6 +6,7 @@ import formConfig from "../../../constant/application/formConfig";
 import { useLocation } from "react-router-dom";
 
 const PersonalSection = ({
+    isForExistingScholar,
     formData,
     handleInputChange,
     prevStep,
@@ -24,10 +25,11 @@ const PersonalSection = ({
             {/* <h2 className="pb-6 font-bold text-gray-700 md:text-lg text-sm">
                 Personal Information
             </h2> */}
-            <h2 className="mb-8 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 md:text-lg text-sm">
+            <h2 className="mb-8 px-4 py-3 font-bold bg-green-600 rounded-lg text-white md:text-lg text-sm">
                 Personal Information
             </h2>
             <FormFields
+                isForExistingScholar={isForExistingScholar}
                 fields={formConfig[FORM_SECTIONS.PERSONAL]}
                 section={FORM_SECTIONS.PERSONAL}
                 formData={formData}

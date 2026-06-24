@@ -13,6 +13,7 @@ use App\Models\ScholarAccountInformationModel;
 use App\Models\ScholarAccountModel;
 use App\Models\StaffAccountInformationModel;
 use Config\Database;
+use Middleware\Auth;
 
 class StaffAccountInformationController
 {
@@ -36,8 +37,6 @@ class StaffAccountInformationController
         switch ($requestMethod) {
             case 'GET':
                 $this->handleGet();
-            case 'DELETE':
-                // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);
@@ -53,7 +52,7 @@ class StaffAccountInformationController
             $model = new StaffAccountInformationModel();
 
             // Get ID parameter if it exists
-            $staffId = isset($_GET['staff_id']) ? $_GET['staff_id'] : null;
+            $staffId = Auth::id();
 
             $basicInfo = $model->getBasicInformation($staffId);
 

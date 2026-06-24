@@ -24,7 +24,7 @@ const CommunityServicePage = () => {
     const [active, setActiveTab] = useState("");
 
     const { years } = useYears();
-    const { scholars, fetchScholars } = useScholarsAndActivities(
+    const { loading, scholars, fetchScholars } = useScholarsAndActivities(
         year,
         month,
         status,
@@ -47,7 +47,7 @@ const CommunityServicePage = () => {
             case "oldest":
                 return new Date(a.created_at) - new Date(b.created_at);
             case "name":
-                return a.first_name.localeCompare(b.first_name);
+                return a.last_name.localeCompare(b.last_name);
             default:
                 return 0;
         }
@@ -91,6 +91,20 @@ const CommunityServicePage = () => {
                     searchTerm={searchTerm}
                     itemsPerPage={itemsPerPage}
                     sortBy={sortBy}
+                    sortItems={[
+                        {
+                            label: "Newest First",
+                            value: "newest",
+                        },
+                        {
+                            label: "Oldest First",
+                            value: "oldest",
+                        },
+                        {
+                            label: "Name (A-Z)",
+                            value: "name",
+                        },
+                    ]}
                     sortedItems={sortedActivities}
                     onRefresh={handleRefresh}
                     onSort={setSortBy}
@@ -108,7 +122,7 @@ const CommunityServicePage = () => {
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value="pending">Pending</option>
@@ -123,7 +137,7 @@ const CommunityServicePage = () => {
                         <select
                             value={year}
                             onChange={(e) => setYear(e.target.value)}
-                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
                             {years.map((year) => (
                                 <option key={year.id} value={year.year}>
@@ -139,7 +153,7 @@ const CommunityServicePage = () => {
                         <select
                             value={month}
                             onChange={(e) => setMonth(e.target.value)}
-                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
                             <option value={1}>Jan</option>
                             <option value={2}>Feb</option>
@@ -159,32 +173,64 @@ const CommunityServicePage = () => {
 
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table tableHeaders={volunteerActivitiesTableHeaders}>
-                        {currentItems.map((info, index) => (
-                            <TableRow key={index}>
-                                <td className="py-2 whitespace-nowrap text-gray-900 font-bold">
-                                    {info.application_id}
-                                </td>
-                                <td className="py-2 flex justify-start whitespace-nowrap text-sm text-gray-700">
-                                    <div className="w-[25%]"></div>
-                                    <div className="w-[max-content] flex items-center text-left gap-2">
-                                        <img
-                                            src={info.profile}
-                                            alt="Profile"
-                                            className="w-10 h-10 object-cover rounded-full mx-auto"
-                                        />
-                                        <div>
-                                            <p className="font-bold text-xs">
-                                                {info.name}
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                {info.email}
-                                            </p>
+                        {loading && (
+                            <tr>
+                                <td colSpan={6} className="p-6">
+                                    <div className="mt-4 flex flex-col items-center gap-4">
+                                        <div className="flex items-end gap-1 h-10">
+                                            {[...Array(5)].map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                                    style={{
+                                                        height: "10px",
+                                                        animationDelay: `${i * 100}ms`,
+                                                    }}
+                                                />
+                                            ))}
                                         </div>
+
+                                        <p className="text-sm text-slate-500">
+                                            Loading data...
+                                        </p>
                                     </div>
                                 </td>
-                                <td className="py-2 whitespace-nowrap font-medium">
-                                    <span
-                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium
+                            </tr>
+                        )}
+
+                        {!loading &&
+                            currentItems.map((info, index) => (
+                                <TableRow key={index}>
+                                    <td className="py-2.5 whitespace-nowrap text-gray-700 font-bold">
+                                        {info.application_id}
+                                    </td>
+                                    <td className="py-2.5 flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                        <div className="w-[25%]"></div>
+                                        <div className="w-[max-content] flex items-center text-left gap-2">
+                                            <img
+                                                src={info.profile}
+                                                alt="Profile"
+                                                className="w-10 h-10 object-cover rounded-full mx-auto"
+                                            />
+                                            <div>
+                                                <p className="font-bold text-xs">
+                                                    {info.last_name +
+                                                        ", " +
+                                                        info.first_name}{" "}
+                                                    {info.middle_name
+                                                        ? info.middle_name[0] +
+                                                          "."
+                                                        : ""}
+                                                </p>
+                                                <p className="text-[11px] text-gray-500">
+                                                    {info.email}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap font-medium">
+                                        <span
+                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium
                                             ${
                                                 info.status === "Recorded"
                                                     ? "bg-green-100 text-green-800"
@@ -193,31 +239,33 @@ const CommunityServicePage = () => {
                                                       ? "bg-red-100 text-red-800"
                                                       : "bg-yellow-100 text-yellow-800"
                                             }`}
-                                    >
-                                        {info.status === "Recorded"
-                                            ? "Recorded"
-                                            : info.status === "Not Recorded"
-                                              ? "Not Recorded"
-                                              : "Pending"}
-                                    </span>
-                                </td>
-                                <td className="py-2 whitespace-nowrap text-gray-500">
-                                    {formatDateTime(info.date_submitted)}
-                                </td>
-                                <td className="py-2 whitespace-nowrap text-center font-medium">
-                                    <button
-                                        onClick={() => handleViewDetails(info)}
-                                        className="text-green-600 hover:text-green-900"
-                                    >
-                                        <Eye className="w-4 h-4 text-blue-600" />
-                                    </button>
-                                </td>
-                            </TableRow>
-                        ))}
+                                        >
+                                            {info.status === "Recorded"
+                                                ? "Recorded"
+                                                : info.status === "Not Recorded"
+                                                  ? "Not Recorded"
+                                                  : "Pending"}
+                                        </span>
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap text-gray-500">
+                                        {formatDateTime(info.date_submitted)}
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap text-center font-medium">
+                                        <button
+                                            onClick={() =>
+                                                handleViewDetails(info)
+                                            }
+                                            className="text-green-600 hover:text-green-900"
+                                        >
+                                            <Eye className="w-4 h-4 text-blue-600" />
+                                        </button>
+                                    </td>
+                                </TableRow>
+                            ))}
                     </Table>
 
                     {/* Empty state */}
-                    {currentItems.length === 0 && (
+                    {currentItems.length === 0 && !loading && (
                         <EmptyState message="No applications found." />
                     )}
                 </div>

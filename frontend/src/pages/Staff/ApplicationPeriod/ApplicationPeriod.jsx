@@ -15,6 +15,9 @@ import { TableButtonAction } from "../../../components/TableButtonAction";
 import { date } from "../../../utils/getDateAndTime";
 import BASE_URL from "../../../config";
 import axios from "axios";
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import { toast } from "react-toastify";
+import { useSchoolYearContext } from "../../../context/SchoolYearContext";
 
 const ApplicationPeriod = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -22,6 +25,9 @@ const ApplicationPeriod = () => {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [selectedApplicationPeriod, setSelectedApplicationPeriod] =
         useState("");
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+        useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
     const size = useWindowSize();
     const isMobile = size.width < 768;
 
@@ -38,6 +44,7 @@ const ApplicationPeriod = () => {
     } = usePeriod();
 
     const {
+        loading,
         applicationPeriods,
         hasActiveNewApplicationPeriod,
         hasActiveRenewalApplicationPeriod,
@@ -46,13 +53,32 @@ const ApplicationPeriod = () => {
         deleteApplicationPeriod,
     } = useApplicationPeriods();
 
+    const { schoolYears, activeSchoolYear } = useSchoolYearContext();
+
     useEffect(() => {
         fetchApplicationPeriods();
     }, []);
-    
-    const handleDelete = async (id) => {
-        await deleteApplicationPeriod(id);
-        await fetchApplicationPeriods();
+
+    const handleDelete = async (item) => {
+        if (item.status === "Active") {
+            toast.error("Cannot delete active application period.");
+            setIsConfirmationModalOpen(false);
+            return;
+        }
+
+        if (item.school_year === activeSchoolYear) {
+            toast.error(
+                "Cannot delete current school year's application period.",
+            );
+            setIsConfirmationModalOpen(false);
+            return;
+        }
+
+        const success = await deleteApplicationPeriod(item.id);
+        if (success) {
+            await fetchApplicationPeriods();
+            setIsConfirmationModalOpen(false);
+        }
     };
 
     // Filter data based on search term
@@ -191,7 +217,7 @@ const ApplicationPeriod = () => {
 
                                 <TableButtonAction
                                     onClick={() => {
-                                        setSelectedApplicationPeriod(item.type);
+                                        setSelectedApplicationPeriod(item);
                                         handlePeriodToEdit(item);
                                     }}
                                     button={{
@@ -201,7 +227,10 @@ const ApplicationPeriod = () => {
                                     }}
                                 />
                                 <TableButtonAction
-                                    onClick={() => handleDelete(item.id)}
+                                    onClick={() => {
+                                        setIsConfirmationModalOpen(true);
+                                        setSelectedItem(item);
+                                    }}
                                     button={{
                                         title: "Delete",
                                         icon: <Trash2 className="w-4 h-4" />,
@@ -229,97 +258,128 @@ const ApplicationPeriod = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white text-xs">
-                            {currentItems.map((applicationPeriod) => (
-                                <tr
-                                    key={applicationPeriod.id}
-                                    className="hover:bg-gray-50 border-b border-gray-100 transition-colors text-center text-xs"
-                                >
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
-                                        {formatDateTime(
-                                            applicationPeriod.start_date,
-                                        )}
-                                    </td>
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
-                                        {formatDateTime(
-                                            applicationPeriod.end_date,
-                                        )}
-                                    </td>
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
-                                        {applicationPeriod.school_year}
-                                    </td>
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
-                                        {applicationPeriod.type === "new"
-                                            ? "New"
-                                            : "Renewal"}
-                                    </td>
-                                    <td className="py-3 whitespace-nowrap text-gray-500">
-                                        <span
-                                            className={`inline-flex px-2 py-1 text-xs rounded-full ${
-                                                applicationPeriod.status ===
-                                                "Active"
-                                                    ? "bg-green-100 text-green-800"
-                                                    : applicationPeriod.status ===
-                                                        "Pending"
-                                                      ? "bg-yellow-100 text-yellow-800"
-                                                      : "bg-red-100 text-red-800"
-                                            }`}
-                                        >
-                                            {applicationPeriod.status}
-                                        </span>
-                                    </td>
+                            {loading && (
+                                <tr>
+                                    <td colSpan={6} className="p-6">
+                                        <div className="mt-4 flex flex-col items-center gap-4">
+                                            <div className="flex items-end gap-1 h-10">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <div
+                                                        key={i}
+                                                        className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                                        style={{
+                                                            height: "10px",
+                                                            animationDelay: `${i * 100}ms`,
+                                                        }}
+                                                    />
+                                                ))}
+                                            </div>
 
-                                    <td className="py-3 w-[40%] text-justify text-gray-500">
-                                        {applicationPeriod.announcement_message}
-                                    </td>
-                                    <td className="py-3 whitespace-nowrap flex items-center justify-center font-medium">
-                                        <TableButtonAction
-                                            onClick={() => {
-                                                setSelectedApplicationPeriod(
-                                                    applicationPeriod,
-                                                );
-                                                handlePeriodToEdit(
-                                                    applicationPeriod,
-                                                );
-                                            }}
-                                            button={{
-                                                title: "Edit",
-                                                disabled:
-                                                    applicationPeriod.created_at?.substring(
-                                                        0,
-                                                        4,
-                                                    ) !==
-                                                    date
-                                                        .getCurrentYear()
-                                                        .toString(),
-                                                icon: (
-                                                    <PenLine className="w-4 h-4" />
-                                                ),
-                                                color: "blue",
-                                            }}
-                                        />
-                                        <TableButtonAction
-                                            onClick={() =>
-                                                handleDelete(
-                                                    applicationPeriod.id,
-                                                )
-                                            }
-                                            button={{
-                                                title: "Delete",
-                                                icon: (
-                                                    <Trash2 className="w-4 h-4" />
-                                                ),
-                                                color: "red",
-                                            }}
-                                        />
+                                            <p className="text-sm text-slate-500">
+                                                Loading data...
+                                            </p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))}
+                            )}
+
+                            {!loading &&
+                                currentItems.map((applicationPeriod) => (
+                                    <tr
+                                        key={applicationPeriod.id}
+                                        className="hover:bg-gray-50 border-b border-gray-100 transition-colors text-center text-xs"
+                                    >
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
+                                            {formatDateTime(
+                                                applicationPeriod.start_date,
+                                            )}
+                                        </td>
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
+                                            {formatDateTime(
+                                                applicationPeriod.end_date,
+                                            )}
+                                        </td>
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
+                                            {applicationPeriod.school_year}
+                                        </td>
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
+                                            {applicationPeriod.type === "new"
+                                                ? "New"
+                                                : "Renewal"}
+                                        </td>
+                                        <td className="py-3 whitespace-nowrap text-gray-500">
+                                            <span
+                                                className={`inline-flex px-2 py-1 text-xs rounded-full ${
+                                                    applicationPeriod.status ===
+                                                    "Active"
+                                                        ? "bg-green-100 text-green-800"
+                                                        : applicationPeriod.status ===
+                                                            "Pending"
+                                                          ? "bg-yellow-100 text-yellow-800"
+                                                          : "bg-red-100 text-red-800"
+                                                }`}
+                                            >
+                                                {applicationPeriod.status}
+                                            </span>
+                                        </td>
+
+                                        <td className="py-3 w-[40%] text-justify text-gray-500">
+                                            {
+                                                applicationPeriod.announcement_message
+                                            }
+                                        </td>
+                                        <td className="py-3 whitespace-nowrap flex items-center justify-center font-medium">
+                                            <TableButtonAction
+                                                onClick={() => {
+                                                    setSelectedApplicationPeriod(
+                                                        applicationPeriod,
+                                                    );
+                                                    handlePeriodToEdit(
+                                                        applicationPeriod,
+                                                    );
+                                                }}
+                                                button={{
+                                                    title: "Edit",
+                                                    disabled:
+                                                        applicationPeriod.created_at?.substring(
+                                                            0,
+                                                            4,
+                                                        ) !==
+                                                        date
+                                                            .getCurrentYear()
+                                                            .toString(),
+                                                    icon: (
+                                                        <PenLine className="w-4 h-4" />
+                                                    ),
+                                                    color: "blue",
+                                                }}
+                                            />
+                                            <TableButtonAction
+                                                onClick={() => {
+                                                    setIsConfirmationModalOpen(
+                                                        true,
+                                                    );
+                                                    setSelectedItem(
+                                                        applicationPeriod,
+                                                    );
+                                                }}
+                                                button={{
+                                                    title: "Delete",
+                                                    icon: (
+                                                        <Trash2 className="w-4 h-4" />
+                                                    ),
+                                                    color: "red",
+                                                }}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 )}
 
                 {/* Empty state */}
-                {currentItems.length === 0 && (
+                {currentItems.length === 0 && !loading && (
                     <EmptyState message="No application periods found." />
                 )}
             </div>
@@ -340,14 +400,27 @@ const ApplicationPeriod = () => {
                 </div>
             )}
 
-            <ApplicationPeriodFormModal
-                isOpen={isModalOpen}
-                onClose={setIsModalOpen}
-                onRefresh={fetchApplicationPeriods}
-                selectedApplicationPeriod={selectedApplicationPeriod}
-                disabledNew={hasActiveNewApplicationPeriod}
-                disabledRenewal={hasActiveRenewalApplicationPeriod}
-            />
+            {isModalOpen && (
+                <ApplicationPeriodFormModal
+                    isOpen={isModalOpen}
+                    onClose={setIsModalOpen}
+                    onRefresh={fetchApplicationPeriods}
+                    selectedApplicationPeriod={selectedApplicationPeriod}
+                    disabledNew={hasActiveNewApplicationPeriod}
+                    disabledRenewal={hasActiveRenewalApplicationPeriod}
+                />
+            )}
+
+            {isConfirmationModalOpen && (
+                <ConfirmationModal
+                    isOpen={isConfirmationModalOpen}
+                    onClose={setIsConfirmationModalOpen}
+                    isLoading={loading}
+                    label={"Confirmation"}
+                    message={"Are you sure you want to delete this item?"}
+                    onClick={() => handleDelete(selectedItem)}
+                />
+            )}
         </DataListView>
     );
 };

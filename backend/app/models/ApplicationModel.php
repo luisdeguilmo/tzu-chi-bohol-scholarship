@@ -58,6 +58,41 @@ class ApplicationModel
         return false;
     }
 
+    public function createExistingScholar($data, $other)
+    {
+        // Generate a unique random application_id`
+        $application_id = $this->generateUniqueApplicationId();
+
+        $query =
+            'INSERT INTO ' .
+            $this->table_name .
+            " 
+                  SET application_id = :application_id, school_year = :school_year, type = :status, is_added_from_admin = '1', expectation = :expectation, is_application_approved = '1', is_examination_passed = '1', is_initial_interview_passed = '1', is_home_visitation_qualified = '1', is_final_interview_passed = '1', is_attended_orientation = '1', is_attended_awarding = '1', status = 'is_attended_awarding', created_at = NOW()";
+
+        $stmt = $this->pdo->prepare($query);
+
+        // Sanitize and bind
+        $school_year = strip_tags($data['application_info']['school_year']);
+        // $status = strip_tags(
+        //     $data['educational_background']['year_level'] < 2
+        //         ? $data['application_info']['status']
+        //         : 'Old',
+        // );
+        $status = strip_tags($data['application_info']['status']);
+        $expectation = strip_tags($other['expectation']);
+
+        $stmt->bindParam(':application_id', $application_id);
+        $stmt->bindParam(':school_year', $school_year);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':expectation', $expectation);
+
+        if ($stmt->execute()) {
+            return $application_id;
+        }
+
+        return false;
+    }
+
     public function renew($data, $other)
     {
         // Generate a unique random application_id`
@@ -153,7 +188,7 @@ class ApplicationModel
 
     public function checkEmailAddressForRenewal($email)
     {
-        $query = "SELECT account_id AS scholar_id FROM users WHERE email = :email AND type = 'scholar'";
+        $query = 'SELECT account_id AS scholar_id FROM users WHERE email = :email';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
@@ -168,23 +203,6 @@ class ApplicationModel
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-
-    // public function getNewScholarsFromPreviousSchoolYear()
-    // {
-    //     $query = "SELECT application_id FROM application_info WHERE type = 'New' AND status = 'scholar' AND school_year = '$this->previousSchoolYear' ORDER BY created_at DESC LIMIT 1";
-    //     $stmt = $this->pdo->prepare($query);
-    //     // $stmt->bindParam(':school_year', $previousSchoolYear);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
-
-    // public function getOldScholarsFromPreviousSchoolYear()
-    // {
-    //     $query = "SELECT scholar_id FROM application_info WHERE type = 'Old' AND status = 'scholar' AND school_year = '$this->previousSchoolYear' ORDER BY created_at DESC LIMIT 1";
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
 
     public function getNewScholarsFromPreviousSchoolYear($previousSchoolYear)
     {
@@ -222,7 +240,7 @@ class ApplicationModel
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([
-            ':school_year' => $previousSchoolYear
+            ':school_year' => $previousSchoolYear,
         ]);
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

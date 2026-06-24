@@ -10,12 +10,12 @@ import {
 } from "../../../constant/tableHeaders";
 import { CircleCheckBig, Eye, Plus } from "lucide-react";
 import { toast } from "react-toastify";
-import { useSchoolYears } from "../../../hooks/useSchoolYears";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useAuditLogs } from "../../../hooks/useAuditLogs";
 import { date } from "../../../utils/getDateAndTime";
 import { formatTimestamp } from "../../../utils/formatTimestamp";
 import { formatDateTime } from "../../../utils/formatDateTime";
+import DetailsModal from "./DetailsModal";
 
 const AuditLogs = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -24,8 +24,10 @@ const AuditLogs = () => {
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
         useState(false);
     const [selectedSchoolYear, setSelectedSchoolYear] = useState(null);
+    const [selectedLog, setSelectedLog] = useState(null);
     const [status, setStatus] = useState(null);
     const [action, setAction] = useState("activate");
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { auditLogs, fetchAuditLogs, loading } = useAuditLogs();
 
     useEffect(() => {
@@ -33,16 +35,24 @@ const AuditLogs = () => {
     }, []);
 
     // Filter data based on search term
-    const filteredAuditLogs = auditLogs.filter((auditLog) =>
-        auditLog.action.toLowerCase().includes(searchTerm.toLowerCase()),
+    const filteredAuditLogs = auditLogs.filter(
+        (auditLog) =>
+            auditLog.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            auditLog.user_role
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            auditLog.actor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            auditLog.entity_type
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()),
     );
 
     const sortedAuditLogs = [...filteredAuditLogs].sort((a, b) => {
         switch (sortBy) {
             case "newest":
-                return new Date(b.date) - new Date(a.date);
+                return new Date(b.created_at) - new Date(a.created_at);
             case "oldest":
-                return new Date(a.date) - new Date(b.date);
+                return new Date(a.created_at) - new Date(b.created_at);
             case "name":
                 return a.first_name.localeCompare(b.first_name);
             default:
@@ -61,7 +71,9 @@ const AuditLogs = () => {
         goToNextPage,
     } = usePagination(sortedAuditLogs, itemsPerPage);
 
-    const handleRefresh = () => {};
+    const handleRefresh = () => {
+        fetchAuditLogs();
+    };
 
     return (
         <div className="lg:p-6">
@@ -81,6 +93,7 @@ const AuditLogs = () => {
                     onChangeItemsPerPage={setItemsPerPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
+                    onChangeCurrentPage={setCurrentPage}
                     // addButton={true}
                     // button={{
                     //     icon: <Plus className="w-4 h-4 text-white" />,
@@ -91,66 +104,120 @@ const AuditLogs = () => {
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table tableHeaders={auditLogsHeaders}>
-                        {currentItems.map((auditLog, index) => (
-                            <tr
-                                key={index}
-                                className="text-center text-xs border-b border-gray-100 hover:bg-gray-50 transition-colors"
-                            >
-                                <td className="pr-4 py-3 text-gray-600 whitespace-nowrap">
-                                    {auditLog.user_id ? (
-                                        <span>
-                                            {auditLog.user_role === "staff"
-                                                ? auditLog?.staff_first_name +
-                                                  " " +
-                                                  auditLog?.staff_last_name
-                                                : auditLog.user_role ===
-                                                    "scholar"
-                                                  ? auditLog?.scholar_first_name +
-                                                    " " +
-                                                    auditLog?.scholar_last_name
-                                                  : auditLog?.admin_name}
-                                        </span>
-                                    ) : (
-                                        <span>{auditLog.actor}</span>
-                                    )}
-                                </td>
-                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
-                                    {auditLog.user_role
-                                        .charAt(0)
-                                        .toUpperCase()
-                                        .concat(
-                                            auditLog.user_role.substring(1),
-                                        )}
-                                </td>
-                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
-                                    {auditLog.action}
-                                </td>
-                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
-                                    {auditLog.description}
-                                </td>
-                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
-                                    {auditLog.entity_type}
-                                </td>
-                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
-                                    {auditLog.entity_id}
-                                </td>
-                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
-                                    --
-                                </td>
-                                <td className="pr-4 py-2 text-gray-600 whitespace-nowrap">
-                                    {formatDateTime(auditLog.created_at)}
+                        {loading && (
+                            <tr>
+                                <td colSpan={6} className="p-6">
+                                    <div className="mt-4 flex flex-col items-center gap-4">
+                                        <div className="flex items-end gap-1 h-10">
+                                            {[...Array(5)].map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                                    style={{
+                                                        height: "10px",
+                                                        animationDelay: `${i * 100}ms`,
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <p className="text-sm text-slate-500">
+                                            Loading data...
+                                        </p>
+                                    </div>
                                 </td>
                             </tr>
-                        ))}
+                        )}
+
+                        {!loading &&
+                            currentItems.map((auditLog, index) => (
+                                <tr
+                                    key={index}
+                                    className="text-center text-xs border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                                >
+                                    <td className="pr-4 py-4 text-gray-600 whitespace-nowrap">
+                                        {auditLog.user_id ? (
+                                            <span>
+                                                {auditLog.user_role === "staff"
+                                                    ? auditLog?.staff_first_name +
+                                                      " " +
+                                                      auditLog?.staff_last_name
+                                                    : auditLog.user_role ===
+                                                        "scholar"
+                                                      ? auditLog?.scholar_first_name +
+                                                        " " +
+                                                        auditLog?.scholar_last_name
+                                                      : auditLog?.admin_name}
+                                            </span>
+                                        ) : (
+                                            <span>{auditLog.actor}</span>
+                                        )}
+                                    </td>
+                                    <td className="pr-4 py-2.5 text-gray-600 whitespace-nowrap">
+                                        {auditLog.user_role
+                                            .charAt(0)
+                                            .toUpperCase()
+                                            .concat(
+                                                auditLog.user_role.substring(1),
+                                            )}
+                                    </td>
+                                    <td className="pr-4 py-2.5 text-gray-600 whitespace-nowrap">
+                                        {auditLog.action}
+                                    </td>
+                                    {/* <td className="pr-4 py-2.5 text-gray-600 whitespace-nowrap">
+                                        {auditLog.description}
+                                    </td> */}
+                                    <td className="pr-4 py-2.5 text-gray-600 whitespace-nowrap">
+                                        {auditLog.entity_type}
+                                    </td>
+                                    <td className="pr-4 py-2.5 text-gray-600 whitespace-nowrap">
+                                        {auditLog.entity_id}
+                                    </td>
+                                    <td className="pr-4 py-2.5 text-gray-600 whitespace-nowrap">
+                                        --
+                                    </td>
+                                    <td className="pr-4 py-2.5 text-gray-600 whitespace-nowrap">
+                                        {formatDateTime(auditLog.created_at)}
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap font-medium">
+                                        <div className="flex gap-3 justify-center">
+                                            <button
+                                                onClick={() => {
+                                                    setIsModalOpen(true);
+                                                    setSelectedLog(auditLog);
+                                                }}
+                                                // onClick={() => {
+                                                //     setIsModalOpen(true);
+                                                //     onSelectScholarId(
+                                                //         account.account_id,
+                                                //     );
+                                                //     onSelectScholar([
+                                                //         account[0],
+                                                //         account[1],
+                                                //         account.account_id,
+                                                //     ]);
+                                                //     setModal(
+                                                //         "view_profile_modal",
+                                                //     );
+                                                // }}
+                                                className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                                                title="View"
+                                            >
+                                                <Eye className="w-4 h-4 text-blue-600 hover:text-blue-800 transition-colors" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                     </Table>
 
                     {/* Empty state */}
-                    {currentItems.length === 0 && (
+                    {currentItems.length === 0 && !loading && (
                         <EmptyState message="No school years found." />
                     )}
                 </div>
 
-                <div className="flex justify-between items-center mt-6">
+                <div className="flex justify-end items-center mt-6">
                     {/* Pagination */}
                     {auditLogs.length > 0 && (
                         <div className="flex justify-end gap-4 items-center">
@@ -169,20 +236,11 @@ const AuditLogs = () => {
                 </div>
             </div>
 
-            {/* <ConfirmationModal
-                isOpen={isConfirmationModalOpen}
-                onClose={setIsConfirmationModalOpen}
-                // isLoading={isLoading}
-                label={"Confirmation"}
-                message={"Are you sure you want to activate 2026–2027 ? "}
-                onClick={() =>
-                    handleSchoolYearStatusChange(
-                        selectedSchoolYear,
-                        status,
-                        action,
-                    )
-                }
-            /> */}
+            <DetailsModal
+                isOpen={isModalOpen}
+                onClose={setIsModalOpen}
+                data={selectedLog}
+            />
         </div>
     );
 };

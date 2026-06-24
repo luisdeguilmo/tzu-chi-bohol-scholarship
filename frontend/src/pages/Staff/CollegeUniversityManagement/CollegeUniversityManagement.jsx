@@ -12,7 +12,7 @@ import EditFormModal from "./EditFormModal";
 import { useCoursesAccepted } from "../../../hooks/useCoursesAccepted";
 import { DataListView } from "../../../components/DataListView";
 import { useWindowSize } from "../../../hooks/useWindowSize";
-import { Plus } from "lucide-react";
+import { Eye, EyeClosed, EyeOff, PenBox, Plus } from "lucide-react";
 
 export default function CollegeUniversityManagement() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +20,7 @@ export default function CollegeUniversityManagement() {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [isOpenFormModal, setIsOpenFormModal] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+    const [filter, setFilter] = useState("all");
     const [selectedCollegeUniversity, setSelectedCollegeUniversity] =
         useState("");
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -36,8 +37,9 @@ export default function CollegeUniversityManagement() {
         addCollegeOrUniversity,
         deleteCollegeOrUniversity,
         updateCollegeOrUniversity,
+        updateVisibility,
         fetchCollegesAndUniversities,
-    } = useCollegesUniversities();
+    } = useCollegesUniversities(filter);
 
     const {
         isLoading: isLoadingForCourse,
@@ -49,9 +51,9 @@ export default function CollegeUniversityManagement() {
     } = useCoursesAccepted(selectedId);
 
     useEffect(() => {
-        fetchCollegesAndUniversities();
+        fetchCollegesAndUniversities(filter);
         fetchCoursesAccepted();
-    }, [selectedId]);
+    }, [selectedId, filter]);
 
     // Filter data based on search term
     const filteredEvents = collegesAndUniversities.filter((event) =>
@@ -61,11 +63,11 @@ export default function CollegeUniversityManagement() {
     const sortedApplications = [...filteredEvents].sort((a, b) => {
         switch (sortBy) {
             case "newest":
-                return new Date(b.date) - new Date(a.date);
+                return new Date(b.created_at) - new Date(a.created_at);
             case "oldest":
-                return new Date(a.date) - new Date(b.date);
+                return new Date(a.created_at) - new Date(b.created_at);
             case "name":
-                return a.first_name.localeCompare(b.first_name);
+                return a.name.localeCompare(b.name);
             default:
                 return 0;
         }
@@ -88,6 +90,14 @@ export default function CollegeUniversityManagement() {
         const success = await deleteCollegeOrUniversity(selectedItem);
         if (success) {
             setIsConfirmationModalOpen(false);
+            fetchCollegesAndUniversities();
+        }
+    };
+
+    const handleToggleVisibility = async (id, name, is_visible) => {
+        const success = await updateVisibility(id, name, is_visible);
+
+        if (success) {
             fetchCollegesAndUniversities();
         }
     };
@@ -121,7 +131,36 @@ export default function CollegeUniversityManagement() {
                     icon: <Plus className="w-4 h-4 text-white" />,
                     label: "Add New School",
                 }}
-            ></TableToolbar>
+                sortItems={[
+                    {
+                        label: "Newest First",
+                        value: "newest",
+                    },
+                    {
+                        label: "Oldest First",
+                        value: "oldest",
+                    },
+                    {
+                        label: "Name (A-Z)",
+                        value: "name",
+                    },
+                ]}
+            >
+                <div className="flex justify-between items-center gap-2">
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                        Filter:
+                    </span>
+                    <select
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                        className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                    >
+                        <option value="all">All</option>
+                        <option value="visible">Visible</option>
+                        <option value="hidden">Hidden</option>
+                    </select>
+                </div>
+            </TableToolbar>
 
             {/* Table */}
             <div
@@ -147,7 +186,7 @@ export default function CollegeUniversityManagement() {
                                     onClick={() => {
                                         setIsFormModalOpen(true);
                                         setSelectedId(item.id);
-                                        setSelectedCollegeUniversity(item.name);
+                                        setSelectedCollegeUniversity(item);
                                     }}
                                     className="ml-4 inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                                 >
@@ -209,32 +248,52 @@ export default function CollegeUniversityManagement() {
                                 <td className="py-3 pl-6 whitespace-nowrap text-gray-700">
                                     <p className="text-left">{item.name}</p>
                                 </td>
+                                <td className="py-3 pr-60 whitespace-nowrap text-gray-700">
+                                    <p className="text-center">
+                                        {item.type
+                                            .charAt(0)
+                                            .toUpperCase()
+                                            .concat(item.type.substring(1))}
+                                    </p>
+                                </td>
+                                <td className="py-3 pr-40 text-left whitespace-nowrap text-gray-700">
+                                    <span
+                                        className={`inline-flex px-2.5 py-0.5 rounded-lg ${
+                                            item.is_visible
+                                                ? "bg-green-100 text-green-800"
+                                                : "bg-gray-100 text-gray-400"
+                                        }`}
+                                    >
+                                        {item.is_visible ? "Visible" : "Hidden"}
+                                    </span>
+                                </td>
 
                                 <td className="py-3 text-center whitespace-nowrap font-medium">
+                                    <button
+                                        onClick={() =>
+                                            handleToggleVisibility(
+                                                item.id,
+                                                item.name,
+                                                !item.is_visible,
+                                            )
+                                        }
+                                        className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
+                                    >
+                                        {item.is_visible ? (
+                                            <Eye className="h-4 w-4 mr-1 text-blue-600" />
+                                        ) : (
+                                            <EyeOff className="h-4 w-4 mr-1 text-blue-600" />
+                                        )}
+                                    </button>
                                     <button
                                         onClick={() => {
                                             setIsFormModalOpen(true);
                                             setSelectedId(item.id);
-                                            setSelectedCollegeUniversity(
-                                                item.name,
-                                            );
+                                            setSelectedCollegeUniversity(item);
                                         }}
                                         className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-4 w-4 mr-1"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                            />
-                                        </svg>
+                                        <PenBox className="h-3.5 w-4 mr-1 text-green-600" />
                                     </button>
                                     <button
                                         onClick={() => {
@@ -266,7 +325,7 @@ export default function CollegeUniversityManagement() {
 
                 {/* Empty state */}
                 {currentItems.length === 0 && (
-                    <EmptyState message="No events found." />
+                    <EmptyState message="No college & university found." />
                 )}
             </div>
 

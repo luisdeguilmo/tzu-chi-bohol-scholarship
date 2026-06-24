@@ -43,7 +43,7 @@ const FamilySection = ({
 
     return (
         <form className="w-[85%] sm:w-[80%] xl:w-[70%] mx-auto">
-            <h2 className="mb-12 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 md:text-lg text-sm">
+            <h2 className="mb-12 px-4 py-3 font-bold bg-green-600 rounded-lg text-white md:text-lg text-sm">
                 Family Information
             </h2>
             <FormFields
@@ -57,7 +57,7 @@ const FamilySection = ({
             {/* <h2 className="py-10 font-bold text-gray-700 md:text-lg text-sm">
                 Contact Person In Case of Emergency
             </h2> */}
-            <h2 className="my-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
+            <h2 className="my-10 px-4 py-3 font-bold bg-green-600 rounded-lg text-white text-xs sm:text-sm">
                 Contact Person In Case of Emergency
             </h2>
             <FormFields

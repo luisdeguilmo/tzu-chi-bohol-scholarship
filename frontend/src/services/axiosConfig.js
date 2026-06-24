@@ -16,15 +16,17 @@ api.interceptors.request.use(
         }
         return config;
     },
-    (error) => Promise.reject(error)
+    (error) => Promise.reject(error),
 );
 
 // Global response error handling
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        const status  = error.response?.status;
+        const status = error.response?.status;
         const message = error.response?.data?.message;
+
+        console.log( error.response?.data);
 
         if (status === 401) {
             localStorage.removeItem("token");
@@ -39,13 +41,10 @@ api.interceptors.response.use(
         }
 
         return Promise.reject(error);
-    }
+    },
 );
 
 export default api;
-
-
-
 
 // // axiosConfig.js
 // import axios from "axios";
@@ -91,8 +90,6 @@ export default api;
 
 // export default axios;
 
-
-
 // import axios from "axios";
 // import { toast } from "react-toastify";
 // import BASE_URL from "../config";
@@ -126,14 +123,14 @@ export default api;
 //         if (error.response?.status === 401) {
 //             // Session expired or unauthorized
 //             toast.error("Session expired. Please login again.");
-            
+
 //             // Clear any local storage data
 //             localStorage.clear();
-            
+
 //             // Determine which login page to redirect to based on current path
 //             const currentPath = window.location.pathname;
 //             let loginPath = '/login/scholar'; // default
-            
+
 //             if (currentPath.startsWith('/staff')) {
 //                 loginPath = '/login/staff';
 //             } else if (currentPath.startsWith('/admin')) {
@@ -141,7 +138,7 @@ export default api;
 //             } else if (currentPath.startsWith('/scholar')) {
 //                 loginPath = '/login/scholar';
 //             }
-            
+
 //             // Only redirect if not already on login page
 //             if (!currentPath.startsWith('/login')) {
 //                 window.location.href = loginPath;
@@ -151,7 +148,7 @@ export default api;
 //         } else if (error.response?.status >= 500) {
 //             toast.error("Server error. Please try again later.");
 //         }
-        
+
 //         return Promise.reject(error);
 //     }
 // );

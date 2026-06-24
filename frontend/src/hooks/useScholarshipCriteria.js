@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import BASE_URL from "../config";
 
-export const useScholarshipCriteria = (endpoint, entityName) => {
+export const useScholarshipCriteria = (endpoint, entityName, filter) => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -14,7 +14,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/${endpoint}.php`,
+                `${BASE_URL}app/api/${endpoint}.php?filter=${filter}`,
             );
 
             setItems(response.data.data || []);
@@ -23,6 +23,50 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
             console.error(`Error fetching ${entityName} data:`, err);
             setError(`Failed to load ${entityName} data. Please try again.`);
             setLoading(false);
+        }
+    };
+
+    const updateVisibility = async (id, course, is_visible) => {
+        try {
+            const data = {
+                course: {
+                    // Remove 's' from endpoint (strands -> strand)
+                    id: id,
+                    course: course,
+                    is_visible: is_visible,
+                },
+            };
+
+            const response = await fetch(
+                `${BASE_URL}app/api/course-visibility.php`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(data),
+                },
+            );
+
+            const result = await response.json();
+
+            if (result.success) {
+                const updatedItems = items.map((item) =>
+                    item.id === id
+                        ? { course: course, is_visible: is_visible, ...item }
+                        : item,
+                );
+                setItems(updatedItems);
+                toast.success(`${entityName} updated successfully.`);
+                return true;
+            } else {
+                throw new Error(result.message || "Update failed");
+            }
+        } catch (error) {
+            console.error(`Error updating ${entityName}:`, error);
+            toast.error(`Failed to update ${entityName}`);
+            return false;
         }
     };
 
@@ -102,6 +146,7 @@ export const useScholarshipCriteria = (endpoint, entityName) => {
         fetchItems,
         updateItem,
         deleteItem,
+        updateVisibility,
         // fetchStrands,
     };
 };

@@ -97,7 +97,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="text"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="Enter your first name"
+                        placeholder="First Name"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
@@ -110,7 +110,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="text"
                         value={middleName}
                         onChange={(e) => setMiddleName(e.target.value)}
-                        placeholder="Enter your middle name"
+                        placeholder="Middle Name"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
@@ -123,7 +123,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="text"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Enter your last name"
+                        placeholder="Last Name"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
@@ -160,7 +160,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="text"
                         value={contactNumber}
                         onChange={(e) => setContactNumber(e.target.value)}
-                        placeholder="Enter your contact number"
+                        placeholder="Contact Number"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
@@ -176,7 +176,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                             const value = numbersOnly(e.target.value);
                             setAge(value);
                         }}
-                        placeholder="Enter your age"
+                        placeholder="Age"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
@@ -208,7 +208,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="text"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        placeholder="Enter your address"
+                        placeholder="Address"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
@@ -221,7 +221,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="text"
                         value={facebook}
                         onChange={(e) => setFacebook(e.target.value)}
-                        placeholder="Enter your facebook"
+                        placeholder="Facebook"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />
@@ -234,7 +234,7 @@ const FormModal = ({ isOpen, onClose, onSuccess }) => {
                         type="text"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter email address"
+                        placeholder="Email Address"
                         className="w-full border text-xs border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         required
                     />

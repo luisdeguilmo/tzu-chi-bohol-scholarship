@@ -4,6 +4,7 @@ import { BatchProvider } from "./BatchContext";
 import { CriteriaProvider } from "./CriteriaContext";
 import { PeriodProvider } from "./PeriodContext";
 import { SidebarProvider } from "./SidebarContext";
+import { SchoolYearProvider } from "./SchoolYearContext";
 
 export const AppProvider = ({ children }) => {
     return (
@@ -12,7 +13,11 @@ export const AppProvider = ({ children }) => {
                 <SidebarProvider>
                     <BatchProvider>
                         <CriteriaProvider>
-                            <PeriodProvider>{children}</PeriodProvider>
+                            <PeriodProvider>
+                                <SchoolYearProvider>
+                                    {children}
+                                </SchoolYearProvider>
+                            </PeriodProvider>
                         </CriteriaProvider>
                     </BatchProvider>
                 </SidebarProvider>

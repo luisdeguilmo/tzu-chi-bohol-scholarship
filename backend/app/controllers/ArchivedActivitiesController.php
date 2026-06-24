@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/ArchivedActivitiesModel.php';
 
+use App\Models\ActivityModel;
 use App\Models\ArchivedActivitiesModel;
 use Config\Database;
 use Middleware\Auth;
@@ -34,9 +35,6 @@ class ArchivedActivitiesController
             case 'GET':
                 $this->handleGet();
                 break;
-            case 'POST':
-                // $this->handlePost();
-                break;
             case 'PUT':
                 $this->handlePut();
                 break;
@@ -58,11 +56,7 @@ class ArchivedActivitiesController
             $data = json_decode(file_get_contents('php://input'), true);
             $id = Auth::id();
 
-            file_put_contents(
-                __DIR__ . '/debug.log',
-                'Staff ID: ' . $id . PHP_EOL,
-                FILE_APPEND,
-            );
+            file_put_contents(__DIR__ . '/debug.log', 'Staff ID: ' . $id . PHP_EOL, FILE_APPEND);
 
             if (!$data) {
                 throw new \Exception('No data provided');
@@ -101,12 +95,14 @@ class ArchivedActivitiesController
     {
         try {
             $archived = new ArchivedActivitiesModel();
+            $activityModel = new ActivityModel();
 
             // Get ID parameter if it exists
             $id = Auth::id();
             $tab = $_GET['tab'] ?? null;
 
             $result = [];
+            $activities = [];
 
             if ($tab === 'all') {
                 $result = $archived->getArchivedActivities($id, $tab);
@@ -116,20 +112,7 @@ class ArchivedActivitiesController
                 $result = $archived->getArchivedActivities($id, $tab);
             }
 
-            // $participants = [];
-
-            // foreach ($result as &$event) {
-            //     $event['numberOfParticipants'] = $joinedScholars->getNumberOfJoinedScholars($event['id']);
-
-            //     $scholarIds = $events->getParticipantsIds($event['id']);
-
-            //     foreach($scholarIds as &$scholarId){
-            //         $participant = $events->getParticipantName($scholarId['account_id']);
-            //         $participants[] = $participant['first_name'] . ' ' . $participant['last_name'];
-            //     }
-
-            //     $event['participants'] = $participants;
-            // }
+            // $result = $activityModel->getAllActivitiesWithFiles($activities, $activityModel);
 
             http_response_code(200);
             echo json_encode([

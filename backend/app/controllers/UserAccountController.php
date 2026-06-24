@@ -60,7 +60,7 @@ class UserAccountController
                 if (!$model->updateAccountStatus($data['userId'], 'active')) {
                     throw new \Exception('Failed to activate account');
                 }
-            } elseif ($action === 'deactivate') {
+            } else {
                 if (!$model->updateAccountStatus($data['userId'], 'deactivated')) {
                     throw new \Exception('Failed to deactivate account');
                 }

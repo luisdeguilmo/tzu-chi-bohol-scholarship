@@ -101,7 +101,6 @@ class ScholarFileModel
                 'id' => $file['id'],
                 'application_id' => $file['application_id'],
                 'file_name' => $file['file_name'],
-                'file_path' => $file['file_path'],
                 'file_size' => $file['file_size'],
                 'file_type' => $file['file_type'],
                 'uploaded_at' => $file['uploaded_at'],

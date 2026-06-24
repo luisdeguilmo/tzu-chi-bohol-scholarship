@@ -120,10 +120,6 @@ class ApplicationFileModel
                 'id' => $file['id'],
                 'application_id' => $file['application_id'],
                 'file_name' => $file['file_name'],
-                'file_path' => $file['file_path'],
-                // 'file_url' =>
-                //     'http://localhost:8000/index.php?route=file/view&file=' .
-                //     urlencode(str_replace('/upload/applications/', '', $file['file_path'])),
                 'file_url' =>
                     $_ENV['APP_URL'] .
                     '/index.php?type=applications&route=file/view&file=' .
@@ -154,7 +150,6 @@ class ApplicationFileModel
                 'id' => $file['id'],
                 'application_id' => $file['application_id'],
                 'file_name' => $file['file_name'],
-                'file_path' => $file['file_path'],
                 'file_url' =>
                     $_ENV['APP_URL'] .
                     '/index.php?type=applications&route=file/view&file=' .

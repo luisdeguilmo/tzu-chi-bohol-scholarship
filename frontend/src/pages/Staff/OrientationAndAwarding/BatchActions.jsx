@@ -3,7 +3,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import DeleteBatchButton from "./DeleteBatchButton";
 import SetScheduleForm from "./SetScheduleForm";
-import { Send } from "lucide-react";
+import { Send, Trash2 } from "lucide-react";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 export default function BatchActions({
     applications,
@@ -21,12 +22,13 @@ export default function BatchActions({
 }) {
     // Add state for creating a new batch when modal is open
     const [batchName, setBatchName] = useState("");
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const handleDeleteBatch = async () => {
         // Ensure a batch is selected before attempting to delete
         if (applicantsEachBatch.length > 0) {
             alert(
-                "This batch cannot be deleted. Please ensure it has no applicants."
+                "This batch cannot be deleted. Please ensure it has no applicants.",
             );
             return;
         }
@@ -38,7 +40,7 @@ export default function BatchActions({
 
         // Find the batch ID that matches the selected batch name
         const batchToDelete = batches.find(
-            (batch) => batch.batch_name === selectedBatchInBatches
+            (batch) => batch.batch_name === selectedBatchInBatches,
         );
 
         if (!batchToDelete) {
@@ -47,23 +49,26 @@ export default function BatchActions({
         }
 
         // Confirm before deleting
-        if (
-            !confirm(
-                `Are you sure you want to delete ${selectedBatchInBatches}?`
-            )
-        ) {
-            return;
-        }
+        // if (
+        //     !confirm(
+        //         `Are you sure you want to delete ${selectedBatchInBatches}?`
+        //     )
+        // ) {
+        //     return;
+        // }
 
-        await deleteBatch(
+        const success = await deleteBatch(
             batches,
             batchToDelete,
             setBatches,
             selectedBatchInBatches,
-            onSuccess
+            onSuccess,
         );
 
-        onRefresh();
+        if (success) {
+            onRefresh();
+            setDeleteModalOpen(false);
+        }
     };
 
     const handleCancel = () => {
@@ -90,10 +95,21 @@ export default function BatchActions({
                             onSuccess={onSuccess}
                         />
 
-                        <DeleteBatchButton
+                        {/* <DeleteBatchButton
                             handleDeleteBatch={handleDeleteBatch}
                             selectedBatch={selectedBatchInBatches}
-                        />
+                        /> */}
+
+                        <button
+                            onClick={() => {
+                                setDeleteModalOpen(true);
+                            }}
+                            title="Delete Schedule"
+                            className="p-2 bg-red-600 text-xs rounded-lg hover:bg-red-700 transition-colors flex items-center text-white"
+                        >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            Delete Batch
+                        </button>
                     </>
                 ) : (
                     <>
@@ -108,6 +124,14 @@ export default function BatchActions({
                     </>
                 )}
             </div>
+
+            <ConfirmationModal
+                isOpen={deleteModalOpen}
+                onClose={setDeleteModalOpen}
+                message={`Are you sure you want to delete ${selectedBatchInBatches}?`}
+                label={"Delete Confirmation"}
+                onClick={handleDeleteBatch}
+            />
         </div>
     );
 }

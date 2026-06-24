@@ -33,14 +33,8 @@ class SettingsController
             case 'GET':
                 $this->handleGet();
                 break;
-            case 'POST':
-                // $this->handlePost();
-                break;
             case 'PUT':
                 $this->handlePut();
-                break;
-            case 'DELETE':
-                // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);

@@ -10,10 +10,11 @@ import { formatDateTime } from "../../../utils/formatDateTime";
 import FormModal from "./FormModal";
 import { Eye, Plus, RotateCcw, UserCheck, UserX } from "lucide-react";
 import UserProfileModal from "../../../components/UserProfileModal";
-import ChangePasswordModal from "../../../components/ChangePasswordModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useUserAccount } from "../../../hooks/useUserAccount";
 import { toast } from "react-toastify";
+import axios from "axios";
+import BASE_URL from "../../../config";
 
 const StaffAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -24,17 +25,20 @@ const StaffAccounts = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
         useState(false);
+    const [modal, setModal] = useState(null);
     const [action, setAction] = useState("");
+    const [status, setStatus] = useState("all");
     const [accountStatus, setAccountStatus] = useState("");
     const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
         useState(false);
     const [selectedStaff, setSelectedStaff] = useState(null);
-    const { staffAccounts, fetchStaffAccounts } = useStaffAccounts();
-    const { loading: isLoading, updateScholarAccountStatus } = useUserAccount();
+    const { loading, staffAccounts, fetchStaffAccounts } =
+        useStaffAccounts(status);
+    const { loading: isLoading, updateStaffAccountStatus } = useUserAccount();
 
     useEffect(() => {
         fetchStaffAccounts();
-    }, []);
+    }, [status]);
 
     // Filter data based on search term
     const filteredStaffAccounts = staffAccounts.filter(
@@ -46,11 +50,11 @@ const StaffAccounts = () => {
     const sortedStaffAccounts = [...filteredStaffAccounts].sort((a, b) => {
         switch (sortBy) {
             case "newest":
-                return new Date(b.date) - new Date(a.date);
+                return new Date(b.created_at) - new Date(a.created_at);
             case "oldest":
-                return new Date(a.date) - new Date(b.date);
+                return new Date(a.created_at) - new Date(b.created_at);
             case "name":
-                return a.first_name.localeCompare(b.first_name);
+                return a.last_name.localeCompare(b.last_name);
             default:
                 return 0;
         }
@@ -74,8 +78,6 @@ const StaffAccounts = () => {
     ) => {
         setAction(actionType);
         setAccountStatus(accountStatus);
-        setSelectedStaff(accountId);
-        setIsConfirmationModalOpen(true);
     };
 
     const handleAccountStatusChange = async (
@@ -94,14 +96,14 @@ const StaffAccounts = () => {
         }
 
         try {
-            const success = await updateScholarAccountStatus(accountId, action);
+            const success = await updateStaffAccountStatus(accountId, action);
             if (success) {
                 toast.success(
                     `Account ${
                         action === "activate" ? "activated" : "deactivated"
                     } successfully.`,
                 );
-                setIsConfirmationModalOpen(false);
+                setIsModalOpen(false);
                 fetchStaffAccounts();
             }
         } catch (error) {
@@ -132,6 +134,7 @@ const StaffAccounts = () => {
                     onSort={setSortBy}
                     onSearchChange={setSearchTerm}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     addButton={true}
@@ -139,123 +142,155 @@ const StaffAccounts = () => {
                         icon: <Plus className="w-4 h-4 text-white" />,
                         label: "New Staff Account",
                     }}
-                />
+                    sortItems={[
+                        {
+                            label: "Newest First",
+                            value: "newest",
+                        },
+                        {
+                            label: "Oldest First",
+                            value: "oldest",
+                        },
+                        {
+                            label: "Name (A-Z)",
+                            value: "name",
+                        },
+                    ]}
+                >
+                    <div className="flex justify-between items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Status:
+                        </span>
+                        <select
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                            className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value="all">All</option>
+                            <option value="active">Active</option>
+                            <option value="deactivated">Deactivated</option>
+                        </select>
+                    </div>
+                </TableToolbar>
 
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table tableHeaders={staffAccountHeaders}>
-                        {currentItems.map((staff) => (
-                            <tr
-                                key={staff.account_id}
-                                className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
-                            >
-                                <td className="py-2 whitespace-nowrap text-gray-700">
-                                    {staff.account_id}
-                                </td>
-                                <td className="py-2 flex justify-start whitespace-nowrap text-sm text-gray-700">
-                                    <div className="w-[30%]"></div>
-                                    <div className="w-[max-content] flex items-center text-left gap-2">
-                                        {staff[0].profile ? (
-                                            <img
-                                                src={staff[0].profile}
-                                                alt="Profile"
-                                                className="w-10 h-10 object-cover rounded-full mx-auto"
-                                            />
-                                        ) : (
-                                            <div className="w-8 h-8 mr-1 rounded-full text-white text-sm bg-black flex justify-center items-center">
-                                                {staff.first_name[0]}{" "}
-                                                {staff.last_name[0]}
-                                            </div>
-                                        )}
-
-                                        <div>
-                                            <p className="font-bold text-xs">
-                                                {staff.first_name +
-                                                    " " +
-                                                    staff.last_name}
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                {staff.email}
-                                            </p>
+                        {loading && (
+                            <tr>
+                                <td colSpan={6} className="p-6">
+                                    <div className="mt-4 flex flex-col items-center gap-4">
+                                        <div className="flex items-end gap-1 h-10">
+                                            {[...Array(5)].map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                                    style={{
+                                                        height: "10px",
+                                                        animationDelay: `${i * 100}ms`,
+                                                    }}
+                                                />
+                                            ))}
                                         </div>
-                                    </div>
-                                </td>
-                                <td
-                                    className={`py-2 whitespace-nowrap text-gray-500 `}
-                                >
-                                    <span
-                                        className={`px-2 py-1 rounded-full ${
-                                            staff.status === "active"
-                                                ? "text-green-800 bg-green-100"
-                                                : "text-red-800 bg-red-100"
-                                        }`}
-                                    >
-                                        {staff.status === "active"
-                                            ? "Active"
-                                            : "Deactivated"}
-                                    </span>
-                                </td>
-                                <td className="py-2 whitespace-nowrap text-gray-500">
-                                    {formatDateTime(staff.created_at)}
-                                </td>
-                                <td className="py-2 whitespace-nowrap font-medium">
-                                    <div className="flex gap-3 justify-center">
-                                        <button
-                                            onClick={() => {
-                                                setIsModalOpen(true);
-                                                setStaffId(staff.account_id);
-                                            }}
-                                            // className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                                            title="View Profile"
-                                        >
-                                            <Eye className="w-4 h-4 text-blue-600 hover:text-blue-800 transition-colors" />
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setIsChangePasswordModalOpen(
-                                                    true,
-                                                );
-                                                setSelectedStaff(
-                                                    staff.account_id,
-                                                );
-                                            }}
-                                            title="Change Password"
-                                        >
-                                            <RotateCcw className="w-4 h-4 text-green-600 hover:text-green-800 transition-colors" />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                handleOpenConfirmationModal(
-                                                    staff.account_id,
-                                                    staff.status,
-                                                    "activate",
-                                                )
-                                            }
-                                            title="Activate Account"
-                                        >
-                                            <UserCheck className="w-4 h-4 text-green-600 hover:text-green-800 transition-colors" />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                handleOpenConfirmationModal(
-                                                    staff.account_id,
-                                                    staff.status,
-                                                    "deactivate",
-                                                )
-                                            }
-                                            title="Deactivate Account"
-                                        >
-                                            <UserX className="w-4 h-4 text-red-600 hover:text-red-800 transition-colors" />
-                                        </button>
+
+                                        <p className="text-sm text-slate-500">
+                                            Loading data...
+                                        </p>
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        )}
+
+                        {!loading &&
+                            currentItems.map((staff) => (
+                                <tr
+                                    key={staff.account_id}
+                                    className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
+                                >
+                                    <td className="py-2.5 whitespace-nowrap text-gray-700">
+                                        {staff.account_id}
+                                    </td>
+                                    <td className="py-2.5 flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                        <div className="w-[30%]"></div>
+                                        <div className="w-[max-content] flex items-center text-left gap-2">
+                                            {staff[0].profile ? (
+                                                <img
+                                                    src={staff[0].profile}
+                                                    alt="Profile"
+                                                    className="w-10 h-10 object-cover rounded-full mx-auto"
+                                                />
+                                            ) : (
+                                                <div className="w-8 h-8 mr-1 rounded-full text-white text-sm bg-black flex justify-center items-center">
+                                                    {staff.first_name[0]}{" "}
+                                                    {staff.last_name[0]}
+                                                </div>
+                                            )}
+
+                                            <div>
+                                                <p className="font-bold text-xs">
+                                                    {staff.last_name +
+                                                        ", " +
+                                                        staff.first_name}{" "}
+                                                    {staff.middle_name
+                                                        ? staff.middle_name[0] +
+                                                          "."
+                                                        : ""}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    {staff.email}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td
+                                        className={`py-2.5 whitespace-nowrap text-gray-500 `}
+                                    >
+                                        <span
+                                            className={`px-2 py-1 rounded-full ${
+                                                staff.status === "active"
+                                                    ? "text-green-800 bg-green-100"
+                                                    : "text-red-800 bg-red-100"
+                                            }`}
+                                        >
+                                            {staff.status === "active"
+                                                ? "Active"
+                                                : "Deactivated"}
+                                        </span>
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap text-gray-500">
+                                        {formatDateTime(staff.created_at)}
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap font-medium">
+                                        <div className="flex gap-3 justify-center">
+                                            <button
+                                                onClick={() => {
+                                                    setIsModalOpen(true);
+                                                    setStaffId(
+                                                        staff.account_id,
+                                                    );
+                                                    setSelectedStaff([
+                                                        staff,
+                                                        staff[0],
+                                                        staff.account_id,
+                                                    ]);
+                                                    setModal(
+                                                        "view_profile_modal",
+                                                    );
+                                                }}
+                                                // className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                                                title="View Profile"
+                                            >
+                                                <Eye className="w-4 h-4 text-blue-600 hover:text-blue-800 transition-colors" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                     </Table>
 
                     {/* Empty state */}
-                    {currentItems.length === 0 && (
-                        <EmptyState message="No events found." />
+                    {currentItems.length === 0 && !loading && (
+                        <EmptyState message="No staff account found." />
                     )}
                 </div>
 
@@ -278,46 +313,32 @@ const StaffAccounts = () => {
                 </div>
             </div>
 
-            <UserProfileModal
-                isOpen={isModalOpen}
-                setIsOpen={setIsModalOpen}
-                isStaff={true}
-                userId={staffId}
-            />
+            {modal === "view_profile_modal" && (
+                <UserProfileModal
+                    isOpen={isModalOpen}
+                    setIsOpen={setIsModalOpen}
+                    info={selectedStaff}
+                    data={{
+                        action: action,
+                        onChangeAccountStatus: handleAccountStatusChange,
+                        onOpenConfirmationModal: handleOpenConfirmationModal,
+                        message1:
+                            "Are you sure you want to activate this account?",
+                        message2:
+                            "Are you sure you want to deactivate this account?",
+                        message3:
+                            "Are you sure you want to reset this account's password?",
+                    }}
+                />
+            )}
 
-            <ChangePasswordModal
-                isOpen={isChangePasswordModalOpen}
-                onClose={setIsChangePasswordModalOpen}
-                userId={selectedStaff}
-            />
-
-            <ConfirmationModal
-                isOpen={isConfirmationModalOpen}
-                onClose={setIsConfirmationModalOpen}
-                isLoading={isLoading}
-                label={"Confirmation"}
-                action={action}
-                message={
-                    action === "activate"
-                        ? "Are you sure you want to activate this account?"
-                        : "Are you sure you want to deactivate this account?"
-                }
-                onClick={() =>
-                    handleAccountStatusChange(
-                        selectedStaff,
-                        accountStatus,
-                        action,
-                    )
-                }
-                // deactivationReason={deactivationReason}
-                // setDeactivationReason={setDeactivationReason}
-            />
-
-            <FormModal
-                isOpen={isFormModalOpen}
-                onClose={setIsFormModalOpen}
-                onSuccess={fetchStaffAccounts}
-            />
+            {isFormModalOpen && (
+                <FormModal
+                    isOpen={isFormModalOpen}
+                    onClose={setIsFormModalOpen}
+                    onSuccess={fetchStaffAccounts}
+                />
+            )}
         </div>
     );
 };

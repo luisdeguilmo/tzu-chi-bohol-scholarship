@@ -3,17 +3,23 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-export const useAdminAccountInformation = (userId) => {
+export const useAdminAccountInformation = () => {
     const [adminInfo, setAdminInfo] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const fetchAdminInfo = async () => {
         try {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `${BASE_URL}app/api/admin-info.php?admin_id=${userId}`
+                `${BASE_URL}app/api/admin-info.php`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
@@ -30,20 +36,20 @@ export const useAdminAccountInformation = (userId) => {
         }
     };
 
-    const updateAdminInfo = async (id, name, email) => {
+    const updateAdminInfo = async (name, email) => {
         try {
             const response = await axios.put(
                 `${BASE_URL}app/api/admin-info.php`,
                 {
-                    id: id,
                     name: name,
                     email: email,
                 },
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
 
             const data = response.data;
@@ -64,10 +70,8 @@ export const useAdminAccountInformation = (userId) => {
     };
 
     useEffect(() => {
-        if (userId) {
-            fetchAdminInfo();
-        }
-    }, [userId]);
+        fetchAdminInfo();
+    }, []);
 
     return {
         loading,

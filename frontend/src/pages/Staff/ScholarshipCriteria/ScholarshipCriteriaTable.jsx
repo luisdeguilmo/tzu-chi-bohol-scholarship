@@ -10,6 +10,7 @@ import { useCriteria } from "../../../context/CriteriaContext";
 import ScholarshipCriteriaTableRow from "./ScholarshipCriteriaTableRow";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { Plus } from "lucide-react";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 const ScholarshipCriteriaTable = ({
     label,
@@ -35,6 +36,9 @@ const ScholarshipCriteriaTable = ({
     currentPage,
     setCurrentPage,
     sortedItems,
+    onUpdateVisibility,
+    filter,
+    setFilter,
 }) => {
     const { headers, fields, primaryField, searchFields } = tableConfig;
     const { setId, setText, setQuantity, setDescription, setSubmit } =
@@ -54,6 +58,9 @@ const ScholarshipCriteriaTable = ({
     } = paginationState;
 
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+        useState(false);
+    const [selectedId, setSelectedId] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
 
     // Filter items based on search term across multiple fields
@@ -124,7 +131,24 @@ const ScholarshipCriteriaTable = ({
                         icon: <Plus className="w-4 h-4 text-white" />,
                         label: `Add New ${label.slice(0, -1)}`,
                     }}
-                />
+                >
+                    {label === "Courses" && (
+                        <div className="flex justify-between items-center gap-2">
+                            <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                                Filter:
+                            </span>
+                            <select
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                                className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            >
+                                <option value="all">All</option>
+                                <option value="visible">Visible</option>
+                                <option value="hidden">Hidden</option>
+                            </select>
+                        </div>
+                    )}
+                </TableToolbar>
 
                 {/* Table */}
                 <div
@@ -200,7 +224,10 @@ const ScholarshipCriteriaTable = ({
                                         </svg>
                                     </button>
                                     <button
-                                        onClick={() => deleteItem(item.id)}
+                                        onClick={() => {
+                                            setIsConfirmationModalOpen(true);
+                                            setSelectedId(item.id);
+                                        }}
                                         className="inline-flex items-center text-red-600 hover:text-red-900"
                                     >
                                         <svg
@@ -229,7 +256,12 @@ const ScholarshipCriteriaTable = ({
                                 primaryField={primaryField}
                                 currentItems={currentItems}
                                 onSelectItem={handleItemToEdit}
+                                onSelectedId={setSelectedId}
+                                onOpenConfirmationModal={
+                                    setIsConfirmationModalOpen
+                                }
                                 onDelete={deleteItem}
+                                onUpdateVisibility={onUpdateVisibility}
                             />
                         </Table>
                     )}
@@ -272,6 +304,21 @@ const ScholarshipCriteriaTable = ({
                 endpoint={searchPlaceholder.slice(0, -1)}
                 fields={formFields}
                 updateItem={editItem}
+            />
+
+            <ConfirmationModal
+                isOpen={isConfirmationModalOpen}
+                onClose={setIsConfirmationModalOpen}
+                isLoading={loading}
+                label={"Confirmation"}
+                message={"Are you sure you want to delete this item?"}
+                onClick={() => {
+                    const success = deleteItem(selectedId);
+
+                    if (success) {
+                        setIsConfirmationModalOpen(false);
+                    }
+                }}
             />
         </div>
     );

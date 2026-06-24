@@ -14,6 +14,7 @@ use App\Models\AuditLogModel;
 use App\Models\CoeGradesModel;
 use App\Models\NotificationsModel;
 use App\Models\ScholarModel;
+use App\Models\SchoolYearModel;
 use App\Services\CoeAndGradesService;
 use Config\Database;
 use Middleware\Auth;
@@ -50,9 +51,6 @@ class CoeAndGradesController
                 break;
             case 'PUT':
                 $this->updateSubmission();
-                break;
-            case 'DELETE':
-                // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);
@@ -280,6 +278,7 @@ class CoeAndGradesController
     {
         try {
             $coeGradesModel = new CoeGradesModel();
+            $academicYearModel = new SchoolYearModel();
 
             // Get ID parameter if it exists
             $id = null;
@@ -287,6 +286,7 @@ class CoeAndGradesController
             $scholar_id = $_GET['scholar_id'];
             $tab = $_GET['tab'] ?? null;
             $year_level = $_GET['year_level'] ?? null;
+            $academic_year = $academicYearModel->getActiveSchoolYear();
 
             if ($coeGradesModel->getCoeGradesById($auth_id)) {
                 $id = $auth_id;
@@ -302,18 +302,21 @@ class CoeAndGradesController
                     $id,
                     $tab,
                     $year_level,
+                    null,
                 );
             } elseif ($tab === 'this_school_year') {
                 $submissions = $coeGradesModel->getAllCoeAndGradesByScholarId(
                     $id,
                     $tab,
                     $year_level,
+                    $academic_year,
                 );
             } elseif ($tab === 'past') {
                 $submissions = $coeGradesModel->getAllCoeAndGradesByScholarId(
                     $id,
                     $tab,
                     $year_level,
+                    $academic_year,
                 );
             }
 

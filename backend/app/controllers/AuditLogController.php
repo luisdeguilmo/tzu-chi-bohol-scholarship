@@ -8,7 +8,6 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Constants\Action;
 use App\Models\AuditLogModel;
-use App\Models\ScholarshipCriteriaModel;
 use App\Models\StaffAccountModel;
 use Config\Database;
 use Middleware\Auth;
@@ -43,12 +42,6 @@ class AuditLogController
                 break;
             case 'POST':
                 $this->handlePost();
-                break;
-            case 'PUT':
-                $this->handlePut();
-                break;
-            case 'DELETE':
-                $this->handleDelete();
                 break;
             default:
                 http_response_code(405);
@@ -125,107 +118,6 @@ class AuditLogController
             echo json_encode([
                 'success' => true,
                 'message' => 'Instruction created successfully',
-            ]);
-        } catch (\Exception $e) {
-            // Roll back transaction on error
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
-    }
-
-    private function handlePut()
-    {
-        try {
-            $this->pdo->beginTransaction();
-
-            // Get data from request body
-            $data = json_decode(file_get_contents('php://input'), true);
-
-            if (!$data) {
-                throw new \Exception('No data provided');
-            }
-
-            // Check if ID is provided
-            if (!isset($data['instruction']['id'])) {
-                throw new \Exception('ID is required for update');
-            }
-
-            $id = $data['instruction']['id'];
-
-            // Process application data
-            $criteria = new ScholarshipCriteriaModel();
-
-            // Check if qualification exists
-            $existingInstruction = $criteria->getInstructionById($id);
-            if (!$existingInstruction) {
-                throw new \Exception('Strand not found');
-            }
-
-            if (!$criteria->updateInstruction($id, $data['instruction'])) {
-                throw new \Exception('Failed to update instruction information');
-            }
-
-            $this->pdo->commit();
-
-            // Return success response
-            http_response_code(200);
-            echo json_encode([
-                'success' => true,
-                'message' => 'Instruction updated successfully',
-            ]);
-        } catch (\Exception $e) {
-            // Roll back transaction on error
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
-    }
-
-    private function handleDelete()
-    {
-        try {
-            $this->pdo->beginTransaction();
-
-            // Get ID parameter
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-            if (!$id) {
-                throw new \Exception('ID is required for delete');
-            }
-
-            // Process delete
-            $criteria = new ScholarshipCriteriaModel();
-
-            // Check if qualification exists
-            $existingStrand = $criteria->getInstructionById($id);
-            if (!$existingStrand) {
-                throw new \Exception('Strand not found');
-            }
-
-            if (!$criteria->deleteInstruction($id)) {
-                throw new \Exception('Failed to delete Instruction');
-            }
-
-            $this->pdo->commit();
-
-            // Return success response
-            http_response_code(200);
-            echo json_encode([
-                'success' => true,
-                'message' => 'Instruction deleted successfully',
             ]);
         } catch (\Exception $e) {
             // Roll back transaction on error

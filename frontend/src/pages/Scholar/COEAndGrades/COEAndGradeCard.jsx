@@ -1,4 +1,4 @@
-import { GraduationCap, BookOpen } from "lucide-react";
+import { GraduationCap, BookOpen, Calendar } from "lucide-react";
 import { useArchive } from "../../../hooks/useArchive";
 import { formatDate } from "../../../utils/formatDate";
 
@@ -62,7 +62,7 @@ const CoeGradesCard = ({
 
             <div className="relative">
                 <h3
-                    className={`font-bold text-lg md:text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
+                    className={`font-bold text-[16px] md:text-lg leading-tight mb-2 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
                         isArchived
                             ? "italic text-slate-400 decoration-slate-400"
                             : "text-slate-700"
@@ -86,11 +86,16 @@ const CoeGradesCard = ({
                             isArchived ? "text-slate-500" : "text-slate-600"
                         }`}
                     >
-                        <GraduationCap
-                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived ? "text-slate-400" : "text-slate-600"
-                            }`}
-                        />
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <GraduationCap
+                                className={`w-4 h-4 flex-shrink-0 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-slate-600"
+                                }`}
+                            />
+                        </span>
+
                         <span
                             className={`text-xs ${isArchived ? "italic" : ""}`}
                         >
@@ -112,15 +117,42 @@ const CoeGradesCard = ({
                             isArchived ? "text-slate-500" : "text-slate-600"
                         }`}
                     >
-                        <BookOpen
-                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived ? "text-slate-400" : "text-slate-600"
-                            }`}
-                        />
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <BookOpen
+                                className={`w-4 h-4 flex-shrink-0 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-slate-600"
+                                }`}
+                            />
+                        </span>
+
                         <span
                             className={`text-xs ${isArchived ? "italic" : ""}`}
                         >
                             Semester: {submission.semester}
+                        </span>
+                    </div>
+
+                    <div
+                        className={`flex items-center text-sm ${
+                            isArchived ? "text-slate-500" : "text-slate-600"
+                        }`}
+                    >
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <Calendar
+                                className={`w-4 h-4 flex-shrink-0 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-slate-600"
+                                }`}
+                            />
+                        </span>
+
+                        <span
+                            className={`text-xs ${isArchived ? "italic" : ""}`}
+                        >
+                            Academic Year: {submission.academic_year || "--"}
                         </span>
                     </div>
 

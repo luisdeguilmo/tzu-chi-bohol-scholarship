@@ -29,7 +29,7 @@ function StaffDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
                 <div className="col-span-5 p-6 border bg-white rounded-lg">
-                    <h2 className="mb-4 font-bold">Application Funnel</h2>
+                    <h2 className="mb-4 font-bold text-gray-700">Application Funnel</h2>
                     <FunnelChart
                         applicationData={dashboardData?.applicationData}
                     />
@@ -38,7 +38,7 @@ function StaffDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 <div className="col-span-3 lg:col-span-2 mt-6 p-6 border bg-white rounded-lg">
-                    <h2 className="mb-4 font-bold">
+                    <h2 className="mb-4 font-bold text-gray-700">
                         Duty Hours Chart (Top 10)
                     </h2>
                     <DutyHoursChart
@@ -47,7 +47,7 @@ function StaffDashboard() {
                 </div>
 
                 <div className="col-span-3 lg:mt-6 p-6 border bg-white rounded-lg">
-                    <h2 className="mb-4 font-bold">
+                    <h2 className="mb-4 font-bold text-gray-700">
                         Monthly Allowance Distribution
                     </h2>
                     <AllowanceChart
@@ -59,7 +59,7 @@ function StaffDashboard() {
             </div>
 
             <div className="w-full mt-6 p-6 border bg-white rounded-lg">
-                <h2 className="mb-4 font-bold">Scholar Engagement Trends</h2>
+                <h2 className="mb-4 font-bold text-gray-700">Scholar Engagement Trends</h2>
                 <ScholarEngagementChart
                     eventAttendanceData={dashboardData?.eventAttendanceData}
                     communityServiceHoursCompletionData={

@@ -12,7 +12,7 @@ import TabNavigation from "../TabNavigation";
 import CoeGradesDetailsModal from "../../../components/CoeGradesDetailsModal";
 import { useCurrentYearLevel } from "../../../hooks/useCurrentYearLevel";
 import { useLocation } from "react-router-dom";
-import { useSchoolYears } from "../../../hooks/useSchoolYears";
+import { useSchoolYearContext } from "../../../context/SchoolYearContext";
 
 export default function CoeGrades() {
     const [activeTab, setActiveTab] = useState("all");
@@ -25,7 +25,6 @@ export default function CoeGrades() {
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isEditFormModalOpen, setIsEditFormModalOpen] = useState(false);
     const [selectedSubmission, setSelectedSubmission] = useState(null); // Changed from selectedActivity
-    const [activeSchoolYear, setActiveSchoolYear] = useState(null);
 
     const { pathname } = useLocation();
 
@@ -34,21 +33,7 @@ export default function CoeGrades() {
     }, [pathname]);
 
     const { user } = useAuth();
-    const { getActiveSchoolYear } = useSchoolYears();
-
-    useEffect(() => {
-        const fetchSchoolYear = async () => {
-            try {
-                const data = await getActiveSchoolYear();
-                setActiveSchoolYear(data);
-            } catch (err) {
-                console.error(err);
-                setError("Failed to fetch school year");
-            }
-        };
-
-        fetchSchoolYear();
-    }, []);
+    const { activeSchoolYear } = useSchoolYearContext();
 
     const { yearLevel } = useCurrentYearLevel(activeSchoolYear);
 
@@ -61,6 +46,8 @@ export default function CoeGrades() {
     useEffect(() => {
         fetchSubmissions(activeTab); // Changed
     }, [activeTab]);
+
+    console.log(submissions);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -166,8 +153,8 @@ export default function CoeGrades() {
             </div>
 
             {/* Scrollable Content Area */}
-            <div className="p-4 md:p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="p-4 md:p-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-4">
                     {loading ? (
                         <BackgroundLoadingIndicator />
                     ) : (

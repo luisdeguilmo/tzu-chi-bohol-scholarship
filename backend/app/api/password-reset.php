@@ -22,6 +22,7 @@ try {
 
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
+use Middleware\Auth;
 
 $db = new Database();
 $pdo = $db->getConnection();
@@ -32,19 +33,27 @@ function generateSecureToken($length = 64)
     return bin2hex(random_bytes($length / 2));
 }
 
-// Helper function to send email (basic implementation)
-// function sendResetEmail($email, $token)
-// {
-//     $resetLink = 'https://yourapp.com/reset-password.php?token=' . $token;
-//     $subject = 'Password Reset Request';
-//     $message =
-//         "Click the following link to reset your password:\n\n" .
-//         $resetLink .
-//         "\n\nThis link expires in 1 hour.";
-//     $headers = 'From: noreply@yourapp.com';
+function temporaryPassword(int $length = 12): string
+{
+    // Define the character pools
+    $lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $numbers = '0123456789';
 
-//     return mail($email, $subject, $message, $headers);
-// }
+    // Combine all characters
+    $allCharacters = $lowercase . $uppercase . $numbers;
+    $maxIndex = strlen($allCharacters) - 1;
+
+    $password = '';
+
+    // Cryptographically secure random character selection
+    for ($i = 0; $i < $length; $i++) {
+        $password .= $allCharacters[random_int(0, $maxIndex)];
+    }
+
+    return $password;
+}
+
 $requiredEnvVars = ['BREVO_EMAIL', 'BREVO_SMTP_KEY', 'ORG_NAME', 'ORG_ADDRESS', 'ORG_CONTACT'];
 
 foreach ($requiredEnvVars as $var) {
@@ -184,8 +193,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update_password') {
     $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
 
     // Update user's password
-    $updateStmt = $pdo->prepare('UPDATE users SET password = ? WHERE email = ?');
-    $updateSuccess = $updateStmt->execute([$hashedPassword, $email]);
+    $updateStmt = $pdo->prepare(
+        'UPDATE users SET password = ?, is_temporary = ?, temp_password_expires_at = ? WHERE email = ?',
+    );
+    $updateSuccess = $updateStmt->execute([$hashedPassword, 0, null, $email]);
 
     if ($updateSuccess) {
         // Delete the used token
@@ -208,7 +219,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update_password') {
 
 // Change Password
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'change_password') {
-    $account_id = $_POST['account_id'] ?? '';
+    // $account_id = $_POST['account_id'] ?? '';
+    $account_id = Auth::id();
     $currentPassword = $_POST['current_password'] ?? '';
     $newPassword = $_POST['new_password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
@@ -251,8 +263,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'change_passwor
     }
 
     // Update user's password
-    $updateStmt = $pdo->prepare('UPDATE users SET password = ? WHERE account_id = ?');
-    $updateSuccess = $updateStmt->execute([$hashedNewPassword, $account_id]);
+    $updateStmt = $pdo->prepare(
+        'UPDATE users SET password = ?, is_temporary = ?, temp_password_expires_at = ? WHERE account_id = ?',
+    );
+    $updateSuccess = $updateStmt->execute([$hashedNewPassword, 0, null, $account_id]);
 
     if ($updateSuccess) {
         echo json_encode([
@@ -267,59 +281,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'change_passwor
 
 // Reset Password
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'reset_password') {
+    // Generate the password and hash it
     $account_id = $_POST['account_id'] ?? '';
-    $newPassword = $_POST['new_password'] ?? '';
-    $confirmPassword = $_POST['confirm_password'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $tempPassword = temporaryPassword(12);
+    $hashedPassword = password_hash($tempPassword, PASSWORD_DEFAULT);
 
-    // Validate input
-    if (empty($newPassword) || empty($confirmPassword)) {
-        echo json_encode(['success' => false, 'message' => 'All fields are required']);
-        exit();
-    }
+    // Calculate expiration time (24 hours from now)
+    $expiresAt = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
-    if ($newPassword !== $confirmPassword) {
-        echo json_encode(['success' => false, 'message' => 'Passwords do not match']);
-        exit();
-    }
+    // Update the database
+    // $query = "UPDATE users SET
+    //         password = :password,
+    //         is_temporary = 1,
+    //         temp_password_expires_at = :expires_at
+    //       WHERE id = :user_id";
 
-    if (strlen($newPassword) < 8) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Password must be at least 8 characters long',
-        ]);
-        exit();
-    }
+    // $email = $pdo->prepare("SELECT email FROM users WHERE account_id = '$account_id'");
 
-    // Verify token and get email
-    // $stmt = $pdo->prepare('SELECT password FROM users WHERE account_id = ?');
-    // $stmt->execute([$account_id]);
-    // $password = $stmt->fetch();
+    if ($emailService->sendTempPasswordEmail($email, $tempPassword)) {
+        $updateStmt = $pdo->prepare('UPDATE users SET 
+            password = ?, 
+            is_temporary = ?, 
+            temp_password_expires_at = ? 
+          WHERE account_id = ?');
+        $updateSuccess = $updateStmt->execute([$hashedPassword, 1, $expiresAt, $account_id]);
 
-    // if (!$password) {
-    //     echo json_encode(['success' => false, 'message' => 'User not found']);
-    //     exit();
-    // }
-    // // Hash new password
-    // // $hashedCurrentPassword = password_hash($currentPassword, password_verify());
-    $hashedNewPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-
-    // if (!password_verify($currentPassword, $password['password'])) {
-    //     echo json_encode(['success' => false, 'message' => 'Incorrect current password']);
-    //     exit();
-    // }
-
-    // Update user's password
-    $updateStmt = $pdo->prepare('UPDATE users SET password = ? WHERE account_id = ?');
-    $updateSuccess = $updateStmt->execute([$hashedNewPassword, $account_id]);
-
-    if ($updateSuccess) {
         echo json_encode([
             'success' => true,
-            'message' => 'Password updated successfully',
+            'message' => 'Password reset link sent to your email',
         ]);
+        exit();
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update password']);
+        echo json_encode(['success' => false, 'message' => 'Failed to send email']);
+        exit();
     }
+
+    // ... Execute query and email the plain-text $tempPassword to the user ...
+    // $account_id = $_POST['account_id'] ?? '';
+    // $newPassword = $_POST['new_password'] ?? '';
+    // $confirmPassword = $_POST['confirm_password'] ?? '';
+
+    // // Validate input
+    // if (empty($newPassword) || empty($confirmPassword)) {
+    //     echo json_encode(['success' => false, 'message' => 'All fields are required']);
+    //     exit();
+    // }
+
+    // if ($newPassword !== $confirmPassword) {
+    //     echo json_encode(['success' => false, 'message' => 'Passwords do not match']);
+    //     exit();
+    // }
+
+    // if (strlen($newPassword) < 8) {
+    //     echo json_encode([
+    //         'success' => false,
+    //         'message' => 'Password must be at least 8 characters long',
+    //     ]);
+    //     exit();
+    // }
+
+    // $hashedNewPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+
+    // // Update user's password
+    // $updateStmt = $pdo->prepare('UPDATE users SET password = ? WHERE account_id = ?');
+    // $updateSuccess = $updateStmt->execute([$hashedNewPassword, $account_id]);
+
+    // if ($updateSuccess) {
+    //     echo json_encode([
+    //         'success' => true,
+    //         'message' => 'Password updated successfully',
+    //     ]);
+    // } else {
+    //     echo json_encode(['success' => false, 'message' => 'Failed to update password']);
+    // }
     exit();
 }
 

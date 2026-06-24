@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-const useMonthlyAllowanceSummary = (month, year) => {
+const useMonthlyAllowanceSummary = (month, year, sortBy) => {
     const [allowanceCycles, setAllowanceCycles] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -10,7 +10,7 @@ const useMonthlyAllowanceSummary = (month, year) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/monthly-allowance-summary.php?month=${month}&year=${year}`
+                `${BASE_URL}app/api/monthly-allowance-summary.php?month=${month}&year=${year}&sort=${sortBy}`
             );
 
             if (response.data) {
@@ -25,10 +25,10 @@ const useMonthlyAllowanceSummary = (month, year) => {
     };
 
     useEffect(() => {
-        if (month && year) {
+        if (month && year && sortBy) {
             fetchAllowanceCycles();
         }
-    }, [month, year]);
+    }, [month, year, sortBy]);
 
     return { loading, allowanceCycles, fetchAllowanceCycles };
 };

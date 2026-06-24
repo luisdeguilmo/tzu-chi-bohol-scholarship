@@ -22,21 +22,21 @@ class AdminAccountInformationModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function updateAdmin($data)
+    public function updateAdmin($data, $id)
     {
         $query = 'UPDATE admin SET name = :name, email = :email WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':id', $data['id'], \PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':email', $data['email']);
         return $stmt->execute();
     }
 
-    public function updateUser($data)
+    public function updateUser($data, $id)
     {
         $query = 'UPDATE users SET email = :email WHERE account_id = :id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':id', $data['id'], \PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->bindParam(':email', $data['email']);
         return $stmt->execute();
     }

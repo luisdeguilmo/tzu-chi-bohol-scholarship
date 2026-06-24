@@ -2,10 +2,6 @@
 
 namespace App\Controllers;
 
-// CORS headers
-// header('Access-Control-Allow-Origin: *');
-// header('Access-Control-Allow-Methods: PUT, POST, GET, OPTIONS');
-// header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -69,9 +65,6 @@ class ActivityController
                 break;
             case 'PUT':
                 $this->updateActivity();
-                break;
-            case 'DELETE':
-                // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);

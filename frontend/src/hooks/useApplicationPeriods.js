@@ -98,7 +98,7 @@ export const useApplicationPeriods = (type) => {
                 setLoading(false);
                 return true;
             } else {
-                alert("Error: " + result.message);
+                toast.error("Error: " + result.message);
                 setLoading(false);
                 return false;
             }
@@ -131,9 +131,12 @@ export const useApplicationPeriods = (type) => {
             } else {
                 alert("Error: " + result.message);
             }
+
+            return true;
         } catch (error) {
             console.error("Submission error:", error);
             alert("Failed to submit the form. Please try again.");
+            return true;
         }
     };
 
@@ -157,6 +160,8 @@ export const useApplicationPeriods = (type) => {
                 announcementMessage: announcementMessage,
             },
         };
+
+        console.log(data);
 
         try {
             setLoading(true);

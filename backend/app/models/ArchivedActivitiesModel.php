@@ -126,7 +126,10 @@ class ArchivedActivitiesModel
                 'id' => $file['id'],
                 'application_id' => $file['application_id'],
                 'file_name' => $file['file_name'],
-                'file_path' => $file['file_path'],
+                'file_url' =>
+                    $_ENV['APP_URL'] .
+                    '/index.php?type=activities&route=file/view&file=' .
+                    urlencode(basename($file['file_path'])),
                 'file_size' => $file['file_size'],
                 'file_type' => $file['file_type'],
                 'uploaded_at' => $file['uploaded_at'],

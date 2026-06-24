@@ -198,7 +198,7 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
         >
             <div className="p-6">
                 <div className="grid md:grid-cols-1 gap-2">
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                    <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                         Semester
                         <select
                             required
@@ -206,7 +206,7 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
                             onChange={(e) =>
                                 handleChange(setSemester, e.target.value)
                             }
-                            className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="mt-2 w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="" disabled>
                                 -- Select --
@@ -218,7 +218,7 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
                 </div>
 
                 <div className="">
-                    <label className="py-1 mt-2 flex flex-col gap-[1px] text-gray-500 text-xs">
+                    <label className="py-1 mt-2 flex flex-col gap-[1px] text-gray-800 text-xs">
                         Upload Documents (COE and Grades)
                         <input
                             type="file"
@@ -231,7 +231,7 @@ function CoeGradesFormModal({ isOpen, setIsOpen, yearLevel, onSuccess }) {
                         <button
                             type="button"
                             onClick={handleAddFileClick}
-                            className="py-2.5 px-2 flex justify-center items-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
+                            className="mt-2 py-2.5 px-2 flex justify-center items-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
                             disabled={isSubmitting}
                         >
                             <svg

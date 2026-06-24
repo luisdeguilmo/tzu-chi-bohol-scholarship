@@ -220,10 +220,6 @@ class ApplicationPeriodController
         }
     }
 
-    // -------------------------------------------------------------------------
-    // PUT
-    // -------------------------------------------------------------------------
-
     private function handlePut(): void
     {
         try {
@@ -329,10 +325,6 @@ class ApplicationPeriodController
         }
     }
 
-    // -------------------------------------------------------------------------
-    // DELETE
-    // -------------------------------------------------------------------------
-
     private function handleDelete(): void
     {
         try {
@@ -413,19 +405,6 @@ class ApplicationPeriodController
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Business logic helpers
-    // -------------------------------------------------------------------------
-
-    /**
-     * Handles all side-effects specific to a renewal application period:
-     * - Sends renewal emails (collects failures rather than aborting on the first)
-     * - Creates the in-app notification
-     * - Marks previous scholars as not-renewed
-     * - Resets living/transport submission flags
-     *
-     * @throws \RuntimeException on notification failure or if any emails failed
-     */
     private function processRenewal(
         array $application,
         PHPMailerBrevoService $emailService,
@@ -504,13 +483,6 @@ class ApplicationPeriodController
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Infrastructure helpers
-    // -------------------------------------------------------------------------
-
-    /**
-     * @throws \RuntimeException if required env vars are missing
-     */
     private function assertEnvVars(): void
     {
         $missing = [];
@@ -540,11 +512,6 @@ class ApplicationPeriodController
         );
     }
 
-    /**
-     * Parses and returns the JSON request body.
-     *
-     * @throws \InvalidArgumentException on missing or malformed body
-     */
     private function parseJsonBody(): array
     {
         $raw = file_get_contents('php://input');
@@ -566,11 +533,6 @@ class ApplicationPeriodController
         return $data;
     }
 
-    /**
-     * Sanitizes and validates a numeric ID from user input.
-     *
-     * @throws \InvalidArgumentException on invalid input
-     */
     private function sanitizeId(mixed $raw): int
     {
         $id = filter_var($raw, FILTER_VALIDATE_INT);
@@ -588,10 +550,6 @@ class ApplicationPeriodController
             $this->pdo->rollBack();
         }
     }
-
-    // -------------------------------------------------------------------------
-    // Response helpers
-    // -------------------------------------------------------------------------
 
     private function sendSuccess(int $statusCode, array $payload): void
     {

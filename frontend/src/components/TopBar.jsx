@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../hooks/useNotifications";
 import NotificationPage from "./NotificationPage";
 import { toast } from "react-toastify";
+import ConfirmationModal from "./ConfirmationModal";
 
 function TopBar() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isNotificationPanelOpen, setIsNotificationPanelOpen] =
         useState(false);
 
@@ -181,18 +183,14 @@ function TopBar() {
                                                 />
                                             ) : (
                                                 <div className="w-9 h-9 rounded-full text-white text-sm bg-black flex justify-center items-center">
-                                                    {
-                                                        user?.name[0]
-                                                    }
+                                                    {user?.name[0]}
                                                 </div>
                                             )}
 
                                             <p
                                                 className={`text-gray-500 text-xs hidden sm:block`}
                                             >
-                                                {
-                                                   user?.name
-                                                }
+                                                {user?.name}
                                             </p>
                                         </>
                                     )}
@@ -224,7 +222,7 @@ function TopBar() {
                                     My Profile
                                 </button>
                                 <button
-                                    onClick={handleLogout}
+                                    onClick={() => setIsModalOpen(true)}
                                     className="w-full px-2 py-2 hover:bg-gray-100 rounded-md"
                                 >
                                     Logout
@@ -235,15 +233,30 @@ function TopBar() {
                 </div>
             </div>
 
-            <NotificationPage
-                ref={notificationPanelRef}
-                notifications={notifications}
-                isOpen={isNotificationPanelOpen}
-                onOpen={setIsNotificationPanelOpen}
-                onDelete={deleteNotification}
-                onRefresh={fetchNotifications}
-                onMarkAsRead={markAsRead}
-            />
+            {isNotificationPanelOpen &&
+            (
+                <NotificationPage
+                    ref={notificationPanelRef}
+                    notifications={notifications}
+                    isOpen={isNotificationPanelOpen}
+                    onOpen={setIsNotificationPanelOpen}
+                    onDelete={deleteNotification}
+                    onRefresh={fetchNotifications}
+                    onMarkAsRead={markAsRead}
+                />
+            )}
+
+            {isModalOpen && (
+                <ConfirmationModal
+                    label={"Logout?"}
+                    isOpen={isModalOpen}
+                    onClose={setIsModalOpen}
+                    message={"Are you sure you want to log out?"}
+                    onClick={handleLogout}
+                    submitButtonLabel={"Yes"}
+                    closeButtonLabel={"No"}
+                />
+            )}
         </>
     );
 }

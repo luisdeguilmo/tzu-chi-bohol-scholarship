@@ -25,25 +25,6 @@ class StaffAccountModel
         $this->pdo = $db->getConnection();
     }
 
-    // public function createStaff($data) {
-    //     $query = "INSERT INTO " . $this->table_name . "
-    //               SET name = :name,
-    //               email = :email,
-    //               password = :password";
-
-    //     $stmt = $this->pdo->prepare($query);
-
-    //     $name = htmlspecialchars(strip_tags($data['name']));
-    //     $email = htmlspecialchars(strip_tags($data['email']));
-    //     $password = htmlspecialchars(strip_tags($data['password']));
-
-    //     $stmt->bindParam(":name", $name);
-    //     $stmt->bindParam(":email", $email);
-    //     $stmt->bindParam(":password", $password);
-
-    //     return $stmt->execute();
-    // }
-
     private function generateUniqueAccountId($length = 7)
     {
         do {
@@ -110,12 +91,6 @@ class StaffAccountModel
 
     public function createAccount($data, $today)
     {
-        // // Get scholar data first
-        // $scholarData = $this->getPendingScholarById($application_id);
-        // if (!$scholarData) {
-        //     throw new \Exception("Scholar application not found");
-        // }
-
         $account_id = $this->generateUniqueAccountId();
 
         $isSuccess = $this->createStaff($data, $account_id, $today);
@@ -145,12 +120,19 @@ class StaffAccountModel
         return $stmt->execute();
     }
 
-    public function getAllStaffs()
+    public function getAllStaffs($status)
     {
         $query =
             'SELECT s.*, u.email, u.status FROM ' .
             $this->table_name .
             ' s JOIN users u ON s.account_id = u.account_id';
+
+        if ($status === 'active') {
+            $query .= " WHERE u.status = 'active'";
+        } elseif ($status === 'deactivated') {
+            $query .= " WHERE u.status = 'deactivated'";
+        }
+
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -172,7 +154,7 @@ class StaffAccountModel
 
     public function getStaffById($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE id = :id';
+        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE account_id = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);
@@ -196,19 +178,41 @@ class StaffAccountModel
             'UPDATE ' .
             $this->table_name .
             " 
-                  SET name = :name,
-                  email = :email
-                  WHERE id = :id";
+                  SET first_name = :first_name,
+                  last_name = :last_name,
+                  middle_name = :middle_name,
+                  suffix = :suffix,
+                  contact_number = :contact_number,
+                  email_address = :email_address,
+                  age = :age,
+                  gender = :gender,
+                  address = :address,
+                  facebook = :facebook
+                  WHERE account_id = :id";
 
         $stmt = $this->pdo->prepare($query);
 
-        $name = htmlspecialchars(strip_tags($data['name']));
-        $email = htmlspecialchars(strip_tags($data['email']));
-        // $password = htmlspecialchars(strip_tags($data['password']));
+        $first_name = htmlspecialchars(strip_tags($data['first_name']));
+        $middle_name = htmlspecialchars(strip_tags($data['middle_name']));
+        $last_name = htmlspecialchars(strip_tags($data['last_name']));
+        $suffix = htmlspecialchars(strip_tags($data['suffix']));
+        $contact_number = htmlspecialchars(strip_tags($data['contact_number']));
+        $email_address = htmlspecialchars(strip_tags($data['email']));
+        $age = htmlspecialchars(strip_tags($data['age']));
+        $gender = htmlspecialchars(strip_tags($data['gender']));
+        $address = htmlspecialchars(strip_tags($data['address']));
+        $facebook = htmlspecialchars(strip_tags($data['facebook']));
 
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':email', $email);
-        // $stmt->bindParam(":password", $password);
+        $stmt->bindParam(':first_name', $first_name);
+        $stmt->bindParam(':middle_name', $middle_name);
+        $stmt->bindParam(':last_name', $last_name);
+        $stmt->bindParam(':suffix', $suffix);
+        $stmt->bindParam(':contact_number', $contact_number);
+        $stmt->bindParam(':email_address', $email_address);
+        $stmt->bindParam(':age', $age);
+        $stmt->bindParam(':gender', $gender);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':facebook', $facebook);
         $stmt->bindParam(':id', $id);
 
         return $stmt->execute();

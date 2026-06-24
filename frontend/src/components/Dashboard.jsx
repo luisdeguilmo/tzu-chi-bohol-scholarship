@@ -11,12 +11,33 @@ function Dashboard() {
     const { pathname } = useLocation();
     const { user } = useAuth();
 
+    console.log(user);
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [pathname]);
 
     return (
-        <Suspense fallback={null}>
+        <Suspense
+            fallback={
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
+                    <div className="flex items-end gap-1 h-10">
+                        {[...Array(5)].map((_, i) => (
+                            <div
+                                key={i}
+                                className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                style={{
+                                    height: "10px",
+                                    animationDelay: `${i * 100}ms`,
+                                }}
+                            />
+                        ))}
+                    </div>
+
+                    <p className="text-sm text-slate-500">Loading data...</p>
+                </div>
+            }
+        >
             {user.type === "scholar" && <ScholarDashboard />}
             {user.type === "staff" && <StaffDashboard />}
             {user.type === "admin" && <AdminDashboard />}

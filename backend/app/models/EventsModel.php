@@ -158,44 +158,6 @@ class EventsModel
         }
     }
 
-    // public function updateEvent($id, $data)
-    // {
-    //     // Validate dates
-    //     if (strtotime($data['startDate']) > strtotime($data['endDate'])) {
-    //         throw new \Exception('End date must be after start date.');
-    //     }
-
-    //     // If status is provided, use it; otherwise calculate based on dates
-    //     $status = isset($data['status']);
-    //     // ? $data['status'] : $this->calculateStatus($data['startDate'], $data['endDate'])
-
-    //     $query =
-    //         'UPDATE ' .
-    //         $this->table_name .
-    //         "
-    //               SET start_date = :start_date,
-    //               end_date = :end_date,
-    //               status = :status,
-    //               announcement_message = :announcement_message,
-    //               updated_at = NOW()
-    //               WHERE id = :id";
-
-    //     $stmt = $this->pdo->prepare($query);
-
-    //     $start_date = htmlspecialchars(strip_tags($data['startDate']));
-    //     $end_date = htmlspecialchars(strip_tags($data['endDate']));
-    //     $status = htmlspecialchars(strip_tags($data['status']));
-    //     // $announcement_message = htmlspecialchars(strip_tags($data['announcementMessage']));
-
-    //     $stmt->bindParam(':id', $id);
-    //     $stmt->bindParam(':start_date', $start_date);
-    //     $stmt->bindParam(':end_date', $end_date);
-    //     $stmt->bindParam(':status', $status);
-    //     $stmt->bindParam(':announcement_message', $announcement_message);
-
-    //     return $stmt->execute();
-    // }
-
     public function getEvents($scholarId)
     {
         $query =
@@ -217,7 +179,7 @@ class EventsModel
 
     public function getAllEvents()
     {
-        $query = "SELECT * FROM events 
+        $query = "SELECT id, event_name, event_type, event_location, date, start_time, end_time, participant_limit FROM events 
                     ORDER BY date DESC, start_time DESC";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
@@ -227,7 +189,7 @@ class EventsModel
     public function getUpcomingEvents()
     {
         $query =
-            'SELECT * FROM ' .
+            'SELECT id, event_name, event_type, event_location, date, start_time, end_time, participant_limit FROM ' .
             $this->table_name .
             " 
                 WHERE CONCAT(date, ' ', start_time) > :current_datetime 
@@ -241,7 +203,7 @@ class EventsModel
     public function getEventsThisMonth()
     {
         $query =
-            'SELECT * FROM ' .
+            'SELECT id, event_name, event_type, event_location, date, start_time, end_time, participant_limit FROM ' .
             $this->table_name .
             " 
                 WHERE date >= :start_of_month AND date < :start_of_next_month
@@ -256,7 +218,7 @@ class EventsModel
     public function getPastEvents()
     {
         $query =
-            'SELECT * FROM ' .
+            'SELECT id, event_name, event_type, event_location, date, start_time, end_time, participant_limit FROM ' .
             $this->table_name .
             " 
                 WHERE CONCAT(date, ' ', start_time) < :current_datetime 
@@ -270,7 +232,7 @@ class EventsModel
     public function getRecentEvents()
     {
         $query =
-            'SELECT * FROM ' .
+            'SELECT id, event_name, event_type, event_location, date, start_time, end_time, participant_limit FROM ' .
             $this->table_name .
             " 
                 WHERE date >= :start_of_month AND date < :current_date AND date < :start_of_next_month

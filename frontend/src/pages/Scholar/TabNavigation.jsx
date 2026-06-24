@@ -1,7 +1,7 @@
 const TabNavigation = ({ tabs, handleTabChange, activeTab }) => {
     return (
-        <div className="border-t border-gray-100">
-            <div className="px-6 py-2 space-x-1.5 font-medium">
+        <div className="">
+            <div className="px-6 pb-3 space-x-1.5 font-medium">
                 {tabs.map((tab, index) => (
                     <button
                         key={index}

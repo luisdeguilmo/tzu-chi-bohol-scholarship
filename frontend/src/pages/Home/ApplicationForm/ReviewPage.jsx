@@ -8,7 +8,7 @@ const PersonalInformation = ({ personal }) => {
             {/* <h3 className="text-gray-700 py-8 font-bold md:text-lg text-sm">
                 Personal Information
             </h3> */}
-            <h2 className="mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+            <h2 className="mb-10 py-3 font-bold rounded-lg text-green-900 text-sm md:text-lg">
                 Personal Information
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-4">
@@ -17,7 +17,7 @@ const PersonalInformation = ({ personal }) => {
                         <p className="text-xs text-gray-500 mb-1.5">
                             {item.label}
                         </p>
-                        <p className="text-xs font-medium text-gray-800">
+                        <p className="text-sm font-medium text-gray-900">
                             {personal[item.name]}
                         </p>
                     </div>
@@ -30,7 +30,7 @@ const PersonalInformation = ({ personal }) => {
 const EducationalBackground = ({ education }) => {
     return (
         <>
-            <h2 className="mt-10 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+            <h2 className="mt-10 mb-10 py-3 font-bold rounded-lg text-green-900 text-sm md:text-lg">
                 Educational Background
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-4">
@@ -39,7 +39,7 @@ const EducationalBackground = ({ education }) => {
                         <p className="text-xs text-gray-500 mb-1.5">
                             {item.label}
                         </p>
-                        <p className="text-xs font-medium text-gray-800">
+                        <p className="text-sm font-medium text-gray-900">
                             {education[item.name]}
                         </p>
                     </div>
@@ -62,7 +62,7 @@ const FamilyInformation = ({
             {/* <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
                 Family Information
             </h3> */}
-            <h2 className="mt-10 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+            <h2 className="mt-10 mb-10 py-3 font-bold rounded-lg text-green-900 text-sm md:text-lg">
                 Family Information
             </h2>
 
@@ -75,7 +75,7 @@ const FamilyInformation = ({
                         <p className="text-xs text-gray-500 mb-1.5">
                             {item.label}
                         </p>
-                        <p className="text-xs font-medium text-gray-800">
+                        <p className="text-sm font-medium text-gray-900">
                             {parents_guardian[item.name]}
                         </p>
                     </div>
@@ -85,7 +85,7 @@ const FamilyInformation = ({
             {/* <h4 className="text-gray-700 font-bold py-10 md:text-sm text-xs">
                 Contact Person In Case Of Emergency
             </h4> */}
-            <h2 className="mt-10 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-[10px] md:text-xs">
+            <h2 className="mt-10 mb-10 py-3 font-bold rounded-lg text-green-900 text-sm md:text-sm">
                 Contact Person In Case Of Emergency
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
@@ -94,7 +94,7 @@ const FamilyInformation = ({
                         <p className="text-xs text-gray-500 mb-1.5">
                             {item.label}
                         </p>
-                        <p className="text-xs font-medium text-gray-800">
+                        <p className="text-sm font-medium text-gray-900">
                             {contact_person[item.name]}
                         </p>
                     </div>
@@ -106,7 +106,7 @@ const FamilyInformation = ({
             </h4> */}
             {family_members.length > 0 && (
                 <>
-                    <h2 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-[10px] md:text-xs">
+                    <h2 className="mt-10 mb-4 py-3 font-bold rounded-lg text-green-900 text-sm md:text-sm">
                         Siblings
                     </h2>
 
@@ -122,7 +122,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Name:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {member.name}
                                             </span>
                                         </p>
@@ -131,7 +131,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Relationship:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {member.relationship}
                                             </span>
                                         </p>
@@ -140,7 +140,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Age:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {member.age}
                                             </span>
                                         </p>
@@ -149,7 +149,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Gender:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {member.gender}
                                             </span>
                                         </p>
@@ -158,7 +158,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Civil Status:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {member.civil_status}
                                             </span>
                                         </p>
@@ -167,7 +167,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Living with Family:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {member.living_with_family}
                                             </span>
                                         </p>
@@ -176,7 +176,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Education/Job:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {member.education_occupation}
                                             </span>
                                         </p>
@@ -185,7 +185,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Income:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {member.monthly_income}
                                             </span>
                                         </p>
@@ -203,7 +203,7 @@ const FamilyInformation = ({
 
             {scholars.length > 0 && (
                 <>
-                    <h4 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+                    <h4 className="mt-10 mb-4 py-3 font-bold rounded-lg text-green-900 text-sm md:text-sm">
                         Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
                     </h4>
 
@@ -219,7 +219,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Name:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {scholar.name}
                                             </span>
                                         </p>
@@ -228,7 +228,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Year Level:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {scholar.year_level}
                                             </span>
                                         </p>
@@ -237,7 +237,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 School:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {scholar.school}
                                             </span>
                                         </p>
@@ -246,7 +246,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 Course:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {scholar.course}
                                             </span>
                                         </p>
@@ -255,7 +255,7 @@ const FamilyInformation = ({
                                             <span className="text-gray-600">
                                                 School Year:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {scholar.school_year}
                                             </span>
                                         </p>
@@ -283,7 +283,7 @@ const Assistance = ({ assistance }) => {
                         Assistance from Other Association, Organization, School
                         Discount, etc.
                     </h3> */}
-                    <h3 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+                    <h3 className="mt-10 mb-4 py-3 font-bold rounded-lg text-green-900 text-xs md:text-sm">
                         Assistance from Other Association, Organization, School
                         Discount, etc.
                     </h3>
@@ -299,7 +299,7 @@ const Assistance = ({ assistance }) => {
                                             <span className="text-gray-600">
                                                 Organization:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {item.organization_name}
                                             </span>
                                         </p>
@@ -308,7 +308,7 @@ const Assistance = ({ assistance }) => {
                                             <span className="text-gray-600">
                                                 Type of Support:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {item.support_type}
                                             </span>
                                         </p>
@@ -317,7 +317,7 @@ const Assistance = ({ assistance }) => {
                                             <span className="text-gray-600">
                                                 Amount:
                                             </span>{" "}
-                                            <span className="text-gray-800">
+                                            <span className="text-[13px] md:text-sm text-gray-900">
                                                 {item.amount}
                                             </span>
                                         </p>
@@ -342,15 +342,15 @@ const OtherInformation = ({ expectation, character_reference }) => {
             {/* <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
                 Other Information
             </h3> */}
-            <h3 className="mt-12 mb-10 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-xs md:text-sm">
+            <h3 className="mt-12 mb-10 py-3 font-bold rounded-lg text-green-900 text-sm md:text-sm">
                 Other Information
             </h3>
             <div>
                 <p className="text-xs text-gray-500">Expectation</p>
-                <p className="text-sm mt-1 text-gray-800">{expectation}</p>
+                <p className="text-sm mt-1 text-gray-900">{expectation}</p>
             </div>
 
-            <h4 className="mt-10 mb-4 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-[10px] md:text-xs">
+            <h4 className="mt-10 mb-4 py-3 font-bold rounded-lg text-green-900 text-sm md:text-sm">
                 Character Reference
             </h4>
 
@@ -364,7 +364,7 @@ const OtherInformation = ({ expectation, character_reference }) => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
                                 <p>
                                     <span className="text-gray-600">Name:</span>{" "}
-                                    <span className="text-gray-800">
+                                    <span className="text-[13px] md:text-sm text-gray-900">
                                         {character.name}
                                     </span>
                                 </p>
@@ -373,7 +373,7 @@ const OtherInformation = ({ expectation, character_reference }) => {
                                     <span className="text-gray-600">
                                         Address:
                                     </span>{" "}
-                                    <span className="text-gray-800">
+                                    <span className="text-[13px] md:text-sm text-gray-900">
                                         {character.address}
                                     </span>
                                 </p>
@@ -382,7 +382,7 @@ const OtherInformation = ({ expectation, character_reference }) => {
                                     <span className="text-gray-600">
                                         Company:
                                     </span>{" "}
-                                    <span className="text-gray-800">
+                                    <span className="text-[13px] md:text-sm text-gray-900">
                                         {character.company}
                                     </span>
                                 </p>
@@ -391,7 +391,7 @@ const OtherInformation = ({ expectation, character_reference }) => {
                                     <span className="text-gray-600">
                                         Position:
                                     </span>{" "}
-                                    <span className="text-gray-800">
+                                    <span className="text-[13px] md:text-sm text-gray-900">
                                         {character.position}
                                     </span>
                                 </p>
@@ -400,7 +400,7 @@ const OtherInformation = ({ expectation, character_reference }) => {
                                     <span className="text-gray-600">
                                         Contact #:
                                     </span>{" "}
-                                    <span className="text-gray-800">
+                                    <span className="text-[13px] md:text-sm text-gray-900">
                                         {character.contact_number}
                                     </span>
                                 </p>

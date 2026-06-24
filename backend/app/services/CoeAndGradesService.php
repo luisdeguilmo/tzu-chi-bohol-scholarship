@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\CoeAndGradeFilesModel;
 use App\Models\CoeGradesModel;
+use App\Models\SchoolYearModel;
 use App\Services\FileUploadService;
 
 class CoeAndGradesService
@@ -11,6 +12,7 @@ class CoeAndGradesService
     private $coeGradesModel;
     private $documentModel;
     private $fileUploadService;
+    public $academic_year;
 
     public function generateBatchId()
     {
@@ -19,9 +21,11 @@ class CoeAndGradesService
 
     public function __construct($pdo)
     {
+        $academicYearModal = new SchoolYearModel();
         $this->coeGradesModel = new CoeGradesModel($pdo);
         $this->documentModel = new CoeAndGradeFilesModel($pdo);
         $this->fileUploadService = new FileUploadService();
+        $this->academic_year = $academicYearModal->getActiveSchoolYear();
     }
 
     public function createSubmissionWithFiles(
@@ -30,13 +34,13 @@ class CoeAndGradesService
         $files = null,
         $base64Files = null,
     ) {
-        // $batch_id = $this->generateBatchId();
-        // Validate submission data
-        // $this->validateSubmissionData($submissionData);
-
         // Create submission
         $submissionId = $scholarId;
-        $id = $this->coeGradesModel->createActivity($submissionData, $scholarId);
+        $id = $this->coeGradesModel->createActivity(
+            $submissionData,
+            $scholarId,
+            $this->academic_year,
+        );
 
         if (!$submissionId) {
             throw new \Exception('Failed to create COE and grades submission');
@@ -108,34 +112,16 @@ class CoeAndGradesService
         if ($files) {
             $uploadedFiles = array_merge(
                 $uploadedFiles,
-                $this->fileUploadService->handleFormDataFiles(
-                    'coe_grades',
-                    $files,
-                    $scholarId,
-                ),
+                $this->fileUploadService->handleFormDataFiles('coe_grades', $files, $scholarId),
             );
         }
 
         if ($base64Files) {
             $uploadedFiles = array_merge(
                 $uploadedFiles,
-                $this->fileUploadService->handleBase64Files(
-                    'coe_grades',
-                    $base64Files,
-                    $scholarId,
-                ),
+                $this->fileUploadService->handleBase64Files('coe_grades', $base64Files, $scholarId),
             );
         }
-
-        // if (!$this->documentModel->deleteCoeGradeFile($submissionId)) {
-        //     throw new \Exception('Unable to delete existing documents');
-        // }
-
-        // foreach ($existingFiles as $file) {
-        //     if (!$this->documentModel->updateDocumentBatchId($file['id'], $batch_id)) {
-        //         throw new \Exception('Unable to update existing file');
-        //     }
-        // }
 
         foreach ($removedExistingFiles as $file) {
             if (!$this->documentModel->deleteCoeGradeFile($file['id'])) {
@@ -152,13 +138,7 @@ class CoeAndGradesService
                 'file_size' => $file['size'],
             ];
 
-            if (
-                !$this->documentModel->createCoeGradeFile(
-                    $fileData,
-                    $submissionData,
-                    $scholarId,
-                )
-            ) {
+            if (!$this->documentModel->createCoeGradeFile($fileData, $submissionData, $scholarId)) {
                 throw new \Exception('Failed to save file info: ' . $file['original_name']);
             }
         }

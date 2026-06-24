@@ -51,7 +51,7 @@ class SchoolYearController
             $status = $_GET['action'] ?? null;
             $result = null;
 
-            if ($status && $status === "active") {
+            if ($status && $status === 'active') {
                 $result = $year->getActiveSchoolYear();
             } else {
                 $result = $year->getAllSchoolYears();
@@ -71,56 +71,70 @@ class SchoolYearController
         }
     }
 
-    private function handlePut() {
+    private function handlePut()
+    {
         try {
             $this->pdo->beginTransaction();
-            
-            // Get data from request body
-            $data = json_decode(file_get_contents("php://input"), true);
-            
+
+            $data = json_decode(file_get_contents('php://input'), true);
+
             if (!$data) {
-                throw new \Exception("No data provided");
+                throw new \Exception('No data provided');
             }
-            
-            // Check if ID is provided
+
             if (!isset($data['id'])) {
-                throw new \Exception("ID is required for update");
+                throw new \Exception('ID is required for update');
             }
-            
+
             $id = $data['id'];
-            
-            // Process procedure data
+
             $model = new SchoolYearModel();
-            
-            // Check if procedure exists
-            $existingSchoolYear = $model->getSchoolYearById($id);
-            if (!$existingSchoolYear) {
-                throw new \Exception("Staff not found");
+
+            // Check if selected school year exists
+            $selectedSchoolYear = $model->getSchoolYearById($id);
+
+            if (!$selectedSchoolYear) {
+                throw new \Exception('School year not found');
             }
-            
-            if (!$model->updateStatus($id, $data['action'])) {
-                throw new \Exception("Failed to update staff information");
+
+            // Get current active school year
+            $currentSchoolYear = $model->getCurrentSchoolYear();
+
+            // Archive current active school year first
+            if ($currentSchoolYear && $currentSchoolYear['id'] != $id) {
+                $archived = $model->updateStatus($currentSchoolYear['id'], 'archived');
+
+                if (!$archived) {
+                    throw new \Exception('Failed to archive current school year');
+                }
             }
-            
+
+            // Activate selected school year
+            $updated = $model->updateStatus($id, $data['action']);
+
+            if (!$updated) {
+                throw new \Exception('Failed to update selected school year');
+            }
+
             $this->pdo->commit();
-            
-            // Return success response
+
             http_response_code(200);
-            echo json_encode(array(
-                "success" => true,
-                "message" => "School year updated successfully"
-            ));
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'School year updated successfully',
+            ]);
         } catch (\Exception $e) {
-            // Roll back transaction on error
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
-            
+
             http_response_code(400);
-            echo json_encode(array(
-                "success" => false,
-                "message" => $e->getMessage()
-            ));
+
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 }

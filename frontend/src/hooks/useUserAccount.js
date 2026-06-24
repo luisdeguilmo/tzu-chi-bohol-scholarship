@@ -8,9 +8,11 @@ export const useUserAccount = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const updateScholarAccountStatus = async (userId, action) => {
+    const updateStaffAccountStatus = async (userId, action) => {
         try {
             setLoading(true);
+
+            console.log(userId, action);
 
             const response = await axios.put(
                 `${BASE_URL}app/api/user-account.php?action=${action}`,
@@ -36,6 +38,6 @@ export const useUserAccount = () => {
 
     return {
         loading,
-        updateScholarAccountStatus,
+        updateStaffAccountStatus,
     };
 };

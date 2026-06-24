@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import img from "../../assets/img.jpg";
 
 export default function OurMission() {
     const { pathname } = useLocation();
@@ -49,7 +50,7 @@ export default function OurMission() {
                 <div className="mt-10">
                     <div className="relative overflow-hidden rounded-2xl shadow-2xl group">
                         <img
-                            src={"/src/assets/img.jpg"}
+                            src={img}
                             alt={"Mission of Education"}
                             className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500"
                         />

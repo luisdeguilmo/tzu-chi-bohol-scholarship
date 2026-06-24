@@ -216,7 +216,7 @@ const FamilyListForm = ({
 
     return (
         <div>
-            <h2 className="mt-12 mb-8 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
+            <h2 className="mt-12 mb-8 px-4 py-3 font-bold bg-green-600 rounded-lg text-white text-xs sm:text-sm">
                 Siblings (Eldest to Youngest) including Family Member
             </h2>
 
@@ -278,7 +278,7 @@ const FamilyListForm = ({
                 >
                     {familyMembersInputFields.map((input, index) =>
                         input.type === "select" ? (
-                            <div key={index}>
+                            <div key={input.name}>
                                 <label
                                     className={`block mb-1 text-gray-500 text-xs ${
                                         isSiblingsApplicable === null ||
@@ -331,7 +331,7 @@ const FamilyListForm = ({
                                 </select>
                             </div>
                         ) : (
-                            <div key={index}>
+                            <div key={input.name}>
                                 <label
                                     className={`block mb-1 text-gray-500 text-xs ${
                                         isSiblingsApplicable === null ||
@@ -497,7 +497,7 @@ const FamilyListForm = ({
                 </div>
             )}
 
-            <h2 className="mt-16 mb-6 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
+            <h2 className="mt-16 mb-6 px-4 py-3 font-bold bg-green-600 rounded-lg text-white text-xs sm:text-sm">
                 Siblings Enjoying/Enjoyed Tzu Chi Educational Assistance
             </h2>
 
@@ -692,7 +692,7 @@ const FamilyListForm = ({
                 </div>
             )}
 
-            <h2 className="mt-16 mb-6 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
+            <h2 className="mt-16 mb-6 px-4 py-3 font-bold bg-green-600 rounded-lg text-white text-xs sm:text-sm">
                 Assistance from Other Association, Organization, School
                 Discount, etc.
             </h2>

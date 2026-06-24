@@ -163,9 +163,25 @@ class ScholarshipCriteriaModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function getAllCourses()
+    public function getAllCourses($filter)
     {
         $query = 'SELECT * FROM ' . $this->courses_table;
+
+        if ($filter === 'visible') {
+            $query .= " WHERE is_visible = '1'";
+        } elseif ($filter === 'hidden') {
+            $query .= " WHERE is_visible = '0'";
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getAllVisibleCourses()
+    {
+        $query = 'SELECT * FROM ' . $this->courses_table . " WHERE is_visible = '1'";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -311,6 +327,25 @@ class ScholarshipCriteriaModel
         $course_name = strip_tags($data['course']);
 
         $stmt->bindParam(':course_name', $course_name);
+        $stmt->bindParam(':id', $id);
+
+        return $stmt->execute();
+    }
+
+    public function updateCourseVisibility($id, $data)
+    {
+        $query =
+            'UPDATE ' .
+            $this->courses_table .
+            " 
+                  SET is_visible = :is_visible 
+                  WHERE id = :id";
+
+        $stmt = $this->pdo->prepare($query);
+
+        $is_visible = strip_tags(!$data['is_visible']);
+
+        $stmt->bindParam(':is_visible', $is_visible);
         $stmt->bindParam(':id', $id);
 
         return $stmt->execute();

@@ -1019,3 +1019,69 @@ null
 {"applicantIds":[8282683,2137096],"batch":"Batch 1"}
 {"account_id":2137096,"status":"pending"}
 {"account_id":2137096,"status":"attended"}
+{"action":"EXPORT","entity_type":"scholar","entity_id":null,"description":"exported active scholars list","old_values":null,"new_values":null}
+{"action":"EXPORT","entity_type":"scholar","entity_id":null,"description":"exported active scholars list","old_values":null,"new_values":null}
+{"action":"EXPORT","entity_type":"scholar","entity_id":null,"description":"exported active scholars list","old_values":null,"new_values":null}
+{"action":"EXPORT","entity_type":"scholar","entity_id":null,"description":"exported active scholars list","old_values":null,"new_values":null}
+{"applicantIds":[2555632],"batch":"Unassigned"}
+{"applicantIds":[8282683,2137096],"batch":"Unassigned"}
+{"applicantIds":[2137096,8282683],"batch":"Batch 1"}
+{"purpose":"entrance_examination","batch_name":"Batch 2"}
+{"purpose":"entrance_examination","batch_name":"Batch 2"}
+{"purpose":"entrance_examination","batch_name":"Batch 2"}
+{"purpose":"entrance_examination","batch_name":"Batch 2"}
+{"applicantIds":[2555632],"batch":"Batch 2"}
+{"purpose":"orientation","batch_name":"Batch 2"}
+{"purpose":"entrance_examination","batch_name":"Batch 2"}
+{"purpose":"entrance_examination","batch_name":"Batch 3"}
+{"purpose":"orientation","batch_name":"Batch 2"}
+{"purpose":"orientation","batch_name":"Batch 2"}
+{"purpose":"orientation","batch_name":"Batch 2"}
+{"purpose":"orientation","batch_name":"Batch 3"}
+{"purpose":"orientation","batch_name":"Batch 3"}
+{"purpose":"orientation","batch_name":"Batch 2"}
+{"purpose":"orientation","batch_name":"Batch 2"}
+{"purpose":"orientation","batch_name":"Batch 3"}
+{"purpose":"orientation","batch_name":"Batch 3"}
+{"purpose":"orientation","batch_name":"Batch 2"}
+{"purpose":"orientation","batch_name":"Batch 3"}
+{"purpose":"orientation","batch_name":"Batch 4"}
+{"purpose":"orientation","batch_name":"Batch 5"}
+{"purpose":"orientation","batch_name":"Batch 6"}
+{"purpose":"orientation","batch_name":"Batch 7"}
+{"purpose":"orientation","batch_name":"Batch 8"}
+{"purpose":"entrance_examination","batch_name":"Batch 2"}
+{"purpose":"entrance_examination","batch_name":"Batch 3"}
+{"purpose":"entrance_examination","batch_name":"Batch 3"}
+{"purpose":"entrance_examination","batch_name":"Batch 4"}
+{"purpose":"entrance_examination","batch_name":"Batch 4"}
+{"purpose":"entrance_examination","batch_name":"Batch 5"}
+{"purpose":"entrance_examination","batch_name":"Batch 5"}
+{"purpose":"entrance_examination","batch_name":"Batch 3"}
+{"purpose":"entrance_examination","batch_name":"Batch 4"}
+{"purpose":"entrance_examination","batch_name":"Batch 5"}
+{"purpose":"entrance_examination","batch_name":"Batch 6"}
+{"purpose":"entrance_examination","batch_name":"Batch 3"}
+{"purpose":"entrance_examination","batch_name":"Batch 4"}
+{"purpose":"entrance_examination","batch_name":"Batch 5"}
+{"purpose":"entrance_examination","batch_name":"Batch 3"}
+{"purpose":"entrance_examination","batch_name":"Batch 4"}
+{"purpose":"entrance_examination","batch_name":"Batch 5"}
+{"purpose":"orientation","batch_name":"Batch 3"}
+{"purpose":"orientation","batch_name":"Batch 4"}
+{"purpose":"orientation","batch_name":"Batch 5"}
+{"purpose":"orientation","batch_name":"Batch 6"}
+{"action":"EXPORT","entity_type":"scholar","entity_id":null,"description":"exported graduated scholars list","old_values":null,"new_values":null}
+{"action":"EXPORT","entity_type":"scholar","entity_id":null,"description":"exported active scholars list","old_values":null,"new_values":null}
+{"applicantIds":[8282683,2555632,2137096],"batch":"Unassigned"}
+{"applicantIds":[8282683],"batch":"Batch 1"}
+{"purpose":"entrance_examination","batch_name":"Batch 3"}
+{"purpose":"entrance_examination","batch_name":"Batch 4"}
+{"applicantIds":[2555632],"batch":"Batch 1"}
+{"applicantIds":[2137096],"batch":"Batch 1"}
+{"strand":{"strand":"df","description":"fd"}}
+{"strand":{"strand":"hbvc","description":"jvcbvv\n"}}
+{"strand":{"strand":"dfdffdf","description":"fdffd"}}
+{"qualification":"sdkdfdf"}
+{"action":"EXPORT","entity_type":"scholar","entity_id":null,"description":"exported active scholars list","old_values":null,"new_values":null}
+{"strand":{"strand":"j","description":"n"}}

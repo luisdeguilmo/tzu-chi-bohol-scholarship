@@ -6,6 +6,7 @@ import { useCommunityServicesSubmit } from "../../../hooks/useCommunityServicesS
 import { toast } from "react-toastify";
 import pdfIcon from "../../../assets/pdf.png";
 import { UploadCloud } from "lucide-react";
+import { formatTime } from "../../../utils/formatTime";
 
 const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
     const [activityName, setActivityName] = useState(activity.activity_name);
@@ -192,7 +193,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
             <div>
                 <div className="py-4 overflow-y-auto scroll-smooth h-[400px]">
                     <div className="px-8 grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                        <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                             Activity Name
                             <input
                                 type="text"
@@ -205,11 +206,11 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                     )
                                 }
                                 placeholder="Enter activity name"
-                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="mt-2 w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
 
-                        <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                        <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                             Activity Location
                             <input
                                 type="text"
@@ -222,11 +223,11 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                     )
                                 }
                                 placeholder="Enter activity location"
-                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="mt-2 w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
 
-                        <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                        <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                             Date
                             <input
                                 type="date"
@@ -238,13 +239,18 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                         e.target.value,
                                     )
                                 }
-                                className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="mt-2 w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
 
                         <div className="flex gap-2">
-                            <label className="w-[50%] py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                            <label className="relative w-[50%] py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                                 Start Time
+                                {startTime && (
+                                    <span className="pointer-events-none absolute left-2.5 top-[39px] text-gray-800 text-xs">
+                                        {formatTime(startTime)}
+                                    </span>
+                                )}
                                 <input
                                     type="time"
                                     required
@@ -255,12 +261,17 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                             e.target.value,
                                         )
                                     }
-                                    className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    className="mt-2 w-full border text-xs border-gray-300 rounded-md py-[9px] px-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 />
                             </label>
 
-                            <label className="w-[50%] py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                            <label className="relative w-[50%] py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                                 End Time
+                                {endTime && (
+                                    <span className="pointer-events-none absolute left-2.5 top-[39px] text-gray-800 text-xs">
+                                        {formatTime(endTime)}
+                                    </span>
+                                )}
                                 <input
                                     type="time"
                                     required
@@ -268,13 +279,13 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                     onChange={(e) =>
                                         handleChange(setEndTime, e.target.value)
                                     }
-                                    className="w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    className="mt-2 w-full border text-xs border-gray-300 rounded-md py-[9px] px-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 />
                             </label>
                         </div>
                     </div>
 
-                    <label className="px-8 pt-2 pb-3 flex flex-col gap-[1px] text-gray-600 text-xs">
+                    <label className="px-8 pt-2 pb-3 flex flex-col gap-[1px] text-gray-800 text-xs">
                         Upload files
                         <input
                             type="file"
@@ -287,7 +298,7 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                         <button
                             type="button"
                             onClick={handleAddFileClick}
-                            className="px-2 py-2.5 flex justify-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
+                            className="mt-2 px-2 py-2.5 flex justify-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
                             disabled={isSubmitting}
                         >
                             <svg
@@ -308,6 +319,10 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                         </button>
                     </label>
 
+                    <p className="px-8 pt-2 pb-1 flex flex-col gap-[1px] text-gray-800 text-xs">
+                        Attached Files:{" "}
+                    </p>
+
                     {filePreviews.length > 0 && (
                         <ul className="px-8 mt-2 w-full text-sm text-gray-700 grid md:grid-cols-2 gap-2">
                             {filePreviews.map((filePreview, index) => (
@@ -322,7 +337,11 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                     <div className="flex items-center">
                                         {isImage(filePreview.type) ? (
                                             <img
-                                                src={filePreview.preview}
+                                                src={
+                                                    filePreview?.file_url
+                                                        ? filePreview?.file_url
+                                                        : filePreview.preview
+                                                }
                                                 alt={filePreview.name}
                                                 className="w-12 h-12 object-cover rounded mr-2"
                                             />
@@ -359,12 +378,12 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                                                     {filePreview.name}
                                                 </span>
                                             </div>
-                                            <div className="text-gray-500">
+                                            {/* <div className="text-gray-500">
                                                 {(
                                                     filePreview.size / 1024
                                                 ).toFixed(2)}{" "}
                                                 KB
-                                            </div>
+                                            </div> */}
 
                                             {isPdf(filePreview.type) && (
                                                 <button
@@ -430,10 +449,10 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
 
                     {activity.activity_status === "Not Recorded" && (
                         <div className="px-8 pt-6 pb-8">
-                            <p className="text-xs mb-1 text-gray-700">
+                            <p className="text-xs mb-1 text-gray-800">
                                 Feedback:{" "}
                             </p>
-                            <p className="text-xs border bg-gray-50 px-2 py-2.5 rounded-md text-gray-700">
+                            <p className="text-xs mt-2 rounded-md text-gray-600">
                                 {activity.feedback}
                             </p>
                         </div>

@@ -22,7 +22,7 @@ import ChangeStatusModal from "./ChangeStatusModal";
 import AllowanceSettingsModal from "./AllowanceSettingsModal";
 import { useAllowanceSettings } from "../../../hooks/useAllowanceSettings";
 import { toast } from "react-toastify";
-import { useSchoolYears } from "../../../hooks/useSchoolYears";
+import { useSchoolYearContext } from "../../../context/SchoolYearContext";
 
 export default function ScholarsAndAllowances() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -44,8 +44,11 @@ export default function ScholarsAndAllowances() {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("active");
     const [status, setStatus] = useState("all");
-    const [schoolYear, setSchoolYear] = useState(null);
     const [sortBy, setSortBy] = useState("newest");
+    const [filter, setFilter] = useState("all");
+
+    const { schoolYears, activeSchoolYear: schoolYear } =
+        useSchoolYearContext();
 
     const {
         loading,
@@ -61,6 +64,7 @@ export default function ScholarsAndAllowances() {
         course,
         yearLevel,
         sortBy,
+        filter,
     );
 
     const {
@@ -78,25 +82,18 @@ export default function ScholarsAndAllowances() {
     const { allowanceSettings, fetchMaximumHoursAndAmountPerHour } =
         useAllowanceSettings();
 
-    const { getActiveSchoolYear } = useSchoolYears();
-
-    useEffect(() => {
-        const fetchSchoolYear = async () => {
-            try {
-                const data = await getActiveSchoolYear();
-                setSchoolYear(data);
-            } catch (err) {
-                console.error(err);
-                setError("Failed to fetch school year");
-            }
-        };
-
-        fetchSchoolYear();
-    }, []);
-
     useEffect(() => {
         fetchScholars();
-    }, [activeTab, status, schoolYear, school, course, yearLevel, sortBy]);
+    }, [
+        activeTab,
+        status,
+        schoolYear,
+        school,
+        course,
+        yearLevel,
+        sortBy,
+        filter,
+    ]);
 
     useEffect(() => {
         if (!isAllowanceSettingsModalOpen) {
@@ -206,6 +203,28 @@ export default function ScholarsAndAllowances() {
                     searchTerm={searchTerm}
                     itemsPerPage={itemsPerPage}
                     sortBy={sortBy}
+                    sortItems={[
+                        {
+                            label: "Newest First",
+                            value: "newest",
+                        },
+                        {
+                            label: "Oldest First",
+                            value: "oldest",
+                        },
+                        {
+                            label: "Name (A-Z)",
+                            value: "name",
+                        },
+                        {
+                            label: "Rendered Hours (ASC)",
+                            value: "hours_asc",
+                        },
+                        {
+                            label: "Rendered Hours (DESC)",
+                            value: "hours_desc",
+                        },
+                    ]}
                     sortedItems={filteredScholars}
                     onRefresh={handleRefresh}
                     onSort={setSortBy}
@@ -221,12 +240,30 @@ export default function ScholarsAndAllowances() {
                 >
                     <div className="flex items-center gap-2">
                         <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Filter:
+                        </span>
+                        <select
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                            className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value="all">All</option>
+                            <option value="no_load_allowance">
+                                No load allowance
+                            </option>
+                            <option value="no_transport_allowance">
+                                No transport allowance
+                            </option>
+                        </select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
                             Status:
                         </span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value="new">New</option>
@@ -253,108 +290,133 @@ export default function ScholarsAndAllowances() {
 
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table tableHeaders={scholarsAndAllowancesTableHeaders}>
-                        {currentItems.map((scholar, index) => (
-                            <tr
-                                key={index}
-                                className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50 ${
-                                    selectedItems.includes(scholar.account_id)
-                                        ? "bg-blue-50"
-                                        : ""
-                                }`}
-                            >
-                                <td className="py-2 text-xs whitespace-nowrap text-center text-gray-600 font-bold">
-                                    {scholar.account_id}
-                                </td>
-                                <td className="py-2 text-center flex justify-start whitespace-nowrap text-sm text-gray-700">
-                                    <div className="w-[30%]"></div>
-                                    <div className="w-[max-content] flex text-left gap-2">
-                                        <img
-                                            src={scholar[0].profile}
-                                            alt="Profile"
-                                            className="w-10 h-10 object-cover rounded-full mx-auto"
-                                        />
-                                        <div className="flex justify-center flex-col">
-                                            <p className="font-bold text-gray-700 text-xs">
-                                                {scholar.first_name +
-                                                    " " +
-                                                    scholar.last_name}
-                                            </p>
-                                            <p className="text-[11px] text-gray-500/90">
-                                                {scholar.email}
-                                            </p>
+                        {loading && (
+                            <tr>
+                                <td colSpan={6} className="p-6">
+                                    <div className=" flex flex-col items-center gap-4">
+                                        <div className="flex items-end gap-1 h-10">
+                                            {[...Array(5)].map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                                    style={{
+                                                        height: "10px",
+                                                        animationDelay: `${i * 100}ms`,
+                                                    }}
+                                                />
+                                            ))}
                                         </div>
-                                    </div>
-                                </td>
-                                <td className="py-2 text-center whitespace-nowrap text-gray-500">
-                                    <span
-                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium`}
-                                    >
-                                        {scholar.type}
-                                    </span>
-                                </td>
-                                <td className="py-2 whitespace-nowrap text-slate-600 text-center font-medium">
-                                    {scholar.rendered_hours} hour
-                                    {scholar.rendered_hours > 1 ? "s" : ""}
-                                </td>
-                                {/* <td className="py-1 whitespace-nowrap text-gray-500">
-                                    <span
-                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium ${
-                                            scholar.allowance_status ===
-                                            "received"
-                                                ? "bg-green-100 text-green-800"
-                                                : scholar.allowance_status ===
-                                                    "not_received"
-                                                  ? "bg-red-100 text-red-800"
-                                                  : "bg-yellow-100 text-yellow-800"
-                                        }`}
-                                    >
-                                        {scholar.allowance_status === "received"
-                                            ? "Received"
-                                            : scholar.allowance_status ===
-                                                "not_received"
-                                              ? "Not Received"
-                                              : "Pending"}
-                                    </span>
-                                </td> */}
-                                <td className="py-2 whitespace-nowrap font-medium">
-                                    <div className="flex items-center justify-center">
-                                        <button
-                                            onClick={() => {
-                                                setIsModalOpen(true);
-                                                setScholarId(
-                                                    scholar.account_id,
-                                                );
-                                            }}
-                                            className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                                            title="View Profile"
-                                        >
-                                            <Eye className="w-4 h-4" />
-                                        </button>
-                                        {activeTab === "active" && (
-                                            <button
-                                                onClick={() => {
-                                                    setIsChangeStatusModalOpen(
-                                                        true,
-                                                    );
-                                                    setScholarId(
-                                                        scholar.account_id,
-                                                    );
-                                                    setSelectedScholar(scholar);
-                                                }}
-                                                className="p-2 text-green-600 hover:text-green-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                                                title="Change Status"
-                                            >
-                                                <PenLine className="w-4 h-4" />
-                                            </button>
-                                        )}
+
+                                        <p className="text-sm text-slate-500">
+                                            Loading data...
+                                        </p>
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        )}
+                        {!loading &&
+                            currentItems.map((scholar, index) => (
+                                <tr
+                                    key={index}
+                                    className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50 ${
+                                        selectedItems.includes(
+                                            scholar.account_id,
+                                        )
+                                            ? "bg-blue-50"
+                                            : ""
+                                    }`}
+                                >
+                                    <td className="py-2.5 text-xs whitespace-nowrap text-center text-gray-600 font-bold">
+                                        {scholar.account_id}
+                                    </td>
+                                    <td className="py-2.5 text-center flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                        <div className="w-[30%]"></div>
+                                        <div className="w-[max-content] flex text-left gap-2">
+                                            <img
+                                                src={scholar[1].profile}
+                                                alt="Profile"
+                                                className="w-10 h-10 object-cover rounded-full mx-auto"
+                                            />
+                                            <div className="flex justify-center flex-col">
+                                                <p className="font-bold text-gray-700 text-xs">
+                                                    {scholar.last_name +
+                                                        ", " +
+                                                        scholar.first_name}{" "}
+                                                    {scholar.middle_name
+                                                        ? scholar
+                                                              .middle_name[0] +
+                                                          "."
+                                                        : ""}
+                                                </p>
+                                                <p className="text-[11px] text-gray-500/90">
+                                                    {scholar.email}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="py-2.5 text-center whitespace-nowrap text-gray-500">
+                                        <span
+                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium`}
+                                        >
+                                            {scholar.type}
+                                        </span>
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap text-slate-600 text-center font-medium">
+                                        {scholar.rendered_hours} hour
+                                        {scholar.rendered_hours > 1 ? "s" : ""}
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap text-slate-600 text-center font-medium">
+                                        {scholar.load_allowance}
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap text-slate-600 text-center font-medium">
+                                        {scholar.transport_allowance}
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap font-medium">
+                                        <div className="flex items-center justify-center">
+                                            <button
+                                                onClick={() => {
+                                                    setIsModalOpen(true);
+                                                    setScholarId(
+                                                        scholar.account_id,
+                                                    );
+                                                    setSelectedScholar([
+                                                        scholar[0],
+                                                        scholar[1],
+                                                        scholar.account_id,
+                                                    ]);
+                                                }}
+                                                className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                                                title="View Profile"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
+                                            {activeTab === "active" && (
+                                                <button
+                                                    onClick={() => {
+                                                        setIsChangeStatusModalOpen(
+                                                            true,
+                                                        );
+                                                        setScholarId(
+                                                            scholar.account_id,
+                                                        );
+                                                        setSelectedScholar(
+                                                            scholar,
+                                                        );
+                                                    }}
+                                                    className="p-2 text-green-600 hover:text-green-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                                                    title="Change Status"
+                                                >
+                                                    <PenLine className="w-4 h-4" />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                     </Table>
 
                     {/* Empty state */}
-                    {currentItems.length === 0 && (
+                    {currentItems.length === 0 && !loading && (
                         <EmptyState message="No scholars found." />
                     )}
                 </div>
@@ -385,43 +447,51 @@ export default function ScholarsAndAllowances() {
                     </div>
                 )}
 
-                <ScholarProfileModal
-                    userId={scholarId}
-                    isOpen={isModalOpen}
-                    setIsOpen={setIsModalOpen}
-                    isScholar={true}
-                />
+                {isModalOpen && (
+                    <ScholarProfileModal
+                        isOpen={isModalOpen}
+                        setIsOpen={setIsModalOpen}
+                        isScholar={true}
+                        info={selectedScholar}
+                    />
+                )}
 
-                <AllowanceSettingsModal
-                    label={"Allowance Settings"}
-                    isOpen={isAllowanceSettingsModalOpen}
-                    onClose={setIsAllowanceSettingsModalOpen}
-                />
+                {isAllowanceSettingsModalOpen && (
+                    <AllowanceSettingsModal
+                        label={"Allowance Settings"}
+                        isOpen={isAllowanceSettingsModalOpen}
+                        onClose={setIsAllowanceSettingsModalOpen}
+                    />
+                )}
 
-                <ChangeStatusModal
-                    scholar={selectedScholar}
-                    isOpen={isChangeStatusModalOpen}
-                    onClose={setIsChangeStatusModalOpen}
-                    label={"Update Allowance Details"}
-                    scholarId={scholarId}
-                    onUpdate={updateAllowanceStatus}
-                    onRefresh={handleRefresh}
-                    onRefreshAllowanceData={fetchScholarAllowances}
-                    isLoading={loading}
-                />
+                {isChangeStatusModalOpen && (
+                    <ChangeStatusModal
+                        scholar={selectedScholar}
+                        isOpen={isChangeStatusModalOpen}
+                        onClose={setIsChangeStatusModalOpen}
+                        label={"Update Allowance Details"}
+                        scholarId={scholarId}
+                        onUpdate={updateAllowanceStatus}
+                        onRefresh={handleRefresh}
+                        onRefreshAllowanceData={fetchScholarAllowances}
+                        isLoading={loading}
+                    />
+                )}
 
-                <ConfirmationModal
-                    isOpen={isConfirmationModalOpen}
-                    onClose={setIsConfirmationModalOpen}
-                    isLoading={loading}
-                    label={"Confirmation"}
-                    message={
-                        "This action cannot be undone. Do you want to proceed?"
-                    }
-                    isForProcessAllowance={true}
-                    allowanceSettings={allowanceSettings}
-                    onClick={handleProcessAllowance}
-                />
+                {isConfirmationModalOpen && (
+                    <ConfirmationModal
+                        isOpen={isConfirmationModalOpen}
+                        onClose={setIsConfirmationModalOpen}
+                        isLoading={loading}
+                        label={"Confirmation"}
+                        message={
+                            "This action cannot be undone. Do you want to proceed?"
+                        }
+                        isForProcessAllowance={true}
+                        allowanceSettings={allowanceSettings}
+                        onClick={handleProcessAllowance}
+                    />
+                )}
             </div>
         </div>
     );

@@ -23,7 +23,6 @@ const OverviewCard = ({
 
                 {/* Overview Cards */}
                 <div className="mb-6 p-6 bg-gradient-to-r from-green-600 to-green-700 rounded-2xl shadow-xl text-center relative overflow-hidden">
-                    {/* Decorative elements */}
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
                     <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
 

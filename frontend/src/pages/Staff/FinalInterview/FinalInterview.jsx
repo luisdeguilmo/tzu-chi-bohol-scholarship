@@ -87,7 +87,7 @@ export default function FinalInterview() {
             applicant.first_name
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
-            applicant.created_at.includes(searchTerm)
+            applicant.created_at.includes(searchTerm),
     );
 
     // Sort applications
@@ -98,7 +98,7 @@ export default function FinalInterview() {
             case "oldest":
                 return new Date(a.created_at) - new Date(b.created_at);
             case "name":
-                return a.first_name.localeCompare(b.first_name);
+                return a.last_name.localeCompare(b.last_name);
             default:
                 return 0;
         }
@@ -155,6 +155,20 @@ export default function FinalInterview() {
                     searchTerm={searchTerm}
                     itemsPerPage={itemsPerPage}
                     sortBy={sortBy}
+                    sortItems={[
+                        {
+                            label: "Newest First",
+                            value: "newest",
+                        },
+                        {
+                            label: "Oldest First",
+                            value: "oldest",
+                        },
+                        {
+                            label: "Name (A-Z)",
+                            value: "name",
+                        },
+                    ]}
                     sortedItems={sortedApplications}
                     onRefresh={handleRefresh}
                     onSort={setSortBy}
@@ -182,6 +196,7 @@ export default function FinalInterview() {
                                 case "Applicants":
                                     return (
                                         <ApplicantsTableRow
+                                            loading={loading}
                                             currentItems={currentItems}
                                             onApprove={handleOpenApproveModal}
                                             onReject={handleOpenRejectModal}
@@ -192,6 +207,7 @@ export default function FinalInterview() {
                                 case "Result":
                                     return (
                                         <ResultTableRow
+                                            loading={loading}
                                             currentItems={currentItems}
                                             onOpenModal={
                                                 handleOpenFileUploadFormModal
@@ -203,7 +219,7 @@ export default function FinalInterview() {
                     </Table>
 
                     {/* Empty state */}
-                    {currentItems.length === 0 && (
+                    {currentItems.length === 0 && !loading && (
                         <EmptyState message="No applications found." />
                     )}
                 </div>

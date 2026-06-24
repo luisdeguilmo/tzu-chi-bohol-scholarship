@@ -85,7 +85,7 @@ export default function InitialInterview() {
             applicant.first_name
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
-            applicant.created_at.includes(searchTerm)
+            applicant.created_at.includes(searchTerm),
     );
 
     // Sort applications
@@ -96,7 +96,7 @@ export default function InitialInterview() {
             case "oldest":
                 return new Date(a.created_at) - new Date(b.created_at);
             case "name":
-                return a.first_name.localeCompare(b.first_name);
+                return a.last_name.localeCompare(b.last_name);
             default:
                 return 0;
         }
@@ -153,6 +153,20 @@ export default function InitialInterview() {
                     searchTerm={searchTerm}
                     itemsPerPage={itemsPerPage}
                     sortBy={sortBy}
+                    sortItems={[
+                        {
+                            label: "Newest First",
+                            value: "newest",
+                        },
+                        {
+                            label: "Oldest First",
+                            value: "oldest",
+                        },
+                        {
+                            label: "Name (A-Z)",
+                            value: "name",
+                        },
+                    ]}
                     sortedItems={sortedApplications}
                     onRefresh={handleRefresh}
                     onSort={setSortBy}
@@ -183,6 +197,7 @@ export default function InitialInterview() {
                                 case "Applicants":
                                     return (
                                         <ApplicantsTableRow
+                                            loading={loading}
                                             currentItems={currentItems}
                                             onApprove={
                                                 handleOpenApproveConfirmationModal
@@ -197,6 +212,7 @@ export default function InitialInterview() {
                                 case "Result":
                                     return (
                                         <ResultTableRow
+                                            loading={loading}
                                             currentItems={currentItems}
                                             onOpenModal={
                                                 handleOpenFileUploadFormModal
@@ -208,7 +224,7 @@ export default function InitialInterview() {
                     </Table>
 
                     {/* Empty state */}
-                    {currentItems.length === 0 && (
+                    {currentItems.length === 0 && !loading && (
                         <EmptyState message="No applications found." />
                     )}
                 </div>

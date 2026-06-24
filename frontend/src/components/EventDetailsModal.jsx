@@ -319,8 +319,6 @@ const EventDetailsModal = React.memo(
                     resetFields={() => setScholarPrivateComment("")}
                     expandable={true}
                     onCancel={handleCancel}
-                    // buttonLabel={"Submit"}
-                    // onSubmit={() => handleSubmit(userId)}
                     disabledButton={
                         localEvent?.event_type === "optional" ||
                         (isStaff && localEvent?.event_type === "mandatory")
@@ -333,7 +331,7 @@ const EventDetailsModal = React.memo(
                     >
                         {/* Event Details Grid */}
                         <h3
-                            className={`font-semibold flex items-center gap-2 rounded-md text-sm text-gray-700 ${localEvent?.participants.length > 0 ? "-mb-3" : "mb-3.5"}`}
+                            className={`flex items-center gap-2 rounded-md text-[16px] text-gray-800 ${localEvent?.participants.length > 0 ? "-mb-3" : "mb-3.5"}`}
                         >
                             {localEvent?.event_name}
                         </h3>
@@ -412,14 +410,14 @@ const EventDetailsModal = React.memo(
 
                         <div>
                             <div
-                                className={`mt-2 ${localEvent?.participants?.length > 0 ? "block" : "hidden"}  rounded-md border`}
+                                className={`mt-2 ${localEvent?.participants?.length > 0 ? "block" : "hidden"}  rounded-md`}
                             >
                                 <h3
                                     className={`${
                                         localEvent?.participants?.length > 0
                                             ? "block"
                                             : "hidden"
-                                    } bg-gray-50 border-b rounded-tl-md rounded-tr-md px-4 py-4 text-xs text-gray-600 font-bold`}
+                                    } bg-green-600 border-b rounded-lg px-4 py-3 text-xs text-white `}
                                 >
                                     {localEvent?.date +
                                         " " +
@@ -429,7 +427,7 @@ const EventDetailsModal = React.memo(
                                         : "Scholars Who Participated:"}
                                 </h3>
                                 <ul
-                                    className={`px-4 py-4 space-y-0.5 grid ${
+                                    className={`py-2 space-y-0.5 grid ${
                                         localEvent?.participants?.length >= 15
                                             ? "grid-cols-2"
                                             : "grid-cols-1"
@@ -441,7 +439,7 @@ const EventDetailsModal = React.memo(
                                                 key={index}
                                                 className="w-[max-content]"
                                             >
-                                                <label className="flex gap-2 items-center text-slate-600 text-xs">
+                                                <label className="flex gap-2 items-center text-slate-600 bg-gray-100 px-4 py-2 rounded-lg text-xs">
                                                     {isStaff && (
                                                         <>
                                                             {participant.is_attended ? (
@@ -695,25 +693,25 @@ const EventDetailsModal = React.memo(
 
                         {isScholar && (
                             <div
-                                className={`${localEvent?.event_type === "optional" ? "mt-6" : "mt-2"} border rounded-md`}
+                                className={`${localEvent?.event_type === "optional" ? "mt-6" : "mt-2"} rounded-md`}
                             >
                                 <h3
-                                    className={`bg-gray-50 border-b rounded-tl-md rounded-tr-md px-4 py-4 text-xs text-gray-600 font-bold`}
+                                    className={`bg-green-600 mb-2 rounded-lg px-4 py-3 text-xs text-white`}
                                 >
                                     Private comments
                                 </h3>
 
                                 <ul
-                                    className={`${privateComments.length === 0 && "pt-2"}`}
+                                    className={`${privateComments.length === 0 && "pt-2"} space-y-2`}
                                 >
                                     {privateComments.map((comment, index) => (
                                         <li
                                             key={comment.id}
-                                            className={`group relative ${index !== privateComments.length - 1 && "border-b"} px-4 py-4 flex items-center justify-between`}
+                                            className={`group relative ${index !== privateComments.length - 1 && ""} px-4 py-3 flex items-center justify-between bg-gray-100 rounded-lg`}
                                         >
                                             <div className="w-full">
                                                 <div className="flex items-center gap-1">
-                                                    <p className="mb-2 text-[11px] text-gray-600">
+                                                    <p className="mb-2 text-[10px] text-gray-600">
                                                         {comment.first_name +
                                                             " " +
                                                             comment.last_name}
@@ -721,7 +719,7 @@ const EventDetailsModal = React.memo(
                                                     <span className="mb-3 text-xs text-gray-600">
                                                         {"•"}
                                                     </span>
-                                                    <p className="mb-2 text-[11px] text-gray-500">
+                                                    <p className="mb-2 text-[10px] text-gray-500">
                                                         {formatTimestamp(
                                                             comment.created_at,
                                                         )}
@@ -752,7 +750,7 @@ const EventDetailsModal = React.memo(
 
                                     {(isPrivateCommentFieldOpen ||
                                         privateComments.length > 0) && (
-                                        <div className="private_comments px-2 pb-2 flex items-center">
+                                        <div className="private_comments pb-2 flex items-center">
                                             <label className="flex-1">
                                                 <input
                                                     type="text"
@@ -765,7 +763,7 @@ const EventDetailsModal = React.memo(
                                                             e.target.value,
                                                         )
                                                     }
-                                                    className="w-[100%] border text-xs border-gray-200 rounded-lg py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                                    className="w-[100%] border text-xs border-gray-400 rounded-lg py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                                     required
                                                 />
                                             </label>
@@ -778,7 +776,7 @@ const EventDetailsModal = React.memo(
                                                     type="button"
                                                     className="pl-1 py-2 flex"
                                                 >
-                                                    <SendHorizonal className="w-6 h-6 text-gray-400/70" />
+                                                    <SendHorizonal className="w-7 h-7 text-gray-600" />
                                                 </button>
                                             </div>
                                         </div>
@@ -791,7 +789,7 @@ const EventDetailsModal = React.memo(
                     {(isStaff ||
                         (isScholar &&
                             localEvent?.event_type === "optional")) && (
-                        <div className="flex justify-end rounded-b-sm gap-2 p-3.5 border-t border-gray-300 bg-gray-50 flex-shrink-0">
+                        <div className="flex justify-end rounded-b-lg gap-2 p-3.5 border-t bg-gray-50 flex-shrink-0">
                             <button
                                 onClick={() => onClose(false)}
                                 type="button"

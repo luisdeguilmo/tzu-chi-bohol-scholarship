@@ -24,7 +24,7 @@ class RecentActivityModel
     public function getRecentActivities($id)
     {
         $query =
-            'SELECT * FROM ' .
+            'SELECT id, activity_name, activity_date, activity_start_time, activity_end_time, activity_location, rendered_hours FROM ' .
             $this->table_name .
             ' WHERE scholar_id = :scholar_id AND activity_date >= :start_of_month AND activity_date < :start_of_next_month ORDER BY activity_date DESC, activity_start_time DESC';
         $stmt = $this->pdo->prepare($query);

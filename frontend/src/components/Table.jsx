@@ -43,6 +43,10 @@ const Table = ({
                                     ? "text-left pl-24"
                                     : ""
                             } ${
+                                header.name === "visibility"
+                                    ? "text-left"
+                                    : ""
+                            } ${
                                 header.name === "action" ? "text-right" : ""
                             } pr-4 py-3 text-xs uppercase tracking-wider`}
                         >

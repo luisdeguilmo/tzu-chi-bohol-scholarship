@@ -33,7 +33,7 @@ async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
     ctx.drawImage(
         image,
         safeArea / 2 - image.width * 0.5,
-        safeArea / 2 - image.height * 0.5
+        safeArea / 2 - image.height * 0.5,
     );
 
     const data = ctx.getImageData(0, 0, safeArea, safeArea);
@@ -44,7 +44,7 @@ async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
     ctx.putImageData(
         data,
         Math.round(0 - safeArea / 2 + image.width * 0.5 - pixelCrop.x),
-        Math.round(0 - safeArea / 2 + image.height * 0.5 - pixelCrop.y)
+        Math.round(0 - safeArea / 2 + image.height * 0.5 - pixelCrop.y),
     );
 
     return new Promise((resolve) => {
@@ -53,12 +53,12 @@ async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
                 resolve(blob);
             },
             "image/jpeg",
-            0.95
+            0.95,
         );
     });
 }
 
-function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
+function ProfilePhotoUpload({ isOpen, onOpenModal, onRefresh }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
@@ -67,6 +67,7 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
     const [currentPhoto, setCurrentPhoto] = useState(null);
     const fileInputRef = useRef(null);
     const [isOpenCropper, setIsOpenCropper] = useState(false);
+    const token = localStorage.getItem("token");
 
     const handleFileSelect = (e) => {
         const file = e.target.files[0];
@@ -101,23 +102,20 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
         setIsSubmitting(true);
 
         try {
-            // Get the cropped image blob
             const croppedBlob = await getCroppedImg(
                 selectedImage,
                 croppedAreaPixels,
-                0
+                0,
             );
 
-            // Convert blob to base64
             const reader = new FileReader();
+
             reader.onload = async () => {
                 try {
                     const base64Data = reader.result.split(",")[1];
 
-                    // Prepare the data for upload (matching FileUploadFormModal structure)
                     const activityData = {
                         ["profile_picture"]: {
-                            application_id: userId,
                             type: "profile_picture",
                         },
                         existing_files: [],
@@ -132,22 +130,21 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
                         ],
                     };
 
-
-                    // Submit the data
                     const response = await fetch(
                         `${BASE_URL}app/api/profile-picture.php?type=profile_picture`,
                         {
                             method: "PUT",
                             headers: {
                                 "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
                             },
                             body: JSON.stringify(activityData),
-                        }
+                        },
                     );
 
                     if (!response.ok) {
                         throw new Error(
-                            `HTTP error! status: ${response.status}`
+                            `HTTP error! status: ${response.status}`,
                         );
                     }
 
@@ -162,26 +159,31 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
                         if (fileInputRef.current) {
                             fileInputRef.current.value = "";
                         }
-                        onRefresh();
-                        onOpenModal(false);
                     } else {
                         toast.error("Error: " + result.message);
                     }
                 } catch (error) {
+                    console.error("Error submitting form:", error);
                     toast.error("Failed to submit the form. Please try again.");
+                } finally {
+                    // Moved here so they always run after success/failure
+                    // without their exceptions triggering the error toast above
+                    // onRefresh();
+                    onOpenModal(false);
+                    setIsSubmitting(false);
                 }
             };
 
             reader.onerror = (error) => {
                 console.error("Error reading file:", error);
                 toast.error("Failed to process the image. Please try again.");
+                setIsSubmitting(false);
             };
 
             reader.readAsDataURL(croppedBlob);
         } catch (error) {
             console.error("Error saving photo:", error);
             toast.error("Failed to save photo. Please try again.");
-        } finally {
             setIsSubmitting(false);
         }
     };
@@ -191,11 +193,9 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
             label={"Profile Picture Upload"}
             isOpen={isOpen}
             onClose={onOpenModal}
-            // resetFields={resetForm}
             onCancel={handleCancel}
             onSubmit={handleSave}
             disabledButtonSave={true}
-            // isLoading={isLoading}
         >
             <div className="p-6">
                 <div className="space-y-4">
@@ -220,9 +220,7 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
                             className="mt-8 mx-auto"
                         >
                             <circle cx="64" cy="64" r="64" fill="#E3F2FD" />
-
                             <circle cx="64" cy="48" r="20" fill="#BBDEFB" />
-
                             <path
                                 d="M64 74c-22 0-40 12-40 28v6h80v-6c0-16-18-28-40-28z"
                                 fill="#BBDEFB"
@@ -258,7 +256,6 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
 
                 <div className="space-y-4 rounded-3xl">
                     {/* Cropper */}
-
                     {isOpenCropper && selectedImage && (
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 lg:w-[800px] w-[100%] h-[650px] bg-black rounded-3xl">
                             <button
@@ -295,24 +292,6 @@ function ProfilePhotoUpload({ userId, isOpen, onOpenModal, onRefresh }) {
                             </button>
                         </div>
                     )}
-
-                    {/* Action Buttons */}
-                    {/* <div className="flex gap-3 pt-4">
-                            <button
-                                onClick={handleCancel}
-                                disabled={isSubmitting}
-                                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleSave}
-                                disabled={isSubmitting}
-                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isSubmitting ? "Saving..." : "Save Photo"}
-                            </button>
-                        </div> */}
                 </div>
             </div>
         </InputModal>

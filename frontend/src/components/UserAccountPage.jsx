@@ -1,23 +1,82 @@
-import { GraduationCap, House, Info, Settings, Bus } from "lucide-react";
+import {
+    GraduationCap,
+    House,
+    Info,
+    Settings,
+    Bus,
+    PenLine,
+    X,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { getProfilePicture } from "../utils/getProfilePicture";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useScholarAccountInformation } from "../hooks/useScholarAccountInformation";
-import { getCurrentSchoolYear } from "../utils/getCurrentSchoolYear";
+import { useEffect, useState } from "react";
+import ConfirmationModal from "./ConfirmationModal";
+import axios from "axios";
+import BASE_URL from "../config";
+import { toast } from "react-toastify";
 
-const UserAccount = ({ scholarId = false, isModal = false }) => {
+const UserAccount = ({
+    scholarId = false,
+    scholarInfoFromTable,
+    isModal = false,
+    data,
+}) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const { user } = useAuth();
     const userId = user.user_id;
-    const { imageUrl } = getProfilePicture(
-        scholarId ? scholarId : userId,
-        "profile-picture",
-    );
-    const currentSchoolYear = getCurrentSchoolYear();
-    const { scholarInfo } = useScholarAccountInformation(
-        scholarId ? scholarId : userId,
-        currentSchoolYear,
-    );
+    const { scholarInfo: scholar } = useScholarAccountInformation();
+    const profile =
+        user.type === "scholar"
+            ? user.profile
+            : scholarInfoFromTable[1].profile;
+    const scholarInfo =
+        user.type === "scholar" ? scholar : scholarInfoFromTable[0];
+
     const info = "block md:hidden";
+
+    const handleSendTempPassword = async (userId, email) => {
+        try {
+            setLoading(true);
+
+            const data = new URLSearchParams();
+            data.append("account_id", userId);
+            data.append("email", email);
+
+            console.log(userId);
+            console.log(email);
+
+            const response = await axios.post(
+                `${BASE_URL}app/api/password-reset.php?action=reset_password`,
+                data,
+                {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                },
+            );
+
+            if (response.data.success) {
+                toast.success("Password changed successfully!");
+                // setError("");
+
+                setIsModalOpen(false);
+            } else {
+                // setError(response.data.message || "Failed to reset password");
+                // toast.error(error);
+                toast.error("Error: " + response.data.message);
+                console.log("Error: " + response.data.message);
+                setIsModalOpen(false);
+            }
+
+            setLoading(false);
+        } catch (err) {
+            console.error("Error sending reset link:", err);
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -51,7 +110,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                             <div className="flex items-center gap-5">
                                 <div className="relative">
                                     <img
-                                        src={imageUrl}
+                                        src={profile}
                                         alt="Profile"
                                         className="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-gray-100 shadow-sm object-cover"
                                     />
@@ -65,7 +124,9 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                     </h2>
                                     <div className="inline-flex items-center bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-xs font-medium">
                                         Scholar ID:{" "}
-                                        {scholarId ? scholarId : userId}
+                                        {user.type === "scholar"
+                                            ? userId
+                                            : scholarInfoFromTable[2]}
                                     </div>
                                 </div>
                             </div>
@@ -240,7 +301,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                     <InfoField
                                         label="Rendered Hours"
                                         value={
-                                            scholarInfo?.rendered_hours || ""
+                                            scholarInfo?.rendered_hours || "0"
                                         }
                                         mobileClass={info}
                                     />
@@ -281,7 +342,7 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                                     />
                                     <ValueField
                                         value={
-                                            scholarInfo?.rendered_hours || ""
+                                            scholarInfo?.rendered_hours || "0"
                                         }
                                     />
                                 </div>
@@ -455,65 +516,152 @@ const UserAccount = ({ scholarId = false, isModal = false }) => {
                         </section>
 
                         {/* Account Settings */}
-                        {!isModal && (
-                            <section>
-                                <div className="flex items-center gap-2 mb-6">
-                                    <Settings className="w-4 h-4 text-gray-600" />
-                                    <h3 className="text-sm font-semibold text-gray-900">
-                                        Account Settings
-                                    </h3>
-                                </div>
 
-                                <div className="grid md:grid-cols-2 gap-x-12">
-                                    <div className="space-y-4">
-                                        <InfoField
-                                            label="Email"
-                                            value={
-                                                scholarInfo?.basic_information
-                                                    ?.email
-                                            }
-                                            mobileClass={info}
-                                        />
-                                        <InfoField
-                                            label="Password"
-                                            value="••••••••"
-                                            mobileClass={info}
-                                        />
-                                    </div>
+                        <section>
+                            <div className="flex items-center gap-2 mb-6">
+                                <Settings className="w-4 h-4 text-gray-600" />
+                                <h3 className="text-sm font-semibold text-gray-900">
+                                    Account Settings
+                                </h3>
+                            </div>
 
-                                    <div className="hidden md:block space-y-4">
-                                        <ValueField
-                                            value={
-                                                scholarInfo?.basic_information
-                                                    ?.email
-                                            }
-                                        />
-                                        <ValueField value="••••••••" />
-                                    </div>
-                                </div>
+                            {!isModal && (
+                                <>
+                                    {" "}
+                                    <div className="grid md:grid-cols-2 gap-x-12">
+                                        <div className="space-y-4">
+                                            <InfoField
+                                                label="Email"
+                                                value={
+                                                    scholarInfo
+                                                        ?.basic_information
+                                                        ?.email
+                                                }
+                                                mobileClass={info}
+                                            />
+                                            <InfoField
+                                                label="Password"
+                                                value="••••••••"
+                                                mobileClass={info}
+                                            />
+                                        </div>
 
-                                <div className="mt-8 pt-6 border-t border-gray-200">
-                                    <div className="mb-8">
-                                        <h3 className="text-xl font-bold text-gray-800">
-                                            Password
-                                        </h3>
-                                        <p className="text-sm text-gray-700">
-                                            Must be at least 8 characters long.
-                                        </p>
+                                        <div className="hidden md:block space-y-4">
+                                            <ValueField
+                                                value={
+                                                    scholarInfo
+                                                        ?.basic_information
+                                                        ?.email
+                                                }
+                                            />
+                                            <ValueField value="••••••••" />
+                                        </div>
                                     </div>
-                                    <ChangePasswordForm userId={user.user_id} />
+                                    <div className="mt-8 pt-6 border-t border-gray-200">
+                                        <div className="mb-8">
+                                            <h3 className="text-xl font-bold text-gray-800">
+                                                Password
+                                            </h3>
+                                            <p className="text-sm text-gray-700">
+                                                Must be at least 8 characters
+                                                long.
+                                            </p>
+                                        </div>
+                                        <ChangePasswordForm />
+                                    </div>
+                                </>
+                            )}
+
+                            {isModal && (
+                                <div className="w-[max-content] flex flex-col gap-3">
+                                    <button
+                                        onClick={() => {
+                                            setIsModalOpen(true);
+                                            data.onOpenConfirmationModal(
+                                                scholarInfoFromTable[2],
+                                                null,
+                                                "reset_password",
+                                            );
+                                        }}
+                                        type="button"
+                                        className="inline-flex justify-center items-center text-center text-sm px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+                                    >
+                                        Reset Password
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsModalOpen(true);
+                                            data.onOpenConfirmationModal(
+                                                scholarInfoFromTable[2],
+                                                scholarInfo?.scholar_status,
+                                                scholarInfo?.scholar_status ===
+                                                    "active"
+                                                    ? "deactivate"
+                                                    : "activate",
+                                            );
+                                        }}
+                                        type="button"
+                                        className={`inline-flex items-center text-sm px-6 py-3 ${scholarInfo?.scholar_status === "active" ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}  text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5`}
+                                    >
+                                        {scholarInfo?.scholar_status ===
+                                        "active"
+                                            ? "Deactivate"
+                                            : "Activate"}{" "}
+                                        Account
+                                    </button>
                                 </div>
-                            </section>
-                        )}
+                            )}
+                        </section>
                     </div>
                 </div>
             </div>
+
+            {isModalOpen && (
+                <ConfirmationModal
+                    isOpen={isModalOpen}
+                    onClose={setIsModalOpen}
+                    isLoading={loading}
+                    label={"Confirmation"}
+                    action={data?.action}
+                    message={
+                        data.action === "activate"
+                            ? data.message1
+                            : data.action === "reset_password"
+                              ? data.message3
+                              : data.message2
+                    }
+                    // onClick={() =>
+                    //     data.onChangeAccountStatus(
+                    //         scholarInfoFromTable[2],
+                    //         scholarInfo?.scholar_status,
+                    //         data.action,
+                    //     )
+                    // }
+                    onClick={() => {
+                        if (data.action === "reset_password") {
+                            handleSendTempPassword(
+                                scholarInfoFromTable[2],
+                                scholarInfo?.basic_information?.email,
+                            );
+                        } else {
+                            data.onChangeAccountStatus(
+                                scholarInfoFromTable[2],
+                                scholarInfo?.scholar_status,
+                                data.action,
+                            );
+                        }
+                    }}
+                    isScholarAccount={true}
+                    deactivationReason={data.deactivationReason}
+                    setDeactivationReason={data.setDeactivationReason}
+                />
+            )}
         </div>
     );
 };
 
 // Helper Components
-const InfoField = ({ label, value, mobileClass }) => (
+const InfoField = ({ label, value, mobileClass, isEditing, setIsEditing }) => (
     <div>
         <p className="text-xs sm:text-sm font-medium text-gray-500 mb-1.5">
             {label}

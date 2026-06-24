@@ -17,15 +17,7 @@ class MonthlyAllowanceSummaryModel
         $this->pdo = $db->getConnection();
     }
 
-    // public function getMonthlyAllowanceSummary()
-    // {
-    //     $query = 'SELECT * FROM ' . $this->table_name;
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
-
-    public function getMonthlyAllowanceSummary($year, $month)
+    public function getMonthlyAllowanceSummary($year, $month, $sort)
     {
         $query =
             'SELECT id, cycle_month, allowance_month, cutoff_date, is_processed, processed_at, file_name FROM ' .
@@ -39,15 +31,11 @@ class MonthlyAllowanceSummaryModel
             $query .= " WHERE YEAR(allowance_month)  = '$year'";
         }
 
-        // $query .= ' ORDER BY ai.created_at DESC';
-
-        // if ($sort === 'newest') {
-        //     $query .= ' ORDER BY ai.created_at DESC';
-        // } elseif ($sort === 'oldest') {
-        //     $query .= ' ORDER BY ai.created_at ASC';
-        // } elseif ($sort === 'name') {
-        //     $query .= ' ORDER BY pi.first_name ASC';
-        // }
+        if ($sort === 'newest') {
+            $query .= ' ORDER BY cutoff_date DESC';
+        } elseif ($sort === 'oldest') {
+            $query .= ' ORDER BY cutoff_date ASC';
+        }
 
         $stmt = $this->pdo->query($query);
         $stmt->execute();

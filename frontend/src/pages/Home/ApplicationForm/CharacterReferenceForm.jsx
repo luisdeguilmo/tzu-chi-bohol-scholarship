@@ -76,7 +76,7 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
 
     return (
         <div>
-            <h2 className="mt-12 mb-12 px-4 py-3 font-bold bg-green-100 rounded-lg text-green-900 text-sm">
+            <h2 className="mt-12 mb-12 px-4 py-3 font-bold bg-green-600 rounded-lg text-white text-xs sm:text-sm">
                 Character Reference{" "}
                 <span className="text-xs italic font-normal">
                     (Name 3 Person not related to your family who can vouch

@@ -3,17 +3,21 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-const token = localStorage.getItem("token");
-
-export const useCollegesUniversities = () => {
+export const useCollegesUniversities = (filter) => {
     const [collegesAndUniversities, setCollegesAndUniversities] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const token = localStorage.getItem("token");
 
     const fetchCollegesAndUniversities = async () => {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/colleges-universities.php`,
+                `${BASE_URL}app/api/colleges-universities.php?filter=${filter}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data) {
@@ -28,9 +32,10 @@ export const useCollegesUniversities = () => {
         }
     };
 
-    const addCollegeOrUniversity = async (collegeUniversity) => {
+    const addCollegeOrUniversity = async (collegeUniversity, type) => {
         const data = {
             college_university: collegeUniversity,
+            type: type,
         };
 
         try {
@@ -62,10 +67,53 @@ export const useCollegesUniversities = () => {
         }
     };
 
-    const updateCollegeOrUniversity = async (selectedId, collegeUniversity) => {
+    const updateVisibility = async (id, name, is_visible) => {
+        try {
+            const data = {
+                id: id,
+                name: name,
+                is_visible: is_visible,
+            };
+
+            const response = await fetch(
+                `${BASE_URL}app/api/colleges-universities.php`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(data),
+                },
+            );
+
+            const result = await response.json();
+
+            if (result.success) {
+                // toast.success(result.message + ".");
+                setIsLoading(false);
+                return true;
+            } else {
+                alert("Error: " + result.message);
+                setIsLoading(false);
+                return false;
+            }
+        } catch (error) {
+            console.error(`Error updating ${entityName}:`, error);
+            toast.error(`Failed to update ${entityName}`);
+            return false;
+        }
+    };
+
+    const updateCollegeOrUniversity = async (
+        selectedId,
+        collegeUniversity,
+        type,
+    ) => {
         const data = {
             id: selectedId,
             name: collegeUniversity,
+            type: type,
         };
 
         try {
@@ -136,6 +184,7 @@ export const useCollegesUniversities = () => {
         collegesAndUniversities,
         addCollegeOrUniversity,
         updateCollegeOrUniversity,
+        updateVisibility,
         deleteCollegeOrUniversity,
         fetchCollegesAndUniversities,
     };

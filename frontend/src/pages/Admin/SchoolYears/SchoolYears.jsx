@@ -7,8 +7,8 @@ import Table from "../../../components/Table";
 import { schoolYearsHeaders } from "../../../constant/tableHeaders";
 import { CircleCheckBig, Eye, Plus } from "lucide-react";
 import { toast } from "react-toastify";
-import { useSchoolYears } from "../../../hooks/useSchoolYears";
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import { useSchoolYearContext } from "../../../context/SchoolYearContext";
 
 const SchoolYears = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -19,16 +19,14 @@ const SchoolYears = () => {
     const [selectedSchoolYear, setSelectedSchoolYear] = useState(null);
     const [status, setStatus] = useState(null);
     const [action, setAction] = useState("activate");
+    const [schoolYear, setSchoolYear] = useState("");
     const {
+        loading,
         schoolYears,
+        activeSchoolYear,
         fetchSchoolYears,
         updateSchoolYearStatus,
-        getActiveSchoolYear,
-    } = useSchoolYears();
-
-    useEffect(() => {
-        fetchSchoolYears();
-    }, []);
+    } = useSchoolYearContext();
 
     // Filter data based on search term
     const filteredSchoolYears = schoolYears.filter((schoolYear) =>
@@ -38,9 +36,9 @@ const SchoolYears = () => {
     const sortedSchoolYears = [...filteredSchoolYears].sort((a, b) => {
         switch (sortBy) {
             case "newest":
-                return new Date(b.date) - new Date(a.date);
+                return new Date(b.created_at) - new Date(a.created_at);
             case "oldest":
-                return new Date(a.date) - new Date(b.date);
+                return new Date(a.created_at) - new Date(b.created_at);
             case "name":
                 return a.first_name.localeCompare(b.first_name);
             default:
@@ -78,7 +76,9 @@ const SchoolYears = () => {
         }
     };
 
-    const handleRefresh = () => {};
+    const handleRefresh = () => {
+        fetchSchoolYears();
+    };
 
     return (
         <div className="lg:p-6">
@@ -108,73 +108,106 @@ const SchoolYears = () => {
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table tableHeaders={schoolYearsHeaders}>
-                        {currentItems.map((schoolYear) => (
-                            <tr
-                                key={schoolYear.id}
-                                className="text-center border-b border-gray-100 hover:bg-gray-50 transition-colors"
-                            >
-                                {/* School Year */}
-                                <td className="pr-4 py-2 text-sm text-gray-600 whitespace-nowrap">
-                                    {schoolYear.school_year}
-                                </td>
+                        {loading && (
+                            <tr>
+                                <td colSpan={6} className="p-6">
+                                    <div className="mt-4 flex flex-col items-center gap-4">
+                                        <div className="flex items-end gap-1 h-10">
+                                            {[...Array(5)].map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                                    style={{
+                                                        height: "10px",
+                                                        animationDelay: `${i * 100}ms`,
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
 
-                                {/* Status */}
-                                <td className="pr-4 py-2 whitespace-nowrap">
-                                    <span
-                                        className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
-                                            schoolYear.status === "active"
-                                                ? "text-green-800 bg-green-100"
+                                        <p className="text-sm text-slate-500">
+                                            Loading data...
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
+
+                        {!loading &&
+                            currentItems.map((schoolYear) => (
+                                <tr
+                                    key={schoolYear.id}
+                                    className="text-center border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                                >
+                                    {/* School Year */}
+                                    <td className="pr-4 py-2 text-sm text-gray-600 whitespace-nowrap">
+                                        {schoolYear.school_year}
+                                    </td>
+
+                                    {/* Status */}
+                                    <td className="pr-4 py-2 whitespace-nowrap">
+                                        <span
+                                            className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
+                                                schoolYear.status === "active"
+                                                    ? "text-green-800 bg-green-100"
+                                                    : schoolYear.status ===
+                                                        "archived"
+                                                      ? "text-blue-800 bg-blue-100"
+                                                      : "text-orange-800 bg-orange-100"
+                                            }`}
+                                        >
+                                            {schoolYear.status === "active"
+                                                ? "Active"
                                                 : schoolYear.status ===
                                                     "archived"
-                                                  ? "text-blue-800 bg-blue-100"
-                                                  : "text-orange-800 bg-orange-100"
-                                        }`}
-                                    >
-                                        {schoolYear.status === "active"
-                                            ? "Active"
-                                            : schoolYear.status === "archived"
-                                              ? "Archived"
-                                              : "Upcoming"}
-                                    </span>
-                                </td>
+                                                  ? "Archived"
+                                                  : "Upcoming"}
+                                        </span>
+                                    </td>
 
-                                {/* Actions */}
-                                <td className="pr-4 py-2 whitespace-nowrap">
-                                    <div className="flex justify-center items-center gap-3">
-                                        {/* <button
+                                    {/* Actions */}
+                                    <td className="pr-4 py-2 whitespace-nowrap">
+                                        <div className="flex justify-center items-center gap-3">
+                                            {/* <button
                                             title="View Profile"
                                             className="p-2 rounded-lg hover:bg-blue-50 transition"
                                         >
                                             <Eye className="w-4 h-4 text-blue-600 hover:text-blue-800" />
                                         </button> */}
-                                        <button
-                                            onClick={() => {
-                                                setIsConfirmationModalOpen(
-                                                    true,
-                                                );
-                                                setSelectedSchoolYear(
-                                                    schoolYear.id,
-                                                );
-                                                setStatus(schoolYear.status);
-                                            }}
-                                            disabled={
-                                                schoolYear.status ===
-                                                    "archived" ||
-                                                schoolYear.status === "active"
-                                            }
-                                            title="Set as Active"
-                                            className={`${schoolYear.status === "upcoming" ? "visible" : "invisible"} p-2 rounded-lg hover:bg-green-50 transition`}
-                                        >
-                                            <CircleCheckBig className="w-4 h-4 text-green-600 hover:text-green-800" />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
+                                            <button
+                                                onClick={() => {
+                                                    setIsConfirmationModalOpen(
+                                                        true,
+                                                    );
+                                                    setSelectedSchoolYear(
+                                                        schoolYear.id,
+                                                    );
+                                                    setStatus(
+                                                        schoolYear.status,
+                                                    );
+                                                    setSchoolYear(
+                                                        schoolYear.school_year,
+                                                    );
+                                                }}
+                                                disabled={
+                                                    schoolYear.status ===
+                                                        "archived" ||
+                                                    schoolYear.status ===
+                                                        "active"
+                                                }
+                                                title="Set as Active"
+                                                className={`${schoolYear.status === "upcoming" ? "visible" : "invisible"} p-2 rounded-lg hover:bg-green-50 transition`}
+                                            >
+                                                <CircleCheckBig className="w-4 h-4 text-green-600 hover:text-green-800" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                     </Table>
 
                     {/* Empty state */}
-                    {currentItems.length === 0 && (
+                    {currentItems.length === 0 && !loading && (
                         <EmptyState message="No school years found." />
                     )}
                 </div>
@@ -203,7 +236,7 @@ const SchoolYears = () => {
                 onClose={setIsConfirmationModalOpen}
                 // isLoading={isLoading}
                 label={"Confirmation"}
-                message={"Are you sure you want to activate 2026–2027 ? "}
+                message={`Are you sure you want to activate ${schoolYear}?`}
                 onClick={() =>
                     handleSchoolYearStatusChange(
                         selectedSchoolYear,

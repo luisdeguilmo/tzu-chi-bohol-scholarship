@@ -83,12 +83,35 @@ class ScholarAccountModel
         return $stmt->execute();
     }
 
-    public function getCreatedAccounts()
+    public function getCreatedAccounts($sort, $status)
     {
         $query =
-            'SELECT * FROM ' .
+            'SELECT s.first_name, s.last_name, u.status, u.email, u.account_id, u.created_at, u.email, u.type, pi.middle_name, ai.is_added_from_admin FROM ' .
             $this->scholar_table .
-            ' s JOIN users u ON s.account_id = u.account_id';
+            ' s JOIN users u ON s.account_id = u.account_id 
+            JOIN personal_information pi ON s.account_id = pi.application_id 
+            JOIN application_info ai ON s.account_id = ai.application_id';
+
+        if ($status === 'active') {
+            $query .= " WHERE u.status = 'active'";
+        } elseif ($status === 'deactivated') {
+            $query .= " WHERE u.status = 'deactivated'";
+        } elseif ($status === 'not_renewed') {
+            $query .= " WHERE u.status = 'not_renewed'";
+        } elseif ($status === 'graduated') {
+            $query .= " WHERE u.status = 'graduated'";
+        } elseif ($status === 'terminated') {
+            $query .= " WHERE u.status = 'terminated'";
+        }
+
+        if ($sort === 'newest') {
+            $query .= ' ORDER BY s.created_at DESC';
+        } elseif ($sort === 'oldest') {
+            $query .= ' ORDER BY s.created_at ASC';
+        } elseif ($sort === 'name') {
+            $query .= ' ORDER BY s.last_name ASC';
+        }
+
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -103,7 +126,7 @@ class ScholarAccountModel
                 $this->table_name .
                 " ai 
                      JOIN personal_information pi ON ai.application_id = pi.application_id WHERE ai.is_application_approved = '1' AND ai.is_examination_passed = '1' AND ai.is_initial_interview_passed = '1'
-                     AND ai.is_home_visitation_qualified = '1' AND ai.is_final_interview_passed = '1' AND ai.is_attended_orientation = '1' AND ai.is_attended_awarding = '1' AND ai.status = 'is_attended_awarding'";
+                     AND ai.is_home_visitation_qualified = '1' AND ai.is_final_interview_passed = '1' AND ai.is_attended_orientation = '1' AND ai.is_attended_awarding = '1' AND ai.status = 'is_attended_awarding' ORDER BY ai.created_at DESC";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute();
 
@@ -148,16 +171,6 @@ class ScholarAccountModel
 
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-
-    // public function updateApplicationStatusToScholar($application_id) {
-    //     $query = "UPDATE users SET status = :status
-    //              WHERE application_id = :application_id";
-    //     $stmt = $this->pdo->prepare($query);
-    //     $status = 'scholar';
-    //     $stmt->bindParam(':application_status', $status);
-    //     $stmt->bindParam(':application_id', $application_id);
-    //     return $stmt->execute();
-    // }
 
     public function updateAccountStatus($scholar_id, $status)
     {

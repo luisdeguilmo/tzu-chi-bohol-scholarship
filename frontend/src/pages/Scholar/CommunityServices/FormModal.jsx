@@ -207,7 +207,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
         >
             <div className="p-6">
                 <div className="grid md:grid-cols-2 gap-2">
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                    <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                         Activity Name
                         <input
                             type="text"
@@ -216,12 +216,12 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                             onChange={(e) =>
                                 handleChange(setActivityName, e.target.value)
                             }
-                            placeholder="Enter activity name"
-                            className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            placeholder="Activity name"
+                            className="mt-2 w-full border text-xs text-gray-800 border-gray-300 rounded-md p-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         />
                     </label>
 
-                    <label className="py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                    <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                         Activity Location
                         <input
                             type="text"
@@ -233,12 +233,12 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                     e.target.value,
                                 )
                             }
-                            placeholder="Enter activity location"
-                            className="w-full border text-xs text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            placeholder="Activity location"
+                            className="mt-2 w-full border text-xs text-gray-800 border-gray-300 rounded-md p-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         />
                     </label>
 
-                    <label className="relative py-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                    <label className="relative py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                         Date
                         <input
                             type="date"
@@ -249,15 +249,15 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                             onChange={(e) =>
                                 handleChange(setActivityDate, e.target.value)
                             }
-                            className="w-full border text-xs bg-white text-gray-800 border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="mt-2 w-full border text-xs bg-white text-gray-800 border-gray-300 rounded-md p-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                         />
                     </label>
 
                     <div className="flex justify-between items-end gap-2">
-                        <label className="relative flex-1 pb-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                        <label className="relative flex-1 pb-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                             Start Time
                             {startTime && (
-                                <span className="pointer-events-none absolute left-2.5 top-[28px] text-gray-800 text-xs">
+                                <span className="pointer-events-none absolute left-2.5 top-[36px] text-gray-800 text-xs">
                                     {formatTime(startTime)}
                                 </span>
                             )}
@@ -270,14 +270,14 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                 onChange={(e) =>
                                     handleChange(setStartTime, e.target.value)
                                 }
-                                className="w-full border text-xs text-gray-800 bg-white border-gray-300 rounded-md py-[9px] px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="mt-2 w-full border text-xs text-gray-800 bg-white border-gray-300 rounded-md py-[9px] px-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
 
-                        <label className="relative flex-1 pb-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                        <label className="relative flex-1 pb-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                             End Time
                             {endTime && (
-                                <span className="pointer-events-none absolute left-2.5 top-[28px] text-gray-800 text-xs">
+                                <span className="pointer-events-none absolute left-2.5 top-[36px] text-gray-800 text-xs">
                                     {formatTime(endTime)}
                                 </span>
                             )}
@@ -290,14 +290,14 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                                 onChange={(e) =>
                                     handleChange(setEndTime, e.target.value)
                                 }
-                                className="w-full border text-xs text-gray-800 bg-white border-gray-300 rounded-md py-[9px] px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                className="mt-2 w-full border text-xs text-gray-800 bg-white border-gray-300 rounded-md py-[9px] px-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                             />
                         </label>
                     </div>
                 </div>
 
                 <div className="">
-                    <label className="py-2.5 flex flex-col gap-[1px] text-gray-500 text-xs">
+                    <label className="py-2.5 flex flex-col gap-[1px] text-gray-800 text-xs">
                         Upload files
                         <input
                             type="file"
@@ -310,7 +310,7 @@ function ActivityFormModal({ isOpen, setIsOpen, onSuccess }) {
                         <button
                             type="button"
                             onClick={handleAddFileClick}
-                            className="py-2.5 px-2 flex justify-center items-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
+                            className="mt-2 p-2.5 flex justify-center items-center gap-[1px] text-gray-600 text-xs rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-green-500 transition-colors"
                             disabled={isSubmitting}
                         >
                             <svg

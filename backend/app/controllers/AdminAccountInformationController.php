@@ -11,6 +11,7 @@ require_once __DIR__ . '/../Models/ScholarAccountModel.php';
 
 use App\Models\AdminAccountInformationModel;
 use Config\Database;
+use Middleware\Auth;
 
 class AdminAccountInformationController
 {
@@ -38,9 +39,6 @@ class AdminAccountInformationController
             case 'PUT':
                 $this->handlePut();
                 break;
-            case 'DELETE':
-                // $this->handleDelete();
-                break;
             default:
                 http_response_code(405);
                 echo json_encode(['message' => 'Method not allowed']);
@@ -55,7 +53,7 @@ class AdminAccountInformationController
             $model = new AdminAccountInformationModel();
 
             // Get ID parameter if it exists
-            $id = isset($_GET['admin_id']) ? $_GET['admin_id'] : null;
+            $id = Auth::id();
 
             $basicInfo = $model->getBasicInformation($id);
 
@@ -81,7 +79,7 @@ class AdminAccountInformationController
 
             $data = json_decode(file_get_contents('php://input'), true);
 
-            $id = $data['id'];
+            $id = Auth::id();
 
             if (!$id) {
                 throw new \Exception('ID is required.');
@@ -89,11 +87,11 @@ class AdminAccountInformationController
 
             $model = new AdminAccountInformationModel();
 
-            if (!$model->updateAdmin($data)) {
+            if (!$model->updateAdmin($data, $id)) {
                 throw new \Exception('Failed to update admin info');
             }
 
-            if (!$model->updateUser($data)) {
+            if (!$model->updateUser($data, $id)) {
                 throw new \Exception('Failed to update admin info');
             }
 

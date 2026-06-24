@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-export const useScholarAccounts = (tab) => {
+export const useScholarAccounts = (tab, sort, status) => {
     const [scholars, setScholars] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ export const useScholarAccounts = (tab) => {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `${BASE_URL}app/api/scholar-accounts.php?application_status=${tab}`
+                `${BASE_URL}app/api/scholar-accounts.php?application_status=${tab}&sort=${sort}&status=${status}`,
             );
 
             if (response.data.success) {
@@ -32,7 +32,7 @@ export const useScholarAccounts = (tab) => {
 
     const createScholarAccount = async (
         selectedScholars,
-        setSelectedScholars = null
+        setSelectedScholars = null,
     ) => {
         if (selectedScholars.length === 0) {
             toast.error("Please select at least one scholar");
@@ -50,7 +50,7 @@ export const useScholarAccounts = (tab) => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                }
+                },
             );
 
             if (response.data.success) {
@@ -64,7 +64,7 @@ export const useScholarAccounts = (tab) => {
 
                 // Show success notification
                 toast.success(
-                    `Successfully created ${selectedScholars.length} account(s)`
+                    `Successfully created ${selectedScholars.length} account(s)`,
                 );
             } else {
                 toast.error("Error: " + response.data.message);
@@ -75,7 +75,7 @@ export const useScholarAccounts = (tab) => {
             console.error("Error creating accounts:", err);
             toast.error(
                 "Failed to create accounts: " +
-                    (err.response?.data?.message || err.message)
+                    (err.response?.data?.message || err.message),
             );
             setLoading(false);
         }
@@ -89,7 +89,7 @@ export const useScholarAccounts = (tab) => {
                 `${BASE_URL}app/api/scholar-accounts.php?action=${action}&reason=${reason}`,
                 {
                     scholarId: scholarId,
-                }
+                },
             );
 
             if (response.data.success) {

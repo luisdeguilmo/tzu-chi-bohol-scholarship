@@ -23,6 +23,8 @@ export const scholarsAndAllowancesTableHeaders = [
     { name: "Scholar", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Rendered Hours", style: "text-center" },
+    { name: "Load Allowance", style: "text-center" },
+    { name: "Transport Allowance", style: "text-center" },
     // { name: "Allowance Status", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
@@ -198,7 +200,9 @@ export const eventTableHeaders = [
 ];
 
 export const collegesUniversitiesTableHeaders = [
-    { name: "College/University", style: "text-left pl-24" },
+    { name: "College/University", style: "text-left" },
+    { name: "Type", style: "text-center pr-60" },
+    { name: "Visibility", style: "text-left" },
     { name: "Action", style: "text-center" },
 ];
 
@@ -240,4 +244,5 @@ export const auditLogsHeaders = [
     { name: "Record ID" },
     { name: "Changes" },
     { name: "Date" },
+    { name: "" },
 ];

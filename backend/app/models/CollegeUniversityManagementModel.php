@@ -24,17 +24,28 @@ class CollegeUniversityManagementModel
             'INSERT INTO ' .
             $this->table_name .
             " 
-                  SET name = :name";
+                  SET name = :name,
+                    type = :type";
 
         $stmt = $this->pdo->prepare($query);
-        $name = strip_tags($data);
+        $name = strip_tags($data['college_university']);
+        $type = strip_tags($data['type']);
         $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':type', $type);
+
         return $stmt->execute();
     }
 
-    public function getAllCollegesAndUniversities()
+    public function getAllCollegesAndUniversities($filter)
     {
         $query = 'SELECT * FROM ' . $this->table_name;
+
+        if ($filter === 'visible') {
+            $query .= " WHERE is_visible = '1'";
+        } elseif ($filter === 'hidden') {
+            $query .= " WHERE is_visible = '0'";
+        }
+
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -60,21 +71,43 @@ class CollegeUniversityManagementModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function updateCollegeVisibility($id, $data)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            " 
+                  SET is_visible = :is_visible 
+                  WHERE id = :id";
+
+        $stmt = $this->pdo->prepare($query);
+
+        $is_visible = strip_tags($data['is_visible']);
+
+        $stmt->bindParam(':is_visible', $is_visible);
+        $stmt->bindParam(':id', $id);
+
+        return $stmt->execute();
+    }
+
     public function update($data)
     {
         $query =
             'UPDATE ' .
             $this->table_name .
             " 
-                  SET name = :name 
+                  SET name = :name,
+                  type = :type
                   WHERE id = :id";
 
         $stmt = $this->pdo->prepare($query);
 
         $id = strip_tags($data['id']);
         $name = strip_tags($data['name']);
+        $type = strip_tags($data['type']);
 
         $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':type', $type);
         $stmt->bindParam(':id', $id);
 
         return $stmt->execute();

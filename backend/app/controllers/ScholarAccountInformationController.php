@@ -11,7 +11,9 @@ require_once __DIR__ . '/../Models/ScholarAccountModel.php';
 
 use App\Models\ScholarAccountInformationModel;
 use App\Models\ScholarAccountModel;
+use App\Models\SchoolYearModel;
 use Config\Database;
+use Middleware\Auth;
 
 class ScholarAccountInformationController
 {
@@ -35,8 +37,6 @@ class ScholarAccountInformationController
         switch ($requestMethod) {
             case 'GET':
                 $this->handleGet();
-            case 'DELETE':
-                // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);
@@ -50,12 +50,11 @@ class ScholarAccountInformationController
         try {
             $result = [];
             $model = new ScholarAccountInformationModel();
+            $schoolYear = new SchoolYearModel();
 
             // Get ID parameter if it exists
-            $scholarId = isset($_GET['scholar_id']) ? $_GET['scholar_id'] : null;
-            $currentSchoolYear = isset($_GET['current_school_year'])
-                ? $_GET['current_school_year']
-                : null;
+            $scholarId = Auth::id();
+            $currentSchoolYear = $schoolYear->getActiveSchoolYear();
 
             if (!$scholarId || !$currentSchoolYear) {
                 throw new \Exception(

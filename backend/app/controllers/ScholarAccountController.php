@@ -18,6 +18,7 @@ try {
     error_log('Could not load .env file: ' . $e->getMessage());
 }
 
+use App\Models\ScholarAccountInformationModel;
 use App\Models\ScholarAccountModel;
 use App\Models\ScholarsModel;
 use App\Services\PHPMailerBrevoService;
@@ -51,9 +52,6 @@ class ScholarAccountController
                 break;
             case 'PUT':
                 $this->handlePut();
-                break;
-            case 'DELETE':
-                // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);
@@ -189,29 +187,55 @@ class ScholarAccountController
     {
         try {
             $model = new ScholarAccountModel();
-            $scholar = new ScholarsModel();
+            $info = new ScholarAccountInformationModel();
+            $scholarModel = new ScholarsModel();
 
             // Get ID parameter if it exists
             $application_status = isset($_GET['application_status'])
                 ? $_GET['application_status']
                 : null;
+            $sort = $_GET['sort'] ?? null;
+            $status = $_GET['status'] ?? null;
 
             $results = [];
+            $data = [];
 
             if ($application_status === 'created') {
                 // Get specific scholar
-                $results = $model->getCreatedAccounts() ?? [];
+                $scholars = $model->getCreatedAccounts($sort, $status) ?? [];
+
+                foreach ($scholars as $scholar) {
+                    $basicInfo = $info->getBasicInformation($scholar['account_id']);
+                    $academicInfo = $info->getAcademicInfo($scholar['account_id']);
+                    $transportDetails = $info->getTransportDetails($scholar['account_id']);
+                    $scholarStatus = $info->getScholarStatus($scholar['account_id']);
+                    $renderedHours = $info->getRenderedHours($scholar['account_id']);
+
+                    $scholar[] = [
+                        'basic_information' => $basicInfo,
+                        'academic_information' => $academicInfo,
+                        'transport_details' => $transportDetails,
+                        'scholar_status' => $scholarStatus,
+                        'rendered_hours' => $renderedHours,
+                    ];
+
+                    $results[] = $scholar;
+                }
 
                 // http_response_code(200);
                 // echo json_encode([
                 //     'success' => true,
-                //     'data' => $result,
+                //     'data' => $results,
                 // ]);
+
+                $data = $scholarModel->getScholarsWithProfile($results, $scholarModel);
             } elseif ($application_status === 'pending') {
                 $results = $model->getPendingScholars();
+
+                $data = $scholarModel->getPendingScholarsWithProfile($results, $scholarModel);
             }
 
-            $data = $scholar->getScholarsWithProfile($results, $scholar);
+            // $data = $scholarModel->getScholarsWithProfile($results, $scholarModel);
 
             http_response_code(200);
             echo json_encode([

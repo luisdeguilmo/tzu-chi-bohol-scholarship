@@ -1,8 +1,4 @@
-import {
-    CheckCircle,
-    Download,
-    RefreshCcw,
-} from "lucide-react";
+import { CheckCircle, Download, RefreshCcw } from "lucide-react";
 import SearchInput from "./SearchInput";
 import { date } from "../utils/getDateAndTime";
 
@@ -17,6 +13,16 @@ const TableToolbar = ({
     sortedItems,
     buttons,
     sortBy,
+    sortItems = [
+        {
+            label: "Newest First",
+            value: "newest",
+        },
+        {
+            label: "Oldest First",
+            value: "oldest",
+        },
+    ],
     itemsPerPage,
     onChangeItemsPerPage,
     onChangeCurrentPage,
@@ -68,16 +74,15 @@ const TableToolbar = ({
                         </svg>
                         Refresh
                     </button>
-                    {addButton &&
-                        !buttonLabel && (
-                            <button
-                                onClick={() => onOpen(true)}
-                                className="flex-1 md:flex-none px-3 py-2.5 text-xs md:text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
-                            >
-                                {button?.icon}
-                                {button?.label}
-                            </button>
-                        )}
+                    {addButton && !buttonLabel && (
+                        <button
+                            onClick={() => onOpen(true)}
+                            className="flex-1 md:flex-none px-3 py-2.5 text-xs md:text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
+                        >
+                            {button?.icon}
+                            {button?.label}
+                        </button>
+                    )}
 
                     {addButton && buttonLabel === "Process Allowance" && (
                         <>
@@ -143,112 +148,6 @@ const TableToolbar = ({
                             {exportLoading ? "Exporting..." : "Export"}
                         </button>
                     )}
-
-                    {/* {addButton &&
-                        (!buttonLabel || buttonLabel === "School") && (
-                            <button
-                                onClick={() => onOpen(true)}
-                                className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
-                            >
-                                <Plus className="w-4 h-4 text-white" />
-                                Add New{" "}
-                                {buttonLabel === false
-                                    ? label.slice(0, -1)
-                                    : buttonLabel}
-                            </button>
-                        )} */}
-                    {/* {addButton && buttonLabel === "Set Message" && (
-                        <button
-                            onClick={() => onOpen(true)}
-                            className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
-                        >
-                            <PenLine className="w-4 h-4 text-white" />
-                            {buttonLabel}
-                        </button>
-                    )}
-                    {addButton && buttonLabel === "Process Allowance" && (
-                        <>
-                            {isProcessed ? (
-                                <button
-                                    disabled={isProcessed} // boolean flag
-                                    className={`flex-1 md:flex-none px-3 py-2 text-sm rounded-lg flex justify-center items-center gap-2 transition-colors duration-200 
-                                ${
-                                    isProcessed
-                                        ? "bg-gray-400 text-gray-200 cursor-not-allowed" // Disabled styling
-                                        : "bg-green-600 hover:bg-green-700 text-white" // Enabled styling
-                                }`}
-                                >
-                                    <CheckCircle
-                                        className={`w-4 h-4 ${isProcessed ? "text-gray-200" : "text-white"}`}
-                                    />
-                                    Processed
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={() => onOpen(true)}
-                                    className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
-                                >
-                                    <CheckCircle className="w-4 h-4 text-white" />
-                                    {buttonLabel} {" for "}{" "}
-                                    {date.getCurrentMonthFormatted()}
-                                </button>
-                            )}
-                        </>
-                    )}
-                    {buttonExport && (
-                        <button
-                            onClick={onExport}
-                            disabled={disabledButtonExport}
-                            className={`flex-1 md:flex-none px-4 py-2 text-sm rounded-lg flex justify-center items-center gap-2 transition-colors duration-200 
-             text-white  ${disabledButtonExport ? "bg-green-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
-                        >
-                            {exportLoading ? (
-                                <svg
-                                    className="w-4 h-4 animate-spin text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                    ></path>
-                                </svg>
-                            ) : (
-                                <Download className="w-4 h-4 text-white" />
-                            )}
-                            {exportLoading ? "Exporting..." : "Export"}
-                        </button>
-                    )}
-                    {addCreateBatchButton &&
-                    (tab === "Batches" || tab === "Orientation") ? (
-                        <button
-                            onClick={() => onOpen(true)}
-                            className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
-                        >
-                            <Plus className="w-4 h-4 text-white" />
-                            Create New Batch
-                        </button>
-                    ) : addCreateBatchButton && tab === "Result" ? (
-                        <button
-                            onClick={() => onOpen(true)}
-                            className="flex-1 md:flex-none px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex justify-center items-center gap-2"
-                        >
-                            <Pen className="w-3.5 h-4 text-white" />
-                            {passingScore
-                                ? "Edit Passing Score"
-                                : "Set Passing Score"}
-                        </button>
-                    ) : null} */}
                 </div>
             </div>
 
@@ -324,7 +223,9 @@ const TableToolbar = ({
                             ]}
                         /> */}
                         <div className="flex items-center gap-2">
-                            <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Sort:</span>
+                            <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                                Sort:
+                            </span>
                             <select
                                 value={sortBy}
                                 onChange={(e) => {
@@ -333,18 +234,22 @@ const TableToolbar = ({
                                 }}
                                 className="px-3 w-full py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                             >
-                                <option value="newest">Newest First</option>
-                                <option value="oldest">Oldest First</option>
-                                <option value="name">Name (A-Z)</option>
+                                {sortItems.map((item, index) => (
+                                    <option key={index} value={item.value}>
+                                        {item.label}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Show:</span>
+                            <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                                Show:
+                            </span>
                             <select
                                 value={itemsPerPage}
                                 onChange={(e) => {
                                     onChangeItemsPerPage(
-                                        Number(e.target.value)
+                                        Number(e.target.value),
                                     );
                                     onChangeCurrentPage(1);
                                     if (onChangeNumberOfItemsPerPage) {

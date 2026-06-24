@@ -33,10 +33,10 @@ const EmptyState = ({
                     <Archive className="md:w-12 md:h-12 w-8 h-8 text-green-400" />
                 )}
             </div>
-            <h3 className="md:text-xl text-lg font-semibold text-slate-700 mb-2">
+            <h3 className="md:text-xl text-lg text-slate-700 mb-2">
                 {header}
             </h3>
-            <p className="text-slate-500 md:text-lg text-sm max-w-md mb-4">
+            <p className="text-slate-500 md:text-[15px] text-sm max-w-md mb-4">
                 {subHeader}
             </p>
             {searchTerm && (

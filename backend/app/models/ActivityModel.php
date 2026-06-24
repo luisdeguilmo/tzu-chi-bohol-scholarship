@@ -186,7 +186,7 @@ class ActivityModel
 
     public function getAllVolunteerActivities($scholarId)
     {
-        $query = "SELECT * FROM volunteer_activities 
+        $query = "SELECT id, activity_date, activity_location, activity_name, activity_status, batch_id, uploaded_at, end_time, feedback, start_time FROM volunteer_activities 
                     WHERE account_id = :account_id
                     ORDER BY activity_date DESC, start_time DESC";
         $stmt = $this->pdo->prepare($query);
@@ -197,7 +197,7 @@ class ActivityModel
 
     public function getVolunteerActivitiesThisMonth($scholarId)
     {
-        $query = "SELECT * FROM volunteer_activities 
+        $query = "SELECT id, activity_date, activity_location, activity_name, activity_status, batch_id, uploaded_at, end_time, feedback, start_time FROM volunteer_activities 
                     WHERE activity_date >= :start_of_month AND activity_date < :start_of_next_month AND account_id = :account_id
                     ORDER BY activity_date  DESC, start_time DESC";
         $stmt = $this->pdo->prepare($query);
@@ -210,7 +210,7 @@ class ActivityModel
 
     public function getPastSubmissions($scholarId)
     {
-        $query = "SELECT * FROM volunteer_activities 
+        $query = "SELECT id, activity_date, activity_location, activity_name, activity_status, batch_id, uploaded_at, end_time, feedback, start_time FROM volunteer_activities 
                     WHERE DATE(updated_at) < :current_datetime AND account_id = :account_id
                     ORDER BY activity_date  DESC, start_time DESC";
         $stmt = $this->pdo->prepare($query);
@@ -267,7 +267,6 @@ class ActivityModel
                     'id' => $file['id'],
                     'application_id' => $file['application_id'],
                     'file_name' => $file['file_name'],
-                    'file_path' => $file['file_path'],
                     'file_url' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=activities&route=file/view&file=' .
@@ -313,16 +312,6 @@ class ActivityModel
         return null;
     }
 
-    // public function getScholarsWithProfile($scholars, $scholarModel)
-    // {
-    //     $data = [];
-
-    //     foreach ($scholars as $scholar) {
-    //     }
-
-    //     return $data;
-    // }
-
     public function getAllScholarsWithFiles($scholars, $activityModel)
     {
         $data = [];
@@ -337,7 +326,6 @@ class ActivityModel
                     'id' => $file['id'],
                     'application_id' => $file['application_id'],
                     'file_name' => $file['file_name'],
-                    'file_path' => $file['file_path'],
                     'file_url' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=activities&route=file/view&file=' .
@@ -354,6 +342,9 @@ class ActivityModel
                 'id' => $scholar['id'],
                 'application_id' => $scholar['application_id'],
                 'name' => $scholar['name'] ?? $scholar['first_name'] . ' ' . $scholar['last_name'],
+                'first_name' => $scholar['first_name'],
+                'last_name' => $scholar['last_name'],
+                'middle_name' => $scholar['middle_name'],
                 'email' => $scholar['email'],
                 'activity_name' => $scholar['activity_name'],
                 'activity_location' => $scholar['activity_location'],
@@ -379,7 +370,7 @@ class ActivityModel
         // if ($tab === 'pending') $this->status = "Pending";
         // else if ($tab === 'recorded') $this->status = "Recorded";
 
-        $query = "SELECT pi.application_id, pi.first_name, pi.last_name, pi.email, va.*
+        $query = "SELECT pi.application_id, pi.first_name, pi.last_name, pi.middle_name, pi.email, va.*
                 FROM personal_information pi 
                 JOIN volunteer_activities va ON pi.application_id = va.account_id 
                 WHERE YEAR(va.uploaded_at) = :year AND MONTH(va.uploaded_at) = :month
@@ -427,111 +418,6 @@ class ActivityModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getCurrentMonthActivities($account_id)
-    {
-        $query =
-            'SELECT * FROM ' .
-            $this->table_name .
-            " 
-              WHERE account_id = :account_id AND activity_date >= :start_of_month AND activity_date < :start_of_next_month ORDER BY activity_date DESC, start_time DESC";
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':account_id', $account_id);
-        $stmt->bindParam(':start_of_month', $this->startOfMonth);
-        $stmt->bindParam(':start_of_next_month', $this->startOfNextMonth);
-        $stmt->execute();
-        $activities = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        $data = [];
-
-        foreach ($activities as $activity) {
-            $files = $this->getFilesByBatch($activity['batch_id']);
-
-            $filesList = [];
-
-            foreach ($files as $file) {
-                $filesList[] = [
-                    'id' => $file['id'],
-                    'application_id' => $file['application_id'],
-                    'file_name' => $file['file_name'],
-                    'file_path' => $file['file_path'],
-                    'file_type' => $file['file_type'],
-                    'uploaded_at' => $file['uploaded_at'],
-                ];
-            }
-
-            // print_r($files);
-
-            $data[] = [
-                'id' => $activity['id'],
-                'activity_name' => $activity['activity_name'],
-                'activity_status' => $activity['activity_status'],
-                'activity_date' => $activity['activity_date'],
-                'activity_location' => $activity['activity_location'],
-                'start_time' => $activity['start_time'],
-                'end_time' => $activity['end_time'],
-                'date_submitted' => $activity['uploaded_at'],
-                'files' => $filesList,
-            ];
-        }
-
-        return $data;
-    }
-
-    public function getScholarWithActivities($tab)
-    {
-        $query = "SELECT pi.application_id, pi.first_name, pi.last_name, pi.email, va.id, va.activity_name, va.batch_id, uploaded_at
-                FROM personal_information pi 
-                JOIN volunteer_activities va ON pi.application_id = va.account_id 
-                WHERE va.activity_status = :tab 
-                AND va.uploaded_at >= :start_of_month 
-                AND va.uploaded_at < :start_of_next_month
-                AND va.batch_id IS NOT NULL";
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':tab', $tab);
-        $stmt->bindParam(':start_of_month', $this->startOfMonth);
-        $stmt->bindParam(':start_of_next_month', $this->startOfNextMonth);
-        $stmt->execute();
-        $scholars = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        // $count = 0;
-        $data = [];
-        foreach ($scholars as $scholar) {
-            // print_r($scholars);
-            $files = $this->getFilesByBatch($scholar['batch_id']);
-
-            $filesList = [];
-
-            foreach ($files as $file) {
-                $filesList[] = [
-                    'id' => $file['id'],
-                    'application_id' => $file['application_id'],
-                    'file_name' => $file['file_name'],
-                    'file_path' => $file['file_path'],
-                    'file_type' => $file['file_type'],
-                    'uploaded_at' => $file['uploaded_at'],
-                ];
-            }
-
-            // print_r($files);
-
-            $data[] = [
-                'id' => $scholar['id'],
-                'application_id' => $scholar['application_id'],
-                'name' => $scholar['name'] ?? $scholar['first_name'] . ' ' . $scholar['last_name'],
-                'email' => $scholar['email'],
-                'activity' => $scholar['activity_name'],
-                'date_submitted' => $scholar['uploaded_at'],
-                'files' => $filesList,
-            ];
-
-            // $count++;
-            // echo "Count: " . $count;
-        }
-        return $data;
-    }
-
     public function getFilesByBatch($batch_id)
     {
         $query = "SELECT *
@@ -574,7 +460,6 @@ class ActivityModel
                     'id' => $file['id'],
                     'application_id' => $file['application_id'],
                     'file_name' => $file['file_name'],
-                    'file_path' => $file['file_path'],
                     'file_type' => $file['file_type'],
                     'uploaded_at' => $file['uploaded_at'],
                 ];

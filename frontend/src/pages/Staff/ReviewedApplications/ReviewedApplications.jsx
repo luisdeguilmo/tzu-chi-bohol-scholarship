@@ -25,7 +25,8 @@ const ReviewedApplications = () => {
     const [sortBy, setSortBy] = useState("newest");
     const [tableHeaders, setTableHeaders] = useState([]);
 
-    const { applications, fetchApplications } = useApprovedApplications();
+    const { loading, applications, fetchApplications } =
+        useApprovedApplications();
     const { fetchApplicantData } = useApplicantData();
     const { viewPdf, downloadPdf } = usePdfActions(
         activeTab,
@@ -117,6 +118,20 @@ const ReviewedApplications = () => {
                 searchTerm={searchTerm}
                 itemsPerPage={itemsPerPage}
                 sortBy={sortBy}
+                sortItems={[
+                    {
+                        label: "Newest First",
+                        value: "newest",
+                    },
+                    {
+                        label: "Oldest First",
+                        value: "oldest",
+                    },
+                    {
+                        label: "Name (A-Z)",
+                        value: "name",
+                    },
+                ]}
                 sortedItems={sortedApplications}
                 onRefresh={handleRefresh}
                 onSort={setSortBy}
@@ -143,9 +158,12 @@ const ReviewedApplications = () => {
                                     />
                                     <div>
                                         <p className="font-bold text-xs">
-                                            {item.first_name +
-                                                " " +
-                                                item.last_name}
+                                            {item.last_name +
+                                                ", " +
+                                                item.first_name}{" "}
+                                            {item.middle_name
+                                                ? item.middle_name[0] + "."
+                                                : ""}
                                         </p>
                                         <p className="text-xs text-gray-500">
                                             {item.email}
@@ -243,95 +261,125 @@ const ReviewedApplications = () => {
                                 : approvedRenewalApplicationTableHeaders
                         }
                     >
-                        {currentItems.map((info) => (
-                            <tr
-                                key={info.application_id}
-                                className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
-                            >
-                                <td className="py-2 whitespace-nowrap text-gray-600 font-bold">
-                                    {info.application_id}
-                                </td>
-                                {activeTab === "old" && (
-                                    <td className="py-2 whitespace-nowrap text-gray-600 font-bold">
-                                        {info.scholar_id}
-                                    </td>
-                                )}
-                                <td className="py-2 flex justify-start whitespace-nowrap text-sm text-gray-700">
-                                    <div className="w-[30%]"></div>
-                                    <div className="w-[max-content] flex text-left gap-2">
-                                        <img
-                                            src={info[0].profile}
-                                            alt="Profile"
-                                            className="w-10 h-10 object-cover rounded-full mx-auto"
-                                        />
-                                        <div>
-                                            <p className="font-bold text-xs">
-                                                {info.first_name +
-                                                    " " +
-                                                    info.last_name}
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                {info.email}
-                                            </p>
+                        {loading && (
+                            <tr>
+                                <td colSpan={6} className="p-6">
+                                    <div className="mt-4 flex flex-col items-center gap-4">
+                                        <div className="flex items-end gap-1 h-10">
+                                            {[...Array(5)].map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                                    style={{
+                                                        height: "10px",
+                                                        animationDelay: `${i * 100}ms`,
+                                                    }}
+                                                />
+                                            ))}
                                         </div>
+
+                                        <p className="text-sm text-slate-500">
+                                            Loading data...
+                                        </p>
                                     </div>
                                 </td>
-                                <td className="py-2 whitespace-nowrap text-gray-500">
-                                    <span
-                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium ${
-                                            info.is_application_approved
-                                                ? "bg-green-100 text-green-800"
-                                                : "bg-red-100 text-red-800"
-                                        }`}
-                                    >
-                                        {info.is_application_approved
-                                            ? "Approved"
-                                            : info.is_application_rejected
-                                              ? "Rejected"
-                                              : "--"}
-                                    </span>
-                                </td>
-                                <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
-                                    {formatDateTime(info.created_at)}
-                                </td>
-                                <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
-                                    {info.approved_at
-                                        ? formatDateTime(info.approved_at)
-                                        : "--"}
-                                </td>
-                                <td className="py-2 whitespace-nowrap font-medium">
-                                    <button
-                                        onClick={() =>
-                                            viewPdf({
-                                                applicationId:
-                                                    info.application_id,
-                                                scholarId: info.scholar_id,
-                                            })
-                                        }
-                                        className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
-                                    >
-                                        <Eye className="w-4 h-4" />
-                                    </button>
-                                    <button
-                                        onClick={() =>
-                                            downloadPdf({
-                                                applicationId:
-                                                    info.application_id,
-                                                scholarId: null,
-                                            })
-                                        }
-                                        className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
-                                    >
-                                        <Download className="w-4 h-4" />
-                                    </button>
-                                </td>
                             </tr>
-                        ))}
+                        )}
+
+                        {!loading &&
+                            currentItems.map((info) => (
+                                <tr
+                                    key={info.application_id}
+                                    className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
+                                >
+                                    <td className="py-2.5 whitespace-nowrap text-gray-600 font-bold">
+                                        {info.application_id}
+                                    </td>
+                                    {activeTab === "old" && (
+                                        <td className="py-2.5 whitespace-nowrap text-gray-600 font-bold">
+                                            {info.scholar_id}
+                                        </td>
+                                    )}
+                                    <td className="py-2.5 flex justify-start whitespace-nowrap text-sm text-gray-700">
+                                        <div className="w-[30%]"></div>
+                                        <div className="w-[max-content] flex text-left gap-2">
+                                            <img
+                                                src={info[0].profile}
+                                                alt="Profile"
+                                                className="w-10 h-10 object-cover rounded-full mx-auto"
+                                            />
+                                            <div>
+                                                <p className="font-bold text-xs">
+                                                    {info.last_name +
+                                                        ", " +
+                                                        info.first_name}{" "}
+                                                    {info.middle_name
+                                                        ? info.middle_name[0] +
+                                                          "."
+                                                        : ""}
+                                                </p>
+                                                <p className="text-[11px] text-gray-500">
+                                                    {info.email}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="py-2.5 whitespace-nowrap text-gray-500">
+                                        <span
+                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium ${
+                                                info.is_application_approved
+                                                    ? "bg-green-100 text-green-800"
+                                                    : "bg-red-100 text-red-800"
+                                            }`}
+                                        >
+                                            {info.is_application_approved
+                                                ? "Approved"
+                                                : info.is_application_rejected
+                                                  ? "Rejected"
+                                                  : "--"}
+                                        </span>
+                                    </td>
+                                    <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
+                                        {formatDateTime(info.created_at)}
+                                    </td>
+                                    <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
+                                        {info.approved_at
+                                            ? formatDateTime(info.approved_at)
+                                            : "--"}
+                                    </td>
+                                    <td className="py-2 whitespace-nowrap font-medium">
+                                        <button
+                                            onClick={() =>
+                                                viewPdf({
+                                                    applicationId:
+                                                        info.application_id,
+                                                    scholarId: info.scholar_id,
+                                                })
+                                            }
+                                            className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
+                                        >
+                                            <Eye className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                downloadPdf({
+                                                    applicationId:
+                                                        info.application_id,
+                                                    scholarId: null,
+                                                })
+                                            }
+                                            className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                        >
+                                            <Download className="w-4 h-4" />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
                     </Table>
                 )}
 
                 {/* Empty state */}
-                {currentItems.length === 0 && (
+                {currentItems.length === 0 && !loading && (
                     <EmptyState message="No approved applications found." />
                 )}
             </div>

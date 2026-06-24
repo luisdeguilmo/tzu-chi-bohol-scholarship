@@ -30,5 +30,5 @@ export const useScholarsAndActivities = (year, month, status, sort) => {
         fetchScholars(year, month, status, sort);
     }, [year, month, status, sort]);
 
-    return { scholars, fetchScholars };
+    return { loading, scholars, fetchScholars };
 };

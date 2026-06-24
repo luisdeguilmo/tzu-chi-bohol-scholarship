@@ -17,6 +17,7 @@ use App\Models\FamilyMemberModel;
 use App\Models\FamilyModel;
 use App\Models\PersonalModel;
 use App\Models\ScholarModel;
+use App\Models\SchoolYearModel;
 use Config\Database;
 
 class ApplicantInformationController
@@ -65,6 +66,7 @@ class ApplicantInformationController
             $siblingsModel = new ScholarModel();
             $assistanceModel = new AssistanceModel();
             $charRefModel = new CharacterReferenceModel();
+            $schoolYearModel = new SchoolYearModel();
 
             // Get ID parameter if it exists
             $id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -72,6 +74,19 @@ class ApplicantInformationController
 
             $applicantInfo = $applicantModel->getApplicantInfo($id, $schoolYear);
             $applicationId = $applicantInfo['application_id'] ?? null;
+
+            if (!$applicantInfo) {
+                $schoolYears = $schoolYearModel->getAllSchoolYears();
+
+                foreach ($schoolYears as $year) {
+                    $existingId = $applicantModel->getApplicantInfo($id, $year['school_year']);
+                    if ($existingId) {
+                        $applicationId = $existingId['application_id'];
+                        break;
+                    }
+                }
+            }
+
             $personalInfo = $personalModel->getPersonalInformation($applicationId);
             $educationalInfo = $educationalModel->getEducationalBackground($applicationId);
             $familyInfo = $familyModel->getFamilyInformation($applicationId);

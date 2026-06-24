@@ -21,11 +21,6 @@ class ApplicationRecordsModel
         $query =
             "SELECT pi.*, ai.* FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE ai.type= 'New'";
 
-        // if ($status === 'all') {
-        //     $query .=
-        //         " AND (ai.is_application_approved = '0' OR ai.is_application_approved = '1' OR ai.is_application_rejected = '1')";
-        // } else
-
         if ($status === 'fully_qualified') {
             $query .=
                 " AND ai.is_application_approved = '1' AND ai.is_examination_passed = '1' AND ai.is_initial_interview_passed = '1' AND ai.is_home_visitation_qualified = '1' AND ai.is_final_interview_passed = '1' AND ai.is_attended_orientation = '1' AND ai.is_attended_awarding = '1'";
@@ -75,11 +70,11 @@ class ApplicationRecordsModel
         }
 
         if ($sort === 'newest') {
-            $query .= ' ORDER BY ai.created_at DESC';
+            $query .= ' ORDER BY ai.school_year DESC, ai.created_at DESC';
         } elseif ($sort === 'oldest') {
-            $query .= ' ORDER BY ai.created_at ASC';
+            $query .= ' ORDER BY ai.school_year ASC, ai.created_at ASC';
         } elseif ($sort === 'name') {
-            $query .= ' ORDER BY pi.first_name ASC';
+            $query .= ' ORDER BY pi.last_name ASC';
         }
 
         $stmt = $this->pdo->query($query);

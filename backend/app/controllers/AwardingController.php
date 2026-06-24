@@ -50,9 +50,6 @@ class AwardingController
             case 'PUT':
                 $this->handlePut();
                 break;
-            case 'DELETE':
-                // $this->handleDelete();
-                break;
             default:
                 http_response_code(405);
                 echo json_encode(['message' => 'Method not allowed']);

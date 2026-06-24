@@ -30,6 +30,7 @@ export const strandsTableConfig = {
 export const coursesTableConfig = {
     headers: [
         { name: "course", label: "Course" },
+        { name: "visibility", label: "Visibility" },
         { name: "action", label: "Action" },
     ],
     fields: [

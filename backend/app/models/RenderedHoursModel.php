@@ -265,6 +265,27 @@ class RenderedHoursModel
 
         return null;
     }
+
+    public function setInitialRenderedHours($accountId, $renderedHours)
+    {
+        if ($this->getScholarCommunityServiceRenderedHoursById($accountId) === null) {
+            throw new \Exception('Scholar not found');
+        }
+
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            ' SET rendered_hours = :rendered_hours WHERE account_id = :account_id';
+
+        $stmt = $this->pdo->prepare($query);
+
+        $rendered_hours = strip_tags($renderedHours);
+
+        $stmt->bindParam(':rendered_hours', $rendered_hours);
+        $stmt->bindParam(':account_id', $accountId);
+
+        return $stmt->execute();
+    }
 }
 
 ?>

@@ -13,35 +13,42 @@ import { scholarAccountButtons } from "../../../constant/tableToolbarButtons";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { useUserAccount } from "../../../hooks/useUserAccount";
-import { Check } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import ScholarProfileModal from "../../../components/UserProfileModal";
 import ChangePasswordModal from "../../../components/ChangePasswordModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { toast } from "react-toastify";
+import AddScholarModal from "./AddScholarModal";
+import InitialRenderedHours from "./InitialRenderedHoursModal";
 
 const ScholarAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedScholars, setSelectedScholars] = useState([]);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [sortBy, setSortBy] = useState("newest");
+    const [status, setStatus] = useState("all");
     const [activeTab, setActiveTab] = useState("pending");
     const [headers, setHeaders] = useState(pendingScholarHeaders);
     const [scholarId, setScholarId] = useState(null);
+    const [selectedScholar, setSelectedScholar] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modal, setModal] = useState(null);
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [accountStatus, setAccountStatus] = useState("");
     const [action, setAction] = useState("");
     const [deactivationReason, setDeactivationReason] = useState("");
 
     const { loading, scholars, createScholarAccount, fetchScholars } =
-        useScholarAccounts(activeTab);
+        useScholarAccounts(activeTab, sortBy, status);
 
     const { loading: isLoading, updateScholarAccountStatus } =
         useScholarAccounts();
 
     useEffect(() => {
         fetchScholars(activeTab);
-    }, [activeTab]);
+    }, [activeTab, sortBy, status]);
+
+    console.log(scholars);
 
     // Toggle scholar selection
     const toggleScholarSelection = (scholarId) => {
@@ -67,8 +74,12 @@ const ScholarAccounts = () => {
     };
 
     // Filter data based on search term
-    const filteredScholars = scholars.filter((scholar) =>
-        scholar.first_name?.toLowerCase().includes(searchTerm.toLowerCase()),
+    const filteredScholars = scholars.filter(
+        (scholar) =>
+            scholar.first_name
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            scholar.last_name?.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     const sortedScholars = [...filteredScholars].sort((a, b) => {
@@ -78,7 +89,7 @@ const ScholarAccounts = () => {
             case "oldest":
                 return new Date(a.created_at) - new Date(b.created_at);
             case "name":
-                return a.first_name.localeCompare(b.first_name);
+                return a.last_name.localeCompare(b.last_name);
             default:
                 return 0;
         }
@@ -96,7 +107,6 @@ const ScholarAccounts = () => {
     } = usePagination(filteredScholars, itemsPerPage);
 
     const handleChangeTab = async (tab) => {
-        await fetchScholars(tab);
         setActiveTab(tab);
         if (tab === "pending") setHeaders(pendingScholarHeaders);
         else if (tab === "created") setHeaders(scholarAccountHeaders);
@@ -114,7 +124,7 @@ const ScholarAccounts = () => {
         setAction(actionType);
         setAccountStatus(accountStatus);
         setScholarId(accountId);
-        setIsModalOpen(true);
+        // setIsModalOpen(true);
     };
 
     const handleAccountStatusChange = async (
@@ -170,13 +180,55 @@ const ScholarAccounts = () => {
                     sortBy={sortBy}
                     sortedItems={sortedScholars}
                     onRefresh={handleRefresh}
+                    onOpen={setIsFormModalOpen}
                     onSort={setSortBy}
                     onSearchChange={setSearchTerm}
                     onChangeTab={handleChangeTab}
                     onChangeItemsPerPage={setItemsPerPage}
+                    onChangeCurrentPage={setCurrentPage}
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
-                />
+                    addButton={activeTab === "pending"}
+                    button={
+                        activeTab === "pending" && {
+                            icon: <Plus className="w-4 h-4 text-white" />,
+                            label: "Add Existing Scholar",
+                        }
+                    }
+                    sortItems={[
+                        {
+                            label: "Newest First",
+                            value: "newest",
+                        },
+                        {
+                            label: "Oldest First",
+                            value: "oldest",
+                        },
+                        {
+                            label: "Name (A-Z)",
+                            value: "name",
+                        },
+                    ]}
+                >
+                    {activeTab === "created" && (
+                        <div className="flex justify-between items-center gap-2">
+                            <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                                Status:
+                            </span>
+                            <select
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                                className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            >
+                                <option value="all">All</option>
+                                <option value="not_renewed">Not Renewed</option>
+                                <option value="active">Active</option>
+                                <option value="terminated">Terminated</option>
+                                <option value="graduated">Graduated</option>
+                            </select>
+                        </div>
+                    )}
+                </TableToolbar>
 
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table
@@ -189,6 +241,7 @@ const ScholarAccounts = () => {
                     >
                         {activeTab === "pending" ? (
                             <PendingScholarsRow
+                                loading={loading}
                                 currentItems={currentItems}
                                 selectedScholars={selectedScholars}
                                 toggleScholarSelection={toggleScholarSelection}
@@ -196,6 +249,7 @@ const ScholarAccounts = () => {
                             />
                         ) : (
                             <ScholarAccountsRow
+                                loading={loading}
                                 currentItems={currentItems}
                                 selectedAccounts={selectedScholars}
                                 toggleAccountSelection={toggleScholarSelection}
@@ -210,13 +264,20 @@ const ScholarAccounts = () => {
                                 onOpenConfirmationModal={
                                     handleOpenConfirmationModal
                                 }
+                                onSelectScholar={setSelectedScholar}
                             />
                         )}
                     </Table>
 
                     {/* Empty state */}
-                    {currentItems.length === 0 && (
-                        <EmptyState message="No pending scholars found." />
+                    {currentItems.length === 0 && !loading && (
+                        <EmptyState
+                            message={
+                                activeTab === "pending"
+                                    ? "No pending scholar found."
+                                    : "No scholar found."
+                            }
+                        />
                     )}
                 </div>
 
@@ -265,10 +326,23 @@ const ScholarAccounts = () => {
 
             {modal === "view_profile_modal" && (
                 <ScholarProfileModal
-                    userId={scholarId}
                     isOpen={isModalOpen}
                     setIsOpen={setIsModalOpen}
                     isScholar={true}
+                    info={selectedScholar}
+                    data={{
+                        action: action,
+                        onChangeAccountStatus: handleAccountStatusChange,
+                        onOpenConfirmationModal: handleOpenConfirmationModal,
+                        message1:
+                            "Are you sure you want to activate this account?",
+                        message2:
+                            "Are you sure you want to deactivate this account?",
+                        message3:
+                            "Are you sure you want to reset this account's password?",
+                        deactivationReason: deactivationReason,
+                        setDeactivationReason: setDeactivationReason,
+                    }}
                 />
             )}
 
@@ -297,11 +371,19 @@ const ScholarAccounts = () => {
                 />
             )}
 
-            {modal === "change_password_modal" && (
-                <ChangePasswordModal
+            {modal === "set_rendered_hours_modal" && (
+                <InitialRenderedHours
                     isOpen={isModalOpen}
                     onClose={setIsModalOpen}
-                    userId={scholarId}
+                    id={scholarId}
+                />
+            )}
+
+            {isFormModalOpen && (
+                <AddScholarModal
+                    isOpen={isFormModalOpen}
+                    onClose={setIsFormModalOpen}
+                    label={"Add Existing Scholar"}
                 />
             )}
         </div>

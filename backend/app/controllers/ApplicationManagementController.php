@@ -102,10 +102,6 @@ class ApplicationManagementController
                 throw new \Exception('No data provided');
             }
 
-            // if (empty($data['application_id'])) {
-            //     throw new \Exception('Application ID is required');
-            // }
-
             if (
                 !in_array($action, [
                     'approve',

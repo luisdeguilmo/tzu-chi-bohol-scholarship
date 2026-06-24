@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 import { toast } from "react-toastify";
 
-const token = localStorage.getItem("token");
-
 export const useCoursesAccepted = (id) => {
     const [coursesAccepted, setCoursesAccepted] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const token = localStorage.getItem("token");
 
     const resetCoursesAccepted = () => {
         setCoursesAccepted([]); // or however you manage this state
@@ -117,7 +116,7 @@ export const useCoursesAccepted = (id) => {
 
     const deleteCourse = async (id) => {
         try {
-            setIsLoading(true);
+            // setIsLoading(true);
             const response = await axios.delete(
                 `${BASE_URL}app/api/courses-accepted.php?id=${id}`,
                 {
@@ -132,11 +131,11 @@ export const useCoursesAccepted = (id) => {
                 return true;
             }
 
-            setIsLoading(false);
+            // setIsLoading(false);
             return false;
         } catch (error) {
             console.log("Error: ", error);
-            setIsLoading(false);
+            // setIsLoading(false);
             return false;
         }
     };

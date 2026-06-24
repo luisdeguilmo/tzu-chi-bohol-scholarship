@@ -104,11 +104,7 @@ class Auth
     {
         return (string) self::id() === (string) $resourceOwnerId;
     }
-
-    // -------------------------------------------------------------------------
-    // Internals
-    // -------------------------------------------------------------------------
-
+    
     private static function extractBearerToken(): ?string
     {
         // Standard Authorization header

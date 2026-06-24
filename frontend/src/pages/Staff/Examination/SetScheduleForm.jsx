@@ -31,7 +31,7 @@ export default function SetScheduleForm({
     useEffect(() => {
         if (selectedBatch && batches) {
             const batch = batches.find(
-                (batch) => batch.batch_name === selectedBatch
+                (batch) => batch.batch_name === selectedBatch,
             );
 
             setIsEmailSentToAll(batch?.is_schedule_sent);
@@ -55,7 +55,7 @@ export default function SetScheduleForm({
 
     const handleSubmit = async () => {
         const batchToSet = batches.find(
-            (batch) => batch.batch_name === selectedBatch
+            (batch) => batch.batch_name === selectedBatch,
         );
 
         const success = await createSchedule(
@@ -68,7 +68,7 @@ export default function SetScheduleForm({
             setIsOpen,
             batchId,
             applications,
-            selectedBatch
+            selectedBatch,
         );
 
         if (success) {
@@ -88,12 +88,13 @@ export default function SetScheduleForm({
             date,
             time,
             venue,
-            selectedBatch
+            selectedBatch,
         );
 
         if (success) {
             setIsEmailSent(true);
             setIsFormModalOpen(false);
+            resetFields();
         }
     };
 
@@ -113,7 +114,7 @@ export default function SetScheduleForm({
     const hasSchedule = () => {
         if (!selectedBatch || !batches) return false;
         const batch = batches.find(
-            (batch) => batch.batch_name === selectedBatch
+            (batch) => batch.batch_name === selectedBatch,
         );
         return batch && batch.schedule;
     };
@@ -168,7 +169,7 @@ export default function SetScheduleForm({
                                     onClick={(e) => e.target.showPicker()}
                                     placeholder="yyyy-mm-dd"
                                     className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
-                                />`
+                                />
                             </label>
                             <div className="relative">
                                 {time && (

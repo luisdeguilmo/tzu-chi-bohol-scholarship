@@ -44,8 +44,8 @@ const UpcomingEvents = ({ events }) => {
                     ))
                 ) : (
                     <div className="text-center ">
-                        <Calendar className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                        <h4 className="text-lg font-medium text-gray-900 mb-2">
+                        <Calendar className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                        <h4 className="text-lg font-medium text-gray-600 mb-2">
                             No upcoming events
                         </h4>
                         <p className="text-xs md:text-sm text-gray-500 mb-4">

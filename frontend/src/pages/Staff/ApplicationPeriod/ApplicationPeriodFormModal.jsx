@@ -6,7 +6,10 @@ import InputModal from "../../../components/InputModal";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { date } from "../../../utils/getDateAndTime";
-import { numbersOnly, validateSchoolYear } from "../../../utils/inputValidations";
+import {
+    numbersOnly,
+    validateSchoolYear,
+} from "../../../utils/inputValidations";
 
 const ApplicationPeriodFormModal = React.memo(
     ({
@@ -78,6 +81,26 @@ const ApplicationPeriodFormModal = React.memo(
         };
 
         const handleEditApplicationPeriod = async () => {
+            if (
+                selectedApplicationPeriod.type === "new" &&
+                disabledNew &&
+                status === "Active"
+            ) {
+                toast.error(
+                    "Cannot update a new application period to active while there is an active period.",
+                );
+                return;
+            } else if (
+                selectedApplicationPeriod.type === "renewal" &&
+                disabledRenewal &&
+                status === "Active"
+            ) {
+                toast.error(
+                    "Cannot update renewal application period to active while there is an active period.",
+                );
+                return;
+            }
+
             try {
                 setIsSubmitting(true);
 
@@ -182,7 +205,9 @@ const ApplicationPeriodFormModal = React.memo(
                                 type="text"
                                 value={schoolYear}
                                 onChange={(e) => {
-                                    const value = validateSchoolYear(e.target.value);
+                                    const value = validateSchoolYear(
+                                        e.target.value,
+                                    );
 
                                     setSchoolYear(value);
                                 }}
@@ -224,6 +249,7 @@ const ApplicationPeriodFormModal = React.memo(
                                             checked={type === "new"}
                                             onChange={() => setType("new")}
                                             className="h-4 w-4 accent-green-600 focus:ring-green-500 border-gray-300"
+                                            required
                                         />
                                         <label
                                             htmlFor="typeNew"
@@ -241,6 +267,7 @@ const ApplicationPeriodFormModal = React.memo(
                                             checked={type === "renewal"}
                                             onChange={() => setType("renewal")}
                                             className="h-4 w-4 accent-green-600 focus:ring-green-500 border-gray-300"
+                                            required
                                         />
                                         <label
                                             htmlFor="typeRenewal"

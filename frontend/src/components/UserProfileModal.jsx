@@ -6,9 +6,9 @@ import StaffAccount from "./StaffAccountPage";
 function UserProfileModal({
     isOpen,
     setIsOpen,
-    userId,
     isScholar = false,
-    isStaff = false,
+    info,
+    data,
 }) {
     const handleCancel = (e) => {
         e.preventDefault(); // Prevent form submission
@@ -37,11 +37,16 @@ function UserProfileModal({
                         <div className="flex-1 rounded-bl-sm overflow-y-scroll">
                             {isScholar ? (
                                 <UserAccount
-                                    scholarId={userId}
+                                    scholarInfoFromTable={info}
                                     isModal={true}
+                                    data={data}
                                 />
                             ) : (
-                                <StaffAccount staffId={userId} isModal={true} />
+                                <StaffAccount
+                                    staffInfoFromTable={info}
+                                    isModal={true}
+                                    data={data}
+                                />
                             )}
                         </div>
                     </div>

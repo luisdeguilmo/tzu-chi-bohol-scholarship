@@ -38,5 +38,5 @@ export const useEventsOnStaff = (year, status, sortBy) => {
         }
     }, [year, status, sortBy]);
 
-    return { events, fetchEvents };
+    return { loading, events, fetchEvents };
 };

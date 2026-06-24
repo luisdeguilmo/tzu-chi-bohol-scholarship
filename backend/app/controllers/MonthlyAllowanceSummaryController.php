@@ -52,7 +52,7 @@ class MonthlyAllowanceSummaryController
             $month = $_GET['month'] ?? null;
             $sort = $_GET['sort'] ?? null;
 
-            $results = $model->getMonthlyAllowanceSummary($year, $month);
+            $results = $model->getMonthlyAllowanceSummary($year, $month, $sort);
 
             http_response_code(200);
             echo json_encode([

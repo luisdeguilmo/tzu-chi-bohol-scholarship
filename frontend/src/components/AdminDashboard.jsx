@@ -35,14 +35,14 @@ function AdminDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 <div className="col-span-2 p-6 border bg-white rounded-lg">
-                    <h2 className="font-bold">Scholars by Program</h2>
+                    <h2 className="font-bold text-gray-700">Scholars by Program</h2>
                     <ScholarsByProgramChart
                         scholarData={dashboardData?.scholarsByProgram}
                     />
                 </div>
 
                 <div className="col-span-3 p-6 border bg-white rounded-lg">
-                    <h2 className="font-bold">Application Trends</h2>
+                    <h2 className="font-bold text-gray-700">Application Trends</h2>
                     <ApplicationTrendsChart
                         trendData={
                             dashboardData?.applicationsSubmittedAndApplicationsApproved
@@ -53,7 +53,7 @@ function AdminDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 <div className="col-span-2 mt-6 p-6 border bg-white rounded-lg">
-                    <h2 className="font-bold">
+                    <h2 className="font-bold text-gray-700">
                         Approval vs Rejection by Stage
                     </h2>
                     <ApprovalRejectionChart
@@ -62,7 +62,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="col-span-3 mt-6 p-6 border bg-white rounded-lg">
-                    <h2 className="mb-4 font-bold">
+                    <h2 className="mb-4 font-bold text-gray-700">
                         Scholar Engagement Trends
                     </h2>
                     <ScholarEngagementChart

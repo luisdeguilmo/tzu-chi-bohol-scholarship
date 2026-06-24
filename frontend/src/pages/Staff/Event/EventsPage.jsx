@@ -30,7 +30,11 @@ export default function EventsPage() {
 
     const { user } = useAuth();
     const { years } = useYears();
-    const { events, fetchEvents } = useEventsOnStaff(year, status, sortBy);
+    const { loading, events, fetchEvents } = useEventsOnStaff(
+        year,
+        status,
+        sortBy,
+    );
 
     useEffect(() => {
         fetchEvents();
@@ -52,7 +56,7 @@ export default function EventsPage() {
             case "oldest":
                 return new Date(a.date) - new Date(b.date);
             case "name":
-                return a.first_name.localeCompare(b.first_name);
+                return a.event_name.localeCompare(b.event_name);
             default:
                 return 0;
         }
@@ -93,6 +97,20 @@ export default function EventsPage() {
                     searchTerm={searchTerm}
                     itemsPerPage={itemsPerPage}
                     sortBy={sortBy}
+                    sortItems={[
+                        {
+                            label: "Newest First",
+                            value: "newest",
+                        },
+                        {
+                            label: "Oldest First",
+                            value: "oldest",
+                        },
+                        {
+                            label: "Event Name (A-Z)",
+                            value: "name",
+                        },
+                    ]}
                     sortedItems={sortedApplications}
                     onOpen={setIsOpenFormModal}
                     onRefresh={handleRefresh}
@@ -109,11 +127,13 @@ export default function EventsPage() {
                     }}
                 >
                     <div className="flex items-center gap-2">
-                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Status:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Status:
+                        </span>
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="px-3 py-1 w-full text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="px-3 py-1 w-[150px] text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value="upcoming">Upcoming</option>
@@ -121,13 +141,15 @@ export default function EventsPage() {
                         </select>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Year:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Year:
+                        </span>
                         <select
                             value={year}
                             onChange={(e) =>
                                 handleChangeYear(Number(e.target.value))
                             }
-                            className="px-3 py-1 w-full text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="px-3 py-1 w-[150px] text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             {years.map((year) => (
                                 <option key={year.id} value={year.year}>
@@ -141,29 +163,55 @@ export default function EventsPage() {
                 {/* Table */}
                 <div className="overflow-x-auto rounded-[4px]">
                     <Table tableHeaders={eventTableHeaders}>
-                        {currentItems.map((event) => (
-                            <tr
-                                key={event.id}
-                                className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
-                            >
-                                <td className="py-5 pl-6 whitespace-nowrap text-gray-700">
-                                    <p className="text-left">
-                                        {event.event_name}
-                                    </p>
+                        {loading && (
+                            <tr>
+                                <td colSpan={6} className="p-6">
+                                    <div className="mt-4 flex flex-col items-center gap-4">
+                                        <div className="flex items-end gap-1 h-10">
+                                            {[...Array(5)].map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                                    style={{
+                                                        height: "10px",
+                                                        animationDelay: `${i * 100}ms`,
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <p className="text-sm text-slate-500">
+                                            Loading data...
+                                        </p>
+                                    </div>
                                 </td>
-                                <td className="py-3 text-left pr-16 whitespace-nowrap text-xs text-gray-700">
-                                    {event.event_location}
-                                </td>
-                                <td className="py-3 text-left whitespace-nowrap text-gray-500">
-                                    {formatDate(event.date)}
-                                </td>
-                                <td className="py-3 text-left whitespace-nowrap text-gray-500">
-                                    {formatTime(event.start_time)} -{" "}
-                                    {formatTime(event.end_time)}
-                                </td>
-                                <td className="py-3 text-left whitespace-nowrap text-gray-500">
-                                    <span
-                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium
+                            </tr>
+                        )}
+
+                        {!loading &&
+                            currentItems.map((event) => (
+                                <tr
+                                    key={event.id}
+                                    className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
+                                >
+                                    <td className="py-5 pl-6 whitespace-nowrap text-gray-700">
+                                        <p className="text-left font-bold">
+                                            {event.event_name}
+                                        </p>
+                                    </td>
+                                    <td className="py-3 text-left pr-16 whitespace-nowrap text-xs text-gray-700">
+                                        {event.event_location}
+                                    </td>
+                                    <td className="py-3 text-left whitespace-nowrap text-gray-500">
+                                        {formatDate(event.date)}
+                                    </td>
+                                    <td className="py-3 text-left whitespace-nowrap text-gray-500">
+                                        {formatTime(event.start_time)} -{" "}
+                                        {formatTime(event.end_time)}
+                                    </td>
+                                    <td className="py-3 text-left whitespace-nowrap text-gray-500">
+                                        <span
+                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-lg font-medium
                                             ${
                                                 event.date +
                                                     " " +
@@ -188,85 +236,89 @@ export default function EventsPage() {
                                                       ? "bg-green-100 text-green-800"
                                                       : "bg-red-100 text-red-800"
                                             }`}
-                                    >
-                                        {date.getCurrentDateAndTime() <
-                                        event.date + " " + event.start_time
-                                            ? "Upcoming"
-                                            : event.date +
-                                                    " " +
-                                                    event.start_time <=
-                                                    date.getCurrentDateAndTime() &&
-                                                date.getCurrentDateAndTime() <=
-                                                    event.date +
+                                        >
+                                            {date.getCurrentDateAndTime() <
+                                            event.date + " " + event.start_time
+                                                ? "Upcoming"
+                                                : event.date +
                                                         " " +
-                                                        event.end_time
-                                              ? "Ongoing"
-                                              : "Ended"}
-                                    </span>
-                                </td>
-                                <td className="py-3 text-center whitespace-nowrap font-medium">
-                                    <button
-                                        onClick={() => {
-                                            handleOpenDetailsModal(event);
-                                            setAction("view_and_record");
-                                            setShouldScrollToComments(false);
-                                        }}
-                                        className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
-                                    >
-                                        {date.getCurrentDateAndTime() >
-                                        event.date + " " + event.end_time ? (
-                                            event?.participants.filter(
-                                                (participant) =>
-                                                    participant.is_attended,
-                                            ).length !==
-                                            event.numberOfParticipants ? (
-                                                <ClipboardEdit className="w-4 h-4 text-blue-600" />
+                                                        event.start_time <=
+                                                        date.getCurrentDateAndTime() &&
+                                                    date.getCurrentDateAndTime() <=
+                                                        event.date +
+                                                            " " +
+                                                            event.end_time
+                                                  ? "Ongoing"
+                                                  : "Ended"}
+                                        </span>
+                                    </td>
+                                    <td className="py-3 text-center whitespace-nowrap font-medium">
+                                        <button
+                                            onClick={() => {
+                                                handleOpenDetailsModal(event);
+                                                setAction("view_and_record");
+                                                setShouldScrollToComments(
+                                                    false,
+                                                );
+                                            }}
+                                            className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
+                                        >
+                                            {date.getCurrentDateAndTime() >
+                                            event.date +
+                                                " " +
+                                                event.end_time ? (
+                                                event?.participants.filter(
+                                                    (participant) =>
+                                                        participant.is_attended,
+                                                ).length !==
+                                                event.numberOfParticipants ? (
+                                                    <ClipboardEdit className="w-4 h-4 text-blue-600" />
+                                                ) : (
+                                                    <Eye className="w-4 h-4 text-blue-600" />
+                                                )
                                             ) : (
                                                 <Eye className="w-4 h-4 text-blue-600" />
-                                            )
-                                        ) : (
-                                            <Eye className="w-4 h-4 text-blue-600" />
-                                        )}
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setIsOpenFormModal(true);
-                                            setAction("edit");
-                                            setSelectedEvent(event);
-                                        }}
-                                        className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
-                                    >
-                                        <PenLine className="w-4 h-4 text-green-600" />
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            handleOpenDetailsModal(event);
-                                            setAction("view_and_record");
-                                            setShouldScrollToComments(true);
-                                        }}
-                                        className={`${event.numberOfScholarUnreadComments > 0 ? "visible" : "invisible"} inline-flex relative items-center text-green-600 hover:text-green-900 mr-3`}
-                                    >
-                                        <span
-                                            className={`absolute -top-2 -right-1 text-[9px] py-[.2px] px-[5px] rounded-full bg-red-600 text-white font-bold flex items-center justify-center`}
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsOpenFormModal(true);
+                                                setAction("edit");
+                                                setSelectedEvent(event);
+                                            }}
+                                            className="inline-flex items-center text-green-600 hover:text-green-900 mr-3"
                                         >
-                                            {
-                                                event.numberOfScholarUnreadComments
-                                            }
-                                        </span>
-                                        <MessageSquare className="w-4 h-4 text-purple-600" />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                                            <PenLine className="w-4 h-4 text-green-600" />
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                handleOpenDetailsModal(event);
+                                                setAction("view_and_record");
+                                                setShouldScrollToComments(true);
+                                            }}
+                                            className={`${event.numberOfScholarUnreadComments > 0 ? "visible" : "invisible"} inline-flex relative items-center text-green-600 hover:text-green-900 mr-3`}
+                                        >
+                                            <span
+                                                className={`absolute -top-2 -right-1 text-[9px] py-[.2px] px-[5px] rounded-full bg-red-600 text-white font-bold flex items-center justify-center`}
+                                            >
+                                                {
+                                                    event.numberOfScholarUnreadComments
+                                                }
+                                            </span>
+                                            <MessageSquare className="w-4 h-4 text-purple-600" />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
                     </Table>
 
                     {/* Empty state */}
-                    {currentItems.length === 0 && (
+                    {currentItems.length === 0 && !loading && (
                         <EmptyState message="No events found." />
                     )}
                 </div>
 
-                <div className="flex justify-between items-center mt-6">
+                <div className="flex justify-end items-center mt-6">
                     {/* Pagination */}
                     {events.length > 0 && (
                         <div className="flex justify-end gap-4 items-center">

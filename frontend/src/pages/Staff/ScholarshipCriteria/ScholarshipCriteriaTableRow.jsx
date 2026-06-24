@@ -1,3 +1,7 @@
+import { Eye, EyeOff, PenBox } from "lucide-react";
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import { useState } from "react";
+
 const ScholarshipCriteriaTableRow = ({
     numberOfItemsPerPage,
     onSelectItem,
@@ -5,6 +9,9 @@ const ScholarshipCriteriaTableRow = ({
     fields,
     primaryField,
     currentItems,
+    onUpdateVisibility,
+    onSelectedId,
+    onOpenConfirmationModal,
 }) => {
     return (
         <>
@@ -58,15 +65,47 @@ const ScholarshipCriteriaTableRow = ({
                             </td>
                         ))}
 
+                    {item?.course && (
+                        <td className="py-3 pr-20 text-left whitespace-nowrap text-gray-700">
+                            <span
+                                className={`inline-flex px-2.5 py-0.5 rounded-lg ${
+                                    item.is_visible
+                                        ? "bg-green-100 text-green-800"
+                                        : "bg-gray-100 text-gray-400"
+                                }`}
+                            >
+                                {item.is_visible ? "Visible" : "Hidden"}
+                            </span>
+                        </td>
+                    )}
+
                     {/* Actions column */}
                     <td
                         className={`ml-auto pr-3 w-[max-content] py-3 flex justify-center whitespace-nowrap`}
                     >
+                        {item?.course && (
+                            <button
+                                onClick={() =>
+                                    onUpdateVisibility(
+                                        item.id,
+                                        item.course,
+                                        item.is_visible,
+                                    )
+                                }
+                                className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
+                            >
+                                {item.is_visible ? (
+                                    <Eye className="h-4 w-4 mr-1 text-blue-600" />
+                                ) : (
+                                    <EyeOff className="h-4 w-4 mr-1 text-blue-600" />
+                                )}
+                            </button>
+                        )}
                         <button
                             onClick={() => onSelectItem(item)}
                             className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-3"
                         >
-                            <svg
+                            {/* <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="h-4 w-4 mr-1"
                                 fill="none"
@@ -79,10 +118,14 @@ const ScholarshipCriteriaTableRow = ({
                                     strokeWidth={2}
                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                 />
-                            </svg>
+                            </svg> */}
+                            <PenBox className="h-3.5 w-4 mr-1 text-green-600" />
                         </button>
                         <button
-                            onClick={() => onDelete(item.id)}
+                            onClick={() => {
+                                onSelectedId(item.id);
+                                onOpenConfirmationModal(true);
+                            }}
                             className="inline-flex items-center text-red-600 hover:text-red-900"
                         >
                             <svg

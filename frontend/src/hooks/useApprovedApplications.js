@@ -7,11 +7,11 @@ export const useApprovedApplications = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchApplications = async (status = 'new') => {
+    const fetchApplications = async (status = "new") => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${BASE_URL}app/api/applicants.php?application_status=approved&status=${status}`
+                `${BASE_URL}app/api/applicants.php?application_status=approved&status=${status}`,
             );
             setApplications(response.data.data || []);
             setLoading(false);
@@ -26,5 +26,5 @@ export const useApprovedApplications = () => {
         fetchApplications();
     }, []);
 
-    return { applications, fetchApplications };
+    return { loading, applications, fetchApplications };
 };

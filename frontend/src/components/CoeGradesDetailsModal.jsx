@@ -33,7 +33,7 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                 >
                     <div
                         className={`
-                        relative bg-white rounded-sm shadow-2xl w-full
+                        relative bg-white rounded-lg shadow-2xl w-full
                         sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[35%]
                         transition-transform duration-300
                         ${isOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}
@@ -42,7 +42,7 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                     `}
                     >
                         {/* Header */}
-                        <div className="relative px-4 py-4 rounded-t-sm border-b bg-gray-100 border-slate-200">
+                        <div className="relative px-4 py-4 border-t rounded-t-lg bg-gray-50">
                             <h2
                                 id="modal-title"
                                 className="text-sm text-slate-700 pr-10 leading-tight"
@@ -54,22 +54,22 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                 onClick={() => {
                                     onClose(false);
                                 }}
-                                className="absolute top-2 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-100 active:ring-1 active:ring-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                className="absolute top-2 right-4 p-2 text-slate-700 rounded-full hover:bg-gray-100 active:ring-1 active:ring-gray-300 active:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
                                 aria-label="Close modal"
                             >
-                                <X size={18} />
+                                <X size={16} />
                             </button>
                         </div>
 
                         {/* Content */}
-                        <div className="border max-h-[550px] overflow-y-auto scroll-smooth ">
+                        <div className="border max-h-[550px] rounded-b-lg overflow-y-auto scroll-smooth ">
                             {/* Event Details Grid */}
                             <div className="p-6 space-y-6">
                                 <div className="space-y-2">
                                     <div>
                                         <p className="text-gray-700 text-xs">
                                             Year Level:{" "}
-                                            <span className="font-bold">
+                                            <span className="">
                                                 {submission.year_level === 1
                                                     ? "1st Year"
                                                     : submission.year_level ===
@@ -88,8 +88,16 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                     <div>
                                         <p className="text-gray-700 text-xs">
                                             Semester:&nbsp;{" "}
-                                            <span className="font-bold">
+                                            <span className="">
                                                 {submission?.semester}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-700 text-xs">
+                                            Academic Year:&nbsp;{" "}
+                                            <span className="">
+                                                {submission?.academic_year}
                                             </span>
                                         </p>
                                     </div>
@@ -204,7 +212,7 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="flex justify-end gap-2 p-3.5 border-t border-gray-300">
+                            <div className="flex justify-end rounded-b-lg bg-gray-50 gap-2 p-3.5 border-t">
                                 <button
                                     onClick={() => {
                                         onClose(false);
@@ -212,7 +220,7 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                         setAction("");
                                     }}
                                     type="button"
-                                    className="w-[20%] text-sm bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-200 transition-colors duration-200"
+                                    className="w-[20%] text-sm bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-300 transition-colors duration-200"
                                 >
                                     Close
                                 </button>

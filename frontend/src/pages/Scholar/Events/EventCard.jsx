@@ -85,7 +85,7 @@ const EventCard = ({
 
             <div className="relative">
                 <h3
-                    className={`font-bold text-lg md:text-xl leading-tight mb-4 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
+                    className={`font-bold text-[16px] md:text-lg leading-tight mb-2 pr-8 overflow-ellipsis overflow-hidden whitespace-nowrap ${
                         isArchived
                             ? "italic text-slate-400 decoration-slate-400"
                             : "text-slate-700"
@@ -94,17 +94,22 @@ const EventCard = ({
                     {event.event_name}
                 </h3>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                     <div
                         className={`flex items-center text-sm ${
                             isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
-                        <Calendar
-                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived ? "text-slate-400" : "text-gray-600"
-                            }`}
-                        />
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <Calendar
+                                className={`w-3.5 h-3.5 flex-shrink-0 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-gray-600"
+                                }`}
+                            />
+                        </span>
+
                         <span
                             className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
@@ -117,11 +122,16 @@ const EventCard = ({
                             isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
-                        <Clock
-                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived ? "text-slate-400" : "text-gray-600"
-                            }`}
-                        />
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <Clock
+                                className={`w-3.5 h-3.5 flex-shrink-0 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-gray-600"
+                                }`}
+                            />
+                        </span>
+
                         <span
                             className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >
@@ -135,11 +145,16 @@ const EventCard = ({
                             isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
-                        <MapPin
-                            className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                                isArchived ? "text-slate-400" : "text-gray-600"
-                            }`}
-                        />
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <MapPin
+                                className={`w-3.5 h-3.5 flex-shrink-0 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-gray-600"
+                                }`}
+                            />
+                        </span>
+
                         <span
                             className={`text-xs mt-[1px] truncate ${isArchived ? "italic" : ""}`}
                         >
@@ -152,11 +167,16 @@ const EventCard = ({
                             isArchived ? "text-slate-400" : "text-slate-600"
                         }`}
                     >
-                        <Users
-                            className={`w-4 h-4 mr-2 ${
-                                isArchived ? "text-slate-400" : "text-gray-600"
-                            }`}
-                        />
+                        <span className="bg-gray-100/80 p-2 mr-4 rounded-lg">
+                            <Users
+                                className={`w-3.5 h-3.5 ${
+                                    isArchived
+                                        ? "text-slate-400"
+                                        : "text-gray-600"
+                                }`}
+                            />
+                        </span>
+
                         <span
                             className={`text-xs mt-[1px] ${isArchived ? "italic" : ""}`}
                         >

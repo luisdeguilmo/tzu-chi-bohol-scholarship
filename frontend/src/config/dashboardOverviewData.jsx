@@ -20,7 +20,7 @@ export const dashboardOverviewData = (data) => {
             status: data?.numberOfApplicationsSubmitted ?? 0,
             color: "bg-green-300 text-gray-900",
             icon: <ScrollText className="w-5 h-5 text-slate-600" />,
-            navigate: "/staff/applications",
+            navigate: "/staff/applications/applications-submitted",
             sidebarTabName: "applications",
         },
         {
@@ -28,7 +28,7 @@ export const dashboardOverviewData = (data) => {
             status: data?.numberOfReviewedApplications ?? 0,
             color: "bg-blue-300 text-gray-900",
             icon: <ScrollText className="w-5 h-5 text-slate-600" />,
-            navigate: "/staff/reviewed-applications",
+            navigate: "/staff/applications/reviewed-applications",
             sidebarTabName: "applications",
         },
         {
@@ -36,15 +36,15 @@ export const dashboardOverviewData = (data) => {
             status: data?.numberOfActiveScholars ?? 0,
             color: "bg-orange-300 text-gray-900",
             icon: <Users className="w-5 h-5 text-slate-600" />,
-            navigate: "/staff/scholars",
+            navigate: "/staff/records/scholars",
             sidebarTabName: "applications",
         },
         {
-            title: "Pending Community Services",
+            title: "Pending Duty Reports",
             status: data?.numberOfNewCommunityServices ?? 0,
             color: "bg-orange-300 text-gray-900",
             icon: <HandHeartIcon className="w-5 h-5 text-slate-600" />,
-            navigate: "/staff/community-services",
+            navigate: "/staff/events-duty/duty-reports",
             sidebarTabName: "events_duty",
         },
     ];
@@ -56,7 +56,7 @@ export const dashboardOverviewData = (data) => {
             color: "bg-blue-300 text-gray-900",
             icon: <GraduationCap className="w-5 h-5 text-gray-600" />,
             iconColor: "text-blue-600",
-            navigate: "/admin/scholar-account-management",
+            navigate: "/admin/users-accounts/scholar-account-management",
             sidebarTabName: "manage_accounts",
         },
         {
@@ -65,7 +65,7 @@ export const dashboardOverviewData = (data) => {
             color: "bg-green-300 text-gray-900",
             icon: <Hourglass className="w-5 h-5 text-gray-600" />,
             iconColor: "text-green-600",
-            navigate: "/admin/scholar-account-management",
+            navigate: "/admin/users-accounts/scholar-account-management",
             sidebarTabName: "manage_accounts",
         },
         {
@@ -74,7 +74,7 @@ export const dashboardOverviewData = (data) => {
             color: "bg-green-300 text-gray-900",
             icon: <CheckCircle className="w-5 h-5 text-gray-600" />,
             iconColor: "text-green-600",
-            navigate: "/admin/scholar-account-management",
+            navigate: "/admin/users-accounts/scholar-account-management",
             sidebarTabName: "manage_accounts",
         },
         {
@@ -83,7 +83,7 @@ export const dashboardOverviewData = (data) => {
             color: "bg-red-300 text-gray-900",
             icon: <XCircle className="w-5 h-5 text-gray-600" />,
             iconColor: "text-red-600",
-            navigate: "/admin/scholar-account-management",
+            navigate: "/admin/users-accounts/scholar-account-management",
             sidebarTabName: "manage_accounts",
         },
         {
@@ -92,7 +92,7 @@ export const dashboardOverviewData = (data) => {
             color: "bg-red-300 text-gray-900",
             icon: <XCircle className="w-5 h-5 text-gray-600" />,
             iconColor: "text-red-600",
-            navigate: "/admin/scholar-account-management",
+            navigate: "/admin/users-accounts/scholar-account-management",
             sidebarTabName: "manage_accounts",
         },
         {
@@ -101,7 +101,7 @@ export const dashboardOverviewData = (data) => {
             color: "bg-yellow-300 text-gray-900",
             icon: <UserCog className="w-5 h-5 text-gray-600" />,
             iconColor: "text-yellow-600",
-            navigate: "/admin/staff-account-management",
+            navigate: "/admin/users-accounts/staff-account-management",
             sidebarTabName: "manage_accounts",
         },
         {
@@ -158,7 +158,7 @@ export const dashboardOverviewData = (data) => {
             icon: <ScrollText className="w-5 h-5 text-gray-600" />,
             iconColor: "text-red-600",
             dateSubmitted: formatDate(
-                data?.renewalApplicationStatus?.created_at
+                data?.renewalApplicationStatus?.created_at,
             ),
         },
     ];

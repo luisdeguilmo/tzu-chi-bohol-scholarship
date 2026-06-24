@@ -16,46 +16,13 @@ class ScholarAccountInformationModel
     public function getBasicInformation($scholarId)
     {
         $query =
-            "SELECT ai.school_year, ai.type, pi.first_name, pi.last_name, pi.email, pi.suffix, pi.contact_number, pi.age, pi.gender, pi.home_address, pi.facebook FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE (ai.application_id = :scholar_id OR ai.scholar_id = :scholar_id) AND status != 'pending' ORDER BY ai.school_year DESC LIMIT 1";
+            "SELECT ai.school_year, ai.type, pi.first_name, pi.middle_name, pi.last_name, pi.email, pi.suffix, pi.contact_number, pi.age, pi.gender, pi.home_address, pi.facebook FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE (ai.application_id = :scholar_id OR ai.scholar_id = :scholar_id) AND status != 'pending' ORDER BY ai.school_year DESC LIMIT 1";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':scholar_id', $scholarId);
         // $stmt->bindParam(':current_school_year', $currentSchoolYear);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-
-    // public function checkScholarType($scholarId, $currentSchoolYear)
-    // {
-    //     $query =
-    //         'SELECT type FROM application_info WHERE (application_id = :scholar_id OR scholar_id = :scholar_id) AND school_year = :current_school_year';
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->bindParam(':scholar_id', $scholarId);
-    //     $stmt->bindParam(':current_school_year', $currentSchoolYear);
-    //     $stmt->execute();
-    //     return $stmt->fetch(\PDO::FETCH_ASSOC);
-    // }
-
-    // public function getBasicInformationForNewScholar($scholarId, $currentSchoolYear)
-    // {
-    //     $query =
-    //         'SELECT ai.type ,pi.first_name, pi.last_name, pi.suffix, pi.contact_number, pi.age, pi.gender, pi.home_address FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_info WHERE ai.application_id = :scholar_id AND ai.school_year = :current_school_year';
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->bindParam(':scholar_id', $scholarId);
-    //     $stmt->bindParam(':current_school_year', $currentSchoolYear);
-    //     $stmt->execute();
-    //     return $stmt->fetch(\PDO::FETCH_ASSOC);
-    // }
-
-    // public function getBasicInformationForOldScholar($scholarId, $currentSchoolYear)
-    // {
-    //     $query =
-    //         'SELECT pi.first_name, pi.last_name, pi.suffix, pi.contact_number, pi.age, pi.gender, pi.home_address FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.sch WHERE ai.application_id = :scholar_id AND ai.school_year = :current_school_year';
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->bindParam(':scholar_id', $scholarId);
-    //     $stmt->bindParam(':current_school_year', $currentSchoolYear);
-    //     $stmt->execute();
-    //     return $stmt->fetch(\PDO::FETCH_ASSOC);
-    // }
 
     public function getAcademicInfo($scholarId)
     {

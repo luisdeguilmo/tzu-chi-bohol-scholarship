@@ -18,6 +18,7 @@ require_once __DIR__ . '/../models/CertificateOfAppearanceModel.php';
 use App\Models\ProfilePictureModel;
 use App\Services\ProfilePictureService;
 use Config\Database;
+use Middleware\Auth;
 
 class ApplicationFileController
 {
@@ -49,9 +50,6 @@ class ApplicationFileController
                 break;
             case 'PUT':
                 $this->updateFiles();
-                break;
-            case 'DELETE':
-                // $this->handleDelete();
                 break;
             default:
                 http_response_code(405);
@@ -117,7 +115,7 @@ class ApplicationFileController
             $files = $_FILES['files'] ?? null;
             $base64Files = $data['uploaded_files'] ?? null;
 
-            $applicationId = $data[$file_type]['application_id'];
+            $applicationId = Auth::id();
             $type = $data[$file_type]['type'];
 
             // Create activity with files

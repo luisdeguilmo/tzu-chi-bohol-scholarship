@@ -41,9 +41,6 @@ class EventParticipantsController
             case 'POST':
                 $this->handlePost();
                 break;
-            case 'PUT':
-                // $this->handlePut();
-                break;
             case 'DELETE':
                 $this->handleDelete();
                 break;

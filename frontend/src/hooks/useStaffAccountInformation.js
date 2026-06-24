@@ -2,17 +2,23 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-export const useStaffAccountInformation = (userId) => {
+export const useStaffAccountInformation = () => {
     const [staffInfo, setStaffInfo] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = localStorage.getItem("token");
 
     const fetchStaffInfo = async () => {
         try {
             setLoading(true);
             // Replace with your actual API endpoint
             const response = await axios.get(
-                `${BASE_URL}app/api/staff-info.php?staff_id=${userId}`
+                `${BASE_URL}app/api/staff-info.php`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.success) {
@@ -30,10 +36,8 @@ export const useStaffAccountInformation = (userId) => {
     };
 
     useEffect(() => {
-        if (userId) {
-            fetchStaffInfo();
-        }
-    }, [userId]);
+        fetchStaffInfo();
+    }, []);
 
     return {
         loading,

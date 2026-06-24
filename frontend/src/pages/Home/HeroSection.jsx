@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useApplicationPeriods } from "../../hooks/useApplicationPeriods";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import img from "../../assets/img.jpg";
+import img1 from "../../assets/img1.jpg";
+import img3 from "../../assets/img3.jpg";
 
 function HeroSection() {
     const navigate = useNavigate();
@@ -14,7 +17,6 @@ function HeroSection() {
     useEffect(() => {
         fetchApplicationPeriods();
     }, []);
-    console.log(applicationPeriods);
 
     const today = new Date().toISOString().split("T")[0];
 
@@ -37,11 +39,7 @@ function HeroSection() {
         }
     };
 
-    const images = [
-        "/src/assets/img.jpg",
-        "/src/assets/img1.jpg",
-        "/src/assets/img3.jpg",
-    ];
+    const images = [img, img1, img3];
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
@@ -160,7 +158,7 @@ function HeroSection() {
                             onClick={() => navigate("/login/scholar")}
                             className="border-2 border-green-500 text-white text-sm px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 hover:bg-green-500/10"
                         >
-                            Scholar Login
+                            Login
                         </button>
                     </div>
 

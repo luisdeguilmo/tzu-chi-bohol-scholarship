@@ -75,14 +75,6 @@ class ScholarVolunteerActivityController
             ]);
         }
     }
-
-    public function handlePost()
-    {
-        try {
-            $this->pdo->beginTransaction();
-        } catch (\Exception $e) {
-        }
-    }
 }
 
 $controller = new ScholarVolunteerActivityController();

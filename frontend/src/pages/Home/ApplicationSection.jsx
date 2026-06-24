@@ -9,7 +9,15 @@ import {
 function ApplicationSection() {
     return (
         <div className="py-16 bg-white">
-            <NewApplicationForm />
+            <NewApplicationForm isForExistingScholar={false} />
+        </div>
+    );
+}
+
+function AddExistingScholarSection({ onClose }) {
+    return (
+        <div className="pb-8 bg-white">
+            <NewApplicationForm isForExistingScholar={true} onClose={onClose} />
         </div>
     );
 }
@@ -24,4 +32,4 @@ function RenewalApplicationSection() {
     );
 }
 
-export { ApplicationSection, RenewalApplicationSection };
+export { ApplicationSection, AddExistingScholarSection, RenewalApplicationSection };

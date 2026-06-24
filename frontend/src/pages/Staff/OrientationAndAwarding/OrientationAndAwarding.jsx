@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useBatches } from "../../../hooks/useBatches";
 import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
@@ -18,16 +18,18 @@ import {
     unassignedTableHeaders,
 } from "../../../constant/tableHeaders";
 import { useOrientationAndAwarding } from "../../../hooks/useOrientationAndAwarding";
-import OrientationTableRow from "./OrientationTableRow";
+// import OrientationTableRow from "./OrientationTableRow";
 import ChangeStatusModal from "./ChangeStatusModal";
-import AwardingTableRow from "./AwardingTableRow";
+// import AwardingTableRow from "./AwardingTableRow";
+const OrientationTableRow = React.lazy(() => import("./OrientationTableRow"));
+const AwardingTableRow = React.lazy(() => import("./AwardingTableRow"));
 import { Plus } from "lucide-react";
 
 export default function OrientationAndAwarding() {
     const [isRefresh, setIsRefresh] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeTab, setActiveTab] = useState(
-        orientationAndAwardingTableButtons[0].name
+        orientationAndAwardingTableButtons[0].name,
     );
     const { batches, setBatches, deleteBatch, fetchBatches } =
         useBatches("orientation");
@@ -66,7 +68,7 @@ export default function OrientationAndAwarding() {
         selectedBatchInBatches,
         activeTab,
         status,
-        sortBy
+        sortBy,
     );
 
     useEffect(() => {
@@ -188,6 +190,20 @@ export default function OrientationAndAwarding() {
                 searchTerm={searchTerm}
                 itemsPerPage={itemsPerPage}
                 sortBy={sortBy}
+                sortItems={[
+                    {
+                        label: "Newest First",
+                        value: "newest",
+                    },
+                    {
+                        label: "Oldest First",
+                        value: "oldest",
+                    },
+                    {
+                        label: "Name (A-Z)",
+                        value: "name",
+                    },
+                ]}
                 sortedItems={filteredApplications}
                 onRefresh={handleRefresh}
                 onSort={setSortBy}
@@ -212,7 +228,7 @@ export default function OrientationAndAwarding() {
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="w-full px-3 py-1 accent-green-700 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-[150px] px-3 py-1 accent-green-700 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option
                                 className="hover:bg-green-700 accent-green-700"
@@ -244,11 +260,13 @@ export default function OrientationAndAwarding() {
 
                 {activeTab === "Orientation" && (
                     <div className="flex justify-between items-center gap-2">
-                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Batches:</span>
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Batches:
+                        </span>
                         <select
                             value={selectedBatchInBatches}
                             onChange={(e) => handleBatchChange(e.target.value)}
-                            className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All Batches</option>
                             {batches.map((batch) => (
@@ -284,6 +302,7 @@ export default function OrientationAndAwarding() {
                             case "Applicants":
                                 return (
                                     <UnassignedTableRow
+                                        loading={isLoading}
                                         currentItems={currentItems}
                                         selectedApplicants={selectedApplicants}
                                         toggleApplicantSelection={
@@ -294,6 +313,7 @@ export default function OrientationAndAwarding() {
                             case "Orientation":
                                 return (
                                     <OrientationTableRow
+                                        loading={isLoading}
                                         tab={activeTab}
                                         currentItems={currentItems}
                                         selectedApplicants={selectedApplicants}
@@ -311,6 +331,7 @@ export default function OrientationAndAwarding() {
                             default:
                                 return (
                                     <AwardingTableRow
+                                        loading={isLoading}
                                         currentItems={currentItems}
                                         onOpenModal={setIsChangeStatusModalOpen}
                                         onSelectScholarId={setScholarId}
@@ -322,7 +343,7 @@ export default function OrientationAndAwarding() {
                 </Table>
 
                 {/* Empty state */}
-                {currentItems.length === 0 && (
+                {currentItems.length === 0 && !isLoading && (
                     <EmptyState message="No applications found." />
                 )}
             </div>
@@ -382,28 +403,32 @@ export default function OrientationAndAwarding() {
                 )}
             </div>
 
-            <CreateBatchModal
-                batchName={batchName}
-                isOpen={isCreateBatchModalOpen}
-                onClose={setIsCreateBatchModalOpen}
-                onRefresh={fetchBatches}
-            />
+            {isCreateBatchModalOpen && (
+                <CreateBatchModal
+                    batchName={batchName}
+                    isOpen={isCreateBatchModalOpen}
+                    onClose={setIsCreateBatchModalOpen}
+                    onRefresh={fetchBatches}
+                />
+            )}
 
-            <ChangeStatusModal
-                tab={activeTab}
-                scholar={selectedScholar}
-                isOpen={isChangeStatusModalOpen}
-                onClose={setIsChangeStatusModalOpen}
-                label={"Change Status"}
-                scholarId={scholarId}
-                onUpdate={
-                    activeTab === "Orientation"
-                        ? updateStatusForOrientation
-                        : updateStatusForAwarding
-                }
-                onRefresh={handleRefresh}
-                isLoading={isLoading}
-            />
+            {isChangeStatusModalOpen && (
+                <ChangeStatusModal
+                    tab={activeTab}
+                    scholar={selectedScholar}
+                    isOpen={isChangeStatusModalOpen}
+                    onClose={setIsChangeStatusModalOpen}
+                    label={"Change Status"}
+                    scholarId={scholarId}
+                    onUpdate={
+                        activeTab === "Orientation"
+                            ? updateStatusForOrientation
+                            : updateStatusForAwarding
+                    }
+                    onRefresh={handleRefresh}
+                    isLoading={isLoading}
+                />
+            )}
         </PageContent>
     );
 }

@@ -68,8 +68,8 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                     ))
                 ) : (
                     <div className="text-center ">
-                        <BookOpen className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                        <h4 className="text-lg font-medium text-gray-900 mb-2">
+                        <BookOpen className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                        <h4 className="text-lg font-medium text-gray-600 mb-2">
                             You haven’t participated in any activities recently.
                         </h4>
                         <p className="text-xs md:text-sm text-gray-500 mb-4">

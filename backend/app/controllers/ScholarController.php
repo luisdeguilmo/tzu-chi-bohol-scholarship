@@ -6,8 +6,6 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use App\Models\ApplicantModel;
-use App\Models\ApplicationModel;
 use App\Models\ScholarModel;
 use App\Models\SchoolYearModel;
 use Config\Database;

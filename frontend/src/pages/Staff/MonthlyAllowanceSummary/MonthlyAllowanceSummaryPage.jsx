@@ -26,12 +26,12 @@ export default function MonthlyAllowanceSummaryPage() {
 
     const { years } = useYears();
     const { loading, allowanceCycles, fetchAllowanceCycles } =
-        useMonthlyAllowanceSummary(month, year);
+        useMonthlyAllowanceSummary(month, year, sortBy);
     const { downloadExcel } = useDownloadExcel();
 
     useEffect(() => {
         fetchAllowanceCycles();
-    }, [month, year]);
+    }, [month, year, sortBy]);
 
     // Filter data based on search term
     const filteredAllowanceCycles = allowanceCycles.filter((cycle) => {
@@ -58,7 +58,7 @@ export default function MonthlyAllowanceSummaryPage() {
 
     const handleDownloadExcel = (item) => {
         if (!item.is_processed) {
-            toast.warn(
+            toast.info(
                 `No file available for this month. Allowance was not processed.`,
             );
             return;
@@ -91,14 +91,16 @@ export default function MonthlyAllowanceSummaryPage() {
                 lastIndex={indexOfLastItem}
             >
                 <div className="flex justify-between items-center gap-2">
-                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Year:</span>
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                        Year:
+                    </span>
                     <select
                         value={year}
                         onChange={(e) => {
                             setYear(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all_years">All Years</option>
                         {years.map((year) => (
@@ -109,14 +111,16 @@ export default function MonthlyAllowanceSummaryPage() {
                     </select>
                 </div>
                 <div className="flex justify-between items-center gap-2">
-                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">Month:</span>
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                        Month:
+                    </span>
                     <select
                         value={month}
                         onChange={(e) => {
                             setMonth(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="w-full px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
                     >
                         <option value={"all_months"}>All Months</option>
                         <option value={1}>January</option>
@@ -137,60 +141,89 @@ export default function MonthlyAllowanceSummaryPage() {
 
             <div className="overflow-x-auto rounded-[4px]">
                 <Table tableHeaders={allowanceCyclesTableHeaders}>
-                    {currentItems.map((item) => (
-                        <TableRow key={item.id}>
-                            {/* <td className="py-5 whitespace-nowrap text-xs">
+                    {loading && (
+                        <tr>
+                            <td colSpan={6} className="p-6">
+                                <div className=" flex flex-col items-center gap-4">
+                                    <div className="flex items-end gap-1 h-10">
+                                        {[...Array(5)].map((_, i) => (
+                                            <div
+                                                key={i}
+                                                className="w-2 bg-emerald-500 rounded-full animate-bounce"
+                                                style={{
+                                                    height: "10px",
+                                                    animationDelay: `${i * 100}ms`,
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    <p className="text-sm text-slate-500">
+                                        Loading data...
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    )}
+
+                    {!loading &&
+                        currentItems.map((item) => (
+                            <TableRow key={item.id}>
+                                {/* <td className="py-5 whitespace-nowrap text-xs">
                                 {formatMonth(item.cycle_month)}
                             </td> */}
-                            <td className="py-5 whitespace-nowrap text-xs">
-                                {formatMonth(item.allowance_month) || "--"}
-                            </td>
-                            <td className="py-3 whitespace-nowrap text-xs">
-                                {formatDate(item.cutoff_date)}
-                            </td>
-                            <td className="py-3 whitespace-nowrap text-xs">
-                                <span
-                                    className={`py-1 px-3 rounded-full ${
-                                        item.is_processed
-                                            ? "bg-green-100 text-green-800"
+                                <td className="py-5 whitespace-nowrap text-xs text-gray-700 font-bold">
+                                    {formatMonth(item.allowance_month) || "--"}
+                                </td>
+                                <td className="py-3 whitespace-nowrap text-xs">
+                                    {formatDate(item.cutoff_date)}
+                                </td>
+                                <td className="py-3 whitespace-nowrap text-xs">
+                                    <span
+                                        className={`py-1 px-3 rounded-full ${
+                                            item.is_processed
+                                                ? "bg-green-100 text-green-800"
+                                                : !item.is_processed &&
+                                                    date.getCurrentYearMonth() >
+                                                        item.cycle_month.slice(
+                                                            0,
+                                                            7,
+                                                        )
+                                                  ? "bg-orange-100 text-orange-800"
+                                                  : "bg-yellow-100 text-yellow-800"
+                                        }`}
+                                    >
+                                        {item.is_processed
+                                            ? "Processed"
                                             : !item.is_processed &&
                                                 date.getCurrentYearMonth() >
                                                     item.cycle_month.slice(0, 7)
-                                              ? "bg-orange-100 text-orange-800"
-                                              : "bg-yellow-100 text-yellow-800"
-                                    }`}
-                                >
-                                    {item.is_processed
-                                        ? "Processed"
-                                        : !item.is_processed &&
-                                            date.getCurrentYearMonth() >
-                                                item.cycle_month.slice(0, 7)
-                                          ? "Skipped"
-                                          : "Pending"}
-                                </span>
-                            </td>
-                            <td className="py-3 whitespace-nowrap text-xs">
-                                {formatDate(item.processed_at) || "--"}
-                            </td>
-                            <td className="py-1 whitespace-nowrap text-right font-medium">
-                                <div className="flex items-center justify-center">
-                                    <button
-                                        onClick={() =>
-                                            handleDownloadExcel(item)
-                                        }
-                                        className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"
-                                        title="Download File"
-                                    >
-                                        <DownloadIcon className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </td>
-                        </TableRow>
-                    ))}
+                                              ? "Skipped"
+                                              : "Pending"}
+                                    </span>
+                                </td>
+                                <td className="py-3 whitespace-nowrap text-xs">
+                                    {formatDate(item.processed_at) || "--"}
+                                </td>
+                                <td className="py-1 whitespace-nowrap text-right font-medium">
+                                    <div className="flex items-center justify-center">
+                                        <button
+                                            onClick={() =>
+                                                handleDownloadExcel(item)
+                                            }
+                                            className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors duration-200"
+                                            title="Download File"
+                                        >
+                                            <DownloadIcon className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </td>
+                            </TableRow>
+                        ))}
                 </Table>
 
                 {/* Empty state */}
-                {currentItems.length === 0 && (
+                {currentItems.length === 0 && !loading && (
                     <EmptyState message="No applications found." />
                 )}
             </div>

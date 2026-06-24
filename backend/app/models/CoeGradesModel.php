@@ -44,14 +44,14 @@ class CoeGradesModel
         }
     }
 
-    public function createActivity($activity_data, $scholarId)
+    public function createActivity($activity_data, $scholarId, $academic_year)
     {
         $query =
             'INSERT INTO ' .
             $this->table_name .
             " 
             SET scholar_id = :scholar_id, year_level = :year_level,
-                semester = :semester,
+                semester = :semester, academic_year = :academic_year,
                 created_at = NOW()";
 
         $stmt = $this->pdo->prepare($query);
@@ -65,6 +65,7 @@ class CoeGradesModel
         $stmt->bindParam(':scholar_id', $this->account_id);
         $stmt->bindParam(':year_level', $this->year_level);
         $stmt->bindParam(':semester', $this->semester);
+        $stmt->bindParam(':academic_year', $academic_year);
 
         if ($stmt->execute()) {
             return $this->pdo->lastInsertId();
@@ -114,36 +115,49 @@ class CoeGradesModel
         return $row['id'] ?? null;
     }
 
-    public function getAllCoeAndGradesByScholarId($scholarId, $tab, $year_level)
+    public function getAllCoeAndGradesByScholarId($scholarId, $tab, $year_level, $academic_year)
     {
         $data = [];
 
         if ($tab === 'all') {
             $data = $this->getAllCoeAndGrades($scholarId);
         } elseif ($tab === 'this_school_year') {
-            $data = $this->getCoeAndGradesThisSchoolYear($scholarId, $year_level);
+            $data = $this->getCoeAndGradesThisSchoolYear($scholarId, $year_level, $academic_year);
         } elseif ($tab === 'past') {
-            $data = $this->getPastSubmissions($scholarId);
+            $data = $this->getPastSubmissions($scholarId, $academic_year);
         }
 
         return $data;
     }
 
-    public function getPastSubmissions($scholarId)
+    // public function getPastSubmissions($scholarId)
+    // {
+    //     $query = "SELECT * FROM coe_and_grades
+    //                 WHERE DATE(created_at) < :current_datetime AND scholar_id = :scholar_id
+    //                 ORDER BY year_level ASC";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->bindParam(':scholar_id', $scholarId);
+    //     $stmt->bindParam(':current_datetime', $this->currentDate);
+    //     $stmt->execute();
+    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    // }
+
+    public function getPastSubmissions($scholarId, $academic_year)
     {
-        $query = "SELECT * FROM coe_and_grades 
-                    WHERE DATE(created_at) < :current_datetime AND scholar_id = :scholar_id
+        $query = "SELECT id, scholar_id, year_level, semester, academic_year FROM coe_and_grades 
+                    WHERE academic_year != :academic_year AND scholar_id = :scholar_id
                     ORDER BY year_level ASC";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':scholar_id', $scholarId);
-        $stmt->bindParam(':current_datetime', $this->currentDate);
+        $stmt->bindParam(':academic_year', $academic_year);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function getAllCoeAndGrades($scholarId)
     {
-        $query = "SELECT * FROM coe_and_grades 
+        $query = "SELECT id, scholar_id, year_level, semester, academic_year 
+                    FROM coe_and_grades 
                     WHERE scholar_id = :scholar_id
                     ORDER BY year_level ASC";
         $stmt = $this->pdo->prepare($query);
@@ -152,14 +166,14 @@ class CoeGradesModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getCoeAndGradesThisSchoolYear($scholarId, $yearLevel)
+    public function getCoeAndGradesThisSchoolYear($scholarId, $yearLevel, $academic_year)
     {
-        $query = "SELECT * FROM coe_and_grades 
-                    WHERE scholar_id = :scholar_id AND year_level = :year_level
+        $query = "SELECT id, scholar_id, year_level, semester, academic_year FROM coe_and_grades 
+                    WHERE scholar_id = :scholar_id AND academic_year = :academic_year
                     ORDER BY year_level ASC";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':scholar_id', $scholarId);
-        $stmt->bindParam(':year_level', $yearLevel);
+        $stmt->bindParam(':academic_year', $academic_year);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -182,7 +196,6 @@ class CoeGradesModel
                     'id' => $file['id'],
                     'scholar_id' => $file['scholar_id'],
                     'file_name' => $file['file_name'],
-                    'file_path' => $file['file_path'],
                     'file_url' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=coe_grades&route=file/view&file=' .
@@ -197,6 +210,7 @@ class CoeGradesModel
                 'id' => $item['id'],
                 'year_level' => $item['year_level'],
                 'semester' => $item['semester'],
+                'academic_year' => $item['academic_year'],
                 'files' => $filesList,
             ];
         }
@@ -206,7 +220,7 @@ class CoeGradesModel
 
     public function getFilesByScholarIdAndYearLevel($scholar_id, $year_level, $semester)
     {
-        $query = "SELECT *
+        $query = "SELECT id, scholar_id, file_name, file_path, file_size, file_type, uploaded_at
                 FROM coe_and_grade_files 
                 WHERE scholar_id = :scholar_id AND year_level = :year_level AND semester = :semester";
 

@@ -23,6 +23,7 @@ use App\Models\AuditLogModel;
 use App\Models\EventParticipantsModel;
 use App\Models\NotificationsModel;
 use App\Models\RecentActivityModel;
+use App\Models\RenderedHoursHistoryModel;
 use Config\Database;
 use App\Models\RenderedHoursModel;
 use App\Models\ScholarModel;
@@ -57,7 +58,9 @@ class RenderedHoursController
             case 'PUT':
                 $this->handlePut();
                 break;
-
+            case 'PATCH':
+                $this->handlePatch();
+                break;
             case 'GET':
                 $this->handleGet();
                 break;
@@ -152,6 +155,7 @@ class RenderedHoursController
             $notification = new NotificationsModel();
             $recentActivity = new RecentActivityModel();
             $scholarModel = new ScholarModel();
+            $hoursModel = new RenderedHoursHistoryModel();
 
             $account_id = $data['account_id'];
 
@@ -183,6 +187,14 @@ class RenderedHoursController
                     $activity->updateActivityStatus($data);
                     $notification->createActivityNotification($data);
                     $recentActivity->createRecentCommunityService($data);
+
+                    $hoursModel->createHistory([
+                        'account_id' => $data['account_id'],
+                        'transaction_type' => 'add',
+                        'event_name' => $data['activity_name'],
+                        'source_type' => 'duty',
+                        'hours' => $data['rendered_hours'],
+                    ]);
 
                     $staffId = Auth::id();
                     $staff = $this->staffModel->getStaffInfoById($staffId);
@@ -269,11 +281,6 @@ class RenderedHoursController
                 $scholarNames = [];
                 $scholarModel = new ScholarModel();
 
-                // foreach ($data['selected_scholars'] as $scholarId) {
-                //     $name = $scholarModel->getScholarById($scholarId);
-                //     $scholarNames = ['name' => "{$name['first_name']} {$name['last_name']}"];
-                // }
-
                 foreach ($data['selected_scholars'] as $scholarId) {
                     if (
                         !$renderedHours->recordEventRenderedHours(
@@ -302,6 +309,14 @@ class RenderedHoursController
 
                     $name = $scholarModel->getScholarById($scholarId);
                     $scholarNames[] = "{$name['first_name']} {$name['last_name']}";
+
+                    $hoursModel->createHistory([
+                        'account_id' => $scholarId,
+                        'transaction_type' => 'add',
+                        'event_name' => $data['event_name'],
+                        'source_type' => 'event',
+                        'hours' => $data['rendered_hours'],
+                    ]);
                 }
 
                 // $scholarNames = $data['selected_scholars']->pluck('name')->implode(', ');
@@ -343,6 +358,83 @@ class RenderedHoursController
             echo json_encode([
                 'success' => true,
                 'message' => 'Recorded successfully',
+            ]);
+        } catch (\Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function handlePatch()
+    {
+        $requiredEnvVars = [
+            'BREVO_EMAIL',
+            'BREVO_SMTP_KEY',
+            'ORG_NAME',
+            'ORG_ADDRESS',
+            'ORG_CONTACT',
+        ];
+
+        foreach ($requiredEnvVars as $var) {
+            if (empty($_ENV[$var])) {
+                http_response_code(500);
+                echo json_encode([
+                    'success' => false,
+                    'message' => "Missing required environment variable: $var",
+                ]);
+                return;
+            }
+        }
+
+        $emailService = new PHPMailerBrevoService(
+            $_ENV['BREVO_EMAIL'],
+            $_ENV['BREVO_SMTP_KEY'],
+            $_ENV['ORG_NAME'],
+            $_ENV['ORG_ADDRESS'],
+            $_ENV['ORG_CONTACT'],
+        );
+
+        try {
+            $this->pdo->beginTransaction();
+
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (!$data) {
+                throw new \Exception('No data provided');
+            }
+
+            $renderedHours = new RenderedHoursModel();
+            $notification = new NotificationsModel();
+            $hoursModel = new RenderedHoursHistoryModel();
+
+            $account_id = $data['account_id'];
+            $initial_rendered_hours = $data['initial_rendered_hours'];
+
+            if (!$renderedHours->setInitialRenderedHours($account_id, $initial_rendered_hours)) {
+                throw new \Exception('Failed to set initial rendered hours');
+            }
+
+            $hoursModel->createHistory([
+                'account_id' => $account_id,
+                'transaction_type' => 'initial',
+                'event_name' => 'Initial Rendered Hours',
+                'source_type' => 'rendered_hours',
+                'hours' => $initial_rendered_hours,
+            ]);
+
+            $this->pdo->commit();
+
+            http_response_code(201);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Initial rendered hours added successfully',
             ]);
         } catch (\Exception $e) {
             if ($this->pdo->inTransaction()) {

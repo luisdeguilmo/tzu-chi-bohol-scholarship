@@ -19,13 +19,14 @@ const ScholarshipCriteria = () => {
 
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [sortBy, setSortBy] = useState("newest");
+    const [filter, setFilter] = useState("all");
     const [activeTab, setActiveTab] = useState("strands");
 
     const [endPoint, setEndPoint] = useState(activeTab);
     const [entityName, setEntityName] = useState("Strands");
     const [tableConfig, setTableConfig] = useState(strandsTableConfig);
     const [inputFields, setInputFields] = useState(
-        scholarshipCriteriaInputFields.strandInputField
+        scholarshipCriteriaInputFields.strandInputField,
     );
 
     useEffect(() => {
@@ -39,13 +40,13 @@ const ScholarshipCriteria = () => {
         }
         if (activeTab === "qualifications") {
             setInputFields(
-                scholarshipCriteriaInputFields.qualificationInputFields
+                scholarshipCriteriaInputFields.qualificationInputFields,
             );
             setTableConfig(qualificationsTableConfig);
         }
         if (activeTab === "requirements") {
             setInputFields(
-                scholarshipCriteriaInputFields.requirementInputFields
+                scholarshipCriteriaInputFields.requirementInputFields,
             );
             setTableConfig(requirementsTableConfig);
         }
@@ -55,7 +56,7 @@ const ScholarshipCriteria = () => {
         }
         if (activeTab === "instructions") {
             setInputFields(
-                scholarshipCriteriaInputFields.instructionInputFields
+                scholarshipCriteriaInputFields.instructionInputFields,
             );
             setTableConfig(instructionsTableConfig);
         }
@@ -63,8 +64,15 @@ const ScholarshipCriteria = () => {
         fetchItems();
     }, [activeTab]);
 
-    const { items, loading, error, fetchItems, updateItem, deleteItem } =
-        useScholarshipCriteria(endPoint, entityName);
+    const {
+        items,
+        loading,
+        error,
+        fetchItems,
+        updateItem,
+        updateVisibility,
+        deleteItem,
+    } = useScholarshipCriteria(endPoint, entityName, filter);
 
     const { editData, updateEditData, startEdit, cancelEdit, isEditing } =
         useTableEdit();
@@ -72,8 +80,8 @@ const ScholarshipCriteria = () => {
     // Filter strands based on search term
     const filteredItems = items.filter((strand) =>
         tableConfig.searchFields.some((field) =>
-            strand[field]?.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+            strand[field]?.toLowerCase().includes(searchTerm.toLowerCase()),
+        ),
     );
 
     const sortedItems = [...filteredItems].sort((a, b) => {
@@ -95,9 +103,17 @@ const ScholarshipCriteria = () => {
     const { currentPage, setCurrentPage, setNumberOfItemsPerPage } =
         paginationState;
 
+    useEffect(() => {
+        if (activeTab === "courses") {
+            setCurrentPage(1);
+            setNumberOfItemsPerPage(0);
+            fetchItems();
+        }
+    }, [activeTab, filter]);
+
     const getTabName = (tab) => {
         const button = scholarshipCriteriaButtons.find(
-            (button) => button.tabName === tab
+            (button) => button.tabName === tab,
         );
         return button.name;
     };
@@ -114,10 +130,10 @@ const ScholarshipCriteria = () => {
     const handleSave = async (id) => {
         // Validate required fields
         const requiredFields = tableConfig.fields.filter(
-            (field) => field.required
+            (field) => field.required,
         );
         const hasEmptyRequired = requiredFields.some(
-            (field) => !editData[field.name]?.trim()
+            (field) => !editData[field.name]?.trim(),
         );
 
         if (hasEmptyRequired) {
@@ -131,6 +147,14 @@ const ScholarshipCriteria = () => {
         }
     };
 
+    const handleUpdateVisibility = async (id, course, is_visible) => {
+        const success = await updateVisibility(id, course, is_visible);
+
+        if (success) {
+            fetchItems();
+        }
+    };
+
     const handleDelete = async (id) => {
         const success = await deleteItem(id);
 
@@ -141,6 +165,8 @@ const ScholarshipCriteria = () => {
         ) {
             paginationState.goToPreviousPage();
         }
+
+        return true;
     };
 
     const editState = {
@@ -178,6 +204,9 @@ const ScholarshipCriteria = () => {
             setCurrentPage={setCurrentPage}
             onNumberOfItemsPerPageChange={setNumberOfItemsPerPage}
             sortedItems={sortedItems}
+            onUpdateVisibility={handleUpdateVisibility}
+            filter={filter}
+            setFilter={setFilter}
         />
     );
 };
