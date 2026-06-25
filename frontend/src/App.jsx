@@ -110,68 +110,68 @@ const RoleSpecificLoginForm = ({ role }) => {
 };
 
 export function App() {
-    // const [devtoolsOpen, setDevtoolsOpen] = useState(false);
+    const [devtoolsOpen, setDevtoolsOpen] = useState(false);
 
-    // useEffect(() => {
-    //     const handleContextMenu = (e) => {
-    //         e.preventDefault();
-    //     };
+    useEffect(() => {
+        const handleContextMenu = (e) => {
+            e.preventDefault();
+        };
 
-    //     const handleKeyDown = (e) => {
-    //         const key = e.key.toUpperCase();
+        const handleKeyDown = (e) => {
+            const key = e.key.toUpperCase();
 
-    //         if (
-    //             key === "F12" ||
-    //             (e.ctrlKey &&
-    //                 e.shiftKey &&
-    //                 ["I", "J", "C", "K"].includes(key)) ||
-    //             (e.ctrlKey && ["U", "S"].includes(key))
-    //         ) {
-    //             e.preventDefault();
-    //             e.stopPropagation();
-    //         }
-    //     };
+            if (
+                key === "F12" ||
+                (e.ctrlKey &&
+                    e.shiftKey &&
+                    ["I", "J", "C", "K"].includes(key)) ||
+                (e.ctrlKey && ["U", "S"].includes(key))
+            ) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        };
 
-    //     const detectDevTools = () => {
-    //         const widthThreshold = window.outerWidth - window.innerWidth > 160;
+        const detectDevTools = () => {
+            const widthThreshold = window.outerWidth - window.innerWidth > 160;
 
-    //         const heightThreshold =
-    //             window.outerHeight - window.innerHeight > 160;
+            const heightThreshold =
+                window.outerHeight - window.innerHeight > 160;
 
-    //         setDevtoolsOpen(widthThreshold || heightThreshold);
-    //     };
+            setDevtoolsOpen(widthThreshold || heightThreshold);
+        };
 
-    //     document.addEventListener("contextmenu", handleContextMenu);
-    //     document.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("contextmenu", handleContextMenu);
+        document.addEventListener("keydown", handleKeyDown);
 
-    //     const interval = setInterval(detectDevTools, 1000);
+        const interval = setInterval(detectDevTools, 1000);
 
-    //     return () => {
-    //         document.removeEventListener("contextmenu", handleContextMenu);
+        return () => {
+            document.removeEventListener("contextmenu", handleContextMenu);
 
-    //         document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener("keydown", handleKeyDown);
 
-    //         clearInterval(interval);
-    //     };
-    // }, []);
+            clearInterval(interval);
+        };
+    }, []);
 
-    // if (devtoolsOpen) {
-    //     return (
-    //         <div
-    //             style={{
-    //                 height: "100vh",
-    //                 display: "flex",
-    //                 justifyContent: "center",
-    //                 alignItems: "center",
-    //                 background: "#111",
-    //                 color: "#fff",
-    //                 fontSize: "24px",
-    //             }}
-    //         >
-    //             Developer tools detected
-    //         </div>
-    //     );
-    // }
+    if (devtoolsOpen) {
+        return (
+            <div
+                style={{
+                    height: "100vh",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    background: "#111",
+                    color: "#fff",
+                    fontSize: "24px",
+                }}
+            >
+                Developer tools detected
+            </div>
+        );
+    }
 
     return (
         <Router>
