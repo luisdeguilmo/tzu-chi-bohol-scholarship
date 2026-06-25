@@ -6,7 +6,7 @@ export const useApplicationForm = () => {
     const context = useContext(ApplicationFormContext);
     if (!context) {
         throw new Error(
-            "useApplicationForm must be used within ApplicationFormProvider"
+            "useApplicationForm must be used within ApplicationFormProvider",
         );
     }
     return context;
@@ -18,6 +18,7 @@ export const ApplicationFormProvider = ({ children }) => {
     const [isOtherAssistanceApplicable, setIsOtherAssistanceApplicable] =
         useState(null);
     const [isSiblingsApplicable, setIsSiblingsApplicable] = useState(null);
+    const [isForExistingScholar, setIsForExistingScholar] = useState(false);
 
     const value = {
         isSiblingsApplicable,
@@ -26,6 +27,8 @@ export const ApplicationFormProvider = ({ children }) => {
         isOtherAssistanceApplicable,
         setIsTzuChiSiblingsApplicable,
         setIsOtherAssistanceApplicable,
+        isForExistingScholar,
+        setIsForExistingScholar,
     };
 
     return (

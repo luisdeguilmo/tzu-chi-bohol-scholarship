@@ -1,5 +1,4 @@
 <?php
-// login.php
 require_once __DIR__ . '/../../config/bootstrap.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../middleware/Cors.php';
@@ -48,9 +47,6 @@ $auth   = new AuthService();
 $result = $auth->login($email, $password, $userType);
 
 if (!$result['success']) {
-    if ($result['status'] === 429 && isset($result['retry_after'])) {
-        header('Retry-After: ' . $result['retry_after']);
-    }
     respond(false, ['message' => $result['message']], $result['status']);
 }
 

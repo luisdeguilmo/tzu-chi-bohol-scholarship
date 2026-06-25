@@ -4285,3 +4285,82 @@
 [2026-06-24 10:11:20] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
 [2026-06-24 10:11:23] [IP: ::1] [Email: sds@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
 [2026-06-24 10:11:31] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-24 13:51:28] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:51:35] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:51:41] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:51:44] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:52:04] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:52:08] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:52:18] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:52:36] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:53:18] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:53:20] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:53:51] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:55:41] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:56:15] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:56:28] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:56:30] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:56:32] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 13:58:16] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-24 13:58:32] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:58:35] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:58:36] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:58:36] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:58:37] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 13:58:38] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 14:02:06] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-24 14:02:22] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 14:02:23] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 14:02:24] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 14:02:24] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 14:02:25] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 14:02:25] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 14:08:33] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 14:12:53] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN BLOCKED - rate limited
+[2026-06-24 14:13:33] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-06-24 14:39:00] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN FAILED - bad credentials
+[2026-06-24 14:40:10] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-24 15:04:22] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-24 16:12:48] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-06-24 16:16:00] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-24 16:20:40] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-06-24 16:21:25] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN FAILED - bad credentials
+[2026-06-24 16:21:26] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN FAILED - bad credentials
+[2026-06-24 16:21:27] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN FAILED - bad credentials
+[2026-06-24 16:21:28] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN FAILED - bad credentials
+[2026-06-24 16:21:29] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN FAILED - bad credentials
+[2026-06-24 16:21:30] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:21:32] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:21:33] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:21:34] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:21:35] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:21:40] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:21:42] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:21:46] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:21:46] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:21:59] [IP: ::1] [Email: deguilmoluiis@gmail.com] [Type: scholar] LOGIN FAILED - bad credentials
+[2026-06-24 16:22:12] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:22:13] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN BLOCKED - rate limited
+[2026-06-24 16:22:24] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-06-25 00:10:49] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN FAILED - bad credentials
+[2026-06-25 00:11:03] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-25 00:13:00] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-25 00:26:50] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-06-25 00:33:02] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-06-25 01:51:56] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-25 02:02:23] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-25 02:07:12] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-06-25 02:18:34] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-06-25 02:27:08] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-06-25 02:44:40] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-25 02:46:23] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-25 02:46:49] [IP: ::1] [Email: johnnathanielnapiere@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-06-25 04:48:12] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-06-25 04:54:46] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-06-25 06:01:11] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-25 06:20:09] [IP: ::1] [Email: deguilmoluis1@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-06-25 06:21:31] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-06-25 06:21:55] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS
+[2026-06-25 06:22:33] [IP: ::1] [Email: deguilmoluigi@gmail.com] [Type: scholar] LOGIN SUCCESS
+[2026-06-25 06:24:33] [IP: ::1] [Email: admin@gmail.com] [Type: admin] LOGIN SUCCESS
+[2026-06-25 06:34:28] [IP: ::1] [Email: luis@gmail.com] [Type: staff] LOGIN SUCCESS

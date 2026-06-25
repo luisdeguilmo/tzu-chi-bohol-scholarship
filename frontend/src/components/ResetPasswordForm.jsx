@@ -5,6 +5,9 @@ import { useAuth } from "../context/AuthContext";
 import { ArrowLeft, EyeClosed, EyeIcon } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import BASE_URL from "../config";
+import img from "../assets/img.jpg";
+import img1 from "../assets/img1.jpg";
+import img3 from "../assets/img3.jpg";
 
 const ResetPasswordForm = () => {
     const [isResetSuccessful, setIsResetSuccessful] = useState(false);
@@ -43,7 +46,7 @@ const ResetPasswordForm = () => {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                     },
-                }
+                },
             );
 
             if (response.data.success) {
@@ -73,14 +76,37 @@ const ResetPasswordForm = () => {
         }
     };
 
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIsTransitioning(true);
+            setCurrentIndex((prev) => (prev + 1) % images.length);
+            setTimeout(() => setIsTransitioning(false), 300);
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const images = [img, img1, img3];
+
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="bg-white p-10 rounded-xl shadow-lg absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-100%] w-[80%] sm:max-w-[400px] border border-gray-200">
+        <div className="hero flex items-center justify-center min-h-screen">
+            {images.map((img, index) => (
+                <div
+                    key={index}
+                    className={`hero-bg ${index === currentIndex ? "visible" : "hidden"}`}
+                    style={{ backgroundImage: `url(${img})` }}
+                />
+            ))}
+
+            <div className="bg-white p-10 rounded-md shadow-lg absolute top-[70%] left-[50%] translate-x-[-50%] translate-y-[-100%] z-20 w-[80%] sm:max-w-[400px] border border-gray-200">
                 <div className="text-center mb-4">
                     <h2 className="text-2xl font-bold text-gray-800">
                         Reset Password
                     </h2>
-                    <p className="mt-2 text-gray-600 text-sm">
+                    <p className="mt-2 text-gray-500/90 text-sm">
                         Set a new password for your account
                     </p>
                 </div>
@@ -102,7 +128,7 @@ const ResetPasswordForm = () => {
                             <div>
                                 <label
                                     htmlFor="password"
-                                    className="block mb-1 text-sm font-medium text-gray-700"
+                                    className="block mb-1 text-xs font-medium text-gray-700"
                                 >
                                     New Password
                                 </label>
@@ -120,7 +146,7 @@ const ResetPasswordForm = () => {
                                             setPassword(e.target.value)
                                         }
                                         required
-                                        className="w-full p-3 outline-none border border-gray-300 text-sm rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
+                                        className="w-full p-3 outline-none border border-gray-300 text-[13px] text-gray-700 rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                     />
                                     <span
                                         onClick={() =>
@@ -144,7 +170,7 @@ const ResetPasswordForm = () => {
                             <div>
                                 <label
                                     htmlFor="confirm_password"
-                                    className="block mb-1 text-sm font-medium text-gray-700"
+                                    className="block mb-1 text-xs font-medium text-gray-700"
                                 >
                                     Confirm New Password
                                 </label>
@@ -162,7 +188,7 @@ const ResetPasswordForm = () => {
                                             setConfirmPassword(e.target.value)
                                         }
                                         required
-                                        className="w-full p-3 outline-none border border-gray-300 text-sm rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
+                                        className="w-full p-3 outline-none border border-gray-300 text-[13px] text-gray-700 rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                     />
                                     <span
                                         onClick={() =>
@@ -186,7 +212,7 @@ const ResetPasswordForm = () => {
                             <button
                                 type="button"
                                 onClick={handleResetPassword}
-                                className="w-full p-3 text-white text-sm rounded-lg bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full p-3 text-white text-xs rounded-lg bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={loading}
                             >
                                 {loading ? (

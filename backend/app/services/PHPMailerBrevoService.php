@@ -272,7 +272,7 @@ class PHPMailerBrevoService
     {
         // $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $allowedOrigin = $_ENV['ALLOWED_ORIGIN'] ?? '*';
-        $resetLink = 'http://' . $allowedOrigin . '/reset-password?token=' . $token;
+        $resetLink = "http://" . $allowedOrigin . '/reset-password?token=' . $token;
 
         $subject = 'Password Reset Request';
         $htmlContent =

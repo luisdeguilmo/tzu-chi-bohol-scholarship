@@ -39,7 +39,7 @@ function StaffDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 <div className="col-span-3 lg:col-span-2 mt-6 p-6 border bg-white rounded-lg">
                     <h2 className="mb-4 font-bold text-gray-700">
-                        Duty Hours Chart (Top 10)
+                        Rendered Hours Chart (Top 10)
                     </h2>
                     <DutyHoursChart
                         scholars={dashboardData?.tenScholarsByHighestDutyHours}

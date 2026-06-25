@@ -11,8 +11,6 @@ function Dashboard() {
     const { pathname } = useLocation();
     const { user } = useAuth();
 
-    console.log(user);
-
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [pathname]);

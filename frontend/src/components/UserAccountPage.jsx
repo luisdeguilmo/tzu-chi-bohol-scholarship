@@ -45,9 +45,6 @@ const UserAccount = ({
             data.append("account_id", userId);
             data.append("email", email);
 
-            console.log(userId);
-            console.log(email);
-
             const response = await axios.post(
                 `${BASE_URL}app/api/password-reset.php?action=reset_password`,
                 data,

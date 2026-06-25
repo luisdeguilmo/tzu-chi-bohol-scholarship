@@ -10,6 +10,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/BatchModel.php';
 
+use App\Models\AllowanceCycleModel;
 use App\Models\NotificationsModel;
 use App\Models\ScholarAccountModel;
 use App\Models\SchoolYearModel;
@@ -68,8 +69,12 @@ class StaffDashboardDataController
             $userName = $dashboardData->getUserName($id);
             $numberOfNewApplications = $dashboardData->getNumberOfNewApplications($school_year);
             $numberOfOldApplications = $dashboardData->getNumberOfOldApplications($school_year);
-            $numberOfApprovedApplications = $dashboardData->getNumberOfApprovedApplications($school_year);
-            $numberOfRejectedApplications = $dashboardData->getNumberOfRejectedApplications($school_year);
+            $numberOfApprovedApplications = $dashboardData->getNumberOfApprovedApplications(
+                $school_year,
+            );
+            $numberOfRejectedApplications = $dashboardData->getNumberOfRejectedApplications(
+                $school_year,
+            );
             $numberOfActiveScholars = $dashboardData->getNumberOfActiveScholars();
             $numberOfNewCommunityServices = $dashboardData->getNumberOfNewCommunityServices();
             $applicationData = $dashboardData->getApplicationData($school_year);
@@ -96,6 +101,16 @@ class StaffDashboardDataController
             // if (!$yearModel->getYear($this->currentYear)) {
             //     $yearModel->createYear($this->currentYear);
             // }
+
+            $cycleModel = new AllowanceCycleModel();
+
+            $currentMonth = (int) date('n');
+            if ($currentMonth >= 10) {
+                $nextYear = $this->currentYear + 1;
+                if (!$cycleModel->cyclesExistForYear($nextYear)) {
+                    $cycleModel->createYearlyCycles($nextYear);
+                }
+            }
 
             $pendingScholarsCount = $scholarModel->getPendingScholarsCount();
             $pendingScholarNotification = $notificationModel->getLastPendingScholarNotification(

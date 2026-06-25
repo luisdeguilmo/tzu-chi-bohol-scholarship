@@ -147,8 +147,8 @@ const ScholarAccountsRow = ({
                                         onSelectScholarId(account.account_id);
                                         setModal("set_rendered_hours_modal");
                                     }}
-                                    disabled={!account?.is_added_from_admin}
-                                    className={`${account?.is_added_from_admin ? "block" : "invisible"} p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200`}
+                                    disabled={!account?.is_added_from_admin || account?.is_migration_complete === 1}
+                                    className={`${account?.is_added_from_admin && account?.is_migration_complete === 0 ? "block" : "invisible"} p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200`}
                                     title="View Profile"
                                 >
                                     <PenLine className="w-4 h-4 text-green-600 hover:text-green-800 transition-colors" />

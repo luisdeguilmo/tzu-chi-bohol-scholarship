@@ -213,7 +213,7 @@ const AuditLogs = () => {
 
                     {/* Empty state */}
                     {currentItems.length === 0 && !loading && (
-                        <EmptyState message="No school years found." />
+                        <EmptyState message="No audit log found." />
                     )}
                 </div>
 

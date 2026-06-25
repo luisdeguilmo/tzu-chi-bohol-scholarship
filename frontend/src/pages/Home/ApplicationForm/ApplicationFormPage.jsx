@@ -17,6 +17,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useApplicantInformation } from "../../../hooks/useApplicantInformation";
 import { useSidebar } from "../../../context/SidebarContext";
 import { useApplicationPeriods } from "../../../hooks/useApplicationPeriods";
+import { useApplicationForm } from "../../../context/ApplicationFormContext";
 
 const generateInitialState = (fieldsConfig) => {
     const initialState = {};
@@ -310,7 +311,6 @@ function ApplicationForm({
             console.log("Error: ", error);
             alert("Failed: ", error);
         }
-        // console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
     };
 
     const handleReSubmitRenew = async (e) => {
@@ -452,7 +452,6 @@ function ApplicationForm({
             case 1:
                 return (
                     <PersonalSection
-                        isForExistingScholar={isForExistingScholar}
                         formData={formData}
                         handleInputChange={handleInputChange}
                         prevStep={prevStep}
@@ -462,7 +461,6 @@ function ApplicationForm({
             case 2:
                 return (
                     <EducationSection
-                        isForExistingScholar={isForExistingScholar}
                         formData={formData}
                         handleInputChange={handleInputChange}
                         prevStep={prevStep}
@@ -473,7 +471,6 @@ function ApplicationForm({
             case 3:
                 return (
                     <FamilySection
-                        isForExistingScholar={isForExistingScholar}
                         formData={formData}
                         setFormData={setFormData}
                         handleInputChange={handleInputChange}
@@ -504,7 +501,6 @@ function ApplicationForm({
             case 5:
                 return (
                     <OtherInformationSection
-                        isForExistingScholar={isForExistingScholar}
                         formData={formData}
                         setFormData={setFormData}
                         handleInputChange={handleInputChange}
@@ -549,6 +545,12 @@ function ApplicationForm({
 }
 
 function NewApplicationForm({ isForExistingScholar = false, onClose }) {
+    const { setIsForExistingScholar } = useApplicationForm();
+
+    useEffect(() => {
+        setIsForExistingScholar(isForExistingScholar);
+    }, []);
+
     return (
         <ApplicationForm
             isForExistingScholar={isForExistingScholar}

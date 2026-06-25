@@ -213,7 +213,7 @@ const StaffAccounts = () => {
                                     <td className="py-2.5 flex justify-start whitespace-nowrap text-sm text-gray-700">
                                         <div className="w-[30%]"></div>
                                         <div className="w-[max-content] flex items-center text-left gap-2">
-                                            {staff[0].profile ? (
+                                            {staff[0]?.profile ? (
                                                 <img
                                                     src={staff[0].profile}
                                                     alt="Profile"
@@ -221,8 +221,8 @@ const StaffAccounts = () => {
                                                 />
                                             ) : (
                                                 <div className="w-8 h-8 mr-1 rounded-full text-white text-sm bg-black flex justify-center items-center">
-                                                    {staff.first_name[0]}{" "}
-                                                    {staff.last_name[0]}
+                                                    {staff?.first_name[0]}{" "}
+                                                    {staff?.last_name[0]}
                                                 </div>
                                             )}
 
@@ -327,7 +327,7 @@ const StaffAccounts = () => {
                         message2:
                             "Are you sure you want to deactivate this account?",
                         message3:
-                            "Are you sure you want to reset this account's password?",
+                            "Are you sure you want to reset the password for this account?",
                     }}
                 />
             )}

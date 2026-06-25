@@ -19,6 +19,7 @@ try {
 
 use App\Constants\Action;
 use App\Models\ActivityModel;
+use App\Models\ApplicationModel;
 use App\Models\AuditLogModel;
 use App\Models\EventParticipantsModel;
 use App\Models\NotificationsModel;
@@ -413,6 +414,7 @@ class RenderedHoursController
             $renderedHours = new RenderedHoursModel();
             $notification = new NotificationsModel();
             $hoursModel = new RenderedHoursHistoryModel();
+            $applicationModel = new ApplicationModel();
 
             $account_id = $data['account_id'];
             $initial_rendered_hours = $data['initial_rendered_hours'];
@@ -421,13 +423,17 @@ class RenderedHoursController
                 throw new \Exception('Failed to set initial rendered hours');
             }
 
-            $hoursModel->createHistory([
-                'account_id' => $account_id,
-                'transaction_type' => 'initial',
-                'event_name' => 'Initial Rendered Hours',
-                'source_type' => 'rendered_hours',
-                'hours' => $initial_rendered_hours,
-            ]);
+            $applicationModel->setIsMigrationCompleted($account_id);
+
+            if ($initial_rendered_hours > 0) {
+                $hoursModel->createHistory([
+                    'account_id' => $account_id,
+                    'transaction_type' => 'initial',
+                    'event_name' => 'Initial Rendered Hours',
+                    'source_type' => 'rendered_hours',
+                    'hours' => $initial_rendered_hours,
+                ]);
+            }
 
             $this->pdo->commit();
 

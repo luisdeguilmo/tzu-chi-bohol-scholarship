@@ -252,6 +252,15 @@ class ApplicationModel
         $stmt = $this->pdo->prepare($query);
         return $stmt->execute();
     }
+
+    public function setIsMigrationCompleted($id)
+    {
+        $query =
+            "UPDATE application_info SET is_migration_complete = '1' WHERE application_id = :id AND is_added_from_admin = '1'";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
 }
 
 ?>

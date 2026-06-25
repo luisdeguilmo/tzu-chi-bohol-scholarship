@@ -9,9 +9,9 @@ import {
     lettersNumbers,
     numbersOnly,
 } from "../../../utils/inputValidations";
+import { useApplicationForm } from "../../../context/ApplicationFormContext";
 
 const FormFields = ({
-    isForExistingScholar,
     fields,
     section,
     formData,
@@ -25,6 +25,7 @@ const FormFields = ({
     const { collegesAndUniversities } = useCollegesUniversities();
     const { coursesAccepted, fetchCoursesAccepted, resetCoursesAccepted } =
         useCoursesAccepted(selectedCollegeOrUniversity);
+    const { isForExistingScholar } = useApplicationForm();
 
     useEffect(() => {
         if (selectedCollegeOrUniversity > 0) {
@@ -56,8 +57,25 @@ const FormFields = ({
         section === FORM_SECTIONS.EDUCATION ? fields.slice(0, 5) : [];
     const present = section === FORM_SECTIONS.EDUCATION ? fields.slice(6) : [];
 
+    useEffect(() => {
+        if (isForExistingScholar) {
+            const options = formConfig[FORM_SECTIONS.EDUCATION][10].options;
+
+            const hasFirstYear = options.some(
+                (option) => option.value === 1 && option.name === "1st Year",
+            );
+
+            if (!hasFirstYear) {
+                options.splice(1, 0, {
+                    value: 1,
+                    name: "1st Year",
+                });
+            }
+        }
+    }, [isForExistingScholar]);
+
     const filteredPresent = present.filter((field) => {
-        if (!isRenewal && isForExistingScholar) {
+        if (isRenewal === false && !isForExistingScholar) {
             return field.name !== "year_level";
         } else if (isRenewal) {
             return field.name !== "present_course2";

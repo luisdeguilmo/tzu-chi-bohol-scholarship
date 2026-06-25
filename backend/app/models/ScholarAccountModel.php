@@ -86,7 +86,7 @@ class ScholarAccountModel
     public function getCreatedAccounts($sort, $status)
     {
         $query =
-            'SELECT s.first_name, s.last_name, u.status, u.email, u.account_id, u.created_at, u.email, u.type, pi.middle_name, ai.is_added_from_admin FROM ' .
+            'SELECT s.first_name, s.last_name, u.status, u.email, u.account_id, u.created_at, u.email, u.type, pi.middle_name, ai.is_added_from_admin, ai.is_migration_complete FROM ' .
             $this->scholar_table .
             ' s JOIN users u ON s.account_id = u.account_id 
             JOIN personal_information pi ON s.account_id = pi.application_id 

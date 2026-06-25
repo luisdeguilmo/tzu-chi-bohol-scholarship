@@ -24,10 +24,11 @@ export default function ApplicationRecordsPage() {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("new");
     const [sortBy, setSortBy] = useState("newest");
-    const [schoolYear, setSchoolYear] = useState("all_years");
     const [status, setStatus] = useState("all_years");
 
     const { schoolYears, activeSchoolYear } = useSchoolYearContext();
+
+    const [schoolYear, setSchoolYear] = useState(activeSchoolYear);
 
     const { loading, applications, fetchApplications } = useApplicationRecords(
         activeTab,
@@ -45,8 +46,6 @@ export default function ApplicationRecordsPage() {
     useEffect(() => {
         fetchApplications();
     }, [activeTab, status, schoolYear, sortBy]);
-
-    console.log(applications);
 
     // Filter data based on search term
     const filteredApplications = applications.filter((applicant) => {
@@ -308,7 +307,7 @@ export default function ApplicationRecordsPage() {
 
                                 {activeTab === "new" ? (
                                     <>
-                                        {schoolYear === activeSchoolYear ? (
+                                        {info.school_year === activeSchoolYear ? (
                                             <td className="py-2.5 whitespace-nowrap text-xs">
                                                 <span
                                                     className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${

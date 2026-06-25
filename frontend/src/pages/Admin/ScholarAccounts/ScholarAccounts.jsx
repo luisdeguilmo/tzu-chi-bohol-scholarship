@@ -48,8 +48,6 @@ const ScholarAccounts = () => {
         fetchScholars(activeTab);
     }, [activeTab, sortBy, status]);
 
-    console.log(scholars);
-
     // Toggle scholar selection
     const toggleScholarSelection = (scholarId) => {
         setSelectedScholars((prev) => {
@@ -339,7 +337,7 @@ const ScholarAccounts = () => {
                         message2:
                             "Are you sure you want to deactivate this account?",
                         message3:
-                            "Are you sure you want to reset this account's password?",
+                            "Are you sure you want to reset the password for this account?",
                         deactivationReason: deactivationReason,
                         setDeactivationReason: setDeactivationReason,
                     }}
@@ -376,6 +374,7 @@ const ScholarAccounts = () => {
                     isOpen={isModalOpen}
                     onClose={setIsModalOpen}
                     id={scholarId}
+                    onRefresh={() => fetchScholars(activeTab)}
                 />
             )}
 

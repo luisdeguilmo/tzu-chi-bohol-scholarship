@@ -66,7 +66,7 @@ const PendingScholarsRow = ({
                             <div className="w-[30%]"></div>
                             <div className="w-[max-content] flex items-centerS text-left gap-2">
                                 <img
-                                    src={scholar[0].profile}
+                                    src={scholar[0]?.profile}
                                     alt="Profile"
                                     className="w-8 h-8 object-cover rounded-full mx-auto"
                                 />

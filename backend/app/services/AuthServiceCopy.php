@@ -1,5 +1,5 @@
 <?php
-// Authservice.php
+
 namespace App\Services;
 
 use App\Models\ScholarModel;
@@ -15,7 +15,6 @@ use PDOException;
 class AuthService
 {
     private PDO $pdo;
-    private RateLimiter $rateLimiter;
 
     // ── Blocked account statuses ───────────────────────────────────────────
 
@@ -23,11 +22,10 @@ class AuthService
 
     // ── Constructor ────────────────────────────────────────────────────────
 
-    public function __construct(?RateLimiter $rateLimiter = null)
+    public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
-        $this->rateLimiter = $rateLimiter ?? new RateLimiter($this->pdo);
     }
 
     // ── Public API ─────────────────────────────────────────────────────────
@@ -43,22 +41,7 @@ class AuthService
      */
     public function login(string $email, string $password, string $userType): array
     {
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-
         try {
-            /*
-             * Rate-limit check — before touching user credentials
-             */
-            $rateCheck = $this->rateLimiter->check($ip, $email);
-
-            if ($rateCheck['limited']) {
-                $this->logAuth('LOGIN BLOCKED - rate limited', $email, $userType);
-                return array_merge(
-                    $this->failure($rateCheck['message'], 429),
-                    ['retry_after' => $rateCheck['retry_after']],
-                );
-            }
-
             $user = $this->fetchUser($email, $userType);
 
             // Always run password_verify() to reduce timing differences
@@ -67,7 +50,6 @@ class AuthService
             $passwordOk = password_verify($password, $hashToCheck);
 
             if (!$user || !$passwordOk) {
-                $this->rateLimiter->recordFailure($ip, $email);
                 $this->logAuth('LOGIN FAILED - bad credentials', $email, $userType);
                 return $this->failure('Invalid credentials.', 401);
             }
@@ -76,7 +58,6 @@ class AuthService
 
             $tempCheck = $this->checkTemporaryPassword($user);
             if ($tempCheck !== null) {
-                $this->rateLimiter->recordFailure($ip, $email);
                 return $tempCheck;
             }
 
@@ -84,11 +65,6 @@ class AuthService
                 $this->logAuth('LOGIN FAILED - inactive account', $email, $userType);
                 return $this->failure('Your account is inactive. Contact the administrator.', 403);
             }
-
-            /*
-             * Successful login — clear failure counter
-             */
-            $this->rateLimiter->clearOnSuccess($ip, $email);
 
             $name = $this->fetchName($userType, $user['account_id']);
             $jwt = $this->buildJwt($user);

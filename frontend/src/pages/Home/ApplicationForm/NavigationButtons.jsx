@@ -38,13 +38,13 @@ const NavigationButtons = ({
     isFirstFormApplicable = false,
     isSecondFormApplicable = false,
     isThirdFormApplicable = false,
-    isForExistingScholar,
 }) => {
     const { user } = useAuth();
     const {
         isSiblingsApplicable,
         isTzuChiSiblingsApplicable,
         isOtherAssistanceApplicable,
+        isForExistingScholar
     } = useApplicationForm();
 
     const { isEmailExist, refetch } = useCheckEmail(

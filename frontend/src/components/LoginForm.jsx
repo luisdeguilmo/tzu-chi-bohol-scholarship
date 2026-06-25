@@ -6,6 +6,9 @@ import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { ArrowLeft, EyeClosed, EyeIcon } from "lucide-react";
 import BASE_URL from "../config";
+import img from "../assets/img.jpg";
+import img1 from "../assets/img1.jpg";
+import img3 from "../assets/img3.jpg";
 
 const LoginForm = ({ role }) => {
     const navigate = useNavigate();
@@ -66,7 +69,7 @@ const LoginForm = ({ role }) => {
             // Check if user is trying to login with a different role than their account type
             if (user.type !== role) {
                 toast.warning(
-                    `You are already logged in as ${user.type}. Please logout first to switch roles.`
+                    `You are already logged in as ${user.type}. Please logout first to switch roles.`,
                 );
                 return;
             }
@@ -132,7 +135,7 @@ const LoginForm = ({ role }) => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                }
+                },
             );
 
             const result = response.data;
@@ -141,7 +144,7 @@ const LoginForm = ({ role }) => {
                 // Verify that the user type matches the login role
                 if (result.user.type !== role) {
                     setError(
-                        `This account is registered as ${result.user.type}, not ${role}. Please use the correct login page.`
+                        `This account is registered as ${result.user.type}, not ${role}. Please use the correct login page.`,
                     );
                     return;
                 }
@@ -157,7 +160,7 @@ const LoginForm = ({ role }) => {
                 navigate(destination, { replace: true });
             } else {
                 setError(
-                    result.message || "Invalid credentials. Please try again."
+                    result.message || "Invalid credentials. Please try again.",
                 );
             }
         } catch (err) {
@@ -171,7 +174,7 @@ const LoginForm = ({ role }) => {
                 setError("Server error. Please try again later.");
             } else {
                 setError(
-                    "Login failed. Please check your connection and try again."
+                    "Login failed. Please check your connection and try again.",
                 );
             }
         } finally {
@@ -195,7 +198,7 @@ const LoginForm = ({ role }) => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                }
+                },
             );
 
             const result = response.data;
@@ -215,11 +218,7 @@ const LoginForm = ({ role }) => {
         }
     };
 
-    const images = [
-        "/src/assets/img.jpg",
-        "/src/assets/img1.jpg",
-        "/src/assets/img3.jpg",
-    ];
+    const images = [img, img1, img3];
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
@@ -426,6 +425,3 @@ const LoginForm = ({ role }) => {
 };
 
 export default LoginForm;
-
-
-

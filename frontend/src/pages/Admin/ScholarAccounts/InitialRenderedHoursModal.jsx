@@ -4,19 +4,27 @@ import { toast } from "react-toastify";
 import { numbersOnly } from "../../../utils/inputValidations";
 import { useRecordHours } from "../../../hooks/useRecordHours";
 
-const InitialRenderedHours = ({ isOpen, onClose, id }) => {
+const InitialRenderedHours = ({ isOpen, onClose, id, onRefresh }) => {
     const [initialRenderedHours, setInitialRenderedHours] = useState("");
 
     const { isLoading, setRenderedHours } = useRecordHours();
 
     const handleSubmit = async () => {
         try {
+            const hours = Number(initialRenderedHours);
+
+            if (initialRenderedHours === "" || isNaN(hours) || hours < 0) {
+                toast.error("Please enter a valid rendered hours balance.");
+                return;
+            }
+
             const success = await setRenderedHours(id, initialRenderedHours);
 
             if (success) {
                 // await onSuccess();
                 onClose(false);
                 resetFields();
+                onRefresh();
             }
         } catch (error) {
             console.log("Error: ", error);
@@ -59,7 +67,15 @@ const InitialRenderedHours = ({ isOpen, onClose, id }) => {
                     />
                 </div>
 
-                <div className="h-4"></div>
+                <div className="pt-8">
+                    <p className="text-xs italic">
+                        Note:{" "}
+                        <span className="text-gray-600">
+                            These hours will be added to the scholar's total as
+                            an opening balance.
+                        </span>
+                    </p>
+                </div>
             </div>
         </InputModal>
     );

@@ -1085,3 +1085,8 @@ null
 {"qualification":"sdkdfdf"}
 {"action":"EXPORT","entity_type":"scholar","entity_id":null,"description":"exported active scholars list","old_values":null,"new_values":null}
 {"strand":{"strand":"j","description":"n"}}
+{"purpose":"entrance_examination","batch_name":"Batch 1"}
+{"applicantIds":[1509160],"batch":"Batch 1"}
+{"purpose":"orientation","batch_name":"Batch 1"}
+{"applicantIds":[1509160],"batch":"Batch 1"}
+{"account_id":1509160,"status":"attended"}
