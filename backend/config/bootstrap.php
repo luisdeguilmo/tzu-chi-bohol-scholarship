@@ -4,7 +4,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load environment variables
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+
+if (file_exists(__DIR__ . '/../.env')) {
+    $dotenv->load();
+}
 
 // Global CORS origin
 $allowedOrigin = $_ENV['ALLOWED_ORIGIN'] ?? '*';
