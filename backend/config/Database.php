@@ -4,26 +4,36 @@ namespace Config;
 
 use PDO;
 
-class Database {
-    private $host = "localhost";
-    private $db_name = "tzu_chi_bohol_scholarship";
-    // private $db_name = "tzu_chi_scholarship";
-    private $username = "root";
-    private $password = "";
+class Database
+{
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
     private $conn;
 
-    public function getConnection() {
+    public function __construct()
+    {
+        $this->host = getenv('DB_HOST');
+        $this->db_name = getenv('DB_NAME');
+        $this->username = getenv('DB_USERNAME');
+        $this->password = getenv('DB_PASSWORD');
+    }
+
+    public function getConnection()
+    {
         $this->conn = null;
 
         try {
-            $this->conn = new \PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
+            $this->conn = new PDO(
+                "mysql:host={$this->host};dbname={$this->db_name}",
                 $this->username,
-                $this->password
+                $this->password,
             );
-            $this->conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch(\PDOException $e) {
-            echo "Connection Error: " . $e->getMessage();
+
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (\PDOException $e) {
+            echo 'Connection Error: ' . $e->getMessage();
         }
 
         return $this->conn;
