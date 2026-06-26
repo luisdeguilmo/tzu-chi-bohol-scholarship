@@ -35,10 +35,12 @@ export const generatePDF = async (
         "./getRequirements.js"
     );
 
-    const pdfMake = await import("pdfmake/build/pdfmake");
-    const pdfFonts = await import("pdfmake/build/vfs_fonts");
-
-    pdfMake.vfs = pdfFonts.vfs;
+    const pdfMakeModule = await import("pdfmake/build/pdfmake");
+    const pdfFontsModule = await import("pdfmake/build/vfs_fonts");
+    const pdfMake = pdfMakeModule.default || pdfMakeModule;
+    const fontsExport = pdfFontsModule.default || pdfFontsModule;
+    const vfs = fontsExport.vfs || fontsExport.pdfMake?.vfs || fontsExport;
+    pdfMake.vfs = vfs;
 
     if (!applicantData) {
         alert("No student data available");
