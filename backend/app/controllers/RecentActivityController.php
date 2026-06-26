@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 require_once __DIR__ . '/../../config/Database.php';
-require_once __DIR__ . '/../models/RecentActivityModel.php';
+require_once __DIR__ . '/../Models/RecentActivityModel.php';
 
 use App\Models\RecentActivityModel;
 use Config\Database;

@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Manila');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
-require_once __DIR__ . '/../models/UserAccountModel.php';
+require_once __DIR__ . '/../Models/UserAccountModel.php';
 
 use App\Models\UserAccountModel;
 use Config\Database;

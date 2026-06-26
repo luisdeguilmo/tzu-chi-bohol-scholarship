@@ -151,7 +151,7 @@ function NavBar({ isScrolled }) {
                         {/* Logo section */}
                         <Link to="/" className="flex items-center gap-1">
                             <img
-                                className="w-[300px] sm:w-[500px] h-8 md:w-full sm:h-10 md:h-16 transition-transform duration-300"
+                                className="w-[400px] sm:w-[500px] h-10 md:w-full sm:h-12 md:h-16 transition-transform duration-300"
                                 src={Logo}
                                 alt="Tzu chi Logo"
                             />
@@ -231,7 +231,7 @@ function NavBar({ isScrolled }) {
 
                             {/* Menu panel */}
                             <div
-                                className={`fixed top-24 md:top-28 left-[50%] translate-x-[-50%] w-[80%] z-50
+                                className={`fixed top-24 md:top-28 left-[50%] translate-x-[-50%] w-[90%] z-50
                                             ${showBorder ? "border-t-4 border-green-600" : "border-t-0"}`}
                             >
                                 <div

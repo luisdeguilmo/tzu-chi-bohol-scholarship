@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../services/CoeAndGradesService.php';
-require_once __DIR__ . '/../models/AuditLogModel.php';
+require_once __DIR__ . '/../Models/AuditLogModel.php';
 
 use App\Constants\Action;
 use App\Models\AuditLogModel;

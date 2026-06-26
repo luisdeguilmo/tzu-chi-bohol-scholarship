@@ -18,23 +18,19 @@ switch ($route) {
             ob_end_clean();
         }
         (new FileController())->view();
-        exit;
+        exit();
 
     case 'profile':
         if (ob_get_length()) {
             ob_end_clean();
         }
         (new ProfileController())->view();
-        exit;
+        exit();
 
     default:
         require_once __DIR__ . '/app/api/response.php';
         break;
 }
-
-
-
-
 
 // require_once __DIR__ . '/vendor/autoload.php';
 // require_once __DIR__ . '/app/controllers/FileController.php';
@@ -62,7 +58,7 @@ switch ($route) {
 // // }
 
 // echo 'PHP is working!';
-// 
+//
 
 // // Enable error reporting for debugging (disable in production)
 // ini_set('display_errors', 1);
@@ -81,5 +77,3 @@ switch ($route) {
 //     http_response_code(404);
 //     echo '404 Not Found';
 // }
-
-

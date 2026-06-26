@@ -8,7 +8,7 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
-require_once __DIR__ . '/../models/ScholarDashboardDataModel.php';
+require_once __DIR__ . '/../Models/ScholarDashboardDataModel.php';
 
 use App\Models\ScholarDashboardDataModel;
 use App\Models\ScholarsModel;
