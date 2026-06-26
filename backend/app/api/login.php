@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../middleware/Cors.php';
 require_once __DIR__ . '/../config/jwt.php';
 require_once __DIR__ . '/../../config/Database.php';
+require_once __DIR__ . '/../../app/services/AuthService.php';
 
 use App\Services\AuthService;
 use Middleware\Cors;
