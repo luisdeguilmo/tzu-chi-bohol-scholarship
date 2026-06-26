@@ -3,19 +3,19 @@
 namespace App\Controllers;
 
 require_once __DIR__ . '/../../config/Database.php';
-require_once __DIR__ . '/../Models/ApplicationModel.php';
-require_once __DIR__ . '/../Models/PersonalModel.php';
-require_once __DIR__ . '/../Models/EducationModel.php';
-require_once __DIR__ . '/../Models/FamilyModel.php';
-require_once __DIR__ . '/../Models/ContactPersonModel.php';
-require_once __DIR__ . '/../Models/FamilyMemberModel.php';
-require_once __DIR__ . '/../Models/ScholarModel.php';
-require_once __DIR__ . '/../Models/AssistanceModel.php';
-require_once __DIR__ . '/../Models/CharacterReferenceModel.php';
-require_once __DIR__ . '/../Models/ExaminationFilesModel.php';
-require_once __DIR__ . '/../Models/RequirementModel.php';
-require_once __DIR__ . '/../Models/ProfilePictureModel.php';
-require_once __DIR__ . '/../Models/RequirementsModel.php';
+require_once __DIR__ . '/../models/ApplicationModel.php';
+require_once __DIR__ . '/../models/PersonalModel.php';
+require_once __DIR__ . '/../models/EducationModel.php';
+require_once __DIR__ . '/../models/FamilyModel.php';
+require_once __DIR__ . '/../models/ContactPersonModel.php';
+require_once __DIR__ . '/../models/FamilyMemberModel.php';
+require_once __DIR__ . '/../models/ScholarModel.php';
+require_once __DIR__ . '/../models/AssistanceModel.php';
+require_once __DIR__ . '/../models/CharacterReferenceModel.php';
+require_once __DIR__ . '/../models/ExaminationFilesModel.php';
+require_once __DIR__ . '/../models/RequirementModel.php';
+require_once __DIR__ . '/../models/ProfilePictureModel.php';
+require_once __DIR__ . '/../models/RequirementsModel.php';
 
 header('Content-Type: application/json');
 
