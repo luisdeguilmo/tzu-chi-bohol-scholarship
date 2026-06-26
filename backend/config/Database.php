@@ -7,19 +7,16 @@ use PDO;
 class Database
 {
     private $host;
+    private $port;
     private $db_name;
     private $username;
     private $password;
-    private $port;
     private $ca_cert;
     private $conn;
 
     public function __construct()
     {
         $this->host = getenv('DB_HOST');
-        $this->db_name = getenv('DB_NAME');
-        $this->username = getenv('DB_USERNAME');
-        $this->password = getenv('DB_PASSWORD');
         $this->port = getenv('DB_PORT');
         $this->db_name = getenv('DB_NAME');
         $this->username = getenv('DB_USERNAME');
@@ -28,36 +25,32 @@ class Database
     }
 
     public function getConnection()
-    {
-        $this->conn = null;
+{
+    $this->conn = null;
 
-        try {
-            $this->conn = new PDO(
-                "mysql:host={$this->host};dbname={$this->db_name}",
-                $this->username,
-                $this->password,
-            );
+    try {
 
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ];
 
-            $this->conn = new PDO(
-                "mysql:host={$this->host};port={$this->port};dbname={$this->db_name};sslmode=verify-ca",
-                $this->username,
-                $this->password,
-                [
-                    PDO::MYSQL_ATTR_SSL_CA => $this->ca_cert,
-                ]
-            );
-
-            $this->conn->setAttribute(
-                PDO::ATTR_ERRMODE,
-                PDO::ERRMODE_EXCEPTION
-            );
-
-        } catch (\PDOException $e) {
-            echo 'Connection Error: ' . $e->getMessage();
+        if (!empty($this->ca_cert)) {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = $this->ca_cert;
         }
 
-        return $this->conn;
+        $this->conn = new PDO(
+            "mysql:host={$this->host};port={$this->port};dbname={$this->db_name}",
+            $this->username,
+            $this->password,
+            $options
+        );
+
+    } catch (\PDOException $e) {
+        error_log($e->getMessage());
+        return null;
     }
+
+    return $this->conn;
+}
 }
