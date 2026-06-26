@@ -187,8 +187,3 @@ class ApplicationPeriodModel
         return $stmt->execute();
     }
 }
-?>
-
-
-
-
