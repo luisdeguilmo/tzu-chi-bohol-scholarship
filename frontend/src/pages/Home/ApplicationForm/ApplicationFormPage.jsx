@@ -23,7 +23,7 @@ const generateInitialState = (fieldsConfig) => {
     const initialState = {};
     fieldsConfig.forEach((field) => {
         initialState[field.name] =
-            field.type === "select" ? field.defaultValue || "s" : "s";
+            field.type === "select" ? field.defaultValue || "" : "";
     });
     return initialState;
 };

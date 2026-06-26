@@ -259,29 +259,24 @@ class AuthService
     // ── Logging ────────────────────────────────────────────────────────────
 
     private function logAuth(string $message, ?string $email = null, ?string $userType = null): void
-    {
-        $ts   = date('Y-m-d H:i:s');
-        $ip   = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-        $line = "[$ts] [IP: $ip]";
+{
+    $ts   = date('Y-m-d H:i:s');
+    $ip   = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $line = "[$ts] [IP: $ip]";
 
-        if ($email) {
-            $line .= " [Email: $email]";
-        }
-
-        if ($userType) {
-            $line .= " [Type: $userType]";
-        }
-
-        $line .= " $message" . PHP_EOL;
-
-        $logDir = __DIR__ . '/../../logs';
-
-        if (!is_dir($logDir)) {
-            mkdir($logDir, 0750, true);
-        }
-
-        error_log($line, 3, $logDir . '/auth.log');
+    if ($email) {
+        $line .= " [Email: $email]";
     }
+
+    if ($userType) {
+        $line .= " [Type: $userType]";
+    }
+
+    $line .= " $message";
+
+    // Write to the PHP/server error log
+    error_log($line);
+}
 
     // ── Result builders ────────────────────────────────────────────────────
 
