@@ -5,7 +5,7 @@ export const getRequirements = async (applicationId) => {
     try {
         // Use your requirements endpoint
         const response = await axios.get(
-            `${BASE_URL}app/api/pdf-profile.php?id=${applicationId}&type=requirements`
+            `${BASE_URL}backend/api/applications/${applicationId}/requirements`
         );
 
         // Check if the response has requirements array

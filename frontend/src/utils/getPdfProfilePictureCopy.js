@@ -5,7 +5,7 @@ export const getProfilePicture = async (applicationId) => {
     try {
         // Use your existing profile picture endpoint
         const response = await axios.get(
-            `${BASE_URL}app/api/pdf-profile.php?id=${applicationId}&type=2x2-picture`
+            `${BASE_URL}backend/api/applications/${applicationId}/2x2-picture`
         );
 
         // Assuming your endpoint returns the base64 data

@@ -1,5 +1,4 @@
 <?php
-# response.php
 require_once __DIR__ . '/../controllers/ApplicationController.php';
 
 use App\Controllers\ApplicationController;

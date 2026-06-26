@@ -385,10 +385,10 @@ class ApplicationController
             $requirementsModel = new RequirementsModel(); // Adjust class name as needed
             $requirements_urls = $requirementsModel->getFileUrlByApplicationId($application_id);
 
-            if (!$requirements_urls) {
+            if (!$requirements_urls) {+
                 http_response_code(404);
                 echo json_encode([
-                    'success' => false,
+                    'success' => true,
                     'message' => 'Requirements not found',
                 ]);
                 return;
