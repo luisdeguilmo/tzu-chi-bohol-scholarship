@@ -5,6 +5,9 @@ require_once __DIR__ . '/../../config/Database.php';
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../models/AuditLogModel.php';
+require_once __DIR__ . '/../models/ScholarshipCriteriaModel.php';
+require_once __DIR__ . '/../models/StaffAccountModel.php';
 
 use App\Constants\Action;
 use App\Models\AuditLogModel;
