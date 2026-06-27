@@ -11,8 +11,8 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
-require_once __DIR__ . '/../services/ApplicationFileService.php';
-require_once __DIR__ . '/../services/ActivityService.php';
+require_once __DIR__ . '/../Services/ApplicationFileService.php';
+require_once __DIR__ . '/../Services/ActivityService.php';
 require_once __DIR__ . '/../Models/CertificateOfAppearanceModel.php';
 
 use App\Models\ProfilePictureModel;
