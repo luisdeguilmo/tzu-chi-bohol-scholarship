@@ -7,7 +7,7 @@
             "Controllers\\": "controllers/",
             "Models\\": "models/",
             "Enums\\": "enums/",
-            "Middleware\\": "app/middleware/"
+            "Middleware\\": "middleware/"
         }
     },
     "require": {
