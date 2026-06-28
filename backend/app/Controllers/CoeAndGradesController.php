@@ -157,9 +157,9 @@ class CoeAndGradesController
                 throw new \Exception('Failed to create audit log');
             }
 
-            if (!$notificationModel->createNotificationForSubmittedCoeGrades($scholar)) {
-                throw new \Exception('Failed to create notification');
-            }
+            // if (!$notificationModel->createNotificationForSubmittedCoeGrades($scholar)) {
+            //     throw new \Exception('Failed to create notification');
+            // }
 
             $this->pdo->commit();
 
