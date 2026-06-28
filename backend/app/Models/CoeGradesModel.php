@@ -4,6 +4,7 @@ namespace App\Models;
 date_default_timezone_set('Asia/Manila');
 
 use Config\Database;
+use App\Services\SupabaseStorageService;
 
 class CoeGradesModel
 {
@@ -29,6 +30,7 @@ class CoeGradesModel
     public $status;
 
     private $pdo;
+    private $storage;
 
     public function __construct($pdo = null)
     {
@@ -56,12 +58,10 @@ class CoeGradesModel
 
         $stmt = $this->pdo->prepare($query);
 
-        // Sanitize inputs
         $this->account_id = htmlspecialchars(strip_tags($scholarId));
         $this->year_level = htmlspecialchars(strip_tags($activity_data['year_level']));
         $this->semester = htmlspecialchars(strip_tags($activity_data['semester']));
 
-        // Bind values
         $stmt->bindParam(':scholar_id', $this->account_id);
         $stmt->bindParam(':year_level', $this->year_level);
         $stmt->bindParam(':semester', $this->semester);
@@ -83,13 +83,11 @@ class CoeGradesModel
 
         $stmt = $this->pdo->prepare($query);
 
-        // Sanitize inputs
         $this->account_id = htmlspecialchars(strip_tags($scholarId));
         $this->year_level = htmlspecialchars(strip_tags($activity_data['year_level']));
         $this->semester = htmlspecialchars(strip_tags($activity_data['semester']));
         $this->id = htmlspecialchars(strip_tags($activity_data['id']));
 
-        // Bind values
         $stmt->bindParam(':year_level', $this->year_level);
         $stmt->bindParam(':semester', $this->semester);
         $stmt->bindParam(':id', $this->id);
@@ -129,18 +127,6 @@ class CoeGradesModel
 
         return $data;
     }
-
-    // public function getPastSubmissions($scholarId)
-    // {
-    //     $query = "SELECT * FROM coe_and_grades
-    //                 WHERE DATE(created_at) < :current_datetime AND scholar_id = :scholar_id
-    //                 ORDER BY year_level ASC";
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt->bindParam(':scholar_id', $scholarId);
-    //     $stmt->bindParam(':current_datetime', $this->currentDate);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    // }
 
     public function getPastSubmissions($scholarId, $academic_year)
     {
@@ -196,10 +182,18 @@ class CoeGradesModel
                     'id' => $file['id'],
                     'scholar_id' => $file['scholar_id'],
                     'file_name' => $file['file_name'],
+                    'file_url' => $this->getFileUrl($file['file_path']),
+                    // 'file_url' =>
+                    //     $_ENV['APP_URL'] .
+                    //     '/index.php?type=activities&route=file/view&file=' .
+                    //     urlencode($file['file_name']), // you can pass the id here
                     'file_url' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=coe_grades&route=file/view&file=' .
-                        urlencode(basename($file['file_path'])),
+                        urlencode($file['file_name']) .
+                        '&id=' .
+                        urlencode($file['id']),
+                    'file_path' => $file['file_path'],
                     'file_size' => $file['file_size'],
                     'file_type' => $file['file_type'],
                     'uploaded_at' => $file['uploaded_at'],
@@ -216,6 +210,33 @@ class CoeGradesModel
         }
 
         return $data;
+    }
+
+    /**
+     * Generates a temporary signed URL directly from the stored Supabase path.
+     * No scanning/proxy needed since file_path is already known from the DB.
+     */
+    private function getFileUrl($filePath)
+    {
+        if (!$filePath) {
+            return null;
+        }
+
+        try {
+            if (!$this->storage) {
+                $this->storage = new SupabaseStorageService();
+            }
+
+            return $this->storage->getSignedUrl($filePath, 3600); // valid for 1 hour
+        } catch (\Exception $e) {
+            error_log(
+                '[CoeGradesModel::getFileUrl] Failed to sign URL for "' .
+                    $filePath .
+                    '": ' .
+                    $e->getMessage(),
+            );
+            return null;
+        }
     }
 
     public function getFilesByScholarIdAndYearLevel($scholar_id, $year_level, $semester)
