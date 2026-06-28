@@ -27,7 +27,7 @@ use PDOException;
  */
 class RateLimiter
 {
-    private PDO $pdo;
+    private $pdo;
 
     private int $maxAttempts;
     private int $windowSeconds;
