@@ -5,26 +5,25 @@ export const usePdfActions = (type, fetchApplicantData) => {
     const [applicationId, setApplicationId] = useState(null);
 
     const viewPdf = async ({ applicationId, scholarId }) => {
-        try {
-            // Set the application ID first
+    // Must happen synchronously, before any await, or the browser blocks it
+    const pdfWindow = window.open("", "_blank");
 
-            // Fetch applicant data and wait for it to complete
-            const data = await fetchApplicantData(applicationId);
+    try {
+        const data = await fetchApplicantData(applicationId);
 
-            console.log(data);
-
-            // Use the returned data directly instead of relying on state
-            if (data) {
-                await generatePDF(type, "view", applicationId, scholarId, data);
-            } else {
-                console.error("No applicant data received");
-                alert("Unable to generate PDF: No applicant data found");
-            }
-        } catch (error) {
-            console.error("Error in handleViewPdf:", error);
-            alert("Error generating PDF. Please try again.");
+        if (data) {
+            await generatePDF(type, "view", applicationId, scholarId, data, pdfWindow);
+        } else {
+            console.error("No applicant data received");
+            alert("Unable to generate PDF: No applicant data found");
+            if (pdfWindow) pdfWindow.close();
         }
-    };
+    } catch (error) {
+        console.error("Error in handleViewPdf:", error);
+        alert("Error generating PDF. Please try again.");
+        if (pdfWindow) pdfWindow.close();
+    }
+};
 
     const downloadPdf = async ({ applicationId, scholarId }) => {
         try {

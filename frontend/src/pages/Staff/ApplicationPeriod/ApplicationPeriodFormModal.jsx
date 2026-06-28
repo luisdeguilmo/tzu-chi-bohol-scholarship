@@ -83,6 +83,7 @@ const ApplicationPeriodFormModal = React.memo(
         const handleEditApplicationPeriod = async () => {
             if (
                 selectedApplicationPeriod.type === "new" &&
+                selectedApplicationPeriod.status !== "Active" &&
                 disabledNew &&
                 status === "Active"
             ) {

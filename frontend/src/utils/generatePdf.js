@@ -15,6 +15,7 @@ export const generatePDF = async (
     applicationId,
     scholarId,
     applicantData,
+    pdfWindow
 ) => {
     // const { getExaminationFiles } = await import(
     //     "./getExaminationFiles.js"
@@ -1359,7 +1360,7 @@ export const generatePDF = async (
         if (action === "download") {
             pdfDoc.download(`Student_Application_${applicationId}.pdf`);
         } else if (action === "view") {
-            pdfDoc.open();
+            pdfDoc.open(false, pdfWindow);
         }
     } catch (err) {
         console.error("Error creating PDF:", err);

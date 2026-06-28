@@ -6,8 +6,8 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
-require_once __DIR__ . '/../services/FileUploadService.php';
-require_once __DIR__ . '/../services/ActivityService.php';
+require_once __DIR__ . '/../Services/FileUploadService.php';
+require_once __DIR__ . '/../Services/ActivityService.php';
 require_once __DIR__ . '/../Models/ActivityModel.php';
 require_once __DIR__ . '/../Models/CertificateOfAppearanceModel.php';
 require_once __DIR__ . '/../Services/PHPMailerBrevoService.php'; // Add this line
