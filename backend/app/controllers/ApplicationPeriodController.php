@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Models/ApplicationPeriodModel.php';
 require_once __DIR__ . '/../Services/PHPMailerBrevoService.php';
+require_once __DIR__ . '/../Middleware/Auth.php';
 
 use App\Constants\Action;
 use App\Models\ApplicationModel;
