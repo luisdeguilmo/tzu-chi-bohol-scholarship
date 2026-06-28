@@ -1,13 +1,7 @@
 {
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "Config\\": "config/",
-            "Services\\": "services/",
-            "Controllers\\": "controllers/",
-            "Models\\": "models/",
-            "Enums\\": "enums/",
-            "Middleware\\": "middleware/"
+            "App\\": "app/"
         }
     },
     "require": {
