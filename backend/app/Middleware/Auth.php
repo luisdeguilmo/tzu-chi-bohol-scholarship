@@ -3,7 +3,7 @@
 
 namespace Middleware;
 
-require_once __DIR__ . '/../config/jwt.php';
+require_once __DIR__ . '/../Config/jwt.php';
 
 use Config\Jwt;
 use Firebase\JWT\JWT as FirebaseJWT;
