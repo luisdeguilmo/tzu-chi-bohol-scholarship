@@ -18,17 +18,11 @@ class ComposerStaticInitf0fd8d94f01f65c4a169b3a5c57bbd10
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
-            'Services\\' => 9,
         ),
         'P' => 
         array (
             'PhpOption\\' => 10,
             'PHPMailer\\PHPMailer\\' => 20,
-        ),
-        'M' => 
-        array (
-            'Models\\' => 7,
-            'Middleware\\' => 11,
         ),
         'G' => 
         array (
@@ -38,18 +32,9 @@ class ComposerStaticInitf0fd8d94f01f65c4a169b3a5c57bbd10
         array (
             'Firebase\\JWT\\' => 13,
         ),
-        'E' => 
-        array (
-            'Enums\\' => 6,
-        ),
         'D' => 
         array (
             'Dotenv\\' => 7,
-        ),
-        'C' => 
-        array (
-            'Controllers\\' => 12,
-            'Config\\' => 7,
         ),
         'A' => 
         array (
@@ -70,10 +55,6 @@ class ComposerStaticInitf0fd8d94f01f65c4a169b3a5c57bbd10
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
-        'Services\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/services',
-        ),
         'PhpOption\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
@@ -81,14 +62,6 @@ class ComposerStaticInitf0fd8d94f01f65c4a169b3a5c57bbd10
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
-        ),
-        'Models\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/models',
-        ),
-        'Middleware\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/app/middleware',
         ),
         'GrahamCampbell\\ResultType\\' => 
         array (
@@ -98,21 +71,9 @@ class ComposerStaticInitf0fd8d94f01f65c4a169b3a5c57bbd10
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
-        'Enums\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/enums',
-        ),
         'Dotenv\\' => 
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
-        ),
-        'Controllers\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/controllers',
-        ),
-        'Config\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/config',
         ),
         'App\\' => 
         array (
