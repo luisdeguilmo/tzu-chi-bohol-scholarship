@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/app/controllers/FileController.php';
-require_once __DIR__ . '/app/controllers/ProfileController.php';
+require_once __DIR__ . '/app/Controllers/FileController.php';
+require_once __DIR__ . '/app/Controllers/ProfileController.php';
 require_once __DIR__ . '/app/Services/SupabaseStorageService.php';
 
 $route = $_GET['route'] ?? '';

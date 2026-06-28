@@ -3,7 +3,7 @@ $allowedMethods = ['GET', 'POST', 'OPTIONS'];
 $allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With'];
 
 require_once __DIR__ . '/../../config/bootstrap.php';
-require_once __DIR__ . "/../controllers/RecentActivityController.php";
+require_once __DIR__ . "/../Controllers/RecentActivityController.php";
 
 
 ?>

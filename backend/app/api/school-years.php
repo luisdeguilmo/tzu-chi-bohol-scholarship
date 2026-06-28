@@ -4,6 +4,6 @@ $allowedMethods = ['GET', 'PUT'];
 $allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With'];
 
 require_once __DIR__ . '/../../config/bootstrap.php';
-require_once __DIR__ . '/../controllers/SchoolYearController.php';
+require_once __DIR__ . '/../Controllers/SchoolYearController.php';
 
 ?>
