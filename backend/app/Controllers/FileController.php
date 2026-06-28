@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . "/../../config/Database.php";
+
 use Config\Database;
 
 $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
