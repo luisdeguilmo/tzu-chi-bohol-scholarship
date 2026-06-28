@@ -14,7 +14,7 @@ use PDOException;
 
 class AuthService
 {
-    private $pdo;
+    private PDO $pdo;
     private RateLimiter $rateLimiter;
 
     // ── Blocked account statuses ───────────────────────────────────────────
