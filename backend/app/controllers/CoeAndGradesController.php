@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../Services/CoeAndGradesService.php';
 require_once __DIR__ . '/../Models/AuditLogModel.php';
+require_once __DIR__ . '/../constants/Action.php';
 
 use App\Constants\Action;
 use App\Models\AuditLogModel;
