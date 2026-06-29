@@ -246,7 +246,9 @@ class ApplicantModel
                     'profile' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=applications&route=profile&file=' .
-                        urlencode(basename($file['file_path'])),
+                        urlencode(basename($file['file_path'])) .
+                        '&id=' .
+                        urlencode($file['application_id']),
                 ];
             }
 

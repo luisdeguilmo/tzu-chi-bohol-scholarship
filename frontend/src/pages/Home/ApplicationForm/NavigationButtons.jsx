@@ -38,23 +38,28 @@ const NavigationButtons = ({
     isFirstFormApplicable = false,
     isSecondFormApplicable = false,
     isThirdFormApplicable = false,
+    isLoading = false,
 }) => {
     const { user } = useAuth();
     const {
         isSiblingsApplicable,
         isTzuChiSiblingsApplicable,
         isOtherAssistanceApplicable,
-        isForExistingScholar
+        isForExistingScholar,
     } = useApplicationForm();
 
     const { isEmailExist, refetch } = useCheckEmail(
         formData?.personal_information.email,
+        user?.user_id ?? null,
+        section
     );
 
     const { loading, result, validateEmail } = useValidateEmail();
 
     useEffect(() => {
-        refetch();
+        if (section === "Personal") {
+            refetch();
+        }
     }, [formData?.personal_information.email]);
 
     const checkAndProceed = async (e) => {
@@ -353,14 +358,14 @@ const NavigationButtons = ({
             ) : (
                 <button
                     className={`px-5 py-2 ${
-                        disabled || loading
+                        disabled || isLoading
                             ? "bg-green-400"
                             : "bg-green-600 hover:bg-green-700"
                     } text-white text-sm rounded-lg shadow-lg`}
                     onClick={checkAndProceed}
-                    disabled={disabled || loading}
+                    disabled={disabled || isLoading}
                 >
-                    {loading ? "Submitting..." : "Submit"}
+                    {isLoading ? "Submitting..." : "Submit"}
                 </button>
             )}
         </div>

@@ -546,7 +546,7 @@ const FormFields = ({
                                                 ? 100
                                                 : field.name === "birthdate"
                                                   ? maxBirthdate
-                                                  : 0
+                                                  : undefined
                                         }
                                         placeholder={`${isForExistingScholar === true ? field.placeholder.replace("your ", "") : field.placeholder}`}
                                         className="w-full border text-xs text-slate-800 border-gray-300 bg-white rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"

@@ -3,7 +3,7 @@ import NavigationButtons from "./NavigationButtons";
 import ReviewPage from "./ReviewPage";
 import { useLocation } from "react-router-dom";
 
-const ReviewSection = ({ formData, prevStep, handleSubmit }) => {
+const ReviewSection = ({ formData, prevStep, handleSubmit, loading }) => {
     const [isConsent, setIsConsent] = useState(false);
 
     const handleConsent = () => {
@@ -36,6 +36,7 @@ const ReviewSection = ({ formData, prevStep, handleSubmit }) => {
                 handleSubmit={handleSubmit}
                 section={"Review"}
                 sections={null}
+                isLoading={loading}
             />
         </div>
     );

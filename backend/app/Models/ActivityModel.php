@@ -270,7 +270,9 @@ class ActivityModel
                     'file_url' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=activities&route=file/view&file=' .
-                        urlencode(basename($file['file_path'])),
+                        urlencode($file['file_name']) .
+                        '&id=' .
+                        urlencode($file['id']),
                     'file_size' => $file['file_size'],
                     'file_type' => $file['file_type'],
                     'uploaded_at' => $file['uploaded_at'],
@@ -329,7 +331,9 @@ class ActivityModel
                     'file_url' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=activities&route=file/view&file=' .
-                        urlencode(basename($file['file_path'])),
+                        urlencode($file['file_name']) .
+                        '&id=' .
+                        urlencode($file['id']),
                     'file_size' => $file['file_size'],
                     'file_type' => $file['file_type'],
                     'uploaded_at' => $file['uploaded_at'],
@@ -357,7 +361,9 @@ class ActivityModel
                 'profile' =>
                     $_ENV['APP_URL'] .
                     '/index.php?type=applications&route=profile&file=' .
-                    urlencode(basename($profile['file_path'])),
+                    urlencode(basename($profile['file_path'])) .
+                    '&id=' .
+                    urlencode($scholar['application_id']),
             ];
         }
 

@@ -156,7 +156,7 @@ class FileController
     {
         $tableMap = [
             'coe_grades' => 'coe_and_grade_files',
-            'activities' => 'activity_files',
+            'activities' => 'certificate_of_appearance',
             'applications' => 'application_files',
         ];
 

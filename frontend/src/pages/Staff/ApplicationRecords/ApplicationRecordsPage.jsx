@@ -28,7 +28,7 @@ export default function ApplicationRecordsPage() {
 
     const { schoolYears, activeSchoolYear } = useSchoolYearContext();
 
-    const [schoolYear, setSchoolYear] = useState(activeSchoolYear);
+    const [schoolYear, setSchoolYear] = useState(activeSchoolYear || "all_years");
 
     const { loading, applications, fetchApplications } = useApplicationRecords(
         activeTab,
@@ -58,6 +58,8 @@ export default function ApplicationRecordsPage() {
             applicant.created_at.includes(term)
         );
     });
+
+    console.log(applications);
 
     const {
         currentItems,

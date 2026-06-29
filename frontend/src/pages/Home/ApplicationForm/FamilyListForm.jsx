@@ -23,13 +23,13 @@ const FamilyListForm = ({
 }) => {
     // Initialize state from formData or use empty arrays if not present
     const [family_members, setFamilyMembers] = useState(
-        formData.family_members || []
+        formData.family_members || [],
     );
     const [tzu_chi_siblings, setTzuChiScholars] = useState(
-        formData.tzu_chi_siblings || []
+        formData.tzu_chi_siblings || [],
     );
     const [other_assistance, setAssistanceList] = useState(
-        formData.other_assistance || []
+        formData.other_assistance || [],
     );
 
     const {
@@ -354,14 +354,14 @@ const FamilyListForm = ({
                                         if (input.validate) {
                                             value =
                                                 validators[input.validate](
-                                                    value
+                                                    value,
                                                 );
                                         }
 
                                         handleChange(input.name, value);
                                     }}
-                                    min={input.name === "age" && 1}
-                                    max={input.name === "age" && 100}
+                                    min={input.name === "age" ? 1 : 0}
+                                    max={input.name === "age" ? 100 : undefined}
                                     placeholder={input.placeholder}
                                     className={`w-full border text-xs text-gray-800 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500 ${
                                         isSiblingsApplicable === null ||
@@ -377,7 +377,7 @@ const FamilyListForm = ({
                                     }
                                 />
                             </div>
-                        )
+                        ),
                     )}
                 </div>
                 <button

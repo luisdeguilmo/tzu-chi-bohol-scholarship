@@ -63,6 +63,30 @@ class RequirementsModel
 
     // Updated methods for ProfilePictureModel.php
 
+    public function getFilePathByApplicationId($application_id): array
+    {
+        try {
+            $query =
+                'SELECT file_path FROM ' .
+                $this->table_name .
+                ' WHERE application_id = ? 
+          ORDER BY uploaded_at DESC';
+
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$application_id]);
+
+            $paths = [];
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $paths[] = $row['file_path'];
+            }
+
+            return $paths; // returns [] if none found
+        } catch (\Exception $e) {
+            error_log('Error getting file path by application ID: ' . $e->getMessage());
+            return [];
+        }
+    }
+
     public function getFileUrlByApplicationId($application_id)
     {
         try {
@@ -105,7 +129,7 @@ class RequirementsModel
             return null;
         }
     }
-    
+
     public function getFileUrl($id)
     {
         try {

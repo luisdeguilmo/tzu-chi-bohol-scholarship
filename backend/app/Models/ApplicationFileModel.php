@@ -123,7 +123,9 @@ class ApplicationFileModel
                 'file_url' =>
                     $_ENV['APP_URL'] .
                     '/index.php?type=applications&route=file/view&file=' .
-                    urlencode(basename($file['file_path'])),
+                    urlencode(basename($file['file_path'])) .
+                    '&id=' .
+                    urlencode($file['id']),
                 'file_size' => $file['file_size'],
                 'file_type' => $file['file_type'],
                 'uploaded_at' => $file['uploaded_at'],
@@ -153,7 +155,9 @@ class ApplicationFileModel
                 'file_url' =>
                     $_ENV['APP_URL'] .
                     '/index.php?type=applications&route=file/view&file=' .
-                    urlencode(basename($file['file_path'])),
+                    urlencode(basename($file['file_path'])) .
+                    '&id=' .
+                    urlencode($file['id']),
                 'file_size' => $file['file_size'],
                 'file_type' => $file['file_type'],
                 'uploaded_at' => $file['uploaded_at'],

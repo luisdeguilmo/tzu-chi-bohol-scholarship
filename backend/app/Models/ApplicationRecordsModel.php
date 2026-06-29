@@ -144,10 +144,16 @@ class ApplicationRecordsModel
 
             foreach ($files as $file) {
                 $applicant[] = [
+                    // 'profile' =>
+                    //     $_ENV['APP_URL'] .
+                    //     '/index.php?type=applications&route=profile&file=' .
+                    //     urlencode(basename($file['file_path'])),
                     'profile' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=applications&route=profile&file=' .
-                        urlencode(basename($file['file_path'])),
+                        urlencode($file['file_name']) .
+                        '&id=' .
+                        urlencode($file['application_id']),
                 ];
             }
 

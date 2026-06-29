@@ -83,6 +83,64 @@ class ProfilePictureModel
         }
     }
 
+    // public function getFileUrlByApplicationId($application_id)
+    // {
+    //     try {
+    //         $query =
+    //             'SELECT file_name, file_path FROM ' .
+    //             $this->table_name .
+    //             "
+    //                 WHERE application_id = ?
+    //                 ORDER BY uploaded_at DESC
+    //                 LIMIT 1";
+
+    //         $stmt = $this->pdo->prepare($query);
+    //         $stmt->execute([$application_id]);
+
+    //         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+    //         if ($row) {
+    //             // Extract filename from path
+    //             $filename = basename($row['file_path']);
+
+    //             // Return the URL using the serving endpoint
+    //             $base_url = $this->getBaseUrl();
+    //             return $base_url .
+    //                 '/public/upload/applications/' .
+    //                 $application_id .
+    //                 '/profile/' .
+    //                 urlencode($filename);
+    //         }
+
+    //         return null;
+    //     } catch (\Exception $e) {
+    //         error_log('Error getting file URL by application ID: ' . $e->getMessage());
+    //         return null;
+    //     }
+    // }
+
+    public function getFilePathByApplicationId($application_id)
+    {
+        try {
+            $query =
+                'SELECT file_path FROM ' .
+                $this->table_name .
+                ' WHERE application_id = ? 
+              ORDER BY uploaded_at DESC 
+              LIMIT 1';
+
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$application_id]);
+
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            return $row ? $row['file_path'] : null;
+        } catch (\Exception $e) {
+            error_log('Error getting file path by application ID: ' . $e->getMessage());
+            return null;
+        }
+    }
+
     public function getFileUrlByApplicationId($application_id)
     {
         try {
@@ -90,9 +148,9 @@ class ProfilePictureModel
                 'SELECT file_name, file_path FROM ' .
                 $this->table_name .
                 " 
-                    WHERE application_id = ? 
-                    ORDER BY uploaded_at DESC 
-                    LIMIT 1";
+                WHERE application_id = ? 
+                ORDER BY uploaded_at DESC 
+                LIMIT 1";
 
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([$application_id]);
@@ -100,16 +158,42 @@ class ProfilePictureModel
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if ($row) {
-                // Extract filename from path
-                $filename = basename($row['file_path']);
+                $filePath = ltrim($row['file_path'], '/');
 
-                // Return the URL using the serving endpoint
-                $base_url = $this->getBaseUrl();
-                return $base_url .
-                    '/public/upload/applications/' .
-                    $application_id .
-                    '/profile/' .
-                    urlencode($filename);
+                if (
+                    str_starts_with($filePath, 'http://') ||
+                    str_starts_with($filePath, 'https://')
+                ) {
+                    return $filePath;
+                }
+
+                $path = trim($filePath, '/');
+                $encodedPath = implode('/', array_map('rawurlencode', explode('/', $path)));
+
+                $supabaseUrl = rtrim($_ENV['SUPABASE_URL'] ?? '', '/');
+                $storageBucket = 'scholarship-files';
+
+                // DEBUG
+                echo json_encode([
+                    'debug_model' => [
+                        'raw_file_path' => $row['file_path'],
+                        'encoded_path' => $encodedPath,
+                        'supabase_url' => $supabaseUrl,
+                        'bucket' => $storageBucket,
+                        'built_url' =>
+                            $supabaseUrl .
+                            '/storage/v1/object/public/' .
+                            $storageBucket .
+                            '/' .
+                            $encodedPath,
+                    ],
+                ]);
+
+                return $supabaseUrl .
+                    '/storage/v1/object/public/' .
+                    $storageBucket .
+                    '/' .
+                    $encodedPath;
             }
 
             return null;

@@ -6,9 +6,12 @@
         },
         "exclude-from-classmap": [
             "app/Controllers/FileControllerCopy.php",
+            "app/Controllers/ProfileControllerCopy.php",
             "app/Controllers/ProfilePictureController.php",
             "app/Services/AuthServiceCopy.php",
-            "app/Services/FileUploadServiceCopy.php"
+            "app/Services/FileUploadServiceCopy.php",
+            "app/Services/ApplicationFileUploadServiceCopy.php",
+            "app/Services/ProfileFileUploadServiceCopy.php"
         ]
     },
     "require": {

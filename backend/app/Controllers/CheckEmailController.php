@@ -138,6 +138,7 @@ class CheckEmailController
 
             // Get and sanitize email
             $email = isset($_GET['email']) ? trim($_GET['email']) : null;
+            $id = isset($_GET['id']) ? trim($_GET['id']) : null;
 
             if (!$email) {
                 http_response_code(400);
@@ -148,15 +149,6 @@ class CheckEmailController
                 ]);
 
                 return;
-            }
-
-            // Safely get authenticated user ID
-            $id = null;
-
-            try {
-                $id = Auth::id();
-            } catch (\Exception $e) {
-                $id = null;
             }
 
             /**

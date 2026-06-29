@@ -171,8 +171,15 @@ class ScholarsModel
     //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     // }
 
-    public function getActiveScholars($status, $school_year, $school, $year_level, $course, $sort, $filter)
-    {
+    public function getActiveScholars(
+        $status,
+        $school_year,
+        $school,
+        $year_level,
+        $course,
+        $sort,
+        $filter,
+    ) {
         $query =
             'SELECT s.*, 
                 u.type, 
@@ -692,7 +699,9 @@ class ScholarsModel
                     'profile' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=applications&route=profile&file=' .
-                        urlencode(basename($file['file_path'])),
+                        urlencode(basename($file['file_path'])) .
+                        '&id=' .
+                        urlencode($file['application_id']),
                 ];
             }
 
@@ -714,7 +723,9 @@ class ScholarsModel
                     'profile' =>
                         $_ENV['APP_URL'] .
                         '/index.php?type=applications&route=profile&file=' .
-                        urlencode(basename($file['file_path'])),
+                        urlencode(basename($file['file_path'])) .
+                        '&id=' .
+                        urlencode($file['application_id']),
                 ];
             }
 

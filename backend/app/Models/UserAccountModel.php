@@ -48,11 +48,20 @@ class UserAccountModel
 
         $profile = null;
 
+        // foreach ($files as $file) {
+        //     $profile =
+        //         $_ENV['APP_URL'] .
+        //         "/index.php?type={$type}&route=profile&file=" .
+        //         urlencode(basename($file['file_path']));
+        // }
+
         foreach ($files as $file) {
             $profile =
                 $_ENV['APP_URL'] .
                 "/index.php?type={$type}&route=profile&file=" .
-                urlencode(basename($file['file_path']));
+                urlencode($file['file_name']) .
+                '&id=' .
+                urlencode($file['application_id']);
         }
 
         return $profile;
