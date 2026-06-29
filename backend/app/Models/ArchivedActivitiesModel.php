@@ -77,7 +77,7 @@ class ArchivedActivitiesModel
         $joinedScholars = new ScholarOverviewDataModel();
         $activities = $this->getArchivedActivityIds($id, $tab);
         if (!$activities) {
-            throw new \Error('No archived activities.');
+            return [];
         }
 
         $data = [];
