@@ -6,7 +6,7 @@ use App\Models\ScholarModel;
 use App\Models\SchoolYearModel;
 use App\Models\UserAccountModel;
 use Config\Database;
-use Config\Jwt;
+use App\Config\Jwt;
 use DateTime;
 use Firebase\JWT\JWT as FirebaseJWT;
 use PDO;

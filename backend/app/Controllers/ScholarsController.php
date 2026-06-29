@@ -20,7 +20,7 @@ use App\Models\StaffAccountModel;
 use App\Services\AllowanceService;
 use Config\Database;
 use DateTime;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class ScholarsController
 {

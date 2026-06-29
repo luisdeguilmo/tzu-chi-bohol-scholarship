@@ -25,7 +25,7 @@ use App\Models\ScholarOverviewDataModel;
 use App\Models\StaffAccountModel;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class EventsController
 {

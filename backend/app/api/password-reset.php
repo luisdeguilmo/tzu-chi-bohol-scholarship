@@ -22,7 +22,7 @@ try {
 
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 $db = new Database();
 $pdo = $db->getConnection();

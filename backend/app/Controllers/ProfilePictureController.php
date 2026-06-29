@@ -18,9 +18,9 @@ require_once __DIR__ . '/../Models/CertificateOfAppearanceModel.php';
 use App\Models\ProfilePictureModel;
 use App\Services\ProfilePictureService;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
-class ApplicationFileController
+class ProfilePictureController
 {
     private $pdo;
     private $service;
@@ -42,9 +42,9 @@ class ApplicationFileController
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
         switch ($requestMethod) {
-            case 'GET':
-                $this->handleGet();
-                break;
+            // case 'GET':
+            //     $this->handleGet();
+            //     break;
             case 'POST':
                 $this->createFile();
                 break;
@@ -187,6 +187,6 @@ class ApplicationFileController
     // }
 }
 
-$controller = new ApplicationFileController();
+$controller = new ProfilePictureController();
 $controller->processRequest();
 ?>

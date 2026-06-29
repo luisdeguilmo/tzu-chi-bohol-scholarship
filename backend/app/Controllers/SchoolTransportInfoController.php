@@ -14,7 +14,7 @@ use App\Models\ScholarModel;
 use App\Models\ScholarsModel;
 use App\Models\SchoolTransportInfoModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class SchoolTransportInfoController
 {

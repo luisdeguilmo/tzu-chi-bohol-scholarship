@@ -9,7 +9,7 @@ require_once __DIR__ . '/../Models/RecentActivityModel.php';
 
 use App\Models\RecentActivityModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class RecentActivityController {
     private $pdo;

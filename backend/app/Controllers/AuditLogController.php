@@ -10,7 +10,7 @@ use App\Constants\Action;
 use App\Models\AuditLogModel;
 use App\Models\StaffAccountModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class AuditLogController
 {

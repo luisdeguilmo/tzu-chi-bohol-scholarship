@@ -13,7 +13,7 @@ use App\Models\ScholarAccountInformationModel;
 use App\Models\ScholarAccountModel;
 use App\Models\SchoolYearModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class ScholarAccountInformationController
 {

@@ -13,7 +13,7 @@ use App\Models\EventParticipantsModel;
 use App\Models\ScholarModel;
 use Config\Database;
 use Exception;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class EventParticipantsController
 {

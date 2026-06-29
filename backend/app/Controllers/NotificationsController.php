@@ -21,7 +21,7 @@ use App\Models\NotificationsModel;
 use App\Models\ScholarModel;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class NotificationsController
 {

@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use App\Models\ScholarModel;
 use App\Models\SchoolYearModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class ScholarController
 {

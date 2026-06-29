@@ -3,11 +3,11 @@
 require_once __DIR__ . '/../../config/bootstrap.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../Middleware/Cors.php';
-require_once __DIR__ . '/../Config/jwt.php';
+require_once __DIR__ . '/../Config/Jwt.php';
 require_once __DIR__ . '/../../config/Database.php';
 
 use App\Services\AuthService;
-use Middleware\Cors;
+use App\Middleware\Cors;
 
 Cors::handle();
 

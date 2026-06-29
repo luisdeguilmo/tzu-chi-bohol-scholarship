@@ -11,7 +11,7 @@ require_once __DIR__ . '/../Models/StaffAccountModel.php';
 
 use App\Models\StaffAccountModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class StaffAccountController
 {

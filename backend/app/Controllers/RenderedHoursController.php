@@ -30,7 +30,7 @@ use App\Models\RenderedHoursModel;
 use App\Models\ScholarModel;
 use App\Models\StaffAccountModel;
 use App\Services\PHPMailerBrevoService;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class RenderedHoursController
 {

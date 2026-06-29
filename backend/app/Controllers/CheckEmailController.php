@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Models\ApplicationModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class CheckEmailController
 {

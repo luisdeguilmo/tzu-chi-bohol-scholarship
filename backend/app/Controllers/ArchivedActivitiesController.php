@@ -10,7 +10,7 @@ require_once __DIR__ . '/../Models/ArchivedActivitiesModel.php';
 use App\Models\ActivityModel;
 use App\Models\ArchivedActivitiesModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class ArchivedActivitiesController
 {

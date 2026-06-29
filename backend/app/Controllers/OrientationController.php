@@ -14,7 +14,7 @@ use App\Models\PersonalModel;
 use App\Models\SchoolYearModel;
 use App\Models\StaffAccountModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class OrientationController
 {

@@ -12,7 +12,7 @@ use App\Models\AuditLogModel;
 use App\Models\ScholarshipCriteriaModel;
 use App\Models\StaffAccountModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class RequirementController
 {

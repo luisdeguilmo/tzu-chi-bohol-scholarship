@@ -11,7 +11,7 @@ require_once __DIR__ . '/../Models/ScholarAccountModel.php';
 
 use App\Models\AdminAccountInformationModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class AdminAccountInformationController
 {

@@ -1,11 +1,11 @@
 <?php
 // middleware/Auth.php
 
-namespace Middleware;
+namespace App\Middleware;
 
-require_once __DIR__ . '/../Config/jwt.php';
+require_once __DIR__ . '/../Config/Jwt.php';
 
-use Config\Jwt;
+use App\Config\Jwt;
 use Firebase\JWT\JWT as FirebaseJWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\ExpiredException;

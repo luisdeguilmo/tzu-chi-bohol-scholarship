@@ -14,7 +14,7 @@ require_once __DIR__ . '/../Middleware/Auth.php';
 use App\Models\ScholarDashboardDataModel;
 use App\Models\ScholarsModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class ScholarDashboardDataController
 {

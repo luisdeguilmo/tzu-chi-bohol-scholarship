@@ -10,7 +10,7 @@ require_once __DIR__ . '/../Models/BatchModel.php';
 
 use App\Models\ScholarOverviewDataModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class ScholarOverviewDataController
 {

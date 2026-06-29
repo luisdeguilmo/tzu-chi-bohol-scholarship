@@ -29,7 +29,7 @@ use App\Models\ScholarModel;
 use App\Services\ActivityService;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class ActivityController
 {

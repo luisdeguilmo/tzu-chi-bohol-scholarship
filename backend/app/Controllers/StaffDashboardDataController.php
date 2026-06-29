@@ -17,7 +17,7 @@ use App\Models\SchoolYearModel;
 use App\Models\YearModel;
 use App\Models\StaffDashboardDataModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class StaffDashboardDataController
 {

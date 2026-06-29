@@ -1,8 +1,15 @@
 {
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
-        }
+            "App\\": "app/",
+            "Config\\": "config/"
+        },
+        "exclude-from-classmap": [
+            "app/Controllers/FileControllerCopy.php",
+            "app/Controllers/ProfilePictureController.php",
+            "app/Services/AuthServiceCopy.php",
+            "app/Services/FileUploadServiceCopy.php"
+        ]
     },
     "require": {
         "firebase/php-jwt": "^6.11",

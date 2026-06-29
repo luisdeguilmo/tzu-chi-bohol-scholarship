@@ -11,7 +11,7 @@ use App\Models\EventParticipantsModel;
 use App\Models\NotificationsModel;
 use App\Models\PrivateCommentsModel;
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class PrivateCommentsController
 {

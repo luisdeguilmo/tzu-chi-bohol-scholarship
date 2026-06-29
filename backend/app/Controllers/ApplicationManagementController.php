@@ -26,7 +26,7 @@ use App\Models\SettingsModel;
 use App\Models\StaffAccountModel;
 use App\Services\PHPMailerBrevoService; // Update this line
 use Config\Database;
-use Middleware\Auth;
+use App\Middleware\Auth;
 
 class ApplicationManagementController
 {
