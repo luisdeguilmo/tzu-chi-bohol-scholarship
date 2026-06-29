@@ -1,11 +1,11 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/app/Controllers/FileController.php';
-require_once __DIR__ . '/app/Controllers/ProfileController.php';
-require_once __DIR__ . '/app/Services/SupabaseStorageService.php';
+
+use App\Controllers\FileController;
+use App\Controllers\ProfileController;
 
 $route = $_GET['route'] ?? '';
-$id = $_GET['id'] ?? '';
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'OPTIONS') {
