@@ -26,14 +26,13 @@ class PHPMailerBrevoService
 
         $this->mail = new PHPMailer(true);
 
-        // Configure Brevo SMTP settings
         $this->mail->isSMTP();
         $this->mail->Host = 'smtp-relay.brevo.com';
         $this->mail->SMTPAuth = true;
         $this->mail->Username = $brevoEmail;
         $this->mail->Password = $brevoSmtpKey;
         $this->mail->Port = 465;
-        $this->mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
 
         $this->mail->SMTPOptions = [
             'ssl' => [
