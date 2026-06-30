@@ -127,7 +127,7 @@ function HeroSection() {
                 </div>
             </div> */}
 
-            <div className={`w-[95%] absolute ${applicationPeriods.announcement_message ? 'top-[30%]' : 'top-[45%]'} left-[50%] translate-x-[-50%] translate-y-[-50%] z-10`}>
+            <div className={`w-[95%] absolute ${applicationPeriods.announcement_message ? 'top-[35%]' : 'top-[45%]'} left-[50%] translate-x-[-50%] translate-y-[-50%] z-10`}>
                 <div className="max-w-3xl mx-auto text-center">
                     {/* HERO TITLE */}
                     <h1 className="text-4xl md:text-6xl font-semibold leading-tight mt-14 md:mt-4 mb-6">
@@ -146,7 +146,7 @@ function HeroSection() {
                     </p>
 
                     {/* CTA BUTTONS */}
-                    <div className=flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-5 mb-10">
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-5 mb-10">
                         <button
                             onClick={handleClick}
                             className="bg-green-700 hover:bg-green-800 text-white text-sm px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
