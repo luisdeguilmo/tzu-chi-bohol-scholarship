@@ -475,11 +475,11 @@ function Accordion() {
                     <Loader />
                 ) : (
                     <>
-                        <h3 className="font-bold text-center">
+                        <h3 className="font-bold text-center text-gray-800">
                             Senior High School Tracks
                         </h3>
 
-                        <ul className="my-6 columns-2 space-y-2 text-sm">
+                        <ul className="my-6 columns-2 space-y-2 text-gray-700 text-xs md:text-sm">
                             {strands.map((s, i) => (
                                 <li key={i}>
                                     <span className="font-bold">
@@ -490,11 +490,11 @@ function Accordion() {
                             ))}
                         </ul>
 
-                        <h3 className="font-bold text-center">
+                        <h3 className="font-bold text-center text-gray-800">
                             College Courses
                         </h3>
 
-                        <ul className="mt-6 space-y-2 text-sm">
+                        <ul className="mt-6 space-y-2 text-xs md:text-sm text-gray-700">
                             {courses.map((c, i) => (
                                 <li key={i}>• {c.course}</li>
                             ))}
@@ -509,7 +509,7 @@ function Accordion() {
             content: loadingState.qualifications ? (
                 <Loader />
             ) : (
-                <ul className="list-decimal list-inside space-y-2 text-sm">
+                <ul className="list-decimal list-inside space-y-2 text-gray-700 text-xs md:text-sm">
                     {qualifications.map((q, i) => (
                         <li key={i}>{q.qualification}</li>
                     ))}
@@ -525,7 +525,7 @@ function Accordion() {
             ) : (
                 <table className={`w-full ${tableStyle}`}>
                     <thead>
-                        <tr>
+                        <tr className="text-gray-800 text-sm md:text-lg">
                             <th className={tableStyle}>Qty</th>
                             <th className={tableStyle}>Description</th>
                             <th className={tableStyle}>Submit</th>
@@ -533,7 +533,10 @@ function Accordion() {
                     </thead>
                     <tbody>
                         {requirements.map((r, i) => (
-                            <tr key={i}>
+                            <tr
+                                key={i}
+                                className="text-gray-700 text-xs md:text-sm"
+                            >
                                 <td className={tableStyle}>{r.quantity}</td>
                                 <td className={tableStyle}>{r.description}</td>
                                 <td className={tableStyle}>{r.submit}</td>
@@ -550,7 +553,7 @@ function Accordion() {
             content: loadingState.procedure ? (
                 <Loader />
             ) : (
-                <ul className="list-decimal list-inside space-y-2 text-sm">
+                <ul className="list-decimal list-inside space-y-2 text-gray-700 text-xs md:text-sm">
                     {procedure.map((p, i) => (
                         <li key={i}>{p.procedure}</li>
                     ))}
@@ -564,7 +567,7 @@ function Accordion() {
             content: loadingState.instructions ? (
                 <Loader />
             ) : (
-                <ul className="list-decimal list-inside space-y-2 text-sm">
+                <ul className="list-decimal list-inside space-y-2 text-gray-700 text-xs md:text-sm">
                     {instructions.map((ins, i) => (
                         <li key={i}>{ins.instruction}</li>
                     ))}
@@ -601,7 +604,7 @@ function Accordion() {
                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-white">
                                 {index + 1}
                             </div>
-                            <span className="text-sm font-semibold">
+                            <span className="text-sm text-gray-800 font-semibold">
                                 {acc.title}
                             </span>
                         </div>

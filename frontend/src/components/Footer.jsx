@@ -2,7 +2,7 @@ import Logo from "/src/assets/tzu_chi_logo.png";
 
 function Footer() {
     return (
-        <footer className="mt-auto bg-gray-300 opacity-80 text-gray-900 pt-10 flex flex-col items-center gap-10 justify-center">
+        <footer className="mt-auto bg-gray-300 opacity-80 text-gray-900 pt-4 flex flex-col items-center gap-10 justify-center">
             <div className="w-[80%]">
                 <div className="flex items-center w-fit mx-auto">
                     <img className="w-12" src={Logo} alt="Tzu Chi Logo" />

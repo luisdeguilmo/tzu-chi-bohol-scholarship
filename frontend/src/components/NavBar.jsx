@@ -139,11 +139,11 @@ function NavBar({ isScrolled }) {
             >
                 {/* Main navigation */}
                 <div className="w-[95%] md:w-[80%] mx-auto px-6 py-8 lg:py-6">
-                    <div className="flex items-center lg:items-start justify-between gap-14 lg:gap-0">
+                    <div className="flex items-center lg:items-start justify-between gap-10 lg:gap-0">
                         {/* Logo section */}
                         <Link to="/" className="flex items-center gap-1">
                             <img
-                                className="w-[500px] sm:w-[500px] h-8 md:w-full sm:h-12 md:h-16 transition-transform duration-300"
+                                className="w-[500px] sm:w-[400px] h-8 md:w-full sm:h-12 md:h-16 transition-transform duration-300"
                                 src={Logo}
                                 alt="Tzu chi Logo"
                             />
@@ -267,13 +267,13 @@ function NavBar({ isScrolled }) {
                             ref={mobileMenuButtonRef}
                             type="button"
                             onClick={toggleMobileMenu}
-                            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 relative z-50"
+                            className="lg:hidden p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 relative z-50"
                             aria-label="Toggle mobile menu"
                         >
                             {isMobileMenuOpen ? (
-                                <X className="w-7 h-7 text-gray-500" />
+                                <X className="w-7 h-7 text-gray-400/80" />
                             ) : (
-                                <Menu className="w-7 h-7 text-gray-500" />
+                                <Menu className="w-7 h-7 text-gray-400/80" />
                             )}
                         </button>
                     </div>
