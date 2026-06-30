@@ -101,7 +101,7 @@ const ResetPasswordForm = () => {
                 />
             ))}
 
-            <div className="bg-white p-10 rounded-md shadow-lg absolute top-[70%] left-[50%] translate-x-[-50%] translate-y-[-100%] z-20 w-[98%] sm:max-w-[400px] border border-gray-200">
+            <div className="bg-white p-10 rounded-md shadow-lg absolute top-[70%] left-[50%] translate-x-[-50%] translate-y-[-100%] z-20 w-[90%] sm:max-w-[400px] border border-gray-200">
                 <div className="text-center mb-4">
                     <h2 className="text-2xl font-bold text-gray-800">
                         Reset Password
