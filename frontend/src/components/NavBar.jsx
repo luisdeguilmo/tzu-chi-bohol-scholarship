@@ -1,16 +1,12 @@
 import Logo from "/src/assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useApplicationPeriods } from "../hooks/useApplicationPeriods";
 import { toast } from "react-toastify";
 import { Menu, X } from "lucide-react";
 
 function NavLinks({ isMobile = false, onLinkClick }) {
     const navigate = useNavigate();
-
-    const staff = { type: "staff" };
-    const admin = { type: "admin" };
-    const scholar = { type: "scholar" };
 
     const handleNavigation = (path, state) => {
         navigate(path, { state });
@@ -62,24 +58,6 @@ function NavLinks({ isMobile = false, onLinkClick }) {
                         <span className="absolute -bottom-0.5 left-0 w-0 h-1 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
                     </Link>
                 </li>
-                {/* <li>
-                    <button
-                        onClick={() => handleNavigation("/login/staff")}
-                        className="hover:text-green-700 transition-colors duration-200 relative group"
-                    >
-                        Staff
-                        <span className="absolute -bottom-0.5 left-0 w-0 h-1 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
-                    </button>
-                </li>
-                <li>
-                    <button
-                        onClick={() => handleNavigation("/login/admin")}
-                        className="hover:text-green-700 transition-colors duration-200 relative group"
-                    >
-                        Admin
-                        <span className="absolute -bottom-0.5 left-0 w-0 h-1 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
-                    </button>
-                </li> */}
             </ul>
         </div>
     );
@@ -89,12 +67,31 @@ function NavBar({ isScrolled }) {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showBorder, setShowBorder] = useState(false);
+    const mobileMenuRef = useRef(null);
+    const mobileMenuButtonRef = useRef(null);
 
     const { applicationPeriods, fetchApplicationPeriods } =
         useApplicationPeriods("new");
 
     useEffect(() => {
         fetchApplicationPeriods();
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                mobileMenuRef.current &&
+                !mobileMenuRef.current.contains(event.target) &&
+                mobileMenuButtonRef.current &&
+                !mobileMenuButtonRef.current.contains(event.target)
+            ) {
+                setIsMobileMenuOpen(false);
+                setShowBorder(false);
+            }
+        };
+
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
     const today = new Date().toISOString().split("T")[0];
@@ -118,18 +115,12 @@ function NavBar({ isScrolled }) {
         }
     };
 
-    // const toggleMobileMenu = () => {
-    //     setIsMobileMenuOpen(!isMobileMenuOpen);
-    // };
-
     const toggleMobileMenu = () => {
         if (isMobileMenuOpen) {
-            // Closing → wait for animation to finish
             setTimeout(() => {
                 setShowBorder(false);
-            }, 400); // matches your CSS transition (400ms)
+            }, 400);
         } else {
-            // Opening → show border immediately
             setShowBorder(true);
         }
 
@@ -217,20 +208,20 @@ function NavBar({ isScrolled }) {
                         </div>
 
                         {/* Mobile menu overlay and content */}
-
                         <div className="fixed inset-0 z-40 lg:hidden">
                             {/* Backdrop */}
                             <div
                                 className={`fixed top-32 left-0 right-0 bottom-0 bg-black/20 transition-opacity duration-300 ${
                                     isMobileMenuOpen
                                         ? "opacity-100"
-                                        : "opacity-0"
+                                        : "opacity-0 pointer-events-none"
                                 }`}
                                 onClick={toggleMobileMenu}
                             ></div>
 
                             {/* Menu panel */}
                             <div
+                                ref={mobileMenuRef}
                                 className={`fixed top-24 md:top-28 left-[50%] translate-x-[-50%] w-[90%] z-50
                                             ${showBorder ? "border-t-4 border-green-600" : "border-t-0"}`}
                             >
@@ -252,7 +243,7 @@ function NavBar({ isScrolled }) {
                                                 handleClick();
                                                 toggleMobileMenu();
                                             }}
-                                            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-xs sm:text[15px] px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md  hover:shadow-lg transform hover:-translate-y-0.5"
+                                            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-xs sm:text[15px] px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                                         >
                                             Apply for Scholarship
                                         </button>
@@ -272,6 +263,7 @@ function NavBar({ isScrolled }) {
 
                         {/* Mobile menu button */}
                         <button
+                            ref={mobileMenuButtonRef}
                             type="button"
                             onClick={toggleMobileMenu}
                             className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 relative z-50"
