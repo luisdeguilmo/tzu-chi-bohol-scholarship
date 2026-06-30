@@ -32,8 +32,8 @@ class PHPMailerBrevoService
         $this->mail->SMTPAuth = true;
         $this->mail->Username = $brevoEmail;
         $this->mail->Password = $brevoSmtpKey;
-        $mail->Port = 465;
-        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+        $this->mail->Port = 465;
+        $this->mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
 
         $this->mail->SMTPOptions = [
             'ssl' => [
