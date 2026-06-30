@@ -163,7 +163,7 @@ function HeroSection() {
                     </div>
 
                     {/* ANNOUNCEMENT */}
-                    <p className="text-sm md:text-base text-white/80 leading-relaxed">
+                    <p className="text-xs md:text-sm md:text-base text-white/80 leading-relaxed">
                         {applicationPeriods.announcement_message}
                     </p>
                 </div>
