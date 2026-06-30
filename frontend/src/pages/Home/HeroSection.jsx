@@ -127,7 +127,7 @@ function HeroSection() {
                 </div>
             </div> */}
 
-            <div className={`w-[95%] absolute ${applicationPeriods.announcement_message ? 'top-[35%]' : 'top-[45%]'} left-[50%] translate-x-[-50%] translate-y-[-50%] z-10`}>
+            <div className={`w-[95%] absolute ${applicationPeriods.announcement_message ? 'md:top-[45%] top-[42%]' : 'top-[45%]'} left-[50%] translate-x-[-50%] translate-y-[-50%] z-10`}>
                 <div className="max-w-3xl mx-auto text-center">
                     {/* HERO TITLE */}
                     <h1 className="text-4xl md:text-6xl font-semibold leading-tight mt-14 md:mt-4 mb-6">
