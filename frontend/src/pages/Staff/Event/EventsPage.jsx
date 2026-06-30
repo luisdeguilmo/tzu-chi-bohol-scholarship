@@ -314,7 +314,7 @@ export default function EventsPage() {
 
                     {/* Empty state */}
                     {currentItems.length === 0 && !loading && (
-                        <EmptyState message="No events found." />
+                        <EmptyState message="No event found." />
                     )}
                 </div>
 
