@@ -111,8 +111,8 @@ class NotificationsController
         }
 
         $emailService = new PHPMailerBrevoService(
-            $_ENV['BREVO_EMAIL'],
-            $_ENV['BREVO_SMTP_KEY'],
+            $_ENV['BREVO_API_KEY'],
+            $_ENV['BREVO_SENDER_EMAIL'],
             $_ENV['ORG_NAME'],
             $_ENV['ORG_ADDRESS'],
             $_ENV['ORG_CONTACT'],
