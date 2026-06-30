@@ -139,7 +139,7 @@ function HeroSection() {
                     </h1>
 
                     {/* SUBTITLE */}
-                    <p className="text-sm md:text-base text-white/90 leading-relaxed mb-8">
+                    <p className="text-[11px] md:text-base text-white/90 leading-relaxed mb-8">
                         A unified platform to manage scholarships, support
                         scholars, and uphold the mission of service and
                         gratitude.
@@ -163,7 +163,7 @@ function HeroSection() {
                     </div>
 
                     {/* ANNOUNCEMENT */}
-                    <p className="text-xs px-2 md:text-sm md:text-base text-white/80 leading-relaxed">
+                    <p className="text-[10px] px-2 md:text-sm md:text-base text-white/80 leading-relaxed">
                         {applicationPeriods.announcement_message}
                     </p>
                 </div>
