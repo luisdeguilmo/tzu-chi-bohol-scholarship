@@ -31,15 +31,14 @@ class PHPMailerBrevoService
         $this->mail->SMTPAuth = true;
         $this->mail->Username = $brevoEmail;
         $this->mail->Password = $brevoSmtpKey;
-        $this->mail->Port = 465;
-        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $this->mail->Port = 587;
 
         $this->mail->SMTPOptions = [
             'ssl' => [
-                'cafile' => __DIR__ . '/../../certs/cacert.pem',
-                'verify_peer' => true,
-                'verify_peer_name' => true,
-                'allow_self_signed' => false,
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true,
             ],
         ];
 
