@@ -115,7 +115,8 @@ function NavBar({ isScrolled }) {
         }
     };
 
-    const toggleMobileMenu = () => {
+    const toggleMobileMenu = (e) => {
+        e.stopPropagation();
         if (isMobileMenuOpen) {
             setTimeout(() => {
                 setShowBorder(false);
