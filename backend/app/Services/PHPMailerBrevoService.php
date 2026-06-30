@@ -1,9 +1,9 @@
 <?php
 namespace App\Services;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+
 try {
     $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
     $dotenv->safeLoad();
@@ -13,67 +13,80 @@ try {
 
 class PHPMailerBrevoService
 {
-    private $mail;
+    private $apiKey;
+    private $senderEmail;
+    private $senderName;
     private $organizationName;
     private $organizationAddress;
     private $contactInfo;
+    private $httpClient;
 
-    public function __construct($brevoEmail, $brevoSmtpKey, $orgName, $orgAddress, $contactInfo)
+    private const API_URL = 'https://api.brevo.com/v3/smtp/email';
+
+    public function __construct($brevoApiKey, $senderEmail, $orgName, $orgAddress, $contactInfo)
     {
+        $this->apiKey = $brevoApiKey;
+        $this->senderEmail = $senderEmail; // MUST be a verified sender in Brevo
+        $this->senderName = $orgName;
         $this->organizationName = $orgName;
         $this->organizationAddress = $orgAddress;
         $this->contactInfo = $contactInfo;
 
-        $this->mail = new PHPMailer(true);
-
-        $this->mail->isSMTP();
-        $this->mail->Host = 'smtp-relay.brevo.com';
-        $this->mail->SMTPAuth = true;
-        $this->mail->Username = $brevoEmail;
-        $this->mail->Password = $brevoSmtpKey;
-        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $this->mail->Port = 587;
-
-        $this->mail->SMTPOptions = [
-            'ssl' => [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true,
-            ],
-        ];
-
-        // Set default sender
-        $this->mail->setFrom('tzuchiboholoffice@gmail.com', $this->organizationName);
+        $this->httpClient = new Client([
+            'timeout' => 15,
+        ]);
     }
 
-    private function sendEmail($to, $subject, $htmlContent)
+    /**
+     * Core sender using Brevo's transactional email REST API.
+     * Optionally accepts an array of attachments:
+     * [['content' => base64string, 'name' => 'file.pdf'], ...]
+     */
+    private function sendEmail($to, $subject, $htmlContent, $attachments = [])
     {
+        $payload = [
+            'sender' => [
+                'name' => $this->senderName,
+                'email' => $this->senderEmail,
+            ],
+            'to' => [
+                ['email' => $to],
+            ],
+            'subject' => $subject,
+            'htmlContent' => $htmlContent,
+            'textContent' => strip_tags($htmlContent),
+        ];
+
+        if (!empty($attachments)) {
+            $payload['attachment'] = $attachments;
+        }
+
         try {
-            // Clear previous recipients
-            $this->mail->clearAddresses();
+            $response = $this->httpClient->post(self::API_URL, [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'api-key' => $this->apiKey,
+                ],
+                'json' => $payload,
+                'http_errors' => false,
+            ]);
 
-            // Set recipient
-            $this->mail->addAddress($to);
+            $statusCode = $response->getStatusCode();
 
-            // Content
-            $this->mail->isHTML(true);
-            $this->mail->Subject = $subject;
-            $this->mail->Body = $htmlContent;
-            $this->mail->AltBody = strip_tags($htmlContent);
+            // Brevo returns 201 on success
+            if ($statusCode >= 200 && $statusCode < 300) {
+                error_log('Email successfully sent to: ' . $to);
+                return true;
+            }
 
-            $this->mail->send();
-            error_log('Email successfully sent to: ' . $to);
-            return true;
-        } catch (Exception $e) {
-            error_log('Failed to send email: ' . $this->mail->ErrorInfo);
+            error_log('Failed to send email to ' . $to . '. HTTP ' . $statusCode . ' Response: ' . $response->getBody());
+            return false;
+        } catch (GuzzleException $e) {
+            error_log('Brevo API error sending to ' . $to . ': ' . $e->getMessage());
             return false;
         }
     }
-
-    //  Congratulations! We are pleased to inform you that your application for the
-    //             <strong>Tzu Chi Scholarship Program</strong> for Academic Year
-    //             <strong>{$studentInfo['school_year']}</strong> has been
-    //             <span style=\"font-weight: bold;\">approved</span>.
 
     public function sendApplicationApprovalEmail($studentInfo, $message)
     {
@@ -567,26 +580,22 @@ class PHPMailerBrevoService
         $subject,
         $htmlContent,
         $attachmentPath,
-        $attachmentName,
+        $attachmentName
     ) {
-        try {
-            $this->mail->clearAddresses();
-            $this->mail->clearAttachments();
-
-            $this->mail->addAddress($to);
-            $this->mail->addAttachment($attachmentPath, $attachmentName);
-
-            $this->mail->isHTML(true);
-            $this->mail->Subject = $subject;
-            $this->mail->Body = $htmlContent;
-            $this->mail->AltBody = strip_tags($htmlContent);
-
-            $this->mail->send();
-            return true;
-        } catch (Exception $e) {
-            error_log('Failed to send email with attachment: ' . $this->mail->ErrorInfo);
+        if (!file_exists($attachmentPath)) {
+            error_log('Attachment not found at path: ' . $attachmentPath);
             return false;
         }
+
+        $fileContent = file_get_contents($attachmentPath);
+        $attachments = [
+            [
+                'content' => base64_encode($fileContent),
+                'name' => $attachmentName,
+            ],
+        ];
+
+        return $this->sendEmail($to, $subject, $htmlContent, $attachments);
     }
 }
 ?>
