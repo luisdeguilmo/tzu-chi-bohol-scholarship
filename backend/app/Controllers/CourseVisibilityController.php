@@ -180,6 +180,6 @@ class CourseVisibilityController
 }
 
 // Create and execute controller
-$controller = new CourseController();
+$controller = new CourseVisibilityController();
 $controller->processRequest();
 ?>

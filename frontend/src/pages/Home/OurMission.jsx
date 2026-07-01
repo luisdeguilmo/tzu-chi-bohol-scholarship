@@ -11,15 +11,15 @@ export default function OurMission() {
     }, [pathname]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-16 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
             <div className="w-[95%] md:w-[80%] mx-auto">
                 <div className="text-center mb-16">
-                    <h1 className="text-4xl font-bold text-slate-900 mb-4">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
                         Our Mission
                     </h1>
                 </div>
 
-                <p className="text-[15px] text-slate-700 text-justify leading-relaxed">
+                <p className="text-xs md:text-sm text-gray-700 text-justify leading-relaxed">
                     Master Cheng Yen encourages a holistic approach to
                     education, emphasizing character development, life skills,
                     and personal growth. Tzu Chi's Mission of Education extends
@@ -37,7 +37,7 @@ export default function OurMission() {
                     of empathy and social responsibility.
                 </p>
 
-                <div className="w-[90%] md:w-[60%] mx-auto">
+                <div className="w-[90%] md:w-[60%] text-lg md:text-xl text-green-900 mx-auto">
                     <div className="quote">
                         “The hope of society lies in its talented human
                         resources; <br />

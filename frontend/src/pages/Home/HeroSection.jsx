@@ -82,13 +82,13 @@ function HeroSection() {
             {/* Navigation Arrows */}
             <div className="invisible">
                 <div
-                    className="hero-arrow left group-hover:visible"
+                    className="hero-arrow left sm:group-hover:visible"
                     onClick={handlePrevSlide}
                 >
                     <ChevronLeft className="w-10 h-10" />
                 </div>
                 <div
-                    className="hero-arrow right group-hover:visible"
+                    className="hero-arrow right sm:group-hover:visible"
                     onClick={handleNextSlide}
                 >
                     <ChevronRight className="w-10 h-10" />
@@ -127,7 +127,9 @@ function HeroSection() {
                 </div>
             </div> */}
 
-            <div className={`w-[95%] absolute ${applicationPeriods.announcement_message ? 'md:top-[45%] top-[42%]' : 'top-[45%]'} left-[50%] translate-x-[-50%] translate-y-[-50%] z-10`}>
+            <div
+                className={`w-[95%] absolute ${applicationPeriods.announcement_message ? "md:top-[45%] top-[48%]" : "md:top-[45%] top-[48%]"} left-[50%] translate-x-[-50%] translate-y-[-50%] z-10`}
+            >
                 <div className="max-w-3xl mx-auto text-center">
                     {/* HERO TITLE */}
                     <h1 className="text-4xl md:text-6xl font-semibold leading-tight mt-14 md:mt-4 mb-6">
@@ -139,19 +141,30 @@ function HeroSection() {
                     </h1>
 
                     {/* SUBTITLE */}
-                    <p className="text-[11px] md:text-base text-white/90 leading-relaxed mb-8">
+                    {/* <p className="text-[11px] md:text-base text-white/90 leading-relaxed mb-8">
                         A unified platform to manage scholarships, support
                         scholars, and uphold the mission of service and
                         gratitude.
+                    </p> */}
+
+                    <p className="text-xs px-2 md:text-sm mb-8 text-white/80 leading-relaxed">
+                        {applicationPeriods?.announcement_message}
                     </p>
 
                     {/* CTA BUTTONS */}
-                    <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-5 mb-10">
+                    <div className="flex flex-row justify-center items-center gap-3 sm:gap-5 mb-10">
                         <button
                             onClick={handleClick}
-                            className="bg-green-700 hover:bg-green-800 text-white text-sm px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                            className={`text-white text-sm px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md ${
+                                applicationPeriods?.status === "Active"
+                                    ? "bg-green-700 hover:bg-green-800 hover:shadow-lg transform hover:-translate-y-0.5"
+                                    : "bg-gray-400 cursor-not-allowed opacity-75"
+                            }`}
+                            disabled={applicationPeriods?.status !== "Active"}
                         >
-                            Apply for Scholarship
+                            {applicationPeriods?.status === "Active"
+                                ? "Apply Now"
+                                : "Applications Closed"}
                         </button>
 
                         <button
@@ -163,9 +176,6 @@ function HeroSection() {
                     </div>
 
                     {/* ANNOUNCEMENT */}
-                    <p className="text-[10px] px-2 md:text-sm md:text-base text-white/80 leading-relaxed">
-                        {applicationPeriods.announcement_message}
-                    </p>
                 </div>
             </div>
         </section>
