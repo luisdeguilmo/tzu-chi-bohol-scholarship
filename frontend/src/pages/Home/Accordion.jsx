@@ -145,7 +145,7 @@ function Accordion() {
                             Senior High School Tracks
                         </h3>
 
-                        <ul className="my-6 columns-2 space-y-2 text-xs md:text-sm">
+                        <ul className="my-6 columns-1 md:columns-2 space-y-2 text-xs md:text-sm">
                             {strands.map((s, i) => (
                                 <li key={i}>
                                     <span className="font-bold text-gray-800">
