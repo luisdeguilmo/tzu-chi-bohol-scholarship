@@ -67,7 +67,6 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
     const createCourse = async (text, onSuccess) => {
         const data = { course_name: text };
-        console.log(data);
 
         try {
             const formData = new FormData();
@@ -220,7 +219,6 @@ function useScholarshipCriteriaSubmit(onSuccess) {
 
     const createInstruction = async (text, onSuccess) => {
         const data = { instruction: text };
-        console.log(data);
 
         try {
             const formData = new FormData();

@@ -26,8 +26,6 @@ api.interceptors.response.use(
         const status = error.response?.status;
         const message = error.response?.data?.message;
 
-        console.log( error.response?.data);
-
         if (status === 401) {
             localStorage.removeItem("token");
             localStorage.removeItem("user");

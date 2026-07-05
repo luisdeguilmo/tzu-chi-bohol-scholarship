@@ -70,7 +70,7 @@ function NavBar({ isScrolled }) {
     const mobileMenuRef = useRef(null);
     const mobileMenuButtonRef = useRef(null);
 
-    const { applicationPeriods, fetchApplicationPeriods } =
+    const { loading, applicationPeriods, fetchApplicationPeriods } =
         useApplicationPeriods("new");
 
     useEffect(() => {
@@ -239,27 +239,29 @@ function NavBar({ isScrolled }) {
                                             />
                                         </nav>
 
-                                        <button
-                                            onClick={() => {
-                                                handleClick();
-                                                toggleMobileMenu();
-                                            }}
-                                            className={`w-full ${
-                                                applicationPeriods?.status ===
+                                        {!loading && (
+                                            <button
+                                                onClick={() => {
+                                                    handleClick();
+                                                    toggleMobileMenu();
+                                                }}
+                                                className={`w-full ${
+                                                    applicationPeriods?.status ===
+                                                    "Active"
+                                                        ? "bg-green-700 text-white hover:bg-green-800 hover:shadow-lg transform hover:-translate-y-0.5"
+                                                        : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-75"
+                                                } text-xs sm:text[15px] px-6 py-2.5 rounded-lg font-medium transition-all duration-200 transform hover:-translate-y-0.5`}
+                                                disabled={
+                                                    applicationPeriods?.status !==
+                                                    "Active"
+                                                }
+                                            >
+                                                {applicationPeriods?.status ===
                                                 "Active"
-                                                    ? "bg-green-700 text-white hover:bg-green-800 hover:shadow-lg transform hover:-translate-y-0.5"
-                                                    : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-75"
-                                            } text-xs sm:text[15px] px-6 py-2.5 rounded-lg font-medium transition-all duration-200 transform hover:-translate-y-0.5`}
-                                            disabled={
-                                                applicationPeriods?.status !==
-                                                "Active"
-                                            }
-                                        >
-                                            {applicationPeriods?.status ===
-                                            "Active"
-                                                ? "Apply Now"
-                                                : "Applications Closed"}
-                                        </button>
+                                                    ? "Apply Now"
+                                                    : "Applications Closed"}
+                                            </button>
+                                        )}
                                         <button
                                             onClick={() => {
                                                 toggleMobileMenu();
@@ -295,21 +297,25 @@ function NavBar({ isScrolled }) {
                                 <NavLinks />
                             </nav>
                             <div>
-                                <button
-                                    onClick={handleClick}
-                                    className={`ml-16 ${
-                                        applicationPeriods?.status === "Active"
-                                            ? "bg-green-700 text-white hover:bg-green-800 hover:shadow-lg transform hover:-translate-y-0.5"
-                                            : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-75"
-                                    } text-sm px-4 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5`}
-                                    disabled={
-                                        applicationPeriods?.status !== "Active"
-                                    }
-                                >
-                                    {applicationPeriods?.status === "Active"
-                                        ? "Apply Now"
-                                        : "Applications Closed"}
-                                </button>
+                                {!loading && (
+                                    <button
+                                        onClick={handleClick}
+                                        className={`ml-16 ${
+                                            applicationPeriods?.status ===
+                                            "Active"
+                                                ? "bg-green-700 text-white hover:bg-green-800 hover:shadow-lg transform hover:-translate-y-0.5"
+                                                : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-75"
+                                        } text-sm px-4 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5`}
+                                        disabled={
+                                            applicationPeriods?.status !==
+                                            "Active"
+                                        }
+                                    >
+                                        {applicationPeriods?.status === "Active"
+                                            ? "Apply Now"
+                                            : "Applications Closed"}
+                                    </button>
+                                )}
                                 <button
                                     onClick={() => navigate("/login/scholar")}
                                     className="ml-2 px-4 py-2 border-2 border-green-600 text-green-700 text-sm rounded-lg font-medium transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 focus:ring-2 focus:ring-green-500 focus:outline-none"

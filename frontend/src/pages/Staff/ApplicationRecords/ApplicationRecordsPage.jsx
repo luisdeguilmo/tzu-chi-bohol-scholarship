@@ -59,8 +59,6 @@ export default function ApplicationRecordsPage() {
         );
     });
 
-    console.log(applications);
-
     const {
         currentItems,
         currentPage,

@@ -11,7 +11,7 @@ import img3 from "../../assets/img3.jpg";
 
 function HeroSection() {
     const navigate = useNavigate();
-    const { applicationPeriods, fetchApplicationPeriods } =
+    const { loading, applicationPeriods, fetchApplicationPeriods } =
         useApplicationPeriods("new");
 
     useEffect(() => {
@@ -147,35 +147,36 @@ function HeroSection() {
                         gratitude.
                     </p> */}
 
-                    <p className="text-xs px-2 md:text-sm mb-8 text-white/80 leading-relaxed">
+                    <p className="text-xs px-2 md:text-sm lg:text-lg mb-8 text-white/80 leading-relaxed">
                         {applicationPeriods?.announcement_message}
                     </p>
 
-                    {/* CTA BUTTONS */}
-                    <div className="flex flex-row justify-center items-center gap-3 sm:gap-5 mb-10">
-                        <button
-                            onClick={handleClick}
-                            className={`text-white text-sm px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md ${
-                                applicationPeriods?.status === "Active"
-                                    ? "bg-green-700 hover:bg-green-800 hover:shadow-lg transform hover:-translate-y-0.5"
-                                    : "bg-gray-400 cursor-not-allowed opacity-75"
-                            }`}
-                            disabled={applicationPeriods?.status !== "Active"}
-                        >
-                            {applicationPeriods?.status === "Active"
-                                ? "Apply Now"
-                                : "Applications Closed"}
-                        </button>
+                    {!loading && (
+                        <div className="flex flex-row justify-center items-center gap-3 sm:gap-5 mb-10">
+                            <button
+                                onClick={handleClick}
+                                className={`text-white text-sm px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md ${
+                                    applicationPeriods?.status === "Active"
+                                        ? "bg-green-700 hover:bg-green-800 hover:shadow-lg transform hover:-translate-y-0.5"
+                                        : "bg-gray-400 cursor-not-allowed opacity-75"
+                                }`}
+                                disabled={
+                                    applicationPeriods?.status !== "Active"
+                                }
+                            >
+                                {applicationPeriods?.status === "Active"
+                                    ? "Apply Now"
+                                    : "Applications Closed"}
+                            </button>
 
-                        <button
-                            onClick={() => navigate("/login/scholar")}
-                            className="border-2 border-green-500 text-white text-sm px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 hover:bg-green-500/10"
-                        >
-                            Login
-                        </button>
-                    </div>
-
-                    {/* ANNOUNCEMENT */}
+                            <button
+                                onClick={() => navigate("/login/scholar")}
+                                className="border-2 border-green-500 text-white text-sm px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 hover:bg-green-500/10"
+                            >
+                                Login
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </section>

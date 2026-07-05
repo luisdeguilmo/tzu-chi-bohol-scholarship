@@ -12,8 +12,6 @@ export const useUserAccount = () => {
         try {
             setLoading(true);
 
-            console.log(userId, action);
-
             const response = await axios.put(
                 `${BASE_URL}app/api/user-account.php?action=${action}`,
                 {

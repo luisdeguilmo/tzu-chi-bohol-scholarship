@@ -196,6 +196,7 @@ function ProfilePhotoUpload({ isOpen, onOpenModal, onRefresh }) {
             onCancel={handleCancel}
             onSubmit={handleSave}
             disabledButtonSave={true}
+            isLoading={isSubmitting}
         >
             <div className="p-6">
                 <div className="space-y-4">

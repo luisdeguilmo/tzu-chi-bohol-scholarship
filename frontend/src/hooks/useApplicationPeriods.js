@@ -161,8 +161,6 @@ export const useApplicationPeriods = (type) => {
             },
         };
 
-        console.log(data);
-
         try {
             setLoading(true);
             const response = await fetch(

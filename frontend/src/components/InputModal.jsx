@@ -94,8 +94,12 @@ const InputModal = React.memo(
                                     {!disabledButtonSave && (
                                         <button
                                             type="submit"
-                                            disabled={isSubmitting}
-                                            className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition"
+                                            disabled={isLoading}
+                                            className={`px-4 py-2 ${
+                                                isLoading
+                                                    ? "bg-green-400"
+                                                    : "bg-green-600 hover:bg-green-700"
+                                            } text-white text-sm rounded-lg font-medium transition`}
                                         >
                                             {isLoading
                                                 ? buttonLabel === "Save"

@@ -92,12 +92,9 @@ export const useRecordHours = () => {
 
             const data = response.data;
 
-            console.log(data);
-
             if (data.success) {
                 toast.success("Marked as not recorded successfully");
                 onRefresh(year, month, currentStatus, sort);
-                console.log("SAKSIS");
                 // setIsLoading(false);
                 // return true;
             }

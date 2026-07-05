@@ -37,11 +37,10 @@ export default function OurMission() {
                     of empathy and social responsibility.
                 </p>
 
-                <div className="w-[90%] md:w-[60%] text-lg md:text-xl text-green-900 mx-auto">
+                <div className="w-[100%] md:w-[80%] lg:w-[70%] xl:w-[50%] text-lg md:text-xl text-green-900 mx-auto">
                     <div className="quote">
                         “The hope of society lies in its talented human
-                        resources; <br />
-                        while the hope of these talents comes from education.”
+                        resources; while the hope of these talents comes from education.”
                     </div>
 
                     <div class="author">— Master Cheng Yen</div>
