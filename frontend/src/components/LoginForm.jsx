@@ -4,7 +4,7 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "../services/axiosConfig";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
-import { ArrowLeft, EyeClosed, EyeIcon } from "lucide-react";
+import { ArrowLeft, EyeOff, EyeIcon } from "lucide-react";
 import BASE_URL from "../config";
 import img from "../assets/img.jpg";
 import img1 from "../assets/img1.jpg";
@@ -352,7 +352,7 @@ const LoginForm = ({ role }) => {
                                     {showPassword ? (
                                         <EyeIcon className="w-4 h-4  text-gray-700" />
                                     ) : (
-                                        <EyeClosed className="w-4 h-4  text-gray-700" />
+                                        <EyeOff className="w-4 h-4  text-gray-700" />
                                     )}
                                 </span>
                             </div>
