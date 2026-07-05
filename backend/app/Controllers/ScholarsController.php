@@ -194,7 +194,7 @@ class ScholarsController
             $cycleModel = new AllowanceCycleModel();
 
             $currentMonth = (int) date('n');
-            if ($currentMonth >= 10) {
+            if ($currentMonth >= 6) {
                 $nextYear = $this->currentYear + 1;
                 if (!$cycleModel->cyclesExistForYear($nextYear)) {
                     $cycleModel->createYearlyCycles($nextYear);

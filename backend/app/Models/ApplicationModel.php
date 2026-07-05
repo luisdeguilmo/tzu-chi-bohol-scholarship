@@ -204,16 +204,44 @@ class ApplicationModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    // public function getNewScholarsFromPreviousSchoolYear($previousSchoolYear)
+    // {
+    //     $query = "
+    //         SELECT ai.application_id, u.status
+    //         FROM application_info ai
+    //         JOIN users u ON ai.application_id = u.account_id
+    //         WHERE ai.type = 'New'
+    //         AND ai.status = 'scholar'
+    //         AND ai.school_year != :school_year
+    //         AND u.status = 'active'
+    //         ORDER BY ai.created_at DESC
+    // ";
+
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute([
+    //         ':school_year' => $previousSchoolYear,
+    //     ]);
+
+    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    // }
+
     public function getNewScholarsFromPreviousSchoolYear($previousSchoolYear)
     {
         $query = "
-        SELECT ai.application_id, u.status 
+        SELECT ai.application_id, u.status
         FROM application_info ai
-        JOIN users u ON ai.application_id = u.account_id
+        INNER JOIN users u
+            ON ai.application_id = u.account_id
         WHERE ai.type = 'New'
-        AND ai.status = 'scholar'
-        AND ai.school_year != :school_year
-        AND u.status = 'active'
+            AND ai.status = 'scholar'
+            AND ai.school_year != :school_year
+            AND u.status = 'active'
+            AND NOT EXISTS (
+                SELECT 1
+                FROM application_info ai2
+                WHERE ai2.scholar_id = u.account_id
+                  AND ai2.id > ai.id
+            )
         ORDER BY ai.created_at DESC
     ";
 

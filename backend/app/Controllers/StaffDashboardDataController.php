@@ -62,6 +62,7 @@ class StaffDashboardDataController
             $notificationModel = new NotificationsModel();
             $scholarModel = new ScholarAccountModel();
             $yearModel = new SchoolYearModel();
+            $yearsModel = new YearModel();
 
             $id = Auth::id();
             $school_year = $yearModel->getActiveSchoolYear();
@@ -98,14 +99,14 @@ class StaffDashboardDataController
                 'communityServiceHoursCompletionData' => $communityServiceHoursCompletionData,
             ];
 
-            // if (!$yearModel->getYear($this->currentYear)) {
-            //     $yearModel->createYear($this->currentYear);
-            // }
+            if (!$yearsModel->getYear($this->currentYear + 1)) {
+                $yearsModel->createYear($this->currentYear + 1);
+            }
 
             $cycleModel = new AllowanceCycleModel();
 
             $currentMonth = (int) date('n');
-            if ($currentMonth >= 10) {
+            if ($currentMonth >= 6) {
                 $nextYear = $this->currentYear + 1;
                 if (!$cycleModel->cyclesExistForYear($nextYear)) {
                     $cycleModel->createYearlyCycles($nextYear);

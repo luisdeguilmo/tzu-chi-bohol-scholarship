@@ -24,8 +24,8 @@ use App\Middleware\Auth;
 class ApplicationPeriodController
 {
     private const REQUIRED_ENV_VARS = [
-        'BREVO_EMAIL',
-        'BREVO_SMTP_KEY',
+        'BREVO_API_KEY',
+        'BREVO_SENDER_EMAIL',
         'ORG_NAME',
         'ORG_ADDRESS',
         'ORG_CONTACT',
@@ -146,7 +146,11 @@ class ApplicationPeriodController
             $notification = new NotificationsModel();
             $schoolYear = new SchoolYearModel();
 
-            if ($application['type'] === 'renewal') {
+            $is_renewal_application_open = $schoolYear->isRenewalApplicationOpen(
+                $application['schoolYear'],
+            );
+
+            if ($application['type'] === 'renewal' && $is_renewal_application_open === false) {
                 $this->processRenewal(
                     $application,
                     $emailService,
@@ -155,6 +159,10 @@ class ApplicationPeriodController
                     $applicationModel,
                     $notification,
                 );
+
+                if (!$schoolYear->setRenewalApplicationOpen($application['schoolYear'])) {
+                    throw new \Exception('Unable to process allowance');
+                }
             }
 
             if (!$applicationPeriod->createApplicationPeriod($application)) {
@@ -505,8 +513,8 @@ class ApplicationPeriodController
     private function buildEmailService(): PHPMailerBrevoService
     {
         return new PHPMailerBrevoService(
-            $_ENV['BREVO_EMAIL'],
-            $_ENV['BREVO_SMTP_KEY'],
+            $_ENV['BREVO_API_KEY'],
+            $_ENV['BREVO_SENDER_EMAIL'],
             $_ENV['ORG_NAME'],
             $_ENV['ORG_ADDRESS'],
             $_ENV['ORG_CONTACT'],

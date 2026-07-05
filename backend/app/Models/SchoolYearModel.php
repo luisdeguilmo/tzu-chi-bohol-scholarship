@@ -30,11 +30,17 @@ class SchoolYearModel
 
     public function getActiveSchoolYear()
     {
-        $query = 'SELECT * FROM ' . $this->table_name . " WHERE status = 'active'";
+        $query = "SELECT school_year
+              FROM {$this->table_name}
+              WHERE status = 'active'
+              LIMIT 1";
+
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $row ? $row['school_year'] : null;
+
+        $schoolYear = $stmt->fetchColumn();
+
+        return $schoolYear !== false ? $schoolYear : null;
     }
 
     public function getAllSchoolYears()
@@ -57,6 +63,34 @@ class SchoolYearModel
             return true;
         }
         return false;
+    }
+
+    public function isRenewalApplicationOpen($schoolYear): bool
+    {
+        $query = "SELECT is_renewal_application_open
+              FROM {$this->table_name}
+              WHERE school_year = :school_year
+              LIMIT 1";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            ':school_year' => $schoolYear,
+        ]);
+
+        return (bool) $stmt->fetchColumn();
+    }
+
+    public function setRenewalApplicationOpen($schoolYear): bool
+    {
+        $query = "UPDATE {$this->table_name}
+              SET is_renewal_application_open = 1
+              WHERE school_year = :school_year";
+
+        $stmt = $this->pdo->prepare($query);
+
+        return $stmt->execute([
+            ':school_year' => $schoolYear,
+        ]);
     }
 
     public function createSchoolYear($school_year)
@@ -84,17 +118,17 @@ class SchoolYearModel
 
     public function getCurrentSchoolYear()
     {
-        $query =
-            'SELECT * FROM ' .
-            $this->table_name .
-            ' 
-              WHERE status = "active" 
-              LIMIT 1';
+        $query = "SELECT school_year
+              FROM {$this->table_name}
+              WHERE status = 'active'
+              LIMIT 1";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $schoolYear = $stmt->fetchColumn();
+
+        return $schoolYear !== false ? $schoolYear : null;
     }
 }
 ?>

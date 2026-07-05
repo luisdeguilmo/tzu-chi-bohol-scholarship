@@ -65,8 +65,8 @@ class CoeAndGradesController
     public function createSubmission()
     {
         // $requiredEnvVars = [
-        //     'BREVO_EMAIL',
-        //     'BREVO_SMTP_KEY',
+        //     'BREVO_API_KEY',
+        //     'BREVO_SENDER_EMAIL',
         //     'ORG_NAME',
         //     'ORG_ADDRESS',
         //     'ORG_CONTACT',
