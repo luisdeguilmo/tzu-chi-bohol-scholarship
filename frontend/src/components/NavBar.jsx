@@ -8,11 +8,6 @@ import { Menu, X } from "lucide-react";
 function NavLinks({ isMobile = false, onLinkClick }) {
     const navigate = useNavigate();
 
-    const handleNavigation = (path, state) => {
-        navigate(path, { state });
-        if (onLinkClick) onLinkClick();
-    };
-
     return (
         <div
             className={`${
@@ -217,7 +212,7 @@ function NavBar({ isScrolled }) {
                                         ? "opacity-100"
                                         : "opacity-0 pointer-events-none"
                                 }`}
-                                onClick={toggleMobileMenu}
+                                onClick={(e) => toggleMobileMenu(e)}
                             ></div>
 
                             {/* Menu panel */}
@@ -235,15 +230,17 @@ function NavBar({ isScrolled }) {
                                         <nav className="mb-8 text-center">
                                             <NavLinks
                                                 isMobile={true}
-                                                onLinkClick={toggleMobileMenu}
+                                                onLinkClick={(e) =>
+                                                    toggleMobileMenu(e)
+                                                }
                                             />
                                         </nav>
 
                                         {!loading && (
                                             <button
-                                                onClick={() => {
+                                                onClick={(e) => {
                                                     handleClick();
-                                                    toggleMobileMenu();
+                                                    toggleMobileMenu(e);
                                                 }}
                                                 className={`w-full ${
                                                     applicationPeriods?.status ===
@@ -263,8 +260,8 @@ function NavBar({ isScrolled }) {
                                             </button>
                                         )}
                                         <button
-                                            onClick={() => {
-                                                toggleMobileMenu();
+                                            onClick={(e) => {
+                                                toggleMobileMenu(e);
                                                 navigate("/login/scholar");
                                             }}
                                             className="w-full mt-2 p-2 border border-green-600 text-green-800 text-xs sm:text[15px] rounded-lg transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5"
@@ -280,7 +277,7 @@ function NavBar({ isScrolled }) {
                         <button
                             ref={mobileMenuButtonRef}
                             type="button"
-                            onClick={toggleMobileMenu}
+                            onClick={(e) => toggleMobileMenu(e)}
                             className="lg:hidden p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 relative z-50"
                             aria-label="Toggle mobile menu"
                         >
