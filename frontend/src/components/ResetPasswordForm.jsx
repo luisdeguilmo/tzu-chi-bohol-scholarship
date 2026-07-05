@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "../services/axiosConfig";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
-import { ArrowLeft, EyeClosed, EyeIcon } from "lucide-react";
+import { ArrowLeft, EyeOff, EyeIcon } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import BASE_URL from "../config";
 import img from "../assets/img.jpg";
@@ -161,7 +161,7 @@ const ResetPasswordForm = () => {
                                         {isShowPassword.new_password ? (
                                             <EyeIcon className="w-4 h-4  text-gray-700" />
                                         ) : (
-                                            <EyeClosed className="w-4 h-4  text-gray-700" />
+                                            <EyeOff className="w-4 h-4  text-gray-700" />
                                         )}
                                     </span>
                                 </div>
@@ -203,7 +203,7 @@ const ResetPasswordForm = () => {
                                         {isShowPassword.confirm_password ? (
                                             <EyeIcon className="w-4 h-4  text-gray-700" />
                                         ) : (
-                                            <EyeClosed className="w-4 h-4  text-gray-700" />
+                                            <EyeOff className="w-4 h-4  text-gray-700" />
                                         )}
                                     </span>
                                 </div>
