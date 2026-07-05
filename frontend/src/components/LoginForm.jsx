@@ -264,7 +264,7 @@ const LoginForm = ({ role }) => {
                             ? "Forgot Password"
                             : `${role.charAt(0).toUpperCase() + role.slice(1)} Login`}
                     </h2>
-                    <p className="mt-2 text-gray-500/90 text-sm">
+                    <p className="mt-1 mb-8 text-gray-500/90 text-sm">
                         {isResetPassword
                             ? "Enter your email to receive a password reset link."
                             : "Please sign in to your account"}
