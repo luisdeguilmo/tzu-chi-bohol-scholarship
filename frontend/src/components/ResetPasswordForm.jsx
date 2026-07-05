@@ -106,7 +106,7 @@ const ResetPasswordForm = () => {
                     <h2 className="text-2xl font-bold text-gray-800">
                         Reset Password
                     </h2>
-                    <p className="mt-2 text-gray-500/90 text-sm">
+                    <p className="mt-1 mb-6 text-gray-500/90 text-sm">
                         Set a new password for your account
                     </p>
                 </div>
