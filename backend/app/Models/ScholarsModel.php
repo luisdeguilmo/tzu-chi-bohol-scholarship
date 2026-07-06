@@ -551,7 +551,6 @@ class ScholarsModel
         WHERE u.status = "active"
           AND ai.school_year = :school_year 
           AND eb.present_school = :school
-        GROUP BY s.account_id
         ORDER BY s.last_name ASC, s.first_name ASC
     ';
 
