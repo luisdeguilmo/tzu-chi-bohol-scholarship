@@ -10,7 +10,7 @@ import TableToolbar from "../../../components/TableToolbar";
 import { Eye } from "lucide-react";
 import Table from "../../../components/Table";
 import TableRow from "../../../components/TableRow";
-import { useYears } from "../../../hooks/useYear";
+import { useYearContext } from "../../../context/YearContext";
 
 const CommunityServicePage = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -23,7 +23,7 @@ const CommunityServicePage = () => {
     const [status, setStatus] = useState("all");
     const [active, setActiveTab] = useState("");
 
-    const { years } = useYears();
+    const { years } = useYearContext();
     const { loading, scholars, fetchScholars } = useScholarsAndActivities(
         year,
         month,
@@ -140,7 +140,7 @@ const CommunityServicePage = () => {
                             className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
                             {years.map((year) => (
-                                <option key={year.id} value={year.year}>
+                                <option key={year.year} value={year.year}>
                                     {year.year}
                                 </option>
                             ))}

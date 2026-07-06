@@ -10,12 +10,14 @@ export const useYears = () => {
     const fetchYears = async () => {
         try {
             setLoading(true);
+            setError(null);
+
             const response = await axios.get(`${BASE_URL}app/api/years.php`);
             setYears(response.data.data || []);
-            setLoading(false);
         } catch (err) {
-            console.error("Error fetching batches data:", err);
-            setError("Failed to load batches data. Please try again.");
+            console.error("Error fetching years:", err);
+            setError("Failed to load years. Please try again.");
+        } finally {
             setLoading(false);
         }
     };
@@ -25,8 +27,9 @@ export const useYears = () => {
     }, []);
 
     return {
-        loading,
         years,
+        loading,
+        error,
         fetchYears,
     };
 };

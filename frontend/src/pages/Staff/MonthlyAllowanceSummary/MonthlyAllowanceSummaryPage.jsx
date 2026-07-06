@@ -14,7 +14,7 @@ import { DownloadIcon } from "lucide-react";
 import { formatMonth } from "../../../utils/formatMonth";
 import { useDownloadExcel } from "../../../hooks/useDownloadExcel";
 import { toast } from "react-toastify";
-import { useYears } from "../../../hooks/useYear";
+import { useYearContext } from "../../../context/YearContext";
 
 export default function MonthlyAllowanceSummaryPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -24,7 +24,7 @@ export default function MonthlyAllowanceSummaryPage() {
     const [month, setMonth] = useState("all_months");
     const [status, setStatus] = useState("all");
 
-    const { years } = useYears();
+    const { years } = useYearContext();
     const { loading, allowanceCycles, fetchAllowanceCycles } =
         useMonthlyAllowanceSummary(month, year, sortBy);
     const { downloadExcel } = useDownloadExcel();
@@ -104,7 +104,7 @@ export default function MonthlyAllowanceSummaryPage() {
                     >
                         <option value="all_years">All Years</option>
                         {years.map((year) => (
-                            <option key={year.id} value={year.year}>
+                            <option key={year.year} value={year.year}>
                                 {year.year}
                             </option>
                         ))}

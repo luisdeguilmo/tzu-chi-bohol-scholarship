@@ -5,6 +5,7 @@ import { CriteriaProvider } from "./CriteriaContext";
 import { PeriodProvider } from "./PeriodContext";
 import { SidebarProvider } from "./SidebarContext";
 import { SchoolYearProvider } from "./SchoolYearContext";
+import { YearProvider } from "./YearContext";
 
 export const AppProvider = ({ children }) => {
     return (
@@ -15,7 +16,7 @@ export const AppProvider = ({ children }) => {
                         <CriteriaProvider>
                             <PeriodProvider>
                                 <SchoolYearProvider>
-                                    {children}
+                                    <YearProvider>{children}</YearProvider>
                                 </SchoolYearProvider>
                             </PeriodProvider>
                         </CriteriaProvider>

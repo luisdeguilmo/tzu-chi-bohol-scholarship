@@ -13,7 +13,7 @@ import { eventTableHeaders } from "../../../constant/tableHeaders";
 import { ClipboardEdit, Eye, MessageSquare, PenLine, Plus } from "lucide-react";
 import EventFormModal from "./EventFormModal";
 import { useAuth } from "../../../context/AuthContext";
-import { useYears } from "../../../hooks/useYear";
+import { useYearContext } from "../../../context/YearContext";
 
 export default function EventsPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -29,7 +29,7 @@ export default function EventsPage() {
     const [action, setAction] = useState("create");
 
     const { user } = useAuth();
-    const { years } = useYears();
+    const { years } = useYearContext();
     const { loading, events, fetchEvents } = useEventsOnStaff(
         year,
         status,
@@ -152,7 +152,7 @@ export default function EventsPage() {
                             className="px-3 py-1 w-[150px] text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             {years.map((year) => (
-                                <option key={year.id} value={year.year}>
+                                <option key={year.year} value={year.year}>
                                     {year.year}
                                 </option>
                             ))}
