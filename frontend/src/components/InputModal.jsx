@@ -17,6 +17,7 @@ const InputModal = React.memo(
         buttonLabel,
         closeButtonLabel,
         isLoading,
+        disabledCloseButton = false,
         disabledButton = false,
         disabledButtonSave = false,
         isLarge = false,
@@ -58,18 +59,20 @@ const InputModal = React.memo(
                             <div className="relative px-4 py-4 rounded-t-lg bg-gray-50 border-b flex-shrink-0">
                                 <h2
                                     id="modal-title"
-                                    className="text-sm font-medium text-slate-700 pr-10 leading-tight"
+                                    className={`${disabledCloseButton ? "text-center" : "text-left"} text-sm font-medium text-slate-700 pr-10 leading-tight`}
                                 >
                                     {label}
                                 </h2>
-                                <button
-                                    type="button"
-                                    onClick={handleClose}
-                                    className="absolute top-2 right-4 p-2 text-slate-600 rounded-full hover:bg-gray-200 active:ring-1 active:ring-gray-300 transition"
-                                    aria-label="Close modal"
-                                >
-                                    <X size={16} />
-                                </button>
+                                {!disabledCloseButton && (
+                                    <button
+                                        type="button"
+                                        onClick={handleClose}
+                                        className="absolute top-2 right-4 p-2 text-slate-600 rounded-full hover:bg-gray-200 active:ring-1 active:ring-gray-300 transition"
+                                        aria-label="Close modal"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                )}
                             </div>
 
                             {/* Modal Content */}

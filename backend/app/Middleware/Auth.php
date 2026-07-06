@@ -11,10 +11,72 @@ use Firebase\JWT\Key;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\SignatureInvalidException;
 use Firebase\JWT\BeforeValidException;
+use PDO;
+use UnexpectedValueException;
+use Config\Database;
 
 class Auth
 {
     private static ?object $payload = null;
+
+    private const INACTIVITY_TIMEOUT_SECONDS = 1800; // 30 minutes
+
+    public static function authenticate(): array
+    {
+        $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+
+        if (!preg_match('/Bearer\s(\S+)/', $header, $matches)) {
+            self::reject('Missing or malformed Authorization header.', 401);
+        }
+
+        try {
+            $decoded = FirebaseJWT::decode($matches[1], new Key(Jwt::secret(), 'HS256'));
+        } catch (ExpiredException $e) {
+            self::reject('Session expired. Please log in again.', 401);
+        } catch (SignatureInvalidException | UnexpectedValueException $e) {
+            self::reject('Invalid token.', 401);
+        }
+
+        $jti = $decoded->jti ?? null;
+
+        if (!$jti) {
+            self::reject('Invalid token.', 401);
+        }
+
+        $pdo = (new Database())->getConnection();
+
+        $stmt = $pdo->prepare('SELECT last_activity FROM user_sessions WHERE jti = ? LIMIT 1');
+        $stmt->execute([$jti]);
+        $session = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$session) {
+            // Logged out elsewhere, or never recorded — treat as invalid
+            self::reject('Session not found. Please log in again.', 401);
+        }
+
+        $idleSeconds = time() - strtotime($session['last_activity']);
+
+        if ($idleSeconds > self::INACTIVITY_TIMEOUT_SECONDS) {
+            $del = $pdo->prepare('DELETE FROM user_sessions WHERE jti = ?');
+            $del->execute([$jti]);
+
+            self::reject('You have been logged out due to inactivity.', 401);
+        }
+
+        // Sliding window — any authenticated request resets the idle clock
+        $update = $pdo->prepare('UPDATE user_sessions SET last_activity = NOW() WHERE jti = ?');
+        $update->execute([$jti]);
+
+        return (array) $decoded;
+    }
+
+    private static function reject(string $message, int $status): never
+    {
+        http_response_code($status);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => $message]);
+        exit();
+    }
 
     /**
      * Validate the Bearer token and load the current user into Auth::$payload.

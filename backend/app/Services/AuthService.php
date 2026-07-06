@@ -53,10 +53,9 @@ class AuthService
 
             if ($rateCheck['limited']) {
                 $this->logAuth('LOGIN BLOCKED - rate limited', $email, $userType);
-                return array_merge(
-                    $this->failure($rateCheck['message'], 429),
-                    ['retry_after' => $rateCheck['retry_after']],
-                );
+                return array_merge($this->failure($rateCheck['message'], 429), [
+                    'retry_after' => $rateCheck['retry_after'],
+                ]);
             }
 
             $user = $this->fetchUser($email, $userType);
@@ -101,15 +100,15 @@ class AuthService
                 'success' => true,
                 'token' => $jwt,
                 'user' => [
-                    'user_id'        => $user['account_id'],
-                    'email'          => $user['email'],
-                    'type'           => $user['type'],
-                    'scholar_type'   => $additionalData['scholar_type'],
+                    'user_id' => $user['account_id'],
+                    'email' => $user['email'],
+                    'type' => $user['type'],
+                    'scholar_type' => $additionalData['scholar_type'],
                     'account_status' => $user['status'],
-                    'first_name'     => $name['first_name'] ?? null,
-                    'last_name'      => $name['last_name'] ?? null,
-                    'name'           => $name['name'] ?? null,
-                    'profile'        => $additionalData['profile'],
+                    'first_name' => $name['first_name'] ?? null,
+                    'last_name' => $name['last_name'] ?? null,
+                    'name' => $name['name'] ?? null,
+                    'profile' => $additionalData['profile'],
                 ],
             ];
         } catch (PDOException $e) {
@@ -196,8 +195,8 @@ class AuthService
     {
         $queries = [
             'scholar' => 'SELECT first_name, last_name FROM scholars WHERE account_id = ? LIMIT 1',
-            'staff'   => 'SELECT first_name, last_name FROM staff   WHERE account_id = ? LIMIT 1',
-            'admin'   => 'SELECT name                 FROM admin    WHERE id          = ? LIMIT 1',
+            'staff' => 'SELECT first_name, last_name FROM staff   WHERE account_id = ? LIMIT 1',
+            'admin' => 'SELECT name                 FROM admin    WHERE id          = ? LIMIT 1',
         ];
 
         if (!isset($queries[$userType])) {
@@ -213,22 +212,48 @@ class AuthService
     /**
      * Build and sign a JWT for the authenticated user.
      */
+
     private function buildJwt(array $user): string
     {
         $now = time();
+        $jti = bin2hex(random_bytes(16));
 
         $payload = [
-            'iss'            => $_ENV['ALLOWED_ORIGIN'] ?? 'app',
-            'iat'            => $now,
-            'nbf'            => $now,
-            'exp'            => $now + Jwt::expiry(),
-            'jti'            => bin2hex(random_bytes(16)),
-            'user_id'        => $user['account_id'],
-            'type'           => $user['type'],
+            'iss' => $_ENV['ALLOWED_ORIGIN'] ?? 'app',
+            'iat' => $now,
+            'nbf' => $now,
+            'exp' => $now + Jwt::expiry(),
+            'jti' => $jti,
+            'user_id' => $user['account_id'],
+            'type' => $user['type'],
             'account_status' => $user['status'],
         ];
 
+        $this->recordSession($jti, $user['account_id']);
+
         return FirebaseJWT::encode($payload, Jwt::secret(), 'HS256');
+    }
+
+    /**
+     * Create a session-tracking row for inactivity enforcement.
+     */
+    private function recordSession(string $jti, int $accountId): void
+    {
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO user_sessions (jti, account_id, last_activity, created_at)
+             VALUES (?, ?, NOW(), NOW())',
+        );
+
+        $stmt->execute([$jti, $accountId]);
+    }
+
+    /**
+     * Invalidate a session (explicit logout, or after idle timeout).
+     */
+    public function logout(string $jti): void
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM user_sessions WHERE jti = ?');
+        $stmt->execute([$jti]);
     }
 
     /**
@@ -236,8 +261,8 @@ class AuthService
      */
     private function loadAdditionalData(array $user): array
     {
-        $accountModel    = new UserAccountModel();
-        $scholarModel    = new ScholarModel();
+        $accountModel = new UserAccountModel();
+        $scholarModel = new ScholarModel();
         $schoolYearModel = new SchoolYearModel();
 
         $schoolYear = $schoolYearModel->getActiveSchoolYear();
@@ -251,7 +276,7 @@ class AuthService
         $scholarType = $scholarModel->getScholarType($user['account_id'], $schoolYear);
 
         return [
-            'profile'     => $profile,
+            'profile' => $profile,
             'scholar_type' => $scholarType,
         ];
     }
@@ -259,24 +284,24 @@ class AuthService
     // ── Logging ────────────────────────────────────────────────────────────
 
     private function logAuth(string $message, ?string $email = null, ?string $userType = null): void
-{
-    $ts   = date('Y-m-d H:i:s');
-    $ip   = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    $line = "[$ts] [IP: $ip]";
+    {
+        $ts = date('Y-m-d H:i:s');
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $line = "[$ts] [IP: $ip]";
 
-    if ($email) {
-        $line .= " [Email: $email]";
+        if ($email) {
+            $line .= " [Email: $email]";
+        }
+
+        if ($userType) {
+            $line .= " [Type: $userType]";
+        }
+
+        $line .= " $message";
+
+        // Write to the PHP/server error log
+        error_log($line);
     }
-
-    if ($userType) {
-        $line .= " [Type: $userType]";
-    }
-
-    $line .= " $message";
-
-    // Write to the PHP/server error log
-    error_log($line);
-}
 
     // ── Result builders ────────────────────────────────────────────────────
 
@@ -285,7 +310,7 @@ class AuthService
         return [
             'success' => false,
             'message' => $message,
-            'status'  => $status,
+            'status' => $status,
         ];
     }
 }

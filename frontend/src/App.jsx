@@ -26,6 +26,8 @@ const HomeVisitation = React.lazy(
 import ProtectedRoute from "./routes/ProtectedRoute";
 import "./services/axiosConfig";
 import PageLoader from "./components/PageLoader";
+import { useAuth } from "./context/AuthContext";
+import InputModal from "./components/InputModal";
 
 const Applications = React.lazy(
     () => import("./pages/Staff/Application/Applications"),
@@ -172,6 +174,35 @@ export function App() {
     //         </div>
     //     );
     // }
+
+    const { idleWarning, stayLoggedIn, logout } = useAuth();
+
+    const [timeRemaining, setTimeRemaining] = useState(180);
+
+    useEffect(() => {
+        if (!idleWarning) {
+            setTimeRemaining(180);
+            return;
+        }
+
+        setTimeRemaining(180);
+
+        const interval = setInterval(() => {
+            setTimeRemaining((prev) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    return 0;
+                }
+
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [idleWarning]);
+
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
 
     return (
         <Router>
@@ -362,6 +393,57 @@ export function App() {
                 position="top-center"
                 autoClose={3000}
             />
+
+            {idleWarning && (
+                <InputModal
+                    isOpen={idleWarning}
+                    onClose={null}
+                    disabledButton={true}
+                    disabledCloseButton={true}
+                    label={"Session Timeout"}
+                >
+                    <p className="pt-6 text-center text-xs md:text-sm text-gray-600">
+                        Your session is about to expire due to inactivity.
+                    </p>
+
+                    <div className="my-6 text-center">
+                        <p className="text-xs uppercase tracking-wide text-gray-500">
+                            Time remaining
+                        </p>
+                        <p className="text-xl md:text-4xl font-bold text-red-600">
+                            <p className="text-xl md:text-4xl font-bold text-red-600">
+                                {minutes > 0 && (
+                                    <>
+                                        {minutes}{" "}
+                                        {minutes === 1 ? "min" : "mins"}{" "}
+                                    </>
+                                )}
+                                {seconds} {seconds === 1 ? "sec" : "secs"}
+                            </p>
+                        </p>
+                    </div>
+
+                    <p className="px-3 pb-6 text-center text-xs md:text-sm text-gray-600">
+                        You can choose to stay signed in to continue working, or
+                        log out now to end your session immediately.
+                    </p>
+
+                    <div className="flex justify-center mb-6 gap-6 md:gap-10">
+                        <button
+                            onClick={() => logout("manual")}
+                            className="bg-gray-200 text-gray-600 text-xs md:text-sm px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
+                        >
+                            Logout Now
+                        </button>
+                        <button
+                            onClick={stayLoggedIn}
+                            className={`px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-xs md:text-sm rounded-lg font-medium transition`}
+                        >
+                            Stay Logged In
+                        </button>
+                    </div>
+                </InputModal>
+            )}
         </Router>
     );
 }
