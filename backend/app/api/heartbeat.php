@@ -1,5 +1,10 @@
 <?php
 // heartbeat.php
+error_log('DEBUG $_SERVER headers: ' . json_encode(array_filter(
+    $_SERVER,
+    fn($key) => str_contains($key, 'AUTH') || str_contains($key, 'HTTP_'),
+    ARRAY_FILTER_USE_KEY
+)));
 require_once __DIR__ . '/../../config/bootstrap.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../Middleware/Cors.php';
