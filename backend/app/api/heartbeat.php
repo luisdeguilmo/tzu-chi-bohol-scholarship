@@ -16,7 +16,23 @@ use Firebase\JWT\ExpiredException;
 
 Cors::handle();
 
-$header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+function getBearerToken(): ?string
+{
+    $header = $_SERVER['HTTP_AUTHORIZATION'] ?? ($_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? null);
+
+    if (!$header && function_exists('getallheaders')) {
+        $headers = getallheaders();
+        $header = $headers['Authorization'] ?? ($headers['authorization'] ?? null);
+    }
+
+    if ($header && preg_match('/Bearer\s(\S+)/', $header, $m)) {
+        return $m[1];
+    }
+
+    return null;
+}
+
+$header = getBearerToken();
 
 if (!preg_match('/Bearer\s(\S+)/', $header, $m)) {
     http_response_code(401);
