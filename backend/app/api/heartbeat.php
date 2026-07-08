@@ -37,16 +37,16 @@ function getBearerToken(): ?string
     return null;
 }
 
-$header = getBearerToken();
+$token = getBearerToken();
 
-if (!preg_match('/Bearer\s(\S+)/', $header, $m)) {
+if (!$token) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Missing token.']);
     exit();
 }
 
 try {
-    $decoded = FirebaseJWT::decode($m[1], new Key(Jwt::secret(), 'HS256'));
+    $decoded = FirebaseJWT::decode($token, new Key(Jwt::secret(), 'HS256'));
 } catch (ExpiredException $e) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Token expired.']);
