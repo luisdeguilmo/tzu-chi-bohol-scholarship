@@ -7,6 +7,7 @@ import {
     useRef,
 } from "react";
 import BASE_URL from "../config";
+import { markAuthReady } from "../services/authReadyState";
 
 const AuthContext = createContext(null);
 
@@ -17,6 +18,7 @@ export const useAuth = () => {
     return context;
 };
 
+const HEARTBEAT_INTERVAL_MS = 25 * 1000; // 25 seconds
 const IDLE_LIMIT_MS = 30 * 60 * 1000; // 30 minutes
 const WARNING_BEFORE_MS = 180 * 1000; // warn 3 minute before logout
 const ACTIVITY_STORAGE_KEY = "lastActivityAt";
@@ -127,33 +129,333 @@ export const AuthProvider = ({ children }) => {
     }, [resetIdleTimers]);
 
     // On mount, restore session from localStorage
+    // useEffect(() => {
+    //     const stored = localStorage.getItem("token");
+    //     if (stored) {
+    //         const payload = decodeToken(stored);
+    //         if (payload) {
+    //             const storedUser = localStorage.getItem("user");
+    //             if (storedUser) {
+    //                 try {
+    //                     tokenRef.current = stored;
+    //                     setToken(stored);
+    //                     setUser(JSON.parse(storedUser));
+    //                 } catch {
+    //                     logout();
+    //                 }
+    //             } else {
+    //                 logout();
+    //             }
+    //         } else {
+    //             localStorage.removeItem("token");
+    //             localStorage.removeItem("user");
+    //         }
+    //     }
+    //     setLoading(false);
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
+
+    // On mount, restore session from localStorage — but verify with the
+    // server first, since a closed tab can leave localStorage stale even
+    // after the session row has been deleted server-side (idle timeout,
+    // heartbeat cleanup, cron, etc).
+
     useEffect(() => {
-        const stored = localStorage.getItem("token");
-        if (stored) {
+        const controller = new AbortController();
+
+        const verifySession = async () => {
+            const stored = localStorage.getItem("token");
+            console.log(stored);
+            if (!stored) {
+                setLoading(false);
+                markAuthReady();
+                return;
+            }
+
             const payload = decodeToken(stored);
-            if (payload) {
-                const storedUser = localStorage.getItem("user");
-                if (storedUser) {
-                    try {
-                        tokenRef.current = stored;
-                        setToken(stored);
-                        setUser(JSON.parse(storedUser));
-                    } catch {
-                        logout();
-                    }
-                } else {
-                    logout();
-                }
-            } else {
+            console.log(payload);
+            if (!payload) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
+                setLoading(false);
+                markAuthReady();
+                return;
             }
-        }
-        setLoading(false);
+
+            const storedUser = localStorage.getItem("user");
+            console.log(storedUser);
+            if (!storedUser) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                setLoading(false);
+                markAuthReady();
+                return;
+            }
+
+            try {
+                const res = await fetch(`${BASE_URL}app/api/heartbeat.php`, {
+                    method: "POST",
+                    headers: { Authorization: `Bearer ${stored}` },
+                    signal: controller.signal,
+                });
+
+                if (!res.ok) {
+                    // Server explicitly said the session is gone — this IS
+                    // a reliable signal, safe to clear.
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem(ACTIVITY_STORAGE_KEY);
+                    setLoading(false);
+                    markAuthReady();
+                    return;
+                }
+
+                try {
+                    tokenRef.current = stored;
+                    setToken(stored);
+                    setUser(JSON.parse(storedUser));
+                } catch {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                }
+            } catch (err) {
+                // AbortError = the request was cancelled (e.g. this page is
+                // being torn down by another refresh/navigation). That tells
+                // us nothing about whether the session is valid — don't wipe
+                // localStorage on a guess. A genuine network failure (e.g.
+                // server unreachable) is just as ambiguous, so we also leave
+                // storage alone and let the app retry on next load instead
+                // of forcing a false logout.
+                if (err.name !== "AbortError") {
+                    console.error("Session verification failed:", err);
+                }
+                // Restore optimistically from localStorage rather than
+                // clearing it — the next successful check will correct
+                // this if the session really is dead.
+                try {
+                    tokenRef.current = stored;
+                    setToken(stored);
+                    setUser(JSON.parse(storedUser));
+                } catch {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                }
+            }
+
+            setLoading(false);
+            markAuthReady();
+        };
+
+        verifySession();
+
+        return () => controller.abort();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // On mount, restore session from localStorage
+    // useEffect(() => {
+    //     const stored = localStorage.getItem("token");
+    //     if (stored) {
+    //         const payload = decodeToken(stored);
+    //         if (payload) {
+    //             const storedUser = localStorage.getItem("user");
+    //             if (storedUser) {
+    //                 try {
+    //                     tokenRef.current = stored;
+    //                     setToken(stored);
+    //                     setUser(JSON.parse(storedUser));
+    //                 } catch {
+    //                     logout();
+    //                 }
+    //             } else {
+    //                 logout();
+    //             }
+    //         } else {
+    //             localStorage.removeItem("token");
+    //             localStorage.removeItem("user");
+    //         }
+    //     }
+    //     setLoading(false);
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
+
     // Wire up activity listeners + cross-tab sync whenever we have a session
+    // useEffect(() => {
+    //     if (!token) return;
+
+    //     resetIdleTimers();
+
+    //     ACTIVITY_EVENTS.forEach((eventName) => {
+    //         document.addEventListener(eventName, recordActivity, {
+    //             passive: true,
+    //         });
+    //     });
+
+    //     const onStorage = (event) => {
+    //         if (event.key === ACTIVITY_STORAGE_KEY && event.newValue) {
+    //             resetIdleTimers();
+    //             setIdleWarning(false);
+    //         }
+    //         // Another tab logged out (token cleared) — mirror it here
+
+    //         if (event.key === "token" && event.newValue === null) {
+    //             clearTimeout(warningTimerRef.current);
+    //             clearTimeout(logoutTimerRef.current);
+    //             tokenRef.current = null;
+    //             idleWarningRef.current = false;
+    //             setToken(null);
+    //             setUser(null);
+    //             setIdleWarning(false);
+    //         }
+    //     };
+    //     window.addEventListener("storage", onStorage);
+
+    //     return () => {
+    //         ACTIVITY_EVENTS.forEach((eventName) => {
+    //             document.removeEventListener(eventName, recordActivity);
+    //         });
+    //         window.removeEventListener("storage", onStorage);
+    //         clearTimeout(warningTimerRef.current);
+    //         clearTimeout(logoutTimerRef.current);
+    //     };
+    // }, [token, recordActivity, resetIdleTimers]);
+
+    // useEffect(() => {
+    //     if (!token) return;
+
+    //     resetIdleTimers();
+
+    //     ACTIVITY_EVENTS.forEach((eventName) => {
+    //         document.addEventListener(eventName, recordActivity, {
+    //             passive: true,
+    //         });
+    //     });
+
+    //     const onStorage = (event) => {
+    //         if (event.key === ACTIVITY_STORAGE_KEY && event.newValue) {
+    //             resetIdleTimers();
+    //             setIdleWarning(false);
+    //         }
+    //         if (event.key === "token" && event.newValue === null) {
+    //             clearTimeout(warningTimerRef.current);
+    //             clearTimeout(logoutTimerRef.current);
+    //             tokenRef.current = null;
+    //             setToken(null);
+    //             setUser(null);
+    //             setIdleWarning(false);
+    //         }
+    //     };
+    //     window.addEventListener("storage", onStorage);
+
+    //     // Heartbeat: proves the tab is still open, independent of user activity.
+    //     // Only runs while the tab is visible — a backgrounded/minimized tab
+    //     // shouldn't count as "still open" for cleanup purposes.
+    //     const sendHeartbeat = () => {
+    //         if (!tokenRef.current || document.visibilityState !== "visible")
+    //             return;
+
+    //         fetch(`${BASE_URL}app/api/heartbeat.php`, {
+    //             method: "POST",
+    //             headers: { Authorization: `Bearer ${tokenRef.current}` },
+    //         }).catch(() => {
+    //             // Network hiccup — the cron's grace window covers a few missed pings
+    //         });
+    //     };
+
+    //     const heartbeatId = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+
+    //     // Fire one immediately (don't wait the first 25s), and again whenever
+    //     // the tab regains visibility after being backgrounded.
+    //     sendHeartbeat();
+    //     const onVisibilityChange = () => {
+    //         if (document.visibilityState === "visible") sendHeartbeat();
+    //     };
+    //     document.addEventListener("visibilitychange", onVisibilityChange);
+
+    //     return () => {
+    //         ACTIVITY_EVENTS.forEach((eventName) => {
+    //             document.removeEventListener(eventName, recordActivity);
+    //         });
+    //         window.removeEventListener("storage", onStorage);
+    //         document.removeEventListener(
+    //             "visibilitychange",
+    //             onVisibilityChange,
+    //         );
+    //         clearInterval(heartbeatId);
+    //         clearTimeout(warningTimerRef.current);
+    //         clearTimeout(logoutTimerRef.current);
+    //     };
+    // }, [token, recordActivity, resetIdleTimers]);
+
+    // useEffect(() => {
+    //     if (!token) return;
+
+    //     resetIdleTimers();
+
+    //     ACTIVITY_EVENTS.forEach((eventName) => {
+    //         document.addEventListener(eventName, recordActivity, {
+    //             passive: true,
+    //         });
+    //     });
+
+    //     const onStorage = (event) => {
+    //         if (event.key === ACTIVITY_STORAGE_KEY && event.newValue) {
+    //             resetIdleTimers();
+    //             setIdleWarning(false);
+    //         }
+    //         if (event.key === "token" && event.newValue === null) {
+    //             clearTimeout(warningTimerRef.current);
+    //             clearTimeout(logoutTimerRef.current);
+    //             tokenRef.current = null;
+    //             setToken(null);
+    //             setUser(null);
+    //             setIdleWarning(false);
+    //         }
+    //     };
+    //     window.addEventListener("storage", onStorage);
+
+    //     // The api.js interceptor dispatches this on any 401 — session was
+    //     // rejected server-side (idle timeout, cron cleanup, manual logout
+    //     // elsewhere, etc). Run the real logout() so localStorage, React
+    //     // state, and timers all get cleared consistently.
+    //     const onAuthExpired = () => {
+    //         logout();
+    //     };
+    //     window.addEventListener("auth:expired", onAuthExpired);
+
+    //     // Heartbeat: proves the tab is still open, independent of user activity.
+    //     const sendHeartbeat = () => {
+    //         if (!tokenRef.current) return;
+
+    //         fetch(`${BASE_URL}app/api/heartbeat.php`, {
+    //             method: "POST",
+    //             headers: { Authorization: `Bearer ${tokenRef.current}` },
+    //         }).catch(() => {});
+    //     };
+
+    //     const heartbeatId = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+    //     sendHeartbeat();
+    //     const onVisibilityChange = () => {
+    //         if (document.visibilityState === "visible") sendHeartbeat();
+    //     };
+    //     document.addEventListener("visibilitychange", onVisibilityChange);
+
+    //     return () => {
+    //         ACTIVITY_EVENTS.forEach((eventName) => {
+    //             document.removeEventListener(eventName, recordActivity);
+    //         });
+    //         window.removeEventListener("storage", onStorage);
+    //         window.removeEventListener("auth:expired", onAuthExpired);
+    //         document.removeEventListener(
+    //             "visibilitychange",
+    //             onVisibilityChange,
+    //         );
+    //         clearInterval(heartbeatId);
+    //         clearTimeout(warningTimerRef.current);
+    //         clearTimeout(logoutTimerRef.current);
+    //     };
+    // }, [token, recordActivity, resetIdleTimers, logout]);
+
     useEffect(() => {
         if (!token) return;
 
@@ -166,33 +468,49 @@ export const AuthProvider = ({ children }) => {
         });
 
         const onStorage = (event) => {
-            if (event.key === ACTIVITY_STORAGE_KEY && event.newValue) {
-                resetIdleTimers();
-                setIdleWarning(false);
-            }
-            // Another tab logged out (token cleared) — mirror it here
-
-            if (event.key === "token" && event.newValue === null) {
-                clearTimeout(warningTimerRef.current);
-                clearTimeout(logoutTimerRef.current);
-                tokenRef.current = null;
-                idleWarningRef.current = false;
-                setToken(null);
-                setUser(null);
-                setIdleWarning(false);
-            }
+            /* ...unchanged... */
         };
         window.addEventListener("storage", onStorage);
+
+        const onAuthExpired = () => {
+            logout();
+        };
+        window.addEventListener("auth:expired", onAuthExpired);
+
+        const sendHeartbeat = () => {
+            if (!tokenRef.current) return;
+            fetch(`${BASE_URL}app/api/heartbeat.php`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${tokenRef.current}` },
+            }).catch(() => {});
+        };
+
+        // Don't call sendHeartbeat() immediately here — verifySession() just
+        // confirmed liveness a moment ago. Firing another identical check
+        // back-to-back is redundant and, on single-threaded dev servers
+        // (php -S), can race with the tail of that just-completed request.
+        const heartbeatId = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+
+        const onVisibilityChange = () => {
+            if (document.visibilityState === "visible") sendHeartbeat();
+        };
+        document.addEventListener("visibilitychange", onVisibilityChange);
 
         return () => {
             ACTIVITY_EVENTS.forEach((eventName) => {
                 document.removeEventListener(eventName, recordActivity);
             });
             window.removeEventListener("storage", onStorage);
+            window.removeEventListener("auth:expired", onAuthExpired);
+            document.removeEventListener(
+                "visibilitychange",
+                onVisibilityChange,
+            );
+            clearInterval(heartbeatId);
             clearTimeout(warningTimerRef.current);
             clearTimeout(logoutTimerRef.current);
         };
-    }, [token, recordActivity, resetIdleTimers]);
+    }, [token, recordActivity, resetIdleTimers, logout]);
 
     const login = useCallback((newToken, userData) => {
         localStorage.setItem("token", newToken);

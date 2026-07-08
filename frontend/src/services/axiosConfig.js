@@ -1,15 +1,16 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import BASE_URL from "../config";
+import { whenAuthReady } from "./authReadyState";
 
 const api = axios.create({
     baseURL: BASE_URL,
     headers: { "Content-Type": "application/json" },
 });
 
-// Attach token from localStorage on every request
 api.interceptors.request.use(
-    (config) => {
+    async (config) => {
+        await whenAuthReady();
         const token = localStorage.getItem("token");
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -19,7 +20,6 @@ api.interceptors.request.use(
     (error) => Promise.reject(error),
 );
 
-// Global response error handling
 api.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -27,11 +27,10 @@ api.interceptors.response.use(
         const message = error.response?.data?.message;
 
         if (status === 401) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            toast.error(message || "Session expired. Please log in again.");
-            // Let the ProtectedRoute redirect naturally on re-render
-            window.dispatchEvent(new Event("auth:expired"));
+            if (localStorage.getItem("token")) {
+                toast.error(message || "Session expired. Please log in again.");
+                window.dispatchEvent(new Event("auth:expired"));
+            }
         } else if (status === 403) {
             toast.error(message || "Access denied.");
         } else if (status >= 500) {
@@ -43,6 +42,50 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+// import axios from "axios";
+// import { toast } from "react-toastify";
+// import BASE_URL from "../config";
+
+// const api = axios.create({
+//     baseURL: BASE_URL,
+//     headers: { "Content-Type": "application/json" },
+// });
+
+// // Attach token from localStorage on every request
+// api.interceptors.request.use(
+//     (config) => {
+//         const token = localStorage.getItem("token");
+//         if (token) {
+//             config.headers.Authorization = `Bearer ${token}`;
+//         }
+//         return config;
+//     },
+//     (error) => Promise.reject(error),
+// );
+
+// // Global response error handling
+// api.interceptors.response.use(
+//     (response) => response,
+//     (error) => {
+//         const status = error.response?.status;
+//         const message = error.response?.data?.message;
+
+//         if (status === 401) {
+//             toast.error(message || "Session expired. Please log in again.");
+//             // Let the ProtectedRoute redirect naturally on re-render
+//             window.dispatchEvent(new Event("auth:expired"));
+//         } else if (status === 403) {
+//             toast.error(message || "Access denied.");
+//         } else if (status >= 500) {
+//             toast.error(message || "Server error. Please try again later.");
+//         }
+
+//         return Promise.reject(error);
+//     },
+// );
+
+// export default api;
 
 // // axiosConfig.js
 // import axios from "axios";

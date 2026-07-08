@@ -257,6 +257,20 @@ class AuthService
     }
 
     /**
+     * Record that the tab/session is still open. Does NOT count as
+     * user activity — only proves the tab hasn't been closed.
+     */
+    public function heartbeat(string $jti): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE user_sessions SET last_heartbeat = NOW() WHERE jti = ?',
+        );
+        $stmt->execute([$jti]);
+
+        return $stmt->rowCount() > 0;
+    }
+
+    /**
      * Load profile and scholar-type data after a successful login.
      */
     private function loadAdditionalData(array $user): array
