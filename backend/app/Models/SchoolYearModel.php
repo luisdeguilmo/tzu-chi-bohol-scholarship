@@ -19,7 +19,7 @@ class SchoolYearModel
 
     public function getSchoolYearById($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE id = :id';
+        $query = 'SELECT id FROM ' . $this->table_name . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);
@@ -45,7 +45,7 @@ class SchoolYearModel
 
     public function getAllSchoolYears()
     {
-        $query = 'SELECT * FROM ' . $this->table_name;
+        $query = 'SELECT school_year FROM ' . $this->table_name;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -54,7 +54,7 @@ class SchoolYearModel
 
     public function getSchoolYear($school_year)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE school_year = :school_year';
+        $query = 'SELECT id FROM ' . $this->table_name . ' WHERE school_year = :school_year';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':school_year', $school_year, \PDO::PARAM_INT);
         $stmt->execute();

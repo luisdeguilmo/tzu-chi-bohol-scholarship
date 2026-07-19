@@ -135,7 +135,7 @@ class ApplicationPeriodModel
 
     public function getApplicationPeriodById($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE id = :id';
+        $query = 'SELECT type, start_date, end_date, school_year, status, announcement_message FROM ' . $this->table_name . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();

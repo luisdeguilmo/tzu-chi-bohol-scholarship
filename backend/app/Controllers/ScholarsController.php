@@ -89,7 +89,7 @@ class ScholarsController
             $data = [];
 
             if ($tab === 'all') {
-                $results = $scholar->getAllScholars($status, $school_year, $sort);
+                // $results = $scholar->getAllScholars($status, $school_year, $sort);
             } elseif ($tab === 'active') {
                 $scholarIds = $scholar->getAllScholarsId();
                 $isProcessed = $cycleModel->isPreviousMonthProcessed();

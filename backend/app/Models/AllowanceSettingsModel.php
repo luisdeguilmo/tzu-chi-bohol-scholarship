@@ -18,7 +18,7 @@ class AllowanceSettingsModel
 
     public function getMaximumHoursAndAmountPerHour()
     {
-        $query = 'SELECT * FROM ' . $this->table_name;
+        $query = 'SELECT maximum_hours, amount_per_hour FROM ' . $this->table_name;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);

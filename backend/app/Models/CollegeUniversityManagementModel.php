@@ -38,7 +38,7 @@ class CollegeUniversityManagementModel
 
     public function getAllCollegesAndUniversities($filter)
     {
-        $query = 'SELECT * FROM ' . $this->table_name;
+        $query = 'SELECT id, name, is_visible, type FROM ' . $this->table_name;
 
         if ($filter === 'visible') {
             $query .= " WHERE is_visible = '1'";
@@ -54,7 +54,7 @@ class CollegeUniversityManagementModel
 
     public function getAllCollegesAndUniversitiesAlphabetically()
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' ORDER BY name ASC';
+        $query = 'SELECT id, name, is_visible, type FROM ' . $this->table_name . ' ORDER BY name ASC';
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -63,7 +63,7 @@ class CollegeUniversityManagementModel
 
     public function getCollegeOrUniversityById($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE id = :id';
+        $query = 'SELECT id, name, is_visible, type FROM ' . $this->table_name . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

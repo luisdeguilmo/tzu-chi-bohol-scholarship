@@ -161,7 +161,7 @@ class ProfileController
     private function getFileRecord($type, $fileId)
     {
         $stmt = $this->pdo->prepare(
-            'SELECT * FROM profile_pictures WHERE application_id = :id LIMIT 1',
+            'SELECT file_path FROM profile_pictures WHERE application_id = :id LIMIT 1',
         );
         $stmt->bindParam(':id', $fileId);
         $stmt->execute();

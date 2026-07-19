@@ -155,7 +155,7 @@ class ApplicantModel
     public function getApplicantInfo($id, $schoolYear)
     {
         $query =
-            'SELECT * FROM application_info WHERE (scholar_id = :id OR application_id = :id) AND school_year = :school_year';
+            'SELECT application_id FROM application_info WHERE (scholar_id = :id OR application_id = :id) AND school_year = :school_year';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->bindParam(':school_year', $schoolYear);
@@ -218,7 +218,7 @@ class ApplicantModel
 
     public function getProfileById($id)
     {
-        $query = "SELECT *
+        $query = "SELECT application_id, file_path
                 FROM profile_pictures 
                 WHERE application_id = :application_id";
 

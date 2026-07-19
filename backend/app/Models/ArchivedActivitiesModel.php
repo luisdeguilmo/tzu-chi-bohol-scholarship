@@ -203,7 +203,7 @@ class ArchivedActivitiesModel
 
                 if ($participant && is_array($participant)) {
                     $participants[] = [
-                        'scholar_id' => $participant['application_id'] ?? null,
+                        'scholar_id' => $scholarId['account_id'] ?? null,
                         'participant_name' =>
                             ($participant['first_name'] ?? '') .
                             ' ' .

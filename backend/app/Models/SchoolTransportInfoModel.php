@@ -102,7 +102,7 @@ class SchoolTransportInfoModel
 
     public function getTransportInfoById($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE scholar_id = :scholar_id';
+        $query = 'SELECT stay_type, address, daily_transport_cost, route_explanation FROM ' . $this->table_name . ' WHERE scholar_id = :scholar_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':scholar_id', $id);
         $stmt->execute();

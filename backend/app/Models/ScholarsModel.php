@@ -672,7 +672,7 @@ class ScholarsModel
 
     public function getProfileById($id)
     {
-        $query = "SELECT *
+        $query = "SELECT application_id, file_path
                 FROM profile_pictures 
                 WHERE application_id = :application_id";
 

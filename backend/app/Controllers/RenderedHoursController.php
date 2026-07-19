@@ -82,7 +82,7 @@ class RenderedHoursController
             $renderedHours = new RenderedHoursModel();
             $scholarId = isset($_GET['account_id']) ? (int) $_GET['account_id'] : null;
 
-            if ($scholarId && !$renderedHours->getScholarById($scholarId)) {
+            if ($scholarId && !$renderedHours->scholarExists($scholarId)) {
                 throw new \Exception('Scholar not found');
             }
 

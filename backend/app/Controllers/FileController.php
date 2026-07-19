@@ -164,7 +164,7 @@ class FileController
 
         error_log("[FileController::getFileRecord] Querying table=\"$table\" for id=\"$fileId\"");
 
-        $stmt = $this->pdo->prepare("SELECT * FROM $table WHERE id = :id LIMIT 1");
+        $stmt = $this->pdo->prepare("SELECT file_path FROM $table WHERE id = :id LIMIT 1");
         $stmt->bindParam(':id', $fileId);
         $stmt->execute();
 

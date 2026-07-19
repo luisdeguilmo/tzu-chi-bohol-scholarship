@@ -167,15 +167,16 @@ class RenderedHoursModel
         return $stmt->execute();
     }
 
-    public function getScholarById($account_id)
+    public function scholarExists(int $accountId): bool
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE account_id = :account_id';
+        $query = 'SELECT 1 FROM ' . $this->table_name . ' WHERE account_id = :account_id LIMIT 1';
+
         $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            ':account_id' => $accountId,
+        ]);
 
-        $stmt->bindParam(':account_id', $account_id);
-        $stmt->execute();
-
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (bool) $stmt->fetchColumn();
     }
 
     public function getScholarRenderedHoursById($account_id)

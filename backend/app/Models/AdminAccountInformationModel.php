@@ -15,7 +15,7 @@ class AdminAccountInformationModel
 
     public function getBasicInformation($id)
     {
-        $query = 'SELECT * FROM admin WHERE id = :id';
+        $query = 'SELECT name, email FROM admin WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

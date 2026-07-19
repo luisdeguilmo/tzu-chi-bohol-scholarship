@@ -168,20 +168,11 @@ class ActivityModel
     public function getVolunteerActivities($scholarId)
     {
         $query =
-            "SELECT * FROM archived_activities WHERE account_id = :account_id AND activity_type = 'volunteer'";
+            "SELECT activity_id FROM archived_activities WHERE account_id = :account_id AND activity_type = 'volunteer'";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':account_id', $scholarId, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function getVolunteerActivityDetails($eventId)
-    {
-        $query = 'SELECT * FROM volunteer_activities WHERE id = :event_id';
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':event_id', $eventId, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getAllVolunteerActivities($scholarId)
@@ -244,11 +235,11 @@ class ActivityModel
             return !in_array($activity['id'], $volunteerActivityIds);
         });
 
-        $data = [];
+        // $data = [];
 
-        foreach ($filteredActivities as $activity) {
-            $data[] = $this->getVolunteerActivityDetails($activity['id']);
-        }
+        // foreach ($filteredActivities as $activity) {
+        //     $data[] = $this->getVolunteerActivityDetails($activity['id']);
+        // }
 
         return $filteredActivities;
     }
@@ -300,7 +291,7 @@ class ActivityModel
 
     public function getProfileById($id)
     {
-        $query = "SELECT *
+        $query = "SELECT file_path
                 FROM profile_pictures 
                 WHERE application_id = :application_id";
 
@@ -408,25 +399,9 @@ class ActivityModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getPendingActivities()
-    {
-        $query = "SELECT * FROM volunteer_activities WHERE activity_status = 'Pending'";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function getRecordedActivities()
-    {
-        $query = "SELECT * FROM volunteer_activities WHERE activity_status = 'Recorded'";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
     public function getFilesByBatch($batch_id)
     {
-        $query = "SELECT *
+        $query = "SELECT id, application_id, file_name, file_size, file_type, uploaded_at, batch_id
                 FROM certificate_of_appearance 
                 WHERE batch_id = :batch_id";
 
@@ -443,7 +418,7 @@ class ActivityModel
     public function getAllActivities($account_id)
     {
         $query =
-            'SELECT * FROM ' .
+            'SELECT id, activity_name, activity_status, activity_date, activity_location, start_time, end_time, uploaded_at FROM ' .
             $this->table_name .
             ' WHERE account_id = :account_id ORDER BY activity_date DESC, activity_time DESC';
 
@@ -487,21 +462,6 @@ class ActivityModel
         }
 
         return $data;
-    }
-
-    public function getActivityById($id)
-    {
-        $query =
-            'SELECT * FROM ' .
-            $this->table_name .
-            " 
-                   WHERE id = ?";
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(1, $id);
-        $stmt->execute();
-
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function markAsNotRecordedWithFeedback($data)

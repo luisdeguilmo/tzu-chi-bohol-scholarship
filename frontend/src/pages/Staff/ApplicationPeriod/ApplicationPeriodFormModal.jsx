@@ -93,6 +93,7 @@ const ApplicationPeriodFormModal = React.memo(
                 return;
             } else if (
                 selectedApplicationPeriod.type === "renewal" &&
+                selectedApplicationPeriod.status !== "Active" &&
                 disabledRenewal &&
                 status === "Active"
             ) {

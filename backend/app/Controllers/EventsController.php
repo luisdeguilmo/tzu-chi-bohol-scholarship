@@ -152,11 +152,11 @@ class EventsController
 
             $scholars = $scholarModel->getAllScholars();
 
-            // foreach ($scholars as $scholar) {
-            //     if (!$emailService->sendNewEventEmail($scholar, $data['event'])) {
-            //         throw new \Exception('Failed to send email');
-            //     }
-            // }
+            foreach ($scholars as $scholar) {
+                if (!$emailService->sendNewEventEmail($scholar, $data['event'])) {
+                    throw new \Exception('Failed to send email');
+                }
+            }
 
             $eventId = $event->createEvent($data['event']);
 
@@ -256,7 +256,7 @@ class EventsController
                 }
             }
 
-            $scholars = $scholarModel->getAllScholars();
+            // $scholars = $scholarModel->getAllScholars();
 
             // foreach ($scholars as $scholar) {
             //     if (!$emailService->sendNewEventEmail($scholar, $data['event'])) {

@@ -145,7 +145,7 @@ class ScholarshipCriteriaModel
     // READ operations
     public function getAllStrands()
     {
-        $query = 'SELECT * FROM ' . $this->strands_table;
+        $query = 'SELECT id, strand, description FROM ' . $this->strands_table;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -154,7 +154,7 @@ class ScholarshipCriteriaModel
 
     public function getStrandById($id)
     {
-        $query = 'SELECT * FROM ' . $this->strands_table . ' WHERE id = :id';
+        $query = 'SELECT id, strand, description FROM ' . $this->strands_table . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);
@@ -165,7 +165,7 @@ class ScholarshipCriteriaModel
 
     public function getAllCourses($filter)
     {
-        $query = 'SELECT * FROM ' . $this->courses_table;
+        $query = 'SELECT id, course, is_visible FROM ' . $this->courses_table;
 
         if ($filter === 'visible') {
             $query .= " WHERE is_visible = '1'";
@@ -181,7 +181,7 @@ class ScholarshipCriteriaModel
 
     public function getAllVisibleCourses()
     {
-        $query = 'SELECT * FROM ' . $this->courses_table . " WHERE is_visible = '1'";
+        $query = 'SELECT id, course, is_visible FROM ' . $this->courses_table . " WHERE is_visible = '1'";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -201,7 +201,7 @@ class ScholarshipCriteriaModel
 
     public function getCourseById($id)
     {
-        $query = 'SELECT * FROM ' . $this->courses_table . ' WHERE id = :id';
+        $query = 'SELECT id, course, is_visible FROM ' . $this->courses_table . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);
@@ -212,7 +212,7 @@ class ScholarshipCriteriaModel
 
     public function getAllQualifications()
     {
-        $query = 'SELECT * FROM ' . $this->qualification_table;
+        $query = 'SELECT id, qualification FROM ' . $this->qualification_table;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -221,7 +221,7 @@ class ScholarshipCriteriaModel
 
     public function getQualificationById($id)
     {
-        $query = 'SELECT * FROM ' . $this->qualification_table . ' WHERE id = :id';
+        $query = 'SELECT id, qualification FROM ' . $this->qualification_table . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);
@@ -232,7 +232,7 @@ class ScholarshipCriteriaModel
 
     public function getAllRequirements()
     {
-        $query = 'SELECT * FROM ' . $this->requirements_table;
+        $query = 'SELECT id, quantity, description, submit FROM ' . $this->requirements_table;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -241,7 +241,7 @@ class ScholarshipCriteriaModel
 
     public function getRequirementById($id)
     {
-        $query = 'SELECT * FROM ' . $this->requirements_table . ' WHERE id = :id';
+        $query = 'SELECT id, quantity, description, submit FROM ' . $this->requirements_table . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);
@@ -252,7 +252,7 @@ class ScholarshipCriteriaModel
 
     public function getAllProcedures()
     {
-        $query = 'SELECT * FROM `' . $this->procedure_table . '`';
+        $query = 'SELECT id, `procedure` FROM `' . $this->procedure_table . '`';
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -261,7 +261,7 @@ class ScholarshipCriteriaModel
 
     public function getProcedureById($id)
     {
-        $query = 'SELECT * FROM `' . $this->procedure_table . '` WHERE id = :id';
+        $query = 'SELECT id, `procedure` FROM `' . $this->procedure_table . '` WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);
@@ -272,7 +272,7 @@ class ScholarshipCriteriaModel
 
     public function getAllInstructions()
     {
-        $query = 'SELECT * FROM ' . $this->instructions_table;
+        $query = 'SELECT id, instruction FROM ' . $this->instructions_table;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -281,7 +281,7 @@ class ScholarshipCriteriaModel
 
     public function getInstructionById($id)
     {
-        $query = 'SELECT * FROM ' . $this->instructions_table . ' WHERE id = :id';
+        $query = 'SELECT id, instruction FROM ' . $this->instructions_table . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);

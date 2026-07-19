@@ -64,7 +64,7 @@ class ScholarAccountInformationModel
 
     public function getTransportDetails($scholarId)
     {
-        $query = 'SELECT * FROM scholar_transport_info WHERE scholar_id = :scholar_id';
+        $query = 'SELECT stay_type, address, daily_transport_cost, route_explanation FROM scholar_transport_info WHERE scholar_id = :scholar_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':scholar_id', $scholarId);
         $stmt->execute();

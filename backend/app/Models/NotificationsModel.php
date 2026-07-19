@@ -40,7 +40,7 @@ class NotificationsModel
 
     public function getCommunityServiceDetails($id)
     {
-        $query = 'SELECT * FROM volunteer_activities WHERE id = :id';
+        $query = 'SELECT activity_status, activity_name FROM volunteer_activities WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
@@ -138,9 +138,9 @@ class NotificationsModel
             'type' => 'event',
             'title' => 'New Event',
             'message' =>
-                'A new event "' .
+                'A new event ' .
                 $data['event_name'] .
-                '" has been created and youâ€™re invited to join!. Check it out and donâ€™t miss the chance to be part of this event!',
+                " has been created and you are invited to join!. Check it out and don't miss the chance to be part of this event!",
         ]);
 
         if ($id) {

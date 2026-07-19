@@ -210,20 +210,28 @@ const StaffAccount = ({
                                     </h3>
                                 </div>
                                 <div>
-                                    {!isEditing ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsEditing(true)}
-                                        >
-                                            <PenLine className="w-5 h-5 text-blue-600 hover:text-blue-800" />
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsEditing(false)}
-                                        >
-                                            <X className="w-5 h-5 text-gray-600 hover:text-gray-800" />
-                                        </button>
+                                    {user.type === "staff" && (
+                                        <>
+                                            {!isEditing ? (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setIsEditing(true)
+                                                    }
+                                                >
+                                                    <PenLine className="w-5 h-5 text-blue-600 hover:text-blue-800" />
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setIsEditing(false)
+                                                    }
+                                                >
+                                                    <X className="w-5 h-5 text-gray-600 hover:text-gray-800" />
+                                                </button>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </div>
@@ -256,7 +264,18 @@ const StaffAccount = ({
                                         />
                                         <InfoField
                                             label="Gender"
-                                            value={staffInfo?.gender || ""}
+                                            value={
+                                                staffInfo?.gender
+                                                    .charAt(0)
+                                                    .toUpperCase()
+                                                    .concat(
+                                                        staffInfo?.gender.substring(
+                                                            1,
+                                                            staffInfo?.gender
+                                                                .length,
+                                                        ),
+                                                    ) || ""
+                                            }
                                             mobileClass={info}
                                         />
                                         <InfoField
@@ -294,7 +313,18 @@ const StaffAccount = ({
                                             value={staffInfo?.age || ""}
                                         />
                                         <ValueField
-                                            value={staffInfo?.gender || ""}
+                                            value={
+                                                staffInfo?.gender
+                                                    .charAt(0)
+                                                    .toUpperCase()
+                                                    .concat(
+                                                        staffInfo?.gender.substring(
+                                                            1,
+                                                            staffInfo?.gender
+                                                                .length,
+                                                        ),
+                                                    ) || ""
+                                            }
                                         />
                                         <ValueField
                                             value={staffInfo?.address || ""}

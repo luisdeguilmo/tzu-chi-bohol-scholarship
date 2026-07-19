@@ -84,7 +84,7 @@ class AllowanceCycleModel
 
     public function getPendingCycles()
     {
-        $query = "SELECT * FROM {$this->table_name} 
+        $query = "SELECT id FROM {$this->table_name} 
                   WHERE cutoff_date <= :current_date 
                   AND is_processed = 0
                   AND is_reset = 0

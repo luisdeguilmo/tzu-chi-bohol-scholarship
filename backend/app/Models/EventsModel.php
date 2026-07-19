@@ -111,17 +111,23 @@ class EventsModel
         return $stmt->execute();
     }
 
-    public function checkParticipant($accountId, $eventId)
+    public function checkParticipant($accountId, $eventId): bool
     {
-        $query =
-            'SELECT * FROM event_participants WHERE account_id = :account_id AND event_id = :event_id';
+        $query = "
+        SELECT 1
+        FROM event_participants
+        WHERE account_id = :account_id
+          AND event_id = :event_id
+        LIMIT 1
+    ";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':account_id', $accountId, \PDO::PARAM_INT);
-        $stmt->bindParam(':event_id', $eventId, \PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $row ? true : false;
+        $stmt->execute([
+            ':account_id' => $accountId,
+            ':event_id' => $eventId,
+        ]);
+
+        return (bool) $stmt->fetchColumn();
     }
 
     public function addToEventParticipant($accountId, $eventId)
@@ -161,7 +167,7 @@ class EventsModel
     public function getEvents($scholarId)
     {
         $query =
-            "SELECT * FROM archived_activities WHERE account_id = :account_id AND activity_type = 'event'";
+            "SELECT activity_id FROM archived_activities WHERE account_id = :account_id AND activity_type = 'event'";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':account_id', $scholarId, \PDO::PARAM_INT);
         $stmt->execute();
@@ -170,7 +176,8 @@ class EventsModel
 
     public function getEventDetails($eventId)
     {
-        $query = 'SELECT * FROM events WHERE id = :event_id';
+        $query =
+            'SELECT id, event_name, event_type, event_location, date, start_time, end_time, participant_limit FROM events WHERE id = :event_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':event_id', $eventId, \PDO::PARAM_INT);
         $stmt->execute();
@@ -276,18 +283,9 @@ class EventsModel
         return $data;
     }
 
-    public function getApplicationPeriodById($id)
-    {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE id = :id';
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
-
     public function getParticipantsIds($eventId)
     {
-        $query = 'SELECT * FROM event_participants WHERE event_id = :event_id';
+        $query = 'SELECT account_id, is_attended, reason FROM event_participants WHERE event_id = :event_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':event_id', $eventId, \PDO::PARAM_INT);
         $stmt->execute();
@@ -296,7 +294,7 @@ class EventsModel
 
     public function getParticipantName($scholarId)
     {
-        $query = 'SELECT * FROM scholars WHERE account_id = :application_id';
+        $query = 'SELECT first_name, last_name FROM scholars WHERE account_id = :application_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':application_id', $scholarId, \PDO::PARAM_INT);
         $stmt->execute();
@@ -345,7 +343,7 @@ class EventsModel
                 $participantInfo = $this->getParticipantName($record['account_id']);
 
                 $participants[] = [
-                    'scholar_id' => $participantInfo['account_id'] ?? null,
+                    'scholar_id' => $record['account_id'] ?? null,
                     'participant_name' => trim(
                         ($participantInfo['first_name'] ?? '') .
                             ' ' .
@@ -367,7 +365,7 @@ class EventsModel
     public function getEventsOnStaff($year, $status, $sort, $joinedScholars)
     {
         $query =
-            'SELECT * FROM ' .
+            'SELECT id, event_name, event_type, event_location, date, start_time, end_time, participant_limit FROM ' .
             $this->table_name .
             " 
                 WHERE YEAR(date) = :year";
@@ -394,21 +392,6 @@ class EventsModel
         $stmt->bindParam(':current_datetime', $this->currentDateTime);
         $stmt->execute();
         $events = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        return $this->getEventParticipants($events, $joinedScholars, null);
-    }
-
-    public function getEventsByYearAndMonth($year, $joinedScholars)
-    {
-        $query =
-            'SELECT * FROM ' .
-            $this->table_name .
-            " 
-                WHERE YEAR(date) = :year";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':year', $year);
-        $stmt->execute();
-        $events = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
         return $this->getEventParticipants($events, $joinedScholars, null);
     }
 }

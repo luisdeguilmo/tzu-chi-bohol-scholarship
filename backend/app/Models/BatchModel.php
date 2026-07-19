@@ -23,7 +23,7 @@ class BatchModel
 
     public function getBatches($purpose)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE purpose = :purpose';
+        $query = 'SELECT id, batch_name, schedule, venue, is_schedule_sent FROM ' . $this->table_name . ' WHERE purpose = :purpose';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':purpose', $purpose);
         $stmt->execute();
@@ -34,7 +34,7 @@ class BatchModel
     public function getBatchById($id, $purpose)
     {
         $query =
-            'SELECT * FROM ' . $this->table_name . ' WHERE purpose = :purpose AND batch_name = :id';
+            'SELECT id, batch_name, schedule, venue, is_schedule_sent FROM ' . $this->table_name . ' WHERE purpose = :purpose AND batch_name = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);

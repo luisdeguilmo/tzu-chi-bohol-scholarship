@@ -16,7 +16,7 @@ class PrivateCommentsModel
 
     public function getPrivateCommentById($id)
     {
-        $query = 'SELECT * FROM private_comments WHERE id = :id';
+        $query = 'SELECT id FROM private_comments WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
@@ -73,7 +73,7 @@ class PrivateCommentsModel
 
     public function getPrivateCommentsByScholarId($eventId, $accountId)
     {
-        $query = 'SELECT *
+        $query = 'SELECT id, first_name, last_name, created_at, message
                 FROM private_comments
                 WHERE event_id = :event_id AND scholar_id = :scholar_id';
         $stmt = $this->pdo->prepare($query);
@@ -85,7 +85,7 @@ class PrivateCommentsModel
 
     public function getPrivateComments($eventId)
     {
-        $query = 'SELECT *
+        $query = 'SELECT id, scholar_id, first_name, last_name, created_at, message
                 FROM private_comments
                 WHERE event_id = :event_id
                 ORDER BY event_id, id;

@@ -36,7 +36,7 @@ class CoursesAcceptedModel
 
     public function getCourseById($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE id = :id';
+        $query = 'SELECT id, school_id, course FROM ' . $this->table_name . ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
@@ -46,7 +46,7 @@ class CoursesAcceptedModel
 
     public function getCoursesByCollegeOrUniversityId($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE school_id = :id';
+        $query = 'SELECT id, school_id, course FROM ' . $this->table_name . ' WHERE school_id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

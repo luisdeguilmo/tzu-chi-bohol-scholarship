@@ -44,7 +44,7 @@ class ScholarModel
     public function getAllScholars()
     {
         $query =
-            "SELECT s.*, u.status, u.email FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE u.status = 'active'";
+            "SELECT s.id, s.first_name, s.last_name, u.status, u.email FROM scholars s JOIN users u ON s.account_id = u.account_id WHERE u.status = 'active'";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
@@ -54,7 +54,7 @@ class ScholarModel
     public function getScholarById($id)
     {
         $query = "
-        SELECT s.*, u.status, u.email 
+        SELECT s.first_name, s.last_name, u.status, u.email 
         FROM scholars s 
         JOIN users u ON s.account_id = u.account_id 
         WHERE s.account_id = :account_id 
