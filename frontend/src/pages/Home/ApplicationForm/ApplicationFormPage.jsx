@@ -23,7 +23,7 @@ const generateInitialState = (fieldsConfig) => {
     const initialState = {};
     fieldsConfig.forEach((field) => {
         initialState[field.name] =
-            field.type === "select" ? field.defaultValue || "s" : "s";
+            field.type === "select" ? field.defaultValue || "" : "";
     });
     return initialState;
 };
@@ -128,6 +128,7 @@ function ApplicationForm({
                 tzuChiSiblings,
                 assistanceInfo,
                 characterReference,
+                otherInformation,
             } = applicantInformation;
 
             setFormData((prevData) => ({
@@ -208,30 +209,42 @@ function ApplicationForm({
                 },
 
                 other_information: {
-                    expectation: applicationInfo?.expectation || "",
+                    expectation: otherInformation?.expectation || "",
                 },
 
                 family_members: familyMembers.map((member) => ({
-                    id: member.id,
-                    name: member.name || "",
-                    relationship: member.relationship || "",
-                    age: member.age || 0,
-                    gender: member.gender || "",
-                    civil_status: member.civil_status || "",
-                    living_with_family: member.living_with_family || "",
-                    education_occupation: member.education_occupation || "",
-                    monthly_income: member.monthly_income || "0.00",
+                    id: member?.id,
+                    name: member?.name || "",
+                    relationship: member?.relationship || "",
+                    age: member?.age || 0,
+                    gender: member?.gender || "",
+                    civil_status: member?.civil_status || "",
+                    living_with_family: member?.living_with_family || "",
+                    education_occupation: member?.education_occupation || "",
+                    monthly_income: member?.monthly_income || "0.00",
                 })),
 
-                tzu_chi_siblings: tzuChiSiblings,
-                other_assistance: assistanceInfo,
+                tzu_chi_siblings: tzuChiSiblings.map((sibling) => ({
+                    id: sibling?.id,
+                    name: sibling?.name || "",
+                    year_level: sibling?.year_level || "",
+                    school: sibling?.school || "",
+                    course: sibling?.course || "",
+                    school_year: sibling?.school_year || "",
+                })),
+                other_assistance: assistanceInfo.map((assistance) => ({
+                    id: assistance?.id,
+                    organization_name: assistance?.organization_name || "",
+                    support_type: assistance?.support_type || "",
+                    amount: assistance?.amount || "",
+                })),
                 character_reference: characterReference.map((ref) => ({
-                    id: ref.id,
-                    name: ref.name || "",
-                    address: ref.address || "",
-                    company: ref.company || "",
-                    position: ref.position || "",
-                    contact_number: ref.contact_number || "",
+                    id: ref?.id,
+                    name: ref?.name || "",
+                    address: ref?.address || "",
+                    company: ref?.company || "",
+                    position: ref?.position || "",
+                    contact_number: ref?.contact_number || "",
                 })),
             }));
         }

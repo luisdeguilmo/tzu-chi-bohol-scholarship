@@ -127,7 +127,7 @@ class ApplicationPeriodModel
         // Update all application period statuses first
         // $this->updateAllApplicationPeriodStatuses();
 
-        $query = 'SELECT * FROM ' . $this->table_name . ' ORDER BY created_at DESC';
+        $query = 'SELECT id, status, type, start_date, end_date, school_year, announcement_message, created_at FROM ' . $this->table_name . ' ORDER BY created_at DESC';
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -144,7 +144,7 @@ class ApplicationPeriodModel
 
     public function getLatestApplicationPeriod()
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' ORDER BY created_at DESC LIMIT 1';
+        $query = 'SELECT id, status, type, start_date, end_date, school_year, announcement_message, created_at FROM ' . $this->table_name . ' ORDER BY created_at DESC LIMIT 1';
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);

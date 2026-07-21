@@ -138,7 +138,7 @@ class CharacterReferenceModel
 
     public function getCharacterReference($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $query = 'SELECT id, name, address, company, position, contact_number FROM ' . $this->table_name . ' WHERE application_id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

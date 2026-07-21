@@ -165,7 +165,6 @@ export const AuthProvider = ({ children }) => {
 
         const verifySession = async () => {
             const stored = localStorage.getItem("token");
-            console.log(stored);
             if (!stored) {
                 setLoading(false);
                 markAuthReady();
@@ -173,7 +172,6 @@ export const AuthProvider = ({ children }) => {
             }
 
             const payload = decodeToken(stored);
-            console.log(payload);
             if (!payload) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
@@ -183,7 +181,6 @@ export const AuthProvider = ({ children }) => {
             }
 
             const storedUser = localStorage.getItem("user");
-            console.log(storedUser);
             if (!storedUser) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");

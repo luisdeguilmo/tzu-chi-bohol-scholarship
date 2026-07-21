@@ -126,7 +126,10 @@ class ContactPersonModel
 
     public function getContactPerson($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $query =
+            'SELECT emergency_contact_name, emergency_contact_relationship, emergency_contact_address, emergency_contact_number FROM ' .
+            $this->table_name .
+            ' WHERE application_id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

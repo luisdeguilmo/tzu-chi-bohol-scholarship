@@ -95,6 +95,7 @@ class ApplicantInformationController
             $tzuChiSiblings = $siblingsModel->getTzuChiSiblings($applicationId);
             $assistanceInfo = $assistanceModel->getOtherAssistance($applicationId);
             $characterReference = $charRefModel->getCharacterReference($applicationId);
+            $otherInformation = $applicantModel->getExpectation($applicationId);
 
             $results = [
                 'applicationInfo' => $applicantInfo,
@@ -106,6 +107,7 @@ class ApplicantInformationController
                 'tzuChiSiblings' => $tzuChiSiblings,
                 'assistanceInfo' => $assistanceInfo,
                 'characterReference' => $characterReference,
+                'otherInformation' => $otherInformation
             ];
 
             http_response_code(200);

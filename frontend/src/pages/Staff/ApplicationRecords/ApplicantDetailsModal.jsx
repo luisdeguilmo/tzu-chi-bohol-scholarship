@@ -366,7 +366,7 @@ function ApplicantDetailsModal({
                                             )}
                                         </div>
                                     </div>
-                                    <button
+                                    {/* <button
                                         onClick={() => removeFile(index)}
                                         className="hover:text-red-700 text-red-500 p-1"
                                         type="button"
@@ -386,7 +386,7 @@ function ApplicantDetailsModal({
                                                 d="M6 6l12 12M18 6l-12 12"
                                             />
                                         </svg>
-                                    </button>
+                                    </button> */}
                                 </li>
                             ))}
                         </ul>

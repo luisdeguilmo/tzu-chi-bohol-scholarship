@@ -270,7 +270,10 @@ class PersonalModel
 
     public function getPersonalInformation($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $query =
+            'SELECT last_name, first_name, middle_name, suffix, gender, age, birthdate, birthplace, home_address, subdivision, barangay, city, zip_code, contact_number, secondary_contact, religion, civil_status, facebook, email FROM ' .
+            $this->table_name .
+            ' WHERE application_id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

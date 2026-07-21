@@ -120,7 +120,7 @@ class AssistanceModel
 
     public function getOtherAssistance($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $query = 'SELECT id, organization_name, support_type, amount FROM ' . $this->table_name . ' WHERE application_id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

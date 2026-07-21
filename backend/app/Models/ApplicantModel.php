@@ -164,6 +164,16 @@ class ApplicantModel
         return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
     }
 
+    public function getExpectation($id)
+    {
+        $query =
+            'SELECT expectation FROM application_info WHERE application_id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
     public function getApplicantInformation($id, $schoolYear)
     {
         $query = '

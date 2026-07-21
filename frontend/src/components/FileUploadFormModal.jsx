@@ -319,7 +319,7 @@ function FileUploadFormModal({
                                         <div className="flex items-center">
                                             {isImage(filePreview.type) ? (
                                                 <img
-                                                    src={filePreview.preview}
+                                                    src={filePreview.file_url}
                                                     alt={filePreview.name}
                                                     className="w-12 h-12 object-cover rounded mr-2"
                                                     onError={(e) => {

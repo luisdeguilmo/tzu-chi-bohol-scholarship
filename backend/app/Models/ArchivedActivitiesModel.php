@@ -55,13 +55,13 @@ class ArchivedActivitiesModel
         $query = '';
 
         if ($tab === 'all') {
-            $query = 'SELECT * FROM archived_activities WHERE account_id = :account_id';
+            $query = 'SELECT activity_type, activity_id FROM archived_activities WHERE account_id = :account_id';
         } elseif ($tab === 'volunteer_activities') {
             $query =
-                "SELECT * FROM archived_activities WHERE account_id = :account_id AND activity_type = 'volunteer'";
+                "SELECT activity_type, activity_id FROM archived_activities WHERE account_id = :account_id AND activity_type = 'volunteer'";
         } elseif ($tab === 'events') {
             $query =
-                "SELECT * FROM archived_activities WHERE account_id = :account_id AND activity_type = 'event'";
+                "SELECT activity_type, activity_id FROM archived_activities WHERE account_id = :account_id AND activity_type = 'event'";
         }
 
         $stmt = $this->pdo->prepare($query);
@@ -87,8 +87,8 @@ class ArchivedActivitiesModel
                 $event = $this->getArchivedEvent($activity['activity_id']);
                 $data[] = $this->getEventParticipants($event);
             } elseif ($activity['activity_type'] === 'volunteer') {
-                $activity = $this->getVolunteerActivityDetails($activity['activity_id']);
-                $data[] = $this->getAllActivityWithFiles($activity);
+                $reports = $this->getVolunteerActivityDetails($activity['activity_id']);
+                $data[] = $this->getAllActivityWithFiles($reports);
             }
         }
 
@@ -97,16 +97,7 @@ class ArchivedActivitiesModel
 
     public function getArchivedEvent($id)
     {
-        $query = 'SELECT * FROM events WHERE id = :id';
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
-
-    public function getArchivedVolunteerActivity($id)
-    {
-        $query = 'SELECT * FROM volunteer_activities WHERE id = :id';
+        $query = 'SELECT id, event_name, event_type, event_location, start_time, end_time, date, participant_limit FROM events WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
@@ -158,7 +149,7 @@ class ArchivedActivitiesModel
 
     public function getVolunteerActivityDetails($eventId)
     {
-        $query = 'SELECT * FROM volunteer_activities WHERE id = :event_id';
+        $query = 'SELECT id, activity_name, activity_status, activity_date, activity_location, start_time, end_time, feedback, uploaded_at, batch_id  FROM volunteer_activities WHERE id = :event_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':event_id', $eventId, \PDO::PARAM_INT);
         $stmt->execute();
@@ -167,7 +158,7 @@ class ArchivedActivitiesModel
 
     public function getFilesByBatch($batch_id)
     {
-        $query = "SELECT *
+        $query = "SELECT id, application_id, file_name, file_path, file_size, file_type, uploaded_at, batch_id
                 FROM certificate_of_appearance 
                 WHERE batch_id = :batch_id";
 

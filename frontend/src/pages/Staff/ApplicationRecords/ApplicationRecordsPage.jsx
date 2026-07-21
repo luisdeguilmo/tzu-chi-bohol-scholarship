@@ -234,9 +234,9 @@ export default function ApplicationRecordsPage() {
                         className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all_years">All Years</option>
-                        {schoolYears.map((schoolYear) => (
+                        {schoolYears.map((schoolYear, index) => (
                             <option
-                                key={schoolYear.id}
+                                key={index}
                                 value={schoolYear.school_year}
                             >
                                 {schoolYear.school_year}

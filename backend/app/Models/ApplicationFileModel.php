@@ -71,7 +71,7 @@ class ApplicationFileModel
     public function fetchFilesByIdAndType($applicationId, $type)
     {
         $query =
-            "SELECT *
+            "SELECT id, application_id, file_name, file_path, file_size, file_type, uploaded_at
                 FROM " .
             $this->table_name .
             "
@@ -91,7 +91,7 @@ class ApplicationFileModel
     public function fetchFilesById($applicationId)
     {
         $query =
-            "SELECT *
+            "SELECT id, application_id, file_name, file_path, file_size, file_type, uploaded_at
                 FROM " .
             $this->table_name .
             "

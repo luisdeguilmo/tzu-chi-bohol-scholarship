@@ -221,7 +221,10 @@ class EducationModel
 
     public function getEducationalBackground($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $query =
+            'SELECT previous_school, previous_location, previous_honor, previous_gwa, previous_course, incoming_grade, present_school, present_location, present_course1, present_course2, year_level, selected_school_id FROM ' .
+            $this->table_name .
+            ' WHERE application_id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

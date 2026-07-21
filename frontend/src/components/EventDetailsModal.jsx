@@ -707,7 +707,7 @@ const EventDetailsModal = React.memo(
                                     {privateComments.map((comment, index) => (
                                         <li
                                             key={comment.id}
-                                            className={`group relative ${index !== privateComments.length - 1 && ""} px-4 py-3 flex items-center justify-between bg-gray-100 rounded-lg`}
+                                            className={`group relative ${index !== privateComments.length - 1 && ""} px-4 py-3 flex items-center justify-between bg-gray-50 rounded-lg`}
                                         >
                                             <div className="w-full">
                                                 <div className="flex items-center gap-1">

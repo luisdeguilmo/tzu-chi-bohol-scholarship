@@ -260,7 +260,10 @@ class FamilyModel
 
     public function getFamilyInformation($id)
     {
-        $query = 'SELECT * FROM ' . $this->table_name . ' WHERE application_id = :id';
+        $query =
+            'SELECT father_name, father_age, father_education, father_occupation, father_income, father_contact, mother_name, mother_age, mother_education, mother_occupation, mother_income, mother_contact, guardian_name, guardian_age, guardian_education, guardian_occupation, guardian_income, guardian_contact FROM ' .
+            $this->table_name .
+            ' WHERE application_id = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
