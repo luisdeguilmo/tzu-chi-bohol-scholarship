@@ -15,7 +15,7 @@ export const generatePDF = async (
     applicationId,
     scholarId,
     applicantData,
-    pdfWindow
+    pdfWindow,
 ) => {
     // const { getExaminationFiles } = await import(
     //     "./getExaminationFiles.js"
@@ -29,12 +29,8 @@ export const generatePDF = async (
     // const { getInitialInterviewFiles } = await import(
     //     "./getInitialInterviewFiles.js"
     // );
-    const { getProfilePicture } = await import(
-        "./getPdfProfilePicture.js"
-    );
-    const { getRequirements } = await import(
-        "./getRequirements.js"
-    );
+    const { getProfilePicture } = await import("./getPdfProfilePicture.js");
+    const { getRequirements } = await import("./getRequirements.js");
 
     const pdfMakeModule = await import("pdfmake/build/pdfmake");
     const pdfFontsModule = await import("pdfmake/build/vfs_fonts");
@@ -883,17 +879,20 @@ export const generatePDF = async (
                             {
                                 text:
                                     familyInfo?.parents?.guardian_income < 1
-                                        ? ""
+                                        ? "0"
                                         : familyInfo?.parents
                                               ?.guardian_income || "",
                                 fontSize: 10,
                             },
+                            // {
+                            //     text:
+                            //         familyInfo?.contact
+                            //             ?.emergency_contact_number || "",
+                            //     fontSize: 10,
+                            // },
                             {
-                                text:
-                                    familyInfo?.contact
-                                        ?.emergency_contact_number || "",
-                                fontSize: 10,
-                            },
+                                text: ""
+                            }
                         ],
                         [
                             {
@@ -914,7 +913,12 @@ export const generatePDF = async (
                                     familyInfo?.parents?.guardian_contact || "",
                                 fontSize: 10,
                             },
-                            { text: "" },
+                            {
+                                text:
+                                    familyInfo?.contact
+                                        ?.emergency_contact_number || "",
+                                fontSize: 10,
+                            },
                         ],
                     ],
                 },
@@ -993,27 +997,27 @@ export const generatePDF = async (
                         ],
                         // Dynamically generate rows for siblings
                         ...(familyInfo?.siblings?.map((sibling) => [
-                            { text: sibling.name || "", fontSize: 10 },
+                            { text: sibling?.name || "", fontSize: 10 },
                             {
-                                text: sibling.relationship || "",
+                                text: sibling?.relationship || "",
                                 fontSize: 10,
                             },
-                            { text: sibling.age || "", fontSize: 10 },
-                            { text: sibling.gender || "", fontSize: 10 },
+                            { text: sibling?.age || "", fontSize: 10 },
+                            { text: sibling?.gender || "", fontSize: 10 },
                             {
-                                text: sibling.civil_status || "",
-                                fontSize: 10,
-                            },
-                            {
-                                text: sibling.living_with_family || "",
+                                text: sibling?.civil_status || "",
                                 fontSize: 10,
                             },
                             {
-                                text: sibling.education_occupation || "",
+                                text: sibling?.living_with_family || "",
                                 fontSize: 10,
                             },
                             {
-                                text: sibling.monthly_income || "",
+                                text: sibling?.education_occupation || "",
+                                fontSize: 10,
+                            },
+                            {
+                                text: sibling?.monthly_income || "",
                                 fontSize: 10,
                             },
                         ]) || [
@@ -1077,15 +1081,15 @@ export const generatePDF = async (
                         ],
                         // Dynamically generate rows for tzu chi siblings
                         ...(familyInfo?.tzuChiSiblings?.map((sibling) => [
-                            { text: sibling.name || "", fontSize: 10 },
+                            { text: sibling?.name || "", fontSize: 10 },
                             {
-                                text: sibling.year_level || "",
+                                text: sibling?.year_level || "",
                                 fontSize: 10,
                             },
-                            { text: sibling.school || "", fontSize: 10 },
-                            { text: sibling.course || "", fontSize: 10 },
+                            { text: sibling?.school || "", fontSize: 10 },
+                            { text: sibling?.course || "", fontSize: 10 },
                             {
-                                text: sibling.school_year || "",
+                                text: sibling?.school_year || "",
                                 fontSize: 10,
                             },
                         ]) || [
@@ -1137,14 +1141,14 @@ export const generatePDF = async (
                         // Dynamically generate rows for other assistance
                         ...(otherAssistance?.map((assistance) => [
                             {
-                                text: assistance.organization_name || "",
+                                text: assistance?.organization_name || "",
                                 fontSize: 10,
                             },
                             {
-                                text: assistance.support_type || "",
+                                text: assistance?.support_type || "",
                                 fontSize: 10,
                             },
-                            { text: assistance.amount || "", fontSize: 10 },
+                            { text: assistance?.amount || "", fontSize: 10 },
                         ]) || [
                             ["", "", ""],
                             ["", "", ""],
@@ -1229,23 +1233,23 @@ export const generatePDF = async (
                                 // Dynamically generate rows for tzu chi siblings
                                 ...(characterReference?.map((character) => [
                                     {
-                                        text: character.name || "",
+                                        text: character?.name || "",
                                         fontSize: 10,
                                     },
                                     {
-                                        text: character.address || "",
+                                        text: character?.address || "",
                                         fontSize: 10,
                                     },
                                     {
-                                        text: character.company || "",
+                                        text: character?.company || "",
                                         fontSize: 10,
                                     },
                                     {
-                                        text: character.position || "",
+                                        text: character?.position || "",
                                         fontSize: 10,
                                     },
                                     {
-                                        text: character.contact_number || "",
+                                        text: character?.contact_number || "",
                                         fontSize: 10,
                                     },
                                 ]) || [

@@ -34,58 +34,58 @@ class ApplicationsModel
 
         // Fetch application info
         $data['applicationInfo'] = $this->fetchSingle(
-            'SELECT * FROM application_info WHERE application_id = ?',
+            'SELECT type, expectation, school_year FROM application_info WHERE application_id = ?',
             [$studentId],
         );
 
         // Fetch personal information
         $data['personalInfo'] = $this->fetchSingle(
-            'SELECT * FROM personal_information WHERE application_id = ?',
+            'SELECT last_name, middle_name, first_name, suffix, gender, age, birthdate, home_address, subdivision, barangay, city, zip_code, contact_number, secondary_contact, religion, civil_status, facebook, email, birthplace FROM personal_information WHERE application_id = ?',
             [$studentId],
         );
 
         // Fetch educational background
         $data['educationalBackground'] = $this->fetchSingle(
-            'SELECT * FROM educational_background WHERE application_id = ?',
+            'SELECT previous_school, incoming_grade, year_level, previous_location, present_school, previous_honor, present_location, previous_gwa, present_course1, previous_course, present_course2 FROM educational_background WHERE application_id = ?',
             [$studentId],
         );
 
         // Fetch family information - parents/guardian
         $data['familyInfo']['parents'] = $this->fetchSingle(
-            'SELECT * FROM parents_guardian WHERE application_id = ?',
+            'SELECT father_name, mother_name, mother_age, guardian_name, guardian_age, father_education, mother_education, guardian_education, father_occupation, mother_occupation, guardian_occupation, father_income, mother_income, guardian_income, father_contact, mother_contact, guardian_contact FROM parents_guardian WHERE application_id = ?',
             [$studentId],
         );
 
         $data['familyInfo']['contact'] = $this->fetchSingle(
-            'SELECT * FROM contact_person WHERE application_id = ?',
+            'SELECT emergency_contact_name, emergency_contact_relationship, emergency_contact_address, emergency_contact_number FROM contact_person WHERE application_id = ?',
             [$studentId],
         );
 
         // Fetch family information - siblings
         $data['familyInfo']['siblings'] = $this->fetchMultiple(
-            'SELECT * FROM family_members WHERE application_id = ?',
+            'SELECT name, relationship, age, gender, civil_status, living_with_family, education_occupation, monthly_income FROM family_members WHERE application_id = ?',
             [$studentId],
         );
 
         // Fetch tzu chi siblings
         $data['familyInfo']['tzuChiSiblings'] = $this->fetchMultiple(
-            'SELECT * FROM tzu_chi_siblings WHERE application_id = ?',
+            'SELECT name, year_level, school, course, school_year FROM tzu_chi_siblings WHERE application_id = ?',
             [$studentId],
         );
 
         // Fetch other assistance
         $data['otherAssistance'] = $this->fetchMultiple(
-            'SELECT * FROM other_assistance WHERE application_id = ?',
+            'SELECT organization_name, support_type, amount FROM other_assistance WHERE application_id = ?',
             [$studentId],
         );
 
         $data['characterReference'] = $this->fetchMultiple(
-            'SELECT * FROM character_reference WHERE application_id = ?',
+            'SELECT name, address, company, position, contact_number FROM character_reference WHERE application_id = ?',
             [$studentId],
         );
 
         $data['requirements'] = $this->fetchMultiple(
-            'SELECT * FROM application_requirements WHERE application_id = ?',
+            'SELECT file_path, file_type FROM application_requirements WHERE application_id = ?',
             [$studentId],
         );
 

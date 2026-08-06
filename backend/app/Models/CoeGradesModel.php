@@ -259,7 +259,7 @@ class CoeGradesModel
 
     public function getCoeGradesById($id)
     {
-        $query = "SELECT *
+        $query = "SELECT id
                 FROM coe_and_grades
                 WHERE scholar_id = :scholar_id";
 

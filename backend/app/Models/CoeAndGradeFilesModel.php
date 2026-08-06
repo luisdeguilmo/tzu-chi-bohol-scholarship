@@ -91,22 +91,6 @@ class CoeAndGradeFilesModel
         return $stmt->execute();
     }
 
-    public function getFilesBySubmissionId($submission_id)
-    {
-        $query =
-            'SELECT * FROM ' .
-            $this->table_name .
-            " 
-                   WHERE submission_id = ?
-                   ORDER BY uploaded_at DESC";
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(1, $submission_id);
-        $stmt->execute();
-
-        return $stmt;
-    }
-
     public function getAllFilesWithSubmission()
     {
         $query =

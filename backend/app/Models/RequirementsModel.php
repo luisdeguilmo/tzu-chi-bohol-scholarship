@@ -171,27 +171,6 @@ class RequirementsModel
         return $protocol . '://' . $host;
     }
 
-    public function getByApplicationId($application_id)
-    {
-        try {
-            $query =
-                'SELECT * FROM ' .
-                $this->table_name .
-                "
-                     WHERE application_id = ?
-                     ORDER BY uploaded_at DESC
-                     LIMIT 1";
-
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute([$application_id]);
-
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
-        } catch (\Exception $e) {
-            error_log('Error fetching profile picture: ' . $e->getMessage());
-            return false;
-        }
-    }
-
     public function delete($id)
     {
         try {

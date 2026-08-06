@@ -71,7 +71,7 @@ class ScholarFileModel
     public function getFilesByIdAndType($applicationId, $type)
     {
         $query =
-            "SELECT *
+            "SELECT id, application_id, file_name, file_size, file_type, uploaded_at
                 FROM " .
             $this->table_name .
             "

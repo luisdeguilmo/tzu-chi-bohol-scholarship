@@ -56,18 +56,6 @@ class RequirementModel {
         return $stmt->execute();
     }
 
-    public function getRequirementsByApplication($application_id) {
-        $query = "SELECT * FROM " . $this->table_name . " 
-                  WHERE application_id = ? 
-                  ORDER BY uploaded_at DESC";
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(1, $application_id);
-        $stmt->execute();
-
-        return $stmt;
-    }
-
     public function getFileUrl($id) {
         $query = "SELECT file_path FROM " . $this->table_name . " WHERE id = ?";
         

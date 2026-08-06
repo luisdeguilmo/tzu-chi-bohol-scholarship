@@ -171,6 +171,13 @@ function ApplicantDetailsModal({
                     </h2>
 
                     <div className="grid grid-cols-1 gap-1.5">
+                        <div className="-mt-1 mr-auto gap-3 group">
+                            <img
+                                src={applicant[0]?.profile}
+                                alt="Profile"
+                                className="w-12 h-12 object-cover rounded-full mx-auto"
+                            />
+                        </div>
                         <div className="flex items-center gap-3 group">
                             <div className="flex-1">
                                 <p className="text-xs text-gray-500 font-medium">

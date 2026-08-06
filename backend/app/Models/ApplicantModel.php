@@ -209,7 +209,7 @@ class ApplicantModel
 
     public function getApplicantsWhoTookExam()
     {
-        $query = "SELECT * FROM application_info WHERE is_application_approved = '1' AND is_eligible_for_exam = '1' AND YEAR(created_at) = '$this->currentYear'";
+        $query = "SELECT application_id, score FROM application_info WHERE is_application_approved = '1' AND is_eligible_for_exam = '1' AND YEAR(created_at) = '$this->currentYear'";
 
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
