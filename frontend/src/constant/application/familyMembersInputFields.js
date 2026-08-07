@@ -10,7 +10,7 @@ const familyMembersInputFields = [
         label: "Relationship",
         name: "relationship",
         type: "select",
-        options: ["", "Brother", "Sister", "Other"],
+        options: ["", "Brother", "Step Brother", "Sister", "Step Sister", "Other"],
         placeholder: "Relationship",
     },
     {
