@@ -100,27 +100,27 @@ class ApplicationController
             $this->processApplicationData($data, $application_id);
 
             // Handle profile picture upload
-            if (isset($_FILES['picture'])) {
-                $this->handleProfilePictureUpload($_FILES['picture'], $application_id);
-            }
+            // if (isset($_FILES['picture'])) {
+            //     $this->handleProfilePictureUpload($_FILES['picture'], $application_id);
+            // }
 
-            // Handle requirement files upload
-            if (isset($_FILES['files'])) {
-                $this->handleRequirementFilesUpload($_FILES['files'], $application_id);
-            }
+            // // Handle requirement files upload
+            // if (isset($_FILES['files'])) {
+            //     $this->handleRequirementFilesUpload($_FILES['files'], $application_id);
+            // }
 
-            // Handle base64 files from JSON (if any)
-            if (isset($data['uploaded_files']) && is_array($data['uploaded_files'])) {
-                $this->handleRequirementFilesFromJson($data['uploaded_files'], $application_id);
-            }
+            // // Handle base64 files from JSON (if any)
+            // if (isset($data['uploaded_files']) && is_array($data['uploaded_files'])) {
+            //     $this->handleRequirementFilesFromJson($data['uploaded_files'], $application_id);
+            // }
 
-            if (
-                isset($data['picture_file']) &&
-                is_array($data['picture_file']) &&
-                !empty($data['picture_file']['base64_data'])
-            ) {
-                $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
-            }
+            // if (
+            //     isset($data['picture_file']) &&
+            //     is_array($data['picture_file']) &&
+            //     !empty($data['picture_file']['base64_data'])
+            // ) {
+            //     $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
+            // }
 
             // $auditLogModel = new AuditLogModel();
 
