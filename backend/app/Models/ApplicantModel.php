@@ -174,38 +174,38 @@ class ApplicantModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function getApplicantInformation($id, $schoolYear)
-    {
-        $query = '
-        SELECT 
-            pi.*, 
-            eb.*, 
-            pg.*, 
-            cp.*, 
-            fm.*, 
-            ts.*, 
-            oa.*, 
-            cr.*  
-        FROM application_info ai
-            LEFT JOIN personal_information pi ON pi.scholar_id = ai.scholar_id
-            LEFT JOIN educational_background eb ON eb.scholar_id = ai.scholar_id
-            LEFT JOIN parents_guardian pg ON pg.scholar_id = ai.scholar_id
-            LEFT JOIN contact_person cp ON cp.scholar_id = ai.scholar_id
-            LEFT JOIN family_members fm ON fm.scholar_id = ai.scholar_id
-            LEFT JOIN tzu_chi_siblings ts ON ts.scholar_id = ai.scholar_id
-            LEFT JOIN other_assistance oa ON oa.scholar_id = ai.scholar_id
-            LEFT JOIN character_reference cr ON cr.scholar_id = ai.scholar_id
-        WHERE ai.scholar_id = :id 
-          AND ai.school_year = :school_year
-    ';
+    // public function getApplicantInformation($id, $schoolYear)
+    // {
+    //     $query = '
+    //     SELECT 
+    //         pi.*, 
+    //         eb.*, 
+    //         pg.*, 
+    //         cp.*, 
+    //         fm.*, 
+    //         ts.*, 
+    //         oa.*, 
+    //         cr.*  
+    //     FROM application_info ai
+    //         LEFT JOIN personal_information pi ON pi.scholar_id = ai.scholar_id
+    //         LEFT JOIN educational_background eb ON eb.scholar_id = ai.scholar_id
+    //         LEFT JOIN parents_guardian pg ON pg.scholar_id = ai.scholar_id
+    //         LEFT JOIN contact_person cp ON cp.scholar_id = ai.scholar_id
+    //         LEFT JOIN family_members fm ON fm.scholar_id = ai.scholar_id
+    //         LEFT JOIN tzu_chi_siblings ts ON ts.scholar_id = ai.scholar_id
+    //         LEFT JOIN other_assistance oa ON oa.scholar_id = ai.scholar_id
+    //         LEFT JOIN character_reference cr ON cr.scholar_id = ai.scholar_id
+    //     WHERE ai.scholar_id = :id 
+    //       AND ai.school_year = :school_year
+    // ';
 
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-        $stmt->bindParam(':school_year', $schoolYear);
-        $stmt->execute();
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+    //     $stmt->bindParam(':school_year', $schoolYear);
+    //     $stmt->execute();
 
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
+    //     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    // }
 
     public function getApplicantsWhoTookExam()
     {
@@ -268,12 +268,12 @@ class ApplicantModel
         return $data;
     }
 
+    // type, expectation, school_year
     public function getAllNewApplicants($schoolYear)
     {
         $query = "SELECT 
-                    ai.*,
-                    pi.*, 
-                    pp.*
+                    ai.application_id, ai.created_at,
+                    pi.last_name, pi.middle_name, pi.first_name
                 FROM personal_information pi
                     JOIN profile_pictures pp ON pi.application_id = pp.application_id
                 JOIN application_info ai ON pi.application_id = ai.application_id
@@ -292,8 +292,8 @@ class ApplicantModel
     public function getAllRenewalApplicants()
     {
         $query = "SELECT      
-              pi.*,
-              ai.*
+              ai.application_id, ai.scholar_id, ai.created_at,
+              pi.last_name, pi.middle_name, pi.first_name
               FROM personal_information pi
               JOIN application_info ai ON pi.application_id = ai.application_id          
               WHERE ai.is_application_approved = '0' AND ai.is_application_rejected = '0' AND ai.type = 'Old' AND ai.scholar_id IS NOT NULL AND YEAR(ai.created_at) = $this->currentYear";

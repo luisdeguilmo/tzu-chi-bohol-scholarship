@@ -73,6 +73,8 @@ class ApplicationController
             // Process application data
             $application = new ApplicationModel();
 
+            $application_id = null;
+
             if ($is_existing_scholar) {
                 $application_id = $application->createExistingScholar(
                     $data,
