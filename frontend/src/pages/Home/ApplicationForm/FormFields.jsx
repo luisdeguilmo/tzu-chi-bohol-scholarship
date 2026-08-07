@@ -8,6 +8,7 @@ import {
     lettersOnly,
     lettersNumbers,
     numbersOnly,
+    urlOnly,
 } from "../../../utils/inputValidations";
 import { useApplicationForm } from "../../../context/ApplicationFormContext";
 
@@ -148,6 +149,7 @@ const FormFields = ({
         lettersOnly,
         numbersOnly,
         lettersNumbers,
+        urlOnly
     };
 
     const currentYear = new Date().getFullYear();
