@@ -166,6 +166,25 @@ class ApplicationController
         }
     }
 
+    private function generateUniqueApplicationId($length = 7)
+    {
+        do {
+            // Generate a random number (7-digit)
+            $randomId = mt_rand(pow(10, $length - 1), pow(10, $length) - 1);
+
+            // Check if it already exists
+            $stmt = $this->pdo->prepare(
+                'SELECT COUNT(*) FROM ' . $this->table_name . ' WHERE application_id = :id',
+            );
+            $stmt->bindParam(':id', $randomId);
+            $stmt->execute();
+
+            $count = $stmt->fetchColumn();
+        } while ($count > 0); // Retry if duplicate found
+
+        return $randomId;
+    }
+
     private function processApplicationData($data, $application_id)
     {
         // Process personal information
