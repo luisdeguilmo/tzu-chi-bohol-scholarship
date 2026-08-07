@@ -51,11 +51,11 @@ class ApplicationModel
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':expectation', $expectation);
 
-        if ($stmt->execute()) {
-            return $application_id;
-        }
+        // if ($stmt->execute()) {
+        //     return $application_id;
+        // }
 
-        return false;
+        return $stmt->execute();
     }
 
     public function createExistingScholar($data, $other)
