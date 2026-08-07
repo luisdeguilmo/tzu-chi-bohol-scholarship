@@ -33,8 +33,8 @@ class AllowanceSettingsModel
                 ' SET maximum_hours = :maximum_hours, amount_per_hour = :amount_per_hour, updated_at = NOW()';
             $stmt = $this->pdo->prepare($query);
 
-            $maximum_hours = htmlspecialchars(strip_tags($data['maximum_hours']));
-            $amount_per_hour = htmlspecialchars(strip_tags($data['amount_per_hour']));
+            $maximum_hours = (int) $data['maximum_hours'];
+            $amount_per_hour = (int) $data['amount_per_hour'];
 
             $stmt->bindParam(':maximum_hours', $maximum_hours, \PDO::PARAM_INT);
             $stmt->bindParam(':amount_per_hour', $amount_per_hour, \PDO::PARAM_INT);
