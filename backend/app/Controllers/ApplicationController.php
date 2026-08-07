@@ -90,70 +90,70 @@ class ApplicationController
                 );
             // }
 
-            // error_log("Application ID: " . $application_id);
+            error_log("Application ID: " . $application_id);
 
-            // if (!$application_id) {
-            //     throw new \Exception('Failed to create application');
-            // }
+            if (!$application_id) {
+                throw new \Exception('Failed to create application');
+            }
 
             // Process other data (personal, education, family, etc.)
             $this->processApplicationData($data, $application_id);
 
             // Handle profile picture upload
-            // if (isset($_FILES['picture'])) {
-            //     $this->handleProfilePictureUpload($_FILES['picture'], $application_id);
-            // }
+            if (isset($_FILES['picture'])) {
+                $this->handleProfilePictureUpload($_FILES['picture'], $application_id);
+            }
 
-            // // Handle requirement files upload
-            // if (isset($_FILES['files'])) {
-            //     $this->handleRequirementFilesUpload($_FILES['files'], $application_id);
-            // }
+            // Handle requirement files upload
+            if (isset($_FILES['files'])) {
+                $this->handleRequirementFilesUpload($_FILES['files'], $application_id);
+            }
 
-            // // Handle base64 files from JSON (if any)
-            // if (isset($data['uploaded_files']) && is_array($data['uploaded_files'])) {
-            //     $this->handleRequirementFilesFromJson($data['uploaded_files'], $application_id);
-            // }
+            // Handle base64 files from JSON (if any)
+            if (isset($data['uploaded_files']) && is_array($data['uploaded_files'])) {
+                $this->handleRequirementFilesFromJson($data['uploaded_files'], $application_id);
+            }
 
-            // if (
-            //     isset($data['picture_file']) &&
-            //     is_array($data['picture_file']) &&
-            //     !empty($data['picture_file']['base64_data'])
-            // ) {
-            //     $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
-            // }
+            if (
+                isset($data['picture_file']) &&
+                is_array($data['picture_file']) &&
+                !empty($data['picture_file']['base64_data'])
+            ) {
+                $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
+            }
 
-            // $auditLogModel = new AuditLogModel();
+            $auditLogModel = new AuditLogModel();
 
-            // if (
-            //     !$auditLogModel->create([
-            //         'user_id' => null,
-            //         'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
-            //         'user_role' => 'applicant',
-            //         'action' => Action::APPLICATION_SUBMITTED,
-            //         'entity_type' => 'application',
-            //         'entity_id' => $application_id,
+            if (
+                !$auditLogModel->create([
+                    'user_id' => null,
+                    'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
+                    'user_role' => 'applicant',
+                    'action' => Action::APPLICATION_SUBMITTED,
+                    'entity_type' => 'application',
+                    'entity_id' => $application_id,
 
-            //         'description' =>
-            //             $data['personal_information']['first_name'] .
-            //             ' ' .
-            //             $data['personal_information']['last_name'] .
-            //             ' submitted application.',
+                    'description' =>
+                        $data['personal_information']['first_name'] .
+                        ' ' .
+                        $data['personal_information']['last_name'] .
+                        ' submitted application.',
 
-            //         'old_values' => null,
-            //         'new_values' => ['status' => 'submitted'],
-            //         'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
-            //         'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-            //     ])
-            // ) {
-            //     throw new \Exception('Failed to create audit log');
-            // }
+                    'old_values' => null,
+                    'new_values' => ['status' => 'submitted'],
+                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ])
+            ) {
+                throw new \Exception('Failed to create audit log');
+            }
 
             $this->pdo->commit();
 
             http_response_code(201);
             echo json_encode([
                 'success' => true,
-                'message' => 'Application created successfully',
+                'message' => 'Application created successfully...',
                 'application_id' => $application_id,
             ]);
         } catch (\Exception $e) {
