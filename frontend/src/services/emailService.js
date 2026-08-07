@@ -8,6 +8,7 @@ export const manageApplication = () => {
     const token = localStorage.getItem("token");
 
     const approveApplication = async (applicant) => {
+        console.log(applicant);
         try {
             // Only update status if email was sent successfully
             setIsLoading(true);
