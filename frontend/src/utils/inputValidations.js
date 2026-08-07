@@ -3,6 +3,10 @@ export function lettersOnly(value) {
     return value.replace(/[^a-zA-Z\s'-,.]/g, "");
 }
 
+export function urlOnly(value) {
+    return value.replace(/[^a-zA-Z0-9\s'-,./]/g, "");
+}
+
 // Allow only numbers
 export function numbersOnly(value) {
     return value.replace(/[^0-9\s.,]/g, "");
