@@ -156,7 +156,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter your Facebook profile name",
-            validate: "lettersOnly",
+            validate: "urlOnly",
         },
         {
             name: "email",
