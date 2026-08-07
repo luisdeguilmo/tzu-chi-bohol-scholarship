@@ -530,14 +530,28 @@ const FormFields = ({
                                                     );
                                             }
 
-                                            formData.personal_information.age =
-                                                calculateAge(value);
+                                            // formData.personal_information.age =
+                                            //     calculateAge(value);
 
                                             handleInputChange(
                                                 inputSection,
                                                 field.name,
                                                 value,
                                             );
+
+                                            if (field.name === "birthdate") {
+                                                const age = calculateAge(value);
+                                                if (age !== null) {
+                                                    formData.personal_information.age =
+                                                        calculateAge(value);
+
+                                                    handleInputChange(
+                                                        inputSection,
+                                                        "age",
+                                                        age,
+                                                    );
+                                                }
+                                            }
                                         }}
                                         autoCapitalize={
                                             field.type === "text" ? "on" : "off"
