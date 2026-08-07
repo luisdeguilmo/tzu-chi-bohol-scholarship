@@ -73,17 +73,19 @@ class ApplicationController
             // Process application data
             $application = new ApplicationModel();
 
-            $application_id = null;
+            $application_id = $this->generateUniqueApplicationId();
 
             if ($is_existing_scholar) {
                 $application_id = $application->createExistingScholar(
                     $data,
                     $data['other_information'],
+                    $application_id,
                 );
             } else {
                 $application_id = $application->create(
                     $data['application_info'],
                     $data['other_information'],
+                    $application_id
                 );
             }
 
