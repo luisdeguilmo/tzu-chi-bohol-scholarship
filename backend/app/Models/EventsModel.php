@@ -56,7 +56,7 @@ class EventsModel
         $start_time = trim(strip_tags($data['start_time']));
         $end_time = trim(strip_tags($data['end_time']));
         $event_location = trim(strip_tags($data['event_location']));
-        $participant_limit = trim(strip_tags($data['participant_limit']));
+        $participant_limit = (int) $data['participant_limit'];
 
         $stmt->bindParam(':event_name', $event_name);
         $stmt->bindParam(':event_type', $event_type);
