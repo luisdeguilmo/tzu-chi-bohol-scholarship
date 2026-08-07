@@ -90,11 +90,11 @@ class ApplicationController
                 );
             // }
 
-            error_log("Application ID: " . $application_id);
+            // error_log("Application ID: " . $application_id);
 
-            if (!$application_id) {
-                throw new \Exception('Failed to create application');
-            }
+            // if (!$application_id) {
+            //     throw new \Exception('Failed to create application');
+            // }
 
             // Process other data (personal, education, family, etc.)
             $this->processApplicationData($data, $application_id);
@@ -122,31 +122,31 @@ class ApplicationController
                 $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
             }
 
-            $auditLogModel = new AuditLogModel();
+            // $auditLogModel = new AuditLogModel();
 
-            if (
-                !$auditLogModel->create([
-                    'user_id' => null,
-                    'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
-                    'user_role' => 'applicant',
-                    'action' => Action::APPLICATION_SUBMITTED,
-                    'entity_type' => 'application',
-                    'entity_id' => $application_id,
+            // if (
+            //     !$auditLogModel->create([
+            //         'user_id' => null,
+            //         'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
+            //         'user_role' => 'applicant',
+            //         'action' => Action::APPLICATION_SUBMITTED,
+            //         'entity_type' => 'application',
+            //         'entity_id' => $application_id,
 
-                    'description' =>
-                        $data['personal_information']['first_name'] .
-                        ' ' .
-                        $data['personal_information']['last_name'] .
-                        ' submitted application.',
+            //         'description' =>
+            //             $data['personal_information']['first_name'] .
+            //             ' ' .
+            //             $data['personal_information']['last_name'] .
+            //             ' submitted application.',
 
-                    'old_values' => null,
-                    'new_values' => ['status' => 'submitted'],
-                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
-                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-                ])
-            ) {
-                throw new \Exception('Failed to create audit log');
-            }
+            //         'old_values' => null,
+            //         'new_values' => ['status' => 'submitted'],
+            //         'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+            //         'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+            //     ])
+            // ) {
+            //     throw new \Exception('Failed to create audit log');
+            // }
 
             $this->pdo->commit();
 
