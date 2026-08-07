@@ -28,10 +28,10 @@ class ApplicationModel
         $this->previousSchoolYear = $this->previousYear . '-' . $this->currentYear;
     }
 
-    public function create($data, $other)
+    public function create($data, $other, $application_id)
     {
         // Generate a unique random application_id`
-        $application_id = $this->generateUniqueApplicationId();
+        // $application_id = $this->generateUniqueApplicationId();
 
         $query =
             'INSERT INTO ' .
@@ -61,7 +61,7 @@ class ApplicationModel
     public function createExistingScholar($data, $other)
     {
         // Generate a unique random application_id`
-        $application_id = $this->generateUniqueApplicationId();
+        // $application_id = $this->generateUniqueApplicationId();
 
         $query =
             'INSERT INTO ' .
