@@ -134,14 +134,14 @@ const NavigationButtons = ({
         }
 
         // FIXED: Properly await the validation result
-        if (section === "Personal" && !user?.user_id) {
-            const isValid = await validateEmail(
-                formData.personal_information.email,
-            );
-            if (!isValid) {
-                return;
-            }
-        }
+        // if (section === "Personal" && !user?.user_id) {
+        //     const isValid = await validateEmail(
+        //         formData.personal_information.email,
+        //     );
+        //     if (!isValid) {
+        //         return;
+        //     }
+        // }
 
         if (
             section === "Family" &&
