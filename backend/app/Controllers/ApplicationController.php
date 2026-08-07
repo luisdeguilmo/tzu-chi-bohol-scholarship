@@ -75,19 +75,20 @@ class ApplicationController
 
             $application_id = $this->generateUniqueApplicationId();
 
-            if ($is_existing_scholar) {
-                $application_id = $application->createExistingScholar(
-                    $data,
-                    $data['other_information'],
-                    $application_id,
-                );
-            } else {
-                $application_id = $application->create(
+            // if ($is_existing_scholar) {
+            //     $application_id = $application->createExistingScholar(
+            //         $data,
+            //         $data['other_information'],
+            //         $application_id,
+            //     );
+            // } else {
+                // $application_id = 
+                    $application->create(
                     $data['application_info'],
                     $data['other_information'],
                     $application_id
                 );
-            }
+            // }
 
             error_log("Application ID: " . $application_id);
 
