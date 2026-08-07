@@ -96,6 +96,7 @@ class PHPMailerBrevoService
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p style=\"margin-bottom: 16px;\">Dear <strong>{$fullName}</strong>,</p>
             <p style=\"margin-bottom: 16px;\">{$message}</p>
+            <p style=\"margin-bottom: 16px;\">Application ID: {$studentInfo['application_id']}</p>
             <p style=\"padding-bottom: 32px;\">We look forward to supporting your academic journey.</p> 
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0; font-weight: bold;\">{$this->organizationName}</p>
             <p style=\"line-height: 1.5; font-size: 12px; margin: 0;\">{$this->organizationAddress}</p>
