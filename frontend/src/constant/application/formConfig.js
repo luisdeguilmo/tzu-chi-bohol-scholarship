@@ -92,7 +92,7 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "Enter village/subdivision",
-            validate: "lettersOnly",
+            validate: "lettersNumbers",
         },
         {
             name: "barangay",
