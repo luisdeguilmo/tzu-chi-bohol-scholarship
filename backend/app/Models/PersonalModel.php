@@ -151,7 +151,12 @@ class PersonalModel
         $middle_name = strip_tags($data['middle_name'] ?? '');
         $suffix = strip_tags($data['suffix'] ?? '');
         $gender = strip_tags($data['gender']);
-        $age = strip_tags($data['age']);
+        $age = strip_tags($data['age'] ?? '');
+        if ($age === '' || !is_numeric($age)) {
+            error_log("[PersonalModel] Invalid age value received: " . var_export($data['age'] ?? null, true));
+            throw new \Exception('Invalid or missing age value');
+        }
+        $age = (int) $age;
         $birthdate = strip_tags($data['birthdate']);
         $birthplace = strip_tags($data['birthplace']);
         $home_address = strip_tags($data['home_address']);
