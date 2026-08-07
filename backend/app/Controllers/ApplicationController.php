@@ -16,7 +16,6 @@ require_once __DIR__ . '/../Models/ExaminationFilesModel.php';
 require_once __DIR__ . '/../Models/RequirementModel.php';
 require_once __DIR__ . '/../Models/ProfilePictureModel.php';
 require_once __DIR__ . '/../Models/RequirementsModel.php';
-use Illuminate\Support\Facades\Log;
 
 header('Content-Type: application/json');
 
@@ -88,9 +87,7 @@ class ApplicationController
                 );
             }
 
-            Log::info('Application created', [
-    'application_id' => $application_id,
-]);
+            error_log("Application ID: " . $application_id);
 
             if (!$application_id) {
                 throw new \Exception('Failed to create application');
