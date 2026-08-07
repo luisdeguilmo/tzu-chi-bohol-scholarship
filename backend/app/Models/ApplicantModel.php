@@ -272,8 +272,8 @@ class ApplicantModel
     public function getAllNewApplicants($schoolYear)
     {
         $query = "SELECT 
-                    ai.application_id, ai.created_at,
-                    pi.last_name, pi.middle_name, pi.first_name
+                    ai.application_id, ai.created_at, ai.school_year,
+                    pi.last_name, pi.middle_name, pi.first_name, pi.email
                 FROM personal_information pi
                     JOIN profile_pictures pp ON pi.application_id = pp.application_id
                 JOIN application_info ai ON pi.application_id = ai.application_id
