@@ -83,7 +83,7 @@ class AllowanceSettingsController
     {
         try {
             // Clear any previous output
-            ob_clean();
+            // ob_clean();
 
             $this->pdo->beginTransaction();
 
