@@ -174,7 +174,7 @@ class ApplicationController
 
             // Check if it already exists
             $stmt = $this->pdo->prepare(
-                'SELECT COUNT(*) FROM ' . $this->table_name . ' WHERE application_id = :id',
+                'SELECT COUNT(*) FROM application_info WHERE application_id = :id',
             );
             $stmt->bindParam(':id', $randomId);
             $stmt->execute();
