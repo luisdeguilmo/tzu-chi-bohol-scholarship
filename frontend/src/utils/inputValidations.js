@@ -4,7 +4,7 @@ export function lettersOnly(value) {
 }
 
 export function urlOnly(value) {
-    return value.replace(/[^a-zA-Z0-9\s'-,.,/]/g, "");
+    return value.replace(/[^a-zA-Z0-9:/?#[\]@!$&'()*+,;=._~%-]/g, "");
 }
 
 // Allow only numbers
