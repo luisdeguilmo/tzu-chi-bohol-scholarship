@@ -152,7 +152,7 @@ const formConfig = {
         },
         {
             name: "facebook",
-            label: "Facebook",
+            label: "Facebook Link",
             type: "text",
             required: true,
             placeholder: "Enter your Facebook profile name",
