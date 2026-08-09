@@ -83,24 +83,6 @@ class AuditLogModel
             ORDER BY al.created_at DESC
         ";
 
-        // $query = "
-        //     SELECT
-        //         al.*,
-        //         sc.account_id,
-        //         sc.first_name,
-        //         sc.last_name,
-        //         st.first_name,
-        //         st.last_name
-
-        //     FROM {$this->table_name} al
-
-        //     LEFT JOIN scholars sc
-        //         ON sc.account_id = al.user_id
-
-        //      LEFT JOIN staff st
-        //         ON st.account_id = al.user_id AND al.user_role = 'staff'
-        //     ";
-
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 

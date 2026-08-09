@@ -245,41 +245,47 @@ export default function InitialInterview() {
                     </div>
                 )}
 
-                <ConfirmationModal
-                    isOpen={isFormModalOpen}
-                    onClose={setIsFormModalOpen}
-                    isLoading={isLoading}
-                    label={"Confirmation"}
-                    message={
-                        action === "approve"
-                            ? "Are you sure you want to approve this applicant for the Initial Interview? This action cannot be undone."
-                            : "Are you sure you want to reject this applicant from the Initial Interview? This action cannot be undone."
-                    }
-                    onClick={
-                        action === "approve" ? handleApprove : handleReject
-                    }
-                />
+                {isFormModalOpen && (
+                    <ConfirmationModal
+                        isOpen={isFormModalOpen}
+                        onClose={setIsFormModalOpen}
+                        isLoading={isLoading}
+                        label={"Confirmation"}
+                        message={
+                            action === "approve"
+                                ? "Are you sure you want to approve this applicant for the Initial Interview? This action cannot be undone."
+                                : "Are you sure you want to reject this applicant from the Initial Interview? This action cannot be undone."
+                        }
+                        onClick={
+                            action === "approve" ? handleApprove : handleReject
+                        }
+                    />
+                )}
             </div>
 
-            <FileUploadFormModal
-                label={"Initial Interview Files"}
-                type={"initial_interview"}
-                isOpen={isOpenFileUploadFormModal}
-                setIsOpen={setIsOpenFileUploadFormModal}
-                onSuccess={fetchApplicantData}
-                selectedId={selectedId}
-                applicationFiles={applicationFiles}
-                onReUploadFiles={reUploadFiles}
-            />
+            {isOpenFileUploadFormModal && (
+                <FileUploadFormModal
+                    label={"Initial Interview Files"}
+                    type={"initial_interview"}
+                    isOpen={isOpenFileUploadFormModal}
+                    setIsOpen={setIsOpenFileUploadFormModal}
+                    onSuccess={fetchApplicantData}
+                    selectedId={selectedId}
+                    applicationFiles={applicationFiles}
+                    onReUploadFiles={reUploadFiles}
+                />
+            )}
 
-            <EmailMessageFormModal
-                stage={"initial_interview"}
-                isOpen={isMessageModalOpen}
-                onClose={setIsMessageModalOpen}
-                onRefresh={fetchApplicantData}
-                firstLabel={"Initial Interview Passed Message"}
-                secondLabel={"Initial Interview Failed Message"}
-            />
+            {isMessageModalOpen && (
+                <EmailMessageFormModal
+                    stage={"initial_interview"}
+                    isOpen={isMessageModalOpen}
+                    onClose={setIsMessageModalOpen}
+                    onRefresh={fetchApplicantData}
+                    firstLabel={"Initial Interview Passed Message"}
+                    secondLabel={"Initial Interview Failed Message"}
+                />
+            )}
         </div>
     );
 }

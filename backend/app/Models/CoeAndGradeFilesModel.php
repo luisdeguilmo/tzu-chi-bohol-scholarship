@@ -91,27 +91,6 @@ class CoeAndGradeFilesModel
         return $stmt->execute();
     }
 
-    public function getAllFilesWithSubmission()
-    {
-        $query =
-            "SELECT 
-                    f.*,
-                    s.year_level,
-                    s.semester,
-                    s.submission_date,
-                    s.created_at as submission_created_at
-                  FROM " .
-            $this->table_name .
-            " f
-                  LEFT JOIN coe_grades_submissions s ON f.submission_id = s.id
-                  ORDER BY f.uploaded_at DESC";
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-
-        return $stmt;
-    }
-
     public function getFileUrl($id)
     {
         $query = 'SELECT file_path FROM ' . $this->table_name . ' WHERE id = ?';

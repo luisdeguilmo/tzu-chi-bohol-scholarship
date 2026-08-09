@@ -205,10 +205,10 @@ export const manageApplication = () => {
             const response = await axios.put(
                 `${BASE_URL}app/api/application-management.php?action=interview_passed`,
                 {
-                    application_id: applicant.application_id,
-                    first_name: applicant.first_name,
-                    last_name: applicant.last_name,
-                    email: applicant.email,
+                    application_id: applicant?.application_id,
+                    first_name: applicant?.first_name,
+                    last_name: applicant?.last_name,
+                    email: applicant?.email,
                     is_initial_interview_passed: 1,
                 },
                 {

@@ -2,12 +2,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
 
-export const useApprovedApplications = () => {
+export const useApprovedApplications = (status) => {
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchApplications = async (status = "new") => {
+    const fetchApplications = async () => {
         try {
             setLoading(true);
             const response = await axios.get(

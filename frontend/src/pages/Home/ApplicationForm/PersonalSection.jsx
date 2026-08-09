@@ -10,6 +10,7 @@ const PersonalSection = ({
     handleInputChange,
     prevStep,
     nextStep,
+    isRenewal,
 }) => {
     const [errors, setErrors] = useState({});
     const { pathname } = useLocation();
@@ -33,6 +34,7 @@ const PersonalSection = ({
                 formData={formData}
                 handleInputChange={handleInputChange}
                 errors={errors}
+                isRenewal={isRenewal}
             />
             <NavigationButtons
                 isFirst={false}

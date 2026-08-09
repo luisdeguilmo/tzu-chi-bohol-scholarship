@@ -122,7 +122,7 @@ class ScholarAccountModel
     {
         try {
             $query =
-                'SELECT ai.*, pi.* FROM ' .
+                'SELECT ai.application_id, pi.last_name, pi.middle_name, pi.first_name, pi.email FROM ' .
                 $this->table_name .
                 " ai 
                      JOIN personal_information pi ON ai.application_id = pi.application_id WHERE ai.is_application_approved = '1' AND ai.is_examination_passed = '1' AND ai.is_initial_interview_passed = '1'

@@ -89,27 +89,6 @@ class CertificateOfAppearanceModel
         return $stmt->execute();
     }
 
-    public function getAllDocumentsWithActivity()
-    {
-        $query =
-            "SELECT 
-                    c.*,
-                    a.activity_name,
-                    a.activity_date as activity_scheduled_date,
-                    a.activity_time,
-                    a.created_at as activity_created_at
-                  FROM " .
-            $this->table_name .
-            " c
-                  LEFT JOIN activities a ON c.application_id = a.id
-                  ORDER BY c.uploaded_at DESC";
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-
-        return $stmt;
-    }
-
     public function getFileUrl($id)
     {
         $query = 'SELECT file_path FROM ' . $this->table_name . ' WHERE id = ?';

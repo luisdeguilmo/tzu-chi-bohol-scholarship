@@ -79,7 +79,11 @@ const ResultTableRow = ({
                             </div>
                         </td>
                         <td className="py-2.5 whitespace-nowrap text-center text-gray-500">
-                            {formatDateTime(info.created_at)}
+                            {formatDateTime(
+                                info?.is_home_visitation_qualified
+                                    ? info.home_visitation_approved_at
+                                    : info.home_visitation_rejected_at,
+                            ) || "--"}
                         </td>
                         <td className="py-2.5 whitespace-nowrap font-medium">
                             <span

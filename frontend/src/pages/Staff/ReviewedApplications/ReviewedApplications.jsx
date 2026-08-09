@@ -26,7 +26,7 @@ const ReviewedApplications = () => {
     const [tableHeaders, setTableHeaders] = useState([]);
 
     const { loading, applications, fetchApplications } =
-        useApprovedApplications();
+        useApprovedApplications(activeTab);
     const { fetchApplicantData } = useApplicantData();
     const { viewPdf, downloadPdf } = usePdfActions(
         activeTab,
@@ -34,6 +34,10 @@ const ReviewedApplications = () => {
     );
     const size = useWindowSize();
     const isMobile = size.width < 768;
+
+    useEffect(() => {
+        fetchApplications();
+    }, [activeTab]);
 
     // Filter data based on search term
     const filteredApplications = applications.filter((applicant) => {
@@ -64,6 +68,9 @@ const ReviewedApplications = () => {
         );
     });
 
+    console.log(activeTab);
+    console.log(applications);
+
     const sortedApplications = [...filteredApplications].sort((a, b) => {
         switch (sortBy) {
             case "newest":
@@ -90,13 +97,11 @@ const ReviewedApplications = () => {
 
     const handleChangeTab = (tab) => {
         setActiveTab(tab);
-        fetchApplications(tab);
         setCurrentPage(1);
     };
 
-    const handleRefresh = () => {
-        fetchApplications(activeTab);
-        setSelectedItems([]);
+    const handleRefresh = async () => {
+        fetchApplications();
     };
 
     useMemo(() => {
@@ -152,7 +157,7 @@ const ReviewedApplications = () => {
                             <p className="mb-2 font-normal text-gray-600">
                                 <div className="w-[max-content] flex items-center text-left gap-2">
                                     <img
-                                        src={item[0].profile}
+                                        src={item[0]?.profile}
                                         alt="Profile"
                                         className="w-10 h-10 object-cover rounded-full mx-auto"
                                     />
@@ -304,7 +309,7 @@ const ReviewedApplications = () => {
                                         <div className="w-[30%]"></div>
                                         <div className="w-[max-content] flex text-left gap-2">
                                             <img
-                                                src={info[0].profile}
+                                                src={info[0]?.profile}
                                                 alt="Profile"
                                                 className="w-10 h-10 object-cover rounded-full mx-auto"
                                             />

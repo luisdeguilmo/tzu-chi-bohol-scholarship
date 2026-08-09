@@ -51,10 +51,10 @@ const NavigationButtons = ({
     const { isEmailExist, refetch } = useCheckEmail(
         formData?.personal_information.email,
         user?.user_id ?? null,
-        section
+        section,
     );
 
-    const { loading, result, validateEmail } = useValidateEmail();
+    // const { loading, result, validateEmail } = useValidateEmail();
 
     useEffect(() => {
         if (section === "Personal") {
@@ -132,6 +132,17 @@ const NavigationButtons = ({
                 return;
             }
         }
+
+        if (section === "Personal") {
+            if (!/^https?:\/\/(www\.)?facebook\.com\/.+$/.test(formData.personal_information.facebook)) {
+                toast.error("Invalid facebook link.");
+                return;
+            }
+        }
+
+        // const isFacebookLink = /^https?:\/\/(www\.)?facebook\.com\/.+$/.test(
+        //     url,
+        // );
 
         // FIXED: Properly await the validation result
         // if (section === "Personal" && !user?.user_id) {
@@ -351,9 +362,10 @@ const NavigationButtons = ({
                 <button
                     className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg shadow-lg"
                     onClick={checkAndProceed}
-                    disabled={loading}
+                    // disabled={loading}
                 >
-                    {loading ? "Validating..." : "Next"}
+                    {/* {loading ? "Validating..." :  */}
+                    {"Next"}
                 </button>
             ) : (
                 <button

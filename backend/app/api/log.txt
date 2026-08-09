@@ -1091,3 +1091,12 @@ null
 {"applicantIds":[1509160],"batch":"Batch 1"}
 {"account_id":1509160,"status":"attended"}
 {"action":"EXPORT","entity_type":"scholar","entity_id":null,"description":"exported active scholars list","old_values":null,"new_values":null}
+{"strand":{"strand":"dfdfd","description":"fd"}}
+{"course_name":"fdf"}
+{"applicantIds":[7539711],"batch":"Batch 1"}
+{"applicantIds":[8282683],"batch":"Unassigned"}
+{"applicantIds":[8282683],"batch":"Batch 2"}
+{"applicantIds":[8282683],"batch":"Unassigned"}
+{"account_id":2555632,"status":"not_attended"}
+{"account_id":2555632,"status":"attended"}
+{"strand":{"strand":"df","description":"dfd"}}

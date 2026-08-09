@@ -19,7 +19,26 @@ class ApplicationRecordsModel
     public function getAllNewApplicants($status, $school_year, $sort)
     {
         $query =
-            "SELECT pi.*, ai.* FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE ai.type= 'New'";
+            "SELECT 
+                pi.last_name, pi.first_name, pi.middle_name, pi.email, 
+                ai.application_id, 
+                ai.school_year, 
+                ai.created_at,
+                ai.is_attended_awarding, 
+                ai.is_not_attended_awarding,
+                ai.is_attended_orientation,
+                ai.is_not_attended_orientation,
+                ai.is_final_interview_passed,
+                ai.is_final_interview_failed,
+                ai.is_home_visitation_qualified,
+                ai.is_home_visitation_not_qualified,
+                ai.is_initial_interview_passed,
+                ai.is_initial_interview_failed,
+                ai.is_examination_passed,
+                ai.is_examination_failed,
+                ai.is_application_approved,
+                ai.is_application_rejected
+            FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE ai.type= 'New'";
 
         if ($status === 'fully_qualified') {
             $query .=
@@ -60,8 +79,11 @@ class ApplicationRecordsModel
             } elseif ($status === 'not_attended_awarding') {
                 $query .= " AND ai.is_not_attended_awarding = '1'";
             } elseif ($status === 'pending') {
+                // $query .=
+                //     " AND (ai.is_application_rejected = '0' AND ai.is_examination_failed = '0' AND ai.is_initial_interview_failed = '0' AND ai.is_home_visitation_not_qualified = '0' AND ai.is_final_interview_failed = '0' AND ai.is_not_attended_orientation = '0' AND ai.is_not_attended_awarding = '0') AND (ai.is_application_approved = '1' OR ai.is_application_approved = '0' OR ai.is_examination_passed = '1' OR ai.is_examination_passed = '0' OR ai.is_initial_interview_passed = '1' OR ai.is_initial_interview_passed = '0' OR ai.is_home_visitation_qualified = '1' OR ai.is_home_visitation_qualified = '0' OR ai.is_final_interview_passed = '1' OR ai.is_final_interview_passed = '0' OR ai.is_attended_orientation = '1' OR ai.is_attended_orientation = '0') AND ai.is_attended_awarding = '0'";
+
                 $query .=
-                    " AND (ai.is_application_rejected = '0' AND ai.is_examination_failed = '0' AND ai.is_initial_interview_failed = '0' AND ai.is_home_visitation_not_qualified = '0' AND ai.is_final_interview_failed = '0' AND ai.is_not_attended_orientation = '0' AND ai.is_not_attended_awarding = '0') AND (ai.is_application_approved = '1' OR ai.is_application_approved = '0' OR ai.is_examination_passed = '1' OR ai.is_examination_passed = '0' OR ai.is_initial_interview_passed = '1' OR ai.is_initial_interview_passed = '0' OR ai.is_home_visitation_qualified = '1' OR ai.is_home_visitation_qualified = '0' OR ai.is_final_interview_passed = '1' OR ai.is_final_interview_passed = '0' OR ai.is_attended_orientation = '1' OR ai.is_attended_orientation = '0') AND ai.is_attended_awarding = '0'";
+                    " AND (ai.is_application_rejected = '0' AND ai.is_application_approved = '0')";
             }
         }
 
@@ -85,7 +107,10 @@ class ApplicationRecordsModel
     public function getAllOldApplicants($status, $school_year, $sort)
     {
         $query =
-            "SELECT pi.*, ai.* FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE ai.type= 'Old' AND ai.scholar_id IS NOT NULL";
+            "SELECT 
+                pi.last_name, pi.middle_name, pi.first_name, pi.email, 
+                ai.application_id, ai.scholar_id, ai.created_at, ai.school_year, ai.is_application_approved, ai.is_application_rejected
+            FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE ai.type= 'Old' AND ai.scholar_id IS NOT NULL";
 
         if ($status === 'all') {
             $query .=

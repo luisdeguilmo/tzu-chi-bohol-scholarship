@@ -6,15 +6,11 @@ import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import ManageApplicants from "./ManageApplicants";
 import BatchActions from "./BatchActions";
-// const UnassignedTableRow = React.lazy(() => import("./UnassignedTableRow"));
 const BatchesTableRow = React.lazy(() => import("./BatchesTableRow"));
 const ResultTableRow = React.lazy(() => import("./ResultTableRow"));
 import UnassignedTableRow from "./UnassignedTableRow";
-// import BatchesTableRow from "./BatchesTableRow";
-// import ResultTableRow from "./ResultTableRow";
 import { useBatch } from "../../../context/BatchContext";
 import { examinationTableButtons } from "../../../constant/tableToolbarButtons";
-// import CreateBatchModal from "./CreateBatchModal";
 import TableToolbar from "../../../components/TableToolbar";
 import PageContent from "../../../components/PageContent";
 import Table from "../../../components/Table";
@@ -25,7 +21,6 @@ import {
 } from "../../../constant/tableHeaders";
 import { manageApplication } from "../../../services/emailService";
 import SendEmailButton from "./SendEmailButtton";
-// import PassingScoreModal from "./PassingScoreModal";
 import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 import FileUploadFormModal from "../../../components/FileUploadFormModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
@@ -34,9 +29,6 @@ import { useSettings } from "../../../hooks/useSettings";
 import { DownloadIcon, Eye, Pencil, Plus } from "lucide-react";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { TableButtonAction } from "../../../components/TableButtonAction";
-// import { UnassignedList } from "./UnassignedList";
-// import { BatchesList } from "./BatchesList";
-// import { ResultList } from "./ResultList";
 
 const CreateBatchModal = React.lazy(() => import("./CreateBatchModal"));
 const PassingScoreModal = React.lazy(() => import("./PassingScoreModal"));
@@ -116,14 +108,6 @@ export default function Examination() {
     ]);
 
     useEffect(() => {
-        // if (activeTab === "Applicants") {
-        //     fetchApplicationsOnApplicantsTab();
-        // } else if (activeTab === "Batches") {
-        //     fetchApplicationsOnBatchesTab();
-        // } else if (activeTab === "Result" && status && sortBy) {
-        //     fetchApplicationsOnResultTab();
-        // }
-
         if (activeTab === "Applicants") {
             fetchApplicationsOnApplicantsTab();
         } else if (

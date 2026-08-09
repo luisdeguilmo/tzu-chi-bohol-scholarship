@@ -113,8 +113,7 @@ const StaffAccounts = () => {
     };
 
     const handleRefresh = () => {
-        fetchApplications(activeTab);
-        setSelectedItems([]);
+        fetchStaffAccounts();
     };
 
     return (

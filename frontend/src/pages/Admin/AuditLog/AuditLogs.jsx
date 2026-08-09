@@ -236,11 +236,13 @@ const AuditLogs = () => {
                 </div>
             </div>
 
-            <DetailsModal
-                isOpen={isModalOpen}
-                onClose={setIsModalOpen}
-                data={selectedLog}
-            />
+            {isModalOpen && (
+                <DetailsModal
+                    isOpen={isModalOpen}
+                    onClose={setIsModalOpen}
+                    data={selectedLog}
+                />
+            )}
         </div>
     );
 };

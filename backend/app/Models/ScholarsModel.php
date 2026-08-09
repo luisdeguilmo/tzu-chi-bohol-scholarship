@@ -181,7 +181,7 @@ class ScholarsModel
         $filter,
     ) {
         $query =
-            'SELECT s.*, 
+            'SELECT s.first_name, s.last_name, s.account_id, s.rendered_hours, s.transport_allowance, s.load_allowance,
                 u.type, 
                 u.status, 
                 ai.type, 
@@ -270,12 +270,13 @@ class ScholarsModel
     {
         $query =
             'SELECT 
-            s.*, 
+            s.last_name, s.first_name, s.account_id, 
             u.type, 
             u.status, 
             ai.type as application_type, 
             ai.school_year, 
             pi.email, 
+            pi.middle_name,
             eb.incoming_grade, 
             eb.present_school, 
             eb.present_course1,
@@ -356,12 +357,13 @@ class ScholarsModel
     {
         $query =
             'SELECT 
-            s.*, 
+            s.account_id, s.last_name, s.first_name, 
             u.type, 
             u.status, 
             ai.type as application_type, 
             ai.school_year, 
             pi.email, 
+            pi.middle_name, 
             eb.incoming_grade, 
             eb.present_school, 
             eb.present_course1,
@@ -441,7 +443,7 @@ class ScholarsModel
     public function getNotRenewedScholars($status, $school_year, $school, $course)
     {
         $query =
-            'SELECT s.*, u.type, u.status, ai.type, ai.school_year, pi.email, eb.incoming_grade, eb.present_school, eb.present_course1 FROM ' .
+            'SELECT s.account_id, s.last_name, s.first_name, u.type, u.status, ai.type, ai.school_year, pi.email, pi.middle_name, eb.incoming_grade, eb.present_school, eb.present_course1 FROM ' .
             $this->table_name .
             " s JOIN personal_information pi ON s.account_id = pi.application_id 
                 JOIN educational_background eb ON s.account_id = eb.application_id 

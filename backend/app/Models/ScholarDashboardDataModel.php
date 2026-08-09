@@ -107,14 +107,14 @@ class ScholarDashboardDataModel
         return $result['community_service_count'] ?? 0;
     }
 
-    public function getRenewalApplicationStatus($id)
+    public function getRenewalApplicationStatus($id, $schoolYear)
     {
         $query =
-            "SELECT is_application_approved, is_application_rejected, created_at FROM application_info WHERE (status = 'scholar' OR status = 'pending' OR status = 'renewal_application_rejected') AND scholar_id = :application_id";
+            "SELECT is_application_approved, is_application_rejected, created_at FROM application_info WHERE (status = 'scholar' OR status = 'pending' OR status = 'renewal_application_rejected') AND scholar_id = :application_id AND school_year = :school_year";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':application_id', $id);
-        // $stmt->bindParam(':school_year', $schoolYear);
+        $stmt->bindParam(':school_year', $schoolYear);
         $stmt->execute();
 
         return $stmt->fetch(\PDO::FETCH_ASSOC);

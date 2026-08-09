@@ -147,7 +147,7 @@ export const interviewApplicationsTableHeaders = [
 export const interviewResultTableHeaders = [
     { name: "Application ID", style: "text-center" },
     { name: "Applicant", style: "text-center" },
-    { name: "Date Approved", style: "text-center" },
+    { name: "Date Approved / Rejected", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
@@ -162,7 +162,7 @@ export const homeVisitationTableHeaders = [
 export const homeVisitationResultTableHeaders = [
     { name: "Application ID", style: "text-center" },
     { name: "Applicant", style: "text-center" },
-    { name: "Date Approved", style: "text-center" },
+    { name: "Date Approved / Rejected", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
@@ -177,10 +177,20 @@ export const finalInterviewApplicationsTableHeaders = [
 export const finalInterviewResultTableHeaders = [
     { name: "Application ID", style: "text-center" },
     { name: "Applicant", style: "text-center" },
-    { name: "Date Approved", style: "text-center" },
+    { name: "Date Approved / Rejected", style: "text-center" },
     { name: "Status", style: "text-center" },
     { name: "Action", style: "text-center" },
 ];
+
+export const unassignedOrientationTableHeaders = [
+    { name: "Application ID", style: "text-center" },
+    { name: "Applicant", style: "text-center" },
+    { name: "Batch", style: "text-center" },
+    { name: "Date Applied", style: "text-center" },
+    { name: "Date Final Interview Approved", style: "text-center" },
+    { name: "Action", style: "text-center" },
+];
+
 
 export const volunteerActivitiesTableHeaders = [
     { name: "Scholar ID", style: "text-center" },

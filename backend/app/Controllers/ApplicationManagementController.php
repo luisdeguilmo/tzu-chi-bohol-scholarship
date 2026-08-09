@@ -574,7 +574,7 @@ class ApplicationManagementController
                     throw new \Exception('Failed to send email');
                 }
 
-                if (!$applicant->updateStatusToFinalInterviewPassed($data['application_id'])) {
+                if (!$applicant->updateStatusToFinalInterviewFailed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
                 }
 

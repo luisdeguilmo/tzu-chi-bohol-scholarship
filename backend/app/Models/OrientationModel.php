@@ -22,7 +22,12 @@ class OrientationModel
 
     public function getApplicantsByBatch($status, $sort, $batchValue, $schoolYear)
     {
-        $query = "SELECT pi.*, ai.*, b.* FROM personal_information pi 
+        $query = "SELECT 
+                pi.last_name, pi.middle_name, pi.first_name, pi.email, 
+                ai.application_id, ai.batch_for_orientation, ai.is_attended_orientation, ai.is_not_attended_orientation,
+                b.purpose, 
+                b.schedule 
+                FROM personal_information pi 
             JOIN application_info ai ON ai.application_id = pi.application_id
             JOIN batches b ON ai.batch_for_orientation = b.batch_name 
             WHERE ai.is_for_orientation = '1' AND b.purpose = 'orientation' AND ai.batch_for_orientation = :batch AND ai.school_year = :school_year";
@@ -64,7 +69,12 @@ class OrientationModel
     public function getBatches($status, $sort, $schoolYear)
     {
         // Get all students with the specified batch value
-        $query = "SELECT pi.*, ai.*, b.purpose, b.schedule FROM personal_information pi 
+        $query = "SELECT 
+                pi.last_name, pi.first_name, pi.middle_name, pi.email, 
+                ai.application_id, ai.batch_for_orientation, ai.is_attended_orientation, ai.is_not_attended_orientation,
+                b.purpose, 
+                b.schedule 
+                FROM personal_information pi 
             JOIN application_info ai ON ai.application_id = pi.application_id
             JOIN batches b ON ai.batch_for_orientation = b.batch_name 
             WHERE ai.is_for_orientation = '1' AND b.purpose = 'orientation' AND (ai.batch_for_orientation IS NOT NULL AND ai.batch_for_orientation != 'Unassigned') AND ai.school_year = :school_year";

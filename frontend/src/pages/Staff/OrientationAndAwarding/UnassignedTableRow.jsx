@@ -67,7 +67,7 @@ const UnassignedTableRow = ({
                             <div className="w-[25%]"></div>
                             <div className="w-[max-content] flex items-center text-left gap-2">
                                 <img
-                                    src={info[0].profile}
+                                    src={info[0]?.profile}
                                     alt="Profile"
                                     className="w-10 h-10 object-cover rounded-full mx-auto"
                                 />
@@ -93,7 +93,7 @@ const UnassignedTableRow = ({
                             {formatDateTime(info.created_at)}
                         </td>
                         <td className="py-2.5 whitespace-nowrap text-gray-500">
-                            {formatDateTime(info.approved_at)}
+                            {formatDateTime(info.final_interview_approved_at)}
                         </td>
                         <td className="py-2.5 whitespace-nowrap font-medium">
                             <button

@@ -22,7 +22,10 @@ class AwardingModel
 
     public function getApplicants($status, $sort, $schoolYear)
     {
-        $query = "SELECT pi.*, ai.* FROM personal_information pi 
+        $query = "SELECT 
+                    pi.last_name, pi.middle_name, pi.first_name, pi.email, 
+                    ai.application_id, ai.is_attended_awarding, ai.is_not_attended_awarding 
+            FROM personal_information pi 
             JOIN application_info ai ON ai.application_id = pi.application_id WHERE ai.is_for_awarding = '1' AND ai.school_year = :school_year";
 
         if ($status === 'all') {

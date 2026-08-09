@@ -140,7 +140,7 @@ export default function HomeVisitation() {
     };
 
     const handleRefresh = () => {
-       fetchApplications();
+        fetchApplications();
     };
 
     return (
@@ -244,41 +244,47 @@ export default function HomeVisitation() {
                     </div>
                 )}
 
-                <ConfirmationModal
-                    isOpen={isFormModalOpen}
-                    onClose={setIsFormModalOpen}
-                    isLoading={isLoading}
-                    label={"Confirmation"}
-                    message={
-                        action === "approve"
-                            ? "Are you sure you want to approve this applicant for Home Visitation? This action cannot be undone."
-                            : "Are you sure you want to reject this applicant from the Home Visitation? This action cannot be undone."
-                    }
-                    onClick={
-                        action === "approve" ? handleApprove : handleReject
-                    }
-                />
+                {isFormModalOpen && (
+                    <ConfirmationModal
+                        isOpen={isFormModalOpen}
+                        onClose={setIsFormModalOpen}
+                        isLoading={isLoading}
+                        label={"Confirmation"}
+                        message={
+                            action === "approve"
+                                ? "Are you sure you want to approve this applicant for Home Visitation? This action cannot be undone."
+                                : "Are you sure you want to reject this applicant from the Home Visitation? This action cannot be undone."
+                        }
+                        onClick={
+                            action === "approve" ? handleApprove : handleReject
+                        }
+                    />
+                )}
             </div>
 
-            <FileUploadFormModal
-                label={"Home Visitation Files"}
-                type={"home_visitation"}
-                isOpen={isOpenFileUploadFormModal}
-                setIsOpen={setIsOpenFileUploadFormModal}
-                onSuccess={fetchApplicantData}
-                selectedId={selectedId}
-                applicationFiles={applicationFiles}
-                onReUploadFiles={reUploadFiles}
-            />
+            {isOpenFileUploadFormModal && (
+                <FileUploadFormModal
+                    label={"Home Visitation Files"}
+                    type={"home_visitation"}
+                    isOpen={isOpenFileUploadFormModal}
+                    setIsOpen={setIsOpenFileUploadFormModal}
+                    onSuccess={fetchApplicantData}
+                    selectedId={selectedId}
+                    applicationFiles={applicationFiles}
+                    onReUploadFiles={reUploadFiles}
+                />
+            )}
 
-            <EmailMessageFormModal
-                stage={"home_visitation"}
-                isOpen={isMessageModalOpen}
-                onClose={setIsMessageModalOpen}
-                onRefresh={fetchApplicantData}
-                firstLabel={"Home Visitation Passed Message"}
-                secondLabel={"Home Visitation Failed Message"}
-            />
+            {isMessageModalOpen && (
+                <EmailMessageFormModal
+                    stage={"home_visitation"}
+                    isOpen={isMessageModalOpen}
+                    onClose={setIsMessageModalOpen}
+                    onRefresh={fetchApplicantData}
+                    firstLabel={"Home Visitation Passed Message"}
+                    secondLabel={"Home Visitation Failed Message"}
+                />
+            )}
         </div>
     );
 }

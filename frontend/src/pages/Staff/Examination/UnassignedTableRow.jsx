@@ -99,7 +99,7 @@ const UnassignedTableRow = ({
                             <button
                                 onClick={() =>
                                     viewPdf({
-                                        applicationId: item.application_id,
+                                        applicationId: info.application_id,
                                         scholarId: null,
                                     })
                                 }

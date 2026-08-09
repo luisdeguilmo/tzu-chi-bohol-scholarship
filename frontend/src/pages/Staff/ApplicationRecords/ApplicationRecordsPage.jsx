@@ -131,6 +131,7 @@ export default function ApplicationRecordsPage() {
                             schoolYear === activeSchoolYear ? (
                                 <>
                                     <option value="all">All</option>
+                                    <option value="pending">Pending</option>
                                     <option value="fully_qualified">
                                         Fully Qualified
                                     </option>

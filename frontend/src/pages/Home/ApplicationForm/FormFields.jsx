@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import formConfig from "../../../constant/application/formConfig";
 import FORM_SECTIONS from "../../../constant/application/formSections";
 import { useCollegesUniversities } from "../../../hooks/useCollegesUniversities";
@@ -25,7 +25,10 @@ const FormFields = ({
 
     const { collegesAndUniversities } = useCollegesUniversities();
     const { coursesAccepted, fetchCoursesAccepted, resetCoursesAccepted } =
-        useCoursesAccepted(selectedCollegeOrUniversity);
+        useCoursesAccepted(
+            selectedCollegeOrUniversity ||
+                formData.educational_background.selected_school_id,
+        );
     const { isForExistingScholar } = useApplicationForm();
 
     useEffect(() => {
@@ -58,40 +61,99 @@ const FormFields = ({
         section === FORM_SECTIONS.EDUCATION ? fields.slice(0, 5) : [];
     const present = section === FORM_SECTIONS.EDUCATION ? fields.slice(6) : [];
 
+    console.log(collegesAndUniversities);
+    console.log(coursesAccepted);
+    console.log(present);
+    console.log(formData);
+
+    // useEffect(() => {
+    //     if (isRenewal === false) {
+    //         const options = formConfig[FORM_SECTIONS.EDUCATION][10].options;
+
+    //         if (isForExistingScholar === true) {
+    //             const hasFirstYear = options.some(
+    //                 (option) =>
+    //                     option.value === 1 && option.name === "1st Year",
+    //             );
+
+    //             if (!hasFirstYear) {
+    //                 options.splice(1, 0, {
+    //                     value: 1,
+    //                     name: "1st Year",
+    //                 });
+    //             }
+    //         } else {
+    //             options.splice(4, 5);
+    //         }
+    //     }
+    // }, [isRenewal, isForExistingScholar]);
+
+    const originalOptions = useRef([
+        ...formConfig[FORM_SECTIONS.EDUCATION][10].options,
+    ]);
+
+    console.log(isForExistingScholar);
+    console.log(isRenewal);
+
     useEffect(() => {
-        if (isForExistingScholar) {
-            const options = formConfig[FORM_SECTIONS.EDUCATION][10].options;
+        formConfig[FORM_SECTIONS.EDUCATION][10].options =
+            isForExistingScholar || (!isForExistingScholar && isRenewal)
+                ? [...originalOptions.current]
+                : originalOptions.current.filter(
+                      (option) => option.value === "" || option.value <= 3,
+                  );
+    }, [isRenewal, isForExistingScholar]);
 
-            const hasFirstYear = options.some(
-                (option) => option.value === 1 && option.name === "1st Year",
-            );
+    // useEffect(() => {
+    //     if (isRenewal) {
+    //         formConfig[FORM_SECTIONS.EDUCATION][10].options =
+    //             originalOptions.current.map((option) => {
+    //                 if (
+    //                     option.value !==
+    //                     formData.educational_background.year_level
+    //                 ) {
+    //                     return {
+    //                         value: option.value,
+    //                         name: option.name,
+    //                         disabled: 1,
+    //                     };
+    //                 }
+    //                 return option;
+    //             });
+    //     }
+    // }, [isRenewal]);
 
-            if (!hasFirstYear) {
-                options.splice(1, 0, {
-                    value: 1,
-                    name: "1st Year",
-                });
-            }
-        }
-    }, [isForExistingScholar]);
+    // useEffect(() => {
+    //     if (isForExistingScholar === false) {
+    //         const options = formConfig[FORM_SECTIONS.EDUCATION][10].options;
+
+    //         if (isRenewal === false) {
+
+    //         }
+    //     }
+    // }, [isRenewal, isForExistingScholar]);
+
+    console.log("isRenewal: " + isRenewal);
+    console.log("isForExistingScholar: " + isForExistingScholar);
 
     const filteredPresent = present.filter((field) => {
-        if (isRenewal === false && !isForExistingScholar) {
-            return field.name !== "year_level";
-        } else if (isRenewal) {
+        // if (isRenewal === false && !isForExistingScholar) {
+        //     return field.name !== "year_level";
+        // } else
+        if (isRenewal) {
             return field.name !== "present_course2";
         } else {
             return field;
         }
     });
 
-    if (!isRenewal) {
-        present.forEach((present) => {
-            if (present.name === "year_level") {
-                present.required = false;
-            }
-        });
-    }
+    // if (!isRenewal) {
+    //     present.forEach((present) => {
+    //         if (present.name === "year_level") {
+    //             present.required = false;
+    //         }
+    //     });
+    // }
 
     if (isRenewal) {
         present.forEach((present) => {
@@ -149,7 +211,7 @@ const FormFields = ({
         lettersOnly,
         numbersOnly,
         lettersNumbers,
-        urlOnly
+        urlOnly,
     };
 
     const currentYear = new Date().getFullYear();
@@ -272,7 +334,14 @@ const FormFields = ({
                                                                 }
                                                                 disabled={
                                                                     option.name ===
-                                                                    ""
+                                                                        "" ||
+                                                                    (isRenewal &&
+                                                                        option.name !==
+                                                                            formData
+                                                                                ?.educational_background[
+                                                                                option
+                                                                                    .name
+                                                                            ])
                                                                 }
                                                                 className="text-gray-800 disabled:text-gray-400"
                                                             >
@@ -295,7 +364,14 @@ const FormFields = ({
                                                                 }
                                                                 disabled={
                                                                     option.name ===
-                                                                    ""
+                                                                        "" ||
+                                                                    (isRenewal &&
+                                                                        option.value !==
+                                                                            formData
+                                                                                ?.educational_background[
+                                                                                option
+                                                                                    .value
+                                                                            ])
                                                                 }
                                                                 className="text-gray-800 disabled:text-gray-400"
                                                             >

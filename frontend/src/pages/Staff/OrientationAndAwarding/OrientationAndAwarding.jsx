@@ -15,12 +15,10 @@ import Table from "../../../components/Table";
 import {
     awardingTableHeaders,
     orientationTableHeaders,
-    unassignedTableHeaders,
+    unassignedOrientationTableHeaders,
 } from "../../../constant/tableHeaders";
 import { useOrientationAndAwarding } from "../../../hooks/useOrientationAndAwarding";
-// import OrientationTableRow from "./OrientationTableRow";
 import ChangeStatusModal from "./ChangeStatusModal";
-// import AwardingTableRow from "./AwardingTableRow";
 const OrientationTableRow = React.lazy(() => import("./OrientationTableRow"));
 const AwardingTableRow = React.lazy(() => import("./AwardingTableRow"));
 import { Plus } from "lucide-react";
@@ -284,7 +282,7 @@ export default function OrientationAndAwarding() {
                     applications={applications}
                     tableHeaders={
                         activeTab === "Applicants"
-                            ? unassignedTableHeaders
+                            ? unassignedOrientationTableHeaders
                             : activeTab === "Orientation"
                               ? orientationTableHeaders
                               : awardingTableHeaders

@@ -257,6 +257,7 @@ const formConfig = {
             type: "select",
             options: [
                 { value: "", name: "" },
+                { value: 1, name: "1st Year" },
                 { value: 2, name: "2nd Year" },
                 { value: 3, name: "3rd Year" },
                 { value: 4, name: "4th Year" },

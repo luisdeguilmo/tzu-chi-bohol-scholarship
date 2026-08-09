@@ -197,7 +197,7 @@ const UserAccount = ({
                                         mobileClass={info}
                                     />
                                     <InfoField
-                                        label="Facebook"
+                                        label="Facebook Link"
                                         value={
                                             scholarInfo?.basic_information
                                                 ?.facebook || ""
@@ -251,6 +251,7 @@ const UserAccount = ({
                                         }
                                     />
                                     <ValueField
+                                        isUrl={true}
                                         value={
                                             scholarInfo?.basic_information
                                                 ?.facebook || ""
@@ -514,101 +515,103 @@ const UserAccount = ({
 
                         {/* Account Settings */}
 
-                        <section>
-                            <div className="flex items-center gap-2 mb-6">
-                                <Settings className="w-4 h-4 text-gray-600" />
-                                <h3 className="text-sm font-semibold text-gray-900">
-                                    Account Settings
-                                </h3>
-                            </div>
-
-                            {!isModal && (
-                                <>
-                                    {" "}
-                                    <div className="grid md:grid-cols-2 gap-x-12">
-                                        <div className="space-y-4">
-                                            <InfoField
-                                                label="Email"
-                                                value={
-                                                    scholarInfo
-                                                        ?.basic_information
-                                                        ?.email
-                                                }
-                                                mobileClass={info}
-                                            />
-                                            <InfoField
-                                                label="Password"
-                                                value="••••••••"
-                                                mobileClass={info}
-                                            />
-                                        </div>
-
-                                        <div className="hidden md:block space-y-4">
-                                            <ValueField
-                                                value={
-                                                    scholarInfo
-                                                        ?.basic_information
-                                                        ?.email
-                                                }
-                                            />
-                                            <ValueField value="••••••••" />
-                                        </div>
-                                    </div>
-                                    <div className="mt-8 pt-6 border-t border-gray-200">
-                                        <div className="mb-8">
-                                            <h3 className="text-xl font-bold text-gray-800">
-                                                Password
-                                            </h3>
-                                            <p className="text-sm text-gray-700">
-                                                Must be at least 8 characters
-                                                long.
-                                            </p>
-                                        </div>
-                                        <ChangePasswordForm />
-                                    </div>
-                                </>
-                            )}
-
-                            {isModal && (
-                                <div className="w-[max-content] flex flex-col gap-3">
-                                    <button
-                                        onClick={() => {
-                                            setIsModalOpen(true);
-                                            data.onOpenConfirmationModal(
-                                                scholarInfoFromTable[2],
-                                                null,
-                                                "reset_password",
-                                            );
-                                        }}
-                                        type="button"
-                                        className="inline-flex justify-center items-center text-center text-sm px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
-                                    >
-                                        Reset Password
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setIsModalOpen(true);
-                                            data.onOpenConfirmationModal(
-                                                scholarInfoFromTable[2],
-                                                scholarInfo?.scholar_status,
-                                                scholarInfo?.scholar_status ===
-                                                    "active"
-                                                    ? "deactivate"
-                                                    : "activate",
-                                            );
-                                        }}
-                                        type="button"
-                                        className={`inline-flex items-center text-sm px-6 py-3 ${scholarInfo?.scholar_status === "active" ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}  text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5`}
-                                    >
-                                        {scholarInfo?.scholar_status ===
-                                        "active"
-                                            ? "Deactivate"
-                                            : "Activate"}{" "}
-                                        Account
-                                    </button>
+                        {user.type === "admin" && (
+                            <section>
+                                <div className="flex items-center gap-2 mb-6">
+                                    <Settings className="w-4 h-4 text-gray-600" />
+                                    <h3 className="text-sm font-semibold text-gray-900">
+                                        Account Settings
+                                    </h3>
                                 </div>
-                            )}
-                        </section>
+
+                                {!isModal && (
+                                    <>
+                                        {" "}
+                                        <div className="grid md:grid-cols-2 gap-x-12">
+                                            <div className="space-y-4">
+                                                <InfoField
+                                                    label="Email"
+                                                    value={
+                                                        scholarInfo
+                                                            ?.basic_information
+                                                            ?.email
+                                                    }
+                                                    mobileClass={info}
+                                                />
+                                                <InfoField
+                                                    label="Password"
+                                                    value="••••••••"
+                                                    mobileClass={info}
+                                                />
+                                            </div>
+
+                                            <div className="hidden md:block space-y-4">
+                                                <ValueField
+                                                    value={
+                                                        scholarInfo
+                                                            ?.basic_information
+                                                            ?.email
+                                                    }
+                                                />
+                                                <ValueField value="••••••••" />
+                                            </div>
+                                        </div>
+                                        <div className="mt-8 pt-6 border-t border-gray-200">
+                                            <div className="mb-8">
+                                                <h3 className="text-xl font-bold text-gray-800">
+                                                    Password
+                                                </h3>
+                                                <p className="text-sm text-gray-700">
+                                                    Must be at least 8
+                                                    characters long.
+                                                </p>
+                                            </div>
+                                            <ChangePasswordForm />
+                                        </div>
+                                    </>
+                                )}
+
+                                {isModal && (
+                                    <div className="w-[max-content] flex flex-col gap-3">
+                                        <button
+                                            onClick={() => {
+                                                setIsModalOpen(true);
+                                                data.onOpenConfirmationModal(
+                                                    scholarInfoFromTable[2],
+                                                    null,
+                                                    "reset_password",
+                                                );
+                                            }}
+                                            type="button"
+                                            className="inline-flex justify-center items-center text-center text-sm px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+                                        >
+                                            Reset Password
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsModalOpen(true);
+                                                data.onOpenConfirmationModal(
+                                                    scholarInfoFromTable[2],
+                                                    scholarInfo?.scholar_status,
+                                                    scholarInfo?.scholar_status ===
+                                                        "active"
+                                                        ? "deactivate"
+                                                        : "activate",
+                                                );
+                                            }}
+                                            type="button"
+                                            className={`inline-flex items-center text-sm px-6 py-3 ${scholarInfo?.scholar_status === "active" ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}  text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5`}
+                                        >
+                                            {scholarInfo?.scholar_status ===
+                                            "active"
+                                                ? "Deactivate"
+                                                : "Activate"}{" "}
+                                            Account
+                                        </button>
+                                    </div>
+                                )}
+                            </section>
+                        )}
                     </div>
                 </div>
             </div>
@@ -663,13 +666,33 @@ const InfoField = ({ label, value, mobileClass, isEditing, setIsEditing }) => (
         <p className="text-xs sm:text-sm font-medium text-gray-500 mb-1.5">
             {label}
         </p>
-        <p className={`${mobileClass} text-gray-800 text-sm`}>{value}</p>
+        {label === "Facebook Link" ? (
+            <a
+                href={value}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${mobileClass} text-blue-600 hover:text-blue-800 text-sm`}
+            >
+                {value}
+            </a>
+        ) : (
+            <p className={`${mobileClass} text-gray-800 text-sm`}>{value}</p>
+        )}
     </div>
 );
 
-const ValueField = ({ value, badge }) => (
+const ValueField = ({ isUrl = false, value, badge }) => (
     <div className={`flex items-center`}>
-        {badge === "green" ? (
+        {isUrl ? (
+            <a
+                href={value}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`text-blue-600 hover:text-blue-800 text-sm`}
+            >
+                {value}
+            </a>
+        ) : badge === "green" ? (
             <span className="inline-flex items-center bg-green-50 text-green-700 text-sm px-3 py-1 rounded-md">
                 {value}
             </span>

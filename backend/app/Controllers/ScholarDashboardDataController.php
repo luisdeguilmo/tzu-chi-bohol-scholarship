@@ -15,6 +15,7 @@ use App\Models\ScholarDashboardDataModel;
 use App\Models\ScholarsModel;
 use Config\Database;
 use App\Middleware\Auth;
+use App\Models\SchoolYearModel;
 
 class ScholarDashboardDataController
 {
@@ -53,6 +54,8 @@ class ScholarDashboardDataController
 
             $dashboardData = new ScholarDashboardDataModel();
             $scholarModel = new ScholarsModel();
+            $schoolYearModel = new SchoolYearModel();
+            $activeSchoolYear = $schoolYearModel->getActiveSchoolYear();
 
             $id = Auth::id();
 
@@ -62,7 +65,10 @@ class ScholarDashboardDataController
             $attendedEvents = $dashboardData->getAttendedEvents($id);
             $numberOfUpcomingEvents = $dashboardData->getNumberOfUpcomingEvents();
             $numberOfCommunityServices = $dashboardData->getNumberOfCommunityServices($id);
-            $renewalApplicationStatus = $dashboardData->getRenewalApplicationStatus($id);
+            $renewalApplicationStatus = $dashboardData->getRenewalApplicationStatus(
+                $id,
+                $activeSchoolYear,
+            );
 
             $status = [];
 

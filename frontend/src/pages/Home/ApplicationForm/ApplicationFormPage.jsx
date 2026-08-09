@@ -23,7 +23,7 @@ const generateInitialState = (fieldsConfig) => {
     const initialState = {};
     fieldsConfig.forEach((field) => {
         initialState[field.name] =
-            field.type === "select" ? field.defaultValue || "s" : "s";
+            field.type === "select" ? field.defaultValue || "" : "";
     });
     return initialState;
 };
@@ -171,7 +171,7 @@ function ApplicationForm({
                     present_location: educationalInfo?.present_location || "",
                     present_course1: educationalInfo?.present_course1 || "",
                     present_course2: educationalInfo?.present_course2 || "",
-                    year_level: educationalInfo?.year_level || "",
+                    year_level: educationalInfo?.year_level + 1 || "",
                     selected_school_id:
                         educationalInfo?.selected_school_id || "",
                 },
@@ -468,6 +468,7 @@ function ApplicationForm({
                         handleInputChange={handleInputChange}
                         prevStep={prevStep}
                         nextStep={nextStep}
+                        isRenewal={!includeRequirements}
                     />
                 );
             case 2:

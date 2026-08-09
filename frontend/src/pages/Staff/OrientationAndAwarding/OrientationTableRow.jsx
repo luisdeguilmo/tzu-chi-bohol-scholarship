@@ -94,7 +94,7 @@ const OrientationTableRow = ({
                             </div>
                         </td>
                         <td className="py-2.5 text-center whitespace-nowrap text-gray-500">
-                            {info.batch}
+                            {info.batch_for_orientation}
                         </td>
                         <td className="py-2.5 whitespace-nowrap text-gray-500">
                             <span
