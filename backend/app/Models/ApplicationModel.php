@@ -58,7 +58,7 @@ class ApplicationModel
         return $stmt->execute();
     }
 
-    public function createExistingScholar($data, $other)
+    public function createExistingScholar($data, $other, $application_id)
     {
         // Generate a unique random application_id`
         // $application_id = $this->generateUniqueApplicationId();
