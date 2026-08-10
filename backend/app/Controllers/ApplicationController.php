@@ -52,112 +52,111 @@ class ApplicationController
         $this->storageService = new SupabaseStorageService();
     }
 
+    //     public function createApplication()
+    // {
+    //     $this->pdo->beginTransaction();
+    //     error_log("[APP_SUBMIT] Transaction started");
 
-//     public function createApplication()
-// {
-//     $this->pdo->beginTransaction();
-//     error_log("[APP_SUBMIT] Transaction started");
+    //     try {
+    //         if (isset($_POST['applicationData'])) {
+    //             $data = json_decode($_POST['applicationData'], true);
+    //         } else {
+    //             $data = json_decode(file_get_contents('php://input'), true);
+    //         }
 
-//     try {
-//         if (isset($_POST['applicationData'])) {
-//             $data = json_decode($_POST['applicationData'], true);
-//         } else {
-//             $data = json_decode(file_get_contents('php://input'), true);
-//         }
+    //         if (!$data) {
+    //             throw new \Exception('No data provided');
+    //         }
+    //         error_log("[APP_SUBMIT] Payload decoded, keys: " . implode(',', array_keys($data)));
 
-//         if (!$data) {
-//             throw new \Exception('No data provided');
-//         }
-//         error_log("[APP_SUBMIT] Payload decoded, keys: " . implode(',', array_keys($data)));
+    //         $application = new ApplicationModel();
+    //         $application_id = $this->generateUniqueApplicationId();
+    //         error_log("[APP_SUBMIT] Generated application_id: {$application_id}");
 
-//         $application = new ApplicationModel();
-//         $application_id = $this->generateUniqueApplicationId();
-//         error_log("[APP_SUBMIT] Generated application_id: {$application_id}");
+    //         $created = $application->create(
+    //             $data['application_info'],
+    //             $data['other_information'],
+    //             $application_id
+    //         );
+    //         error_log("[APP_SUBMIT] ApplicationModel->create returned: " . var_export($created, true));
 
-//         $created = $application->create(
-//             $data['application_info'],
-//             $data['other_information'],
-//             $application_id
-//         );
-//         error_log("[APP_SUBMIT] ApplicationModel->create returned: " . var_export($created, true));
+    //         if (!$application_id) {
+    //             throw new \Exception('Failed to create application');
+    //         }
 
-//         if (!$application_id) {
-//             throw new \Exception('Failed to create application');
-//         }
+    //         error_log("[APP_SUBMIT] Starting processApplicationData for {$application_id}");
+    //         $this->processApplicationData($data, $application_id);
+    //         error_log("[APP_SUBMIT] Finished processApplicationData for {$application_id}");
 
-//         error_log("[APP_SUBMIT] Starting processApplicationData for {$application_id}");
-//         $this->processApplicationData($data, $application_id);
-//         error_log("[APP_SUBMIT] Finished processApplicationData for {$application_id}");
+    //         if (isset($_FILES['picture'])) {
+    //             $this->handleProfilePictureUpload($_FILES['picture'], $application_id);
+    //             error_log("[APP_SUBMIT] Profile picture handled");
+    //         }
 
-//         if (isset($_FILES['picture'])) {
-//             $this->handleProfilePictureUpload($_FILES['picture'], $application_id);
-//             error_log("[APP_SUBMIT] Profile picture handled");
-//         }
+    //         if (isset($_FILES['files'])) {
+    //             $this->handleRequirementFilesUpload($_FILES['files'], $application_id);
+    //             error_log("[APP_SUBMIT] Requirement files (multipart) handled");
+    //         }
 
-//         if (isset($_FILES['files'])) {
-//             $this->handleRequirementFilesUpload($_FILES['files'], $application_id);
-//             error_log("[APP_SUBMIT] Requirement files (multipart) handled");
-//         }
+    //         if (isset($data['uploaded_files']) && is_array($data['uploaded_files'])) {
+    //             $this->handleRequirementFilesFromJson($data['uploaded_files'], $application_id);
+    //             error_log("[APP_SUBMIT] Requirement files (base64) handled");
+    //         }
 
-//         if (isset($data['uploaded_files']) && is_array($data['uploaded_files'])) {
-//             $this->handleRequirementFilesFromJson($data['uploaded_files'], $application_id);
-//             error_log("[APP_SUBMIT] Requirement files (base64) handled");
-//         }
+    //         if (isset($data['picture_file']) && is_array($data['picture_file']) && !empty($data['picture_file']['base64_data'])) {
+    //             $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
+    //             error_log("[APP_SUBMIT] Profile picture (base64) handled");
+    //         }
 
-//         if (isset($data['picture_file']) && is_array($data['picture_file']) && !empty($data['picture_file']['base64_data'])) {
-//             $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
-//             error_log("[APP_SUBMIT] Profile picture (base64) handled");
-//         }
+    //         $auditLogModel = new AuditLogModel();
+    //         $auditCreated = $auditLogModel->create([
+    //             'user_id' => null,
+    //             'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
+    //             'user_role' => 'applicant',
+    //             'action' => Action::APPLICATION_SUBMITTED,
+    //             'entity_type' => 'application',
+    //             'entity_id' => $application_id,
+    //             'description' => $data['personal_information']['first_name'] . ' ' . $data['personal_information']['last_name'] . ' submitted application.',
+    //             'old_values' => null,
+    //             'new_values' => ['status' => 'submitted'],
+    //             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+    //             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+    //         ]);
+    //         error_log("[APP_SUBMIT] Audit log created: " . var_export($auditCreated, true));
 
-//         $auditLogModel = new AuditLogModel();
-//         $auditCreated = $auditLogModel->create([
-//             'user_id' => null,
-//             'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
-//             'user_role' => 'applicant',
-//             'action' => Action::APPLICATION_SUBMITTED,
-//             'entity_type' => 'application',
-//             'entity_id' => $application_id,
-//             'description' => $data['personal_information']['first_name'] . ' ' . $data['personal_information']['last_name'] . ' submitted application.',
-//             'old_values' => null,
-//             'new_values' => ['status' => 'submitted'],
-//             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
-//             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-//         ]);
-//         error_log("[APP_SUBMIT] Audit log created: " . var_export($auditCreated, true));
+    //         if (!$auditCreated) {
+    //             throw new \Exception('Failed to create audit log');
+    //         }
 
-//         if (!$auditCreated) {
-//             throw new \Exception('Failed to create audit log');
-//         }
+    //         $commitResult = $this->pdo->commit();
+    //         error_log("[APP_SUBMIT] Commit result: " . var_export($commitResult, true));
 
-//         $commitResult = $this->pdo->commit();
-//         error_log("[APP_SUBMIT] Commit result: " . var_export($commitResult, true));
+    //         if (!$commitResult) {
+    //             throw new \Exception('Transaction commit failed for application_id ' . $application_id);
+    //         }
 
-//         if (!$commitResult) {
-//             throw new \Exception('Transaction commit failed for application_id ' . $application_id);
-//         }
+    //         http_response_code(201);
+    //         echo json_encode([
+    //             'success' => true,
+    //             'message' => 'Application created successfully...',
+    //             'application_id' => $application_id,
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         error_log("[APP_SUBMIT][ERROR] " . $e->getMessage() . " | " . $e->getFile() . ':' . $e->getLine());
+    //         error_log("[APP_SUBMIT][TRACE] " . $e->getTraceAsString());
 
-//         http_response_code(201);
-//         echo json_encode([
-//             'success' => true,
-//             'message' => 'Application created successfully...',
-//             'application_id' => $application_id,
-//         ]);
-//     } catch (\Exception $e) {
-//         error_log("[APP_SUBMIT][ERROR] " . $e->getMessage() . " | " . $e->getFile() . ':' . $e->getLine());
-//         error_log("[APP_SUBMIT][TRACE] " . $e->getTraceAsString());
+    //         if ($this->pdo->inTransaction()) {
+    //             $this->pdo->rollBack();
+    //             error_log("[APP_SUBMIT] Rolled back transaction");
+    //         }
 
-//         if ($this->pdo->inTransaction()) {
-//             $this->pdo->rollBack();
-//             error_log("[APP_SUBMIT] Rolled back transaction");
-//         }
-
-//         http_response_code(400);
-//         echo json_encode([
-//             'success' => false,
-//             'message' => $e->getMessage(),
-//         ]);
-//     }
-// }
+    //         http_response_code(400);
+    //         echo json_encode([
+    //             'success' => false,
+    //             'message' => $e->getMessage(),
+    //         ]);
+    //     }
+    // }
 
     public function createApplication()
     {
@@ -180,24 +179,21 @@ class ApplicationController
             // Process application data
             $application = new ApplicationModel();
 
-            $application_id = $this->generateUniqueApplicationId();
+            $application_id = null;
 
             if ($is_existing_scholar) {
                 $application_id = $application->createExistingScholar(
                     $data,
                     $data['other_information'],
-                    $application_id,
                 );
             } else {
-                $application_id = 
-                    $application->create(
+                $application_id = $application->create(
                     $data['application_info'],
                     $data['other_information'],
-                    $application_id
                 );
             }
 
-            error_log("Application ID: " . $application_id);
+            error_log('Application ID: ' . $application_id);
 
             if (!$application_id) {
                 throw new \Exception('Failed to create application');

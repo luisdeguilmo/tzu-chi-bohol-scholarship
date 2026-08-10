@@ -28,10 +28,10 @@ class ApplicationModel
         $this->previousSchoolYear = $this->previousYear . '-' . $this->currentYear;
     }
 
-    public function create($data, $other, $application_id)
+    public function create($data, $other)
     {
         // Generate a unique random application_id`
-        // $application_id = $this->generateUniqueApplicationId();
+        $application_id = $this->generateUniqueApplicationId();
 
         $query =
             'INSERT INTO ' .
@@ -51,17 +51,17 @@ class ApplicationModel
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':expectation', $expectation);
 
-        // if ($stmt->execute()) {
-        //     return $application_id;
-        // }
+        if ($stmt->execute()) {
+            return $application_id;
+        }
 
-        return $stmt->execute();
+        return false;
     }
 
-    public function createExistingScholar($data, $other, $application_id)
+    public function createExistingScholar($data, $other)
     {
         // Generate a unique random application_id`
-        // $application_id = $this->generateUniqueApplicationId();
+        $application_id = $this->generateUniqueApplicationId();
 
         $query =
             'INSERT INTO ' .
