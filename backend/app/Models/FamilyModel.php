@@ -86,7 +86,10 @@ class FamilyModel
     : null;
         $this->guardian_edu_attainment = strip_tags($data['guardian_education'] ?? '');
         $this->guardian_occupation = strip_tags($data['guardian_occupation'] ?? '');
-        $this->guardian_monthly_income = strip_tags($data['guardian_income'] ?? '');
+        // $this->guardian_monthly_income = strip_tags($data['guardian_income'] ?? '');
+        $this->guardian_monthly_income = isset($data['guardian_income']) && $data['guardian_income'] !== ''
+    ? (int) $data['guardian_income']
+    : null;
         $this->guardian_contact_number = strip_tags($data['guardian_contact'] ?? '');
 
         // Bind values
