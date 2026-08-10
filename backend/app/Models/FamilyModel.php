@@ -80,7 +80,10 @@ class FamilyModel
         $this->mother_monthly_income = strip_tags($data['mother_income']);
         $this->mother_contact_number = strip_tags($data['mother_contact']);
         $this->guardian_name = strip_tags($data['guardian_name'] ?? '');
-        $this->guardian_age = strip_tags($data['guardian_age'] ?? '');
+        // $this->guardian_age = strip_tags($data['guardian_age'] ?? '');
+        $this->guardian_age = isset($data['guardian_age']) && $data['guardian_age'] !== ''
+    ? (int) $data['guardian_age']
+    : null;
         $this->guardian_edu_attainment = strip_tags($data['guardian_education'] ?? '');
         $this->guardian_occupation = strip_tags($data['guardian_occupation'] ?? '');
         $this->guardian_monthly_income = strip_tags($data['guardian_income'] ?? '');
