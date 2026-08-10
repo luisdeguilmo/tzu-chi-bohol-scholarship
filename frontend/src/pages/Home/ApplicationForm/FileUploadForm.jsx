@@ -23,6 +23,7 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
                     .replaceAll("(", "")
                     .replaceAll(")", "")
                     .replaceAll(" ", "_"),
+                    .replaceAll("-", "_"),
                 size: formData.picture_file.size,
                 type: formData.picture_file.fileObj.type,
                 preview: preview,
@@ -40,6 +41,7 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
                         .replaceAll("(", "")
                         .replaceAll(")", "")
                         .replaceAll(" ", "_"),
+                        .replaceAll("-", "_"),
                     size: item.fileObj.size,
                     type: item.fileObj.type,
                     preview: preview,
