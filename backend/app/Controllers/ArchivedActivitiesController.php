@@ -56,7 +56,7 @@ class ArchivedActivitiesController
             $data = json_decode(file_get_contents('php://input'), true);
             $id = Auth::id();
 
-            file_put_contents(__DIR__ . '/debug.log', 'Staff ID: ' . $id . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/debug.log', 'Staff ID: ' . $id . PHP_EOL, FILE_APPEND);
 
             if (!$data) {
                 throw new \Exception('No data provided');

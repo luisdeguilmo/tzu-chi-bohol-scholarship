@@ -24,7 +24,7 @@ class OrientationModel
     {
         $query = "SELECT 
                 pi.last_name, pi.middle_name, pi.first_name, pi.email, 
-                ai.application_id, ai.batch_for_orientation, ai.is_attended_orientation, ai.is_not_attended_orientation,
+                ai.application_id, ai.school_year, ai.batch_for_orientation, ai.is_attended_orientation, ai.is_not_attended_orientation,
                 b.purpose, 
                 b.schedule 
                 FROM personal_information pi 
@@ -71,7 +71,7 @@ class OrientationModel
         // Get all students with the specified batch value
         $query = "SELECT 
                 pi.last_name, pi.first_name, pi.middle_name, pi.email, 
-                ai.application_id, ai.batch_for_orientation, ai.is_attended_orientation, ai.is_not_attended_orientation,
+                ai.application_id, ai.school_year, ai.batch_for_orientation, ai.is_attended_orientation, ai.is_not_attended_orientation,
                 b.purpose, 
                 b.schedule 
                 FROM personal_information pi 

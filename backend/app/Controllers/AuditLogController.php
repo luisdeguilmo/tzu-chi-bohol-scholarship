@@ -82,7 +82,7 @@ class AuditLogController
 
             $data = json_decode(file_get_contents('php://input'), true);
 
-            file_put_contents('log.txt', json_encode($data) . PHP_EOL, FILE_APPEND);
+            // file_put_contents('log.txt', json_encode($data) . PHP_EOL, FILE_APPEND);
 
             if (!$data) {
                 throw new \Exception('No data provided');

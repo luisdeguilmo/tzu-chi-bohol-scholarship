@@ -468,7 +468,7 @@ class ApplicantModel
     {
         $query = "SELECT 
                     pi.first_name, pi.last_name, pi.middle_name, pi.email,
-                    ai.application_id, ai.batch, ai.score, 
+                    ai.application_id, ai.batch, ai.score, ai.school_year,
                     b.purpose, 
                     b.schedule 
             FROM personal_information pi 
@@ -514,7 +514,7 @@ class ApplicantModel
         // Get all students with the specified batch value
         $query = "SELECT 
                     pi.first_name, pi.last_name, pi.middle_name, pi.email, 
-                    ai.application_id, ai.score, ai.batch, 
+                    ai.application_id, ai.score, ai.batch, ai.school_year,
                     b.purpose, 
                     b.schedule 
             FROM personal_information pi 
