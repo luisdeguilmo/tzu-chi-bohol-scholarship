@@ -8,7 +8,7 @@ import {
     auditLogsHeaders,
     schoolYearsHeaders,
 } from "../../../constant/tableHeaders";
-import { CircleCheckBig, Eye, Plus } from "lucide-react";
+import { CircleCheckBig, Eye, Plus, Settings } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useAuditLogs } from "../../../hooks/useAuditLogs";
@@ -16,6 +16,7 @@ import { date } from "../../../utils/getDateAndTime";
 import { formatTimestamp } from "../../../utils/formatTimestamp";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import DetailsModal from "./DetailsModal";
+import AuditLogRetention from "../../../components/AuditLogRetention";
 
 const AuditLogs = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -28,6 +29,7 @@ const AuditLogs = () => {
     const [status, setStatus] = useState(null);
     const [action, setAction] = useState("activate");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showRetentionModal, setShowRetentionModal] = useState(false);
     const { auditLogs, fetchAuditLogs, loading } = useAuditLogs();
 
     useEffect(() => {
@@ -94,11 +96,12 @@ const AuditLogs = () => {
                     firstIndex={indexOfFirstItem}
                     lastIndex={indexOfLastItem}
                     onChangeCurrentPage={setCurrentPage}
-                    // addButton={true}
-                    // button={{
-                    //     icon: <Plus className="w-4 h-4 text-white" />,
-                    //     label: "New Staff Account",
-                    // }}
+                    onOpen={setShowRetentionModal}
+                    addButton={true}
+                    button={{
+                        icon: <Settings className="w-4 h-4 text-white" />,
+                        label: "Retention Settings",
+                    }}
                 />
 
                 {/* Table */}
@@ -241,6 +244,15 @@ const AuditLogs = () => {
                     isOpen={isModalOpen}
                     onClose={setIsModalOpen}
                     data={selectedLog}
+                />
+            )}
+
+            {showRetentionModal && (
+                <AuditLogRetention
+                    label={"Retention Settings"}
+                    isOpen={showRetentionModal}
+                    onClose={setShowRetentionModal}
+                    isLoading={true}
                 />
             )}
         </div>

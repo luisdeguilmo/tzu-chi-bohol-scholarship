@@ -337,27 +337,33 @@ export default function EventsPage() {
                 </div>
             </div>
 
-            <EventFormModal
-                isOpen={isOpenFormModal}
-                onClose={setIsOpenFormModal}
-                onSuccess={fetchEvents}
-                onRefresh={fetchEvents}
-                event={selectedEvent}
-                action={action}
-                setAction={setAction}
-            />
+            {isOpenFormModal && (
+                <EventFormModal
+                    isOpen={isOpenFormModal}
+                    onClose={setIsOpenFormModal}
+                    onSuccess={fetchEvents}
+                    onRefresh={fetchEvents}
+                    event={selectedEvent}
+                    action={action}
+                    setAction={setAction}
+                />
+            )}
 
-            <EventDetailsModal
-                isOpen={isOpenEventDetailsModal && action === "view_and_record"}
-                onClose={setIsOpenEventDetailsModal}
-                event={selectedEvent}
-                isStaff={true}
-                firstName={user.first_name}
-                lastName={user.last_name}
-                fetchEvents={handleRefresh}
-                shouldScrollToComments={shouldScrollToComments}
-                onStaffEventsRefresh={fetchEvents}
-            />
+            {isOpenEventDetailsModal && (
+                <EventDetailsModal
+                    isOpen={
+                        isOpenEventDetailsModal && action === "view_and_record"
+                    }
+                    onClose={setIsOpenEventDetailsModal}
+                    event={selectedEvent}
+                    isStaff={true}
+                    firstName={user.first_name}
+                    lastName={user.last_name}
+                    fetchEvents={handleRefresh}
+                    shouldScrollToComments={shouldScrollToComments}
+                    onStaffEventsRefresh={fetchEvents}
+                />
+            )}
         </div>
     );
 }

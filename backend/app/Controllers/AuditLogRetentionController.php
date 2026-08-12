@@ -7,10 +7,10 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/Database.php';
 
 use App\Models\ApplicantModel;
-use App\Models\SettingsModel;
+use App\Models\AuditLogRetentionModel;
 use Config\Database;
 
-class SettingsController
+class AuditLogRetentionController
 {
     private $pdo;
 
@@ -48,16 +48,16 @@ class SettingsController
         try {
             $this->pdo->beginTransaction();
 
-            $settings = new SettingsModel();
+            $log_retention_model = new AuditLogRetentionModel();
 
-            $passingScore = $settings->getPassingScore();
+            $log_retention = $log_retention_model->getLogRetention();
 
             $this->pdo->commit();
 
             http_response_code(200);
             echo json_encode([
                 'success' => true,
-                'passingScore' => $passingScore,
+                'logRetention' => $log_retention,
             ]);
         } catch (\Exception $e) {
             if ($this->pdo->inTransaction()) {
@@ -86,27 +86,10 @@ class SettingsController
                 throw new \Exception('No data provided or invalid JSON');
             }
 
-            $settings = new SettingsModel();
-            $applicantModel = new ApplicantModel();
-            $settings = new SettingsModel();
+            $log_retention_model = new AuditLogRetentionModel();
 
-            if (!$settings->createPassingScore($data)) {
+            if (!$log_retention_model->updateLogRetention($data)) {
                 throw new \Exception('Failed to save score information');
-            }
-
-            $passingScore = $settings->getPassingScore();
-            $applicants = $applicantModel->getApplicantsWhoTookExam();
-
-            foreach ($applicants as $applicant) {
-                if ($applicant['score'] >= $passingScore) {
-                    if (!$applicantModel->updateStatusToExamPassed($applicant['application_id'])) {
-                        throw new \Exception('Failed to update status');
-                    }
-                } else {
-                    if (!$applicantModel->updateStatusToExamFailed($applicant['application_id'])) {
-                        throw new \Exception('Failed to update status');
-                    }
-                }
             }
 
             $this->pdo->commit();
@@ -114,7 +97,7 @@ class SettingsController
             http_response_code(201);
             echo json_encode([
                 'success' => true,
-                'message' => 'Passing score set successfully',
+                'message' => 'Log retention updated successfully',
             ]);
         } catch (\Exception $e) {
             if ($this->pdo->inTransaction()) {
@@ -130,6 +113,6 @@ class SettingsController
     }
 }
 
-$controller = new SettingsController();
+$controller = new AuditLogRetentionController();
 $controller->processRequest();
 ?>

@@ -32,7 +32,7 @@ export const useSettings = () => {
 
         try {
             const response = await fetch(`${BASE_URL}app/api/settings.php`, {
-                method: "PUT",
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json", // Important for JSON body
                 },
