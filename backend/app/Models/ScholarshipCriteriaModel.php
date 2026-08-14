@@ -343,7 +343,7 @@ class ScholarshipCriteriaModel
 
         $stmt = $this->pdo->prepare($query);
 
-        $is_visible = strip_tags(!$data['is_visible']);
+        $is_visible = (int) strip_tags(!$data['is_visible']);
 
         $stmt->bindParam(':is_visible', $is_visible);
         $stmt->bindParam(':id', $id);
