@@ -10,6 +10,7 @@ export const useSchedule = () => {
         date,
         time,
         venue,
+        message,
         batchToSet,
         onSuccess,
         setIsOpen,
@@ -21,6 +22,7 @@ export const useSchedule = () => {
             purpose: purpose,
             schedule: date + " " + time,
             venue: venue,
+            message: message,
             batch_id: batchId,
             applicants: applicants,
             date: date,
@@ -33,7 +35,7 @@ export const useSchedule = () => {
             const response = await fetch(
                 `${BASE_URL}app/api/schedule.php?id=${batchToSet.batch_name}`,
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json", // Important for JSON body
                     },

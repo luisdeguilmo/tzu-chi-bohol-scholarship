@@ -20,6 +20,7 @@ export default function SetScheduleForm({
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [venue, setVenue] = useState("");
+    const [message, setMessage] = useState("");
     const [editing, setEditing] = useState(false);
     const [isEmailSent, setIsEmailSent] = useState(false);
     const [isEmailSentToAll, setIsEmailSentToAll] = useState(false);
@@ -32,7 +33,7 @@ export default function SetScheduleForm({
     useEffect(() => {
         if (selectedBatch && batches) {
             const batch = batches.find(
-                (batch) => batch.batch_name === selectedBatch
+                (batch) => batch.batch_name === selectedBatch,
             );
 
             setIsEmailSentToAll(batch?.is_schedule_sent);
@@ -42,6 +43,7 @@ export default function SetScheduleForm({
                 setDate(dateAndTime[0]);
                 setTime(dateAndTime[1]);
                 setVenue(batch.venue || "");
+                setMessage(batch.message || "");
                 setBatchId(batch.id);
                 setEditing(true);
             } else {
@@ -49,6 +51,7 @@ export default function SetScheduleForm({
                 setDate("");
                 setTime("");
                 setVenue("");
+                setMessage();
                 setEditing(false);
             }
         }
@@ -56,7 +59,7 @@ export default function SetScheduleForm({
 
     const handleSubmit = async () => {
         const batchToSet = batches.find(
-            (batch) => batch.batch_name === selectedBatch
+            (batch) => batch.batch_name === selectedBatch,
         );
 
         const success = await createSchedule(
@@ -64,12 +67,13 @@ export default function SetScheduleForm({
             date,
             time,
             venue,
+            message,
             batchToSet,
             onSuccess,
             setIsOpen,
             batchId,
             applications,
-            selectedBatch
+            selectedBatch,
         );
 
         if (success) {
@@ -90,7 +94,7 @@ export default function SetScheduleForm({
             date,
             time,
             venue,
-            selectedBatch
+            selectedBatch,
         );
 
         if (success) {
@@ -105,11 +109,18 @@ export default function SetScheduleForm({
         setIsEmailSent(false);
     };
 
+    const resetFields = () => {
+        setDate("");
+        setTime("");
+        setVenue("");
+        setMessage("");
+    };
+
     // Helper function to check if batch has schedule (no state updates)
     const hasSchedule = () => {
         if (!selectedBatch || !batches) return false;
         const batch = batches.find(
-            (batch) => batch.batch_name === selectedBatch
+            (batch) => batch.batch_name === selectedBatch,
         );
         return batch && batch.schedule;
     };
@@ -134,7 +145,11 @@ export default function SetScheduleForm({
                     onClose={setIsOpen}
                     buttonLabel={editing ? "Save Changes" : "Save"}
                     onCancel={handleCancel}
-                    onSubmit={handleSubmit}
+                    onSubmit={
+                        isEmailSentToAll
+                            ? () => setIsFormModalOpen(true)
+                            : () => handleSubmit()
+                    }
                     isLoading={loading}
                 >
                     {/* Content */}
@@ -197,7 +212,7 @@ export default function SetScheduleForm({
                                     />
                                 </label>
                             </div>
-                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                                 Venue *
                                 <input
                                     required
@@ -210,6 +225,22 @@ export default function SetScheduleForm({
                                     }}
                                     className="w-full border border-gray-300 rounded-md py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 />
+                            </label>
+
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
+                                Message *
+                                <textarea
+                                    required
+                                    type="text"
+                                    placeholder="Enter message"
+                                    value={message}
+                                    rows={4}
+                                    onChange={(e) => {
+                                        setMessage(e.target.value);
+                                        setIsInputChanged(true);
+                                    }}
+                                    className="resize-none w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                ></textarea>
                             </label>
 
                             {/* <SendEmailButton
@@ -229,20 +260,22 @@ export default function SetScheduleForm({
                 </InputModal>
             </div>
 
-            <ConfirmationModal
-                isOpen={isFormModalOpen}
-                onClose={setIsFormModalOpen}
-                isLoading={isLoading}
-                label={"Confirmation"}
-                message={
-                    "The schedule has already been sent. Do you want to send it again?"
-                }
-                onClick={() => {
-                    handleSendSchedule();
-                    setIsFormModalOpen(false);
-                }}
-                removeBackground={true}
-            />
+            {isFormModalOpen && (
+                <ConfirmationModal
+                    isOpen={isFormModalOpen}
+                    onClose={setIsFormModalOpen}
+                    isLoading={isLoading}
+                    label={"Confirmation"}
+                    message={
+                        "The schedule has already been sent. Do you want to send it again?"
+                    }
+                    onClick={() => {
+                        handleSubmit();
+                        setIsFormModalOpen(false);
+                    }}
+                    removeBackground={true}
+                />
+            )}
         </>
     );
 }

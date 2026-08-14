@@ -24,7 +24,7 @@ class BatchModel
     public function getBatches($purpose)
     {
         $query =
-            'SELECT id, batch_name, schedule, venue, is_schedule_sent FROM ' .
+            'SELECT id, batch_name, schedule, venue, message, is_schedule_sent FROM ' .
             $this->table_name .
             ' WHERE purpose = :purpose';
         $stmt = $this->pdo->prepare($query);
@@ -37,7 +37,7 @@ class BatchModel
     public function getBatchById($id, $purpose)
     {
         $query =
-            'SELECT id, batch_name, schedule, venue, is_schedule_sent FROM ' .
+            'SELECT id, batch_name, schedule, venue, message, is_schedule_sent FROM ' .
             $this->table_name .
             ' WHERE purpose = :purpose AND batch_name = :id';
         $stmt = $this->pdo->prepare($query);
@@ -84,7 +84,7 @@ class BatchModel
             $query =
                 'UPDATE ' .
                 $this->table_name .
-                ' SET schedule = :schedule, venue = :venue WHERE purpose = :purpose AND batch_name = :batch_name';
+                " SET schedule = :schedule, venue = :venue, message = :message, is_schedule_sent = 1 WHERE purpose = :purpose AND batch_name = :batch_name";
             $stmt = $this->pdo->prepare($query);
 
             if (!isset($data['schedule'])) {
@@ -94,9 +94,11 @@ class BatchModel
             $schedule = htmlspecialchars(strip_tags($data['schedule']));
             $venue = htmlspecialchars(strip_tags($data['venue']));
             $purpose = htmlspecialchars(strip_tags($data['purpose']));
+            $message = strip_tags($data['message']);
 
             $stmt->bindParam(':schedule', $schedule);
             $stmt->bindParam(':venue', $venue);
+            $stmt->bindParam(':message', $message);
             $stmt->bindParam(':batch_name', $id);
             $stmt->bindParam(':purpose', $purpose);
 
@@ -120,7 +122,7 @@ class BatchModel
         return $stmt->execute();
     }
 
-     public function deleteAllBatch()
+    public function deleteAllBatch()
     {
         $query = 'DELETE FROM ' . $this->table_name;
 

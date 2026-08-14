@@ -40,8 +40,8 @@ class ScheduleController
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
         switch ($requestMethod) {
-            case 'POST':
-                $this->handlePost();
+            case 'PUT':
+                $this->handlePut();
                 break;
             default:
                 http_response_code(405);
@@ -50,7 +50,7 @@ class ScheduleController
         }
     }
 
-    private function handlePost()
+    private function handlePut()
     {
         $requiredEnvVars = [
             'BREVO_API_KEY',
@@ -104,16 +104,32 @@ class ScheduleController
             }
 
             foreach ($data['applicants'] as $applicant) {
-                if (
-                    !$emailService->sendExaminationScheduleEmail(
-                        $applicant,
-                        $data['batch'],
-                        $data['date'],
-                        $data['time'],
-                        $data['venue'],
-                    )
-                ) {
-                    throw new \Exception('Failed to send examination schedule email');
+                if ($data['purpose'] === 'entrance_examination') {
+                    if (
+                        !$emailService->sendExaminationScheduleEmail(
+                            $applicant,
+                            $data['batch'],
+                            $data['date'],
+                            $data['time'],
+                            $data['venue'],
+                            $data['message'],
+                        )
+                    ) {
+                        throw new \Exception('Failed to send examination schedule email');
+                    }
+                } else {
+                    if (
+                        !$emailService->sendOrientationScheduleEmail(
+                            $applicant,
+                            $data['batch'],
+                            $data['date'],
+                            $data['time'],
+                            $data['venue'],
+                            $data['message'],
+                        )
+                    ) {
+                        throw new \Exception('Failed to send orientation schedule email');
+                    }
                 }
             }
 

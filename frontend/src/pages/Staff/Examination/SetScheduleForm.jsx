@@ -42,6 +42,7 @@ export default function SetScheduleForm({
                 setDate(dateAndTime[0]);
                 setTime(dateAndTime[1]);
                 setVenue(batch.venue || "");
+                setMessage(batch.message || "");
                 setBatchId(batch.id);
                 setEditing(true);
             } else {
@@ -49,6 +50,7 @@ export default function SetScheduleForm({
                 setDate("");
                 setTime("");
                 setVenue("");
+                setMessage("");
                 setEditing(false);
             }
         }
@@ -64,6 +66,7 @@ export default function SetScheduleForm({
             date,
             time,
             venue,
+            message,
             batchToSet,
             onSuccess,
             setIsOpen,
@@ -109,6 +112,7 @@ export default function SetScheduleForm({
         setDate("");
         setTime("");
         setVenue("");
+        setMessage("");
     };
 
     // Helper function to check if batch has schedule (no state updates)
@@ -140,7 +144,11 @@ export default function SetScheduleForm({
                     onClose={setIsOpen}
                     buttonLabel={editing ? "Save Changes" : "Save"}
                     onCancel={handleCancel}
-                    onSubmit={handleSubmit}
+                    onSubmit={
+                        isEmailSentToAll
+                            ? () => setIsFormModalOpen(true)
+                            : () => handleSubmit()
+                    }
                     isLoading={loading}
                 >
                     {/* Content */}
@@ -242,20 +250,22 @@ export default function SetScheduleForm({
                 </InputModal>
             </div>
 
-            <ConfirmationModal
-                isOpen={isFormModalOpen}
-                onClose={setIsFormModalOpen}
-                isLoading={isLoading}
-                label={"Confirmation"}
-                message={
-                    "The schedule has already been sent. Do you want to send it again?"
-                }
-                onClick={() => {
-                    handleSendSchedule();
-                    setIsFormModalOpen(false);
-                }}
-                removeBackground={true}
-            />
+            {isFormModalOpen && (
+                <ConfirmationModal
+                    isOpen={isFormModalOpen}
+                    onClose={setIsFormModalOpen}
+                    isLoading={isLoading}
+                    label={"Confirmation"}
+                    message={
+                        "The schedule has already been sent. Do you want to send it again?"
+                    }
+                    onClick={() => {
+                        handleSubmit();
+                        setIsFormModalOpen(false);
+                    }}
+                    removeBackground={true}
+                />
+            )}
         </>
     );
 }

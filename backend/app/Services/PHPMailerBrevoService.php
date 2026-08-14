@@ -49,9 +49,7 @@ class PHPMailerBrevoService
                 'name' => $this->senderName,
                 'email' => $this->senderEmail,
             ],
-            'to' => [
-                ['email' => $to],
-            ],
+            'to' => [['email' => $to]],
             'subject' => $subject,
             'htmlContent' => $htmlContent,
             'textContent' => strip_tags($htmlContent),
@@ -80,7 +78,14 @@ class PHPMailerBrevoService
                 return true;
             }
 
-            error_log('Failed to send email to ' . $to . '. HTTP ' . $statusCode . ' Response: ' . $response->getBody());
+            error_log(
+                'Failed to send email to ' .
+                    $to .
+                    '. HTTP ' .
+                    $statusCode .
+                    ' Response: ' .
+                    $response->getBody(),
+            );
             return false;
         } catch (GuzzleException $e) {
             error_log('Brevo API error sending to ' . $to . ': ' . $e->getMessage());
@@ -293,7 +298,7 @@ class PHPMailerBrevoService
     {
         // $fullName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name'];
         $allowedOrigin = $_ENV['ALLOWED_ORIGIN'] ?? '*';
-        $resetLink = "http://" . $allowedOrigin . '/reset-password?token=' . $token;
+        $resetLink = 'http://' . $allowedOrigin . '/reset-password?token=' . $token;
 
         $subject = 'Password Reset Request';
         $htmlContent =
@@ -389,7 +394,7 @@ class PHPMailerBrevoService
         return $this->sendEmail($email, $subject, $htmlContent);
     }
 
-    public function sendExaminationScheduleEmail($applicant, $batch, $date, $time, $venue)
+    public function sendExaminationScheduleEmail($applicant, $batch, $date, $time, $venue, $message)
     {
         $fullName = $applicant['first_name'] . ' ' . $applicant['last_name'];
         $formattedDate = date('F d, Y', strtotime($date));
@@ -399,9 +404,7 @@ class PHPMailerBrevoService
             <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
                 <p>Dear {$fullName},</p>
                 <p style=\"margin-bottom: 16px;\">
-                    We are pleased to inform you that you are scheduled to take the entrance examination for the
-                    <strong>Tzu Chi Scholarship Program</strong> for Academic Year 
-                    <strong>{$applicant['school_year']}</strong>.
+                    {$message}
                 </p>
                 <p style=\"margin-bottom: 16px;\">
                         <strong>Batch:</strong> {$batch}<br>
@@ -421,7 +424,7 @@ class PHPMailerBrevoService
         return $this->sendEmail($applicant['email'], $subject, $htmlContent);
     }
 
-    public function sendOrientationScheduleEmail($applicant, $batch, $date, $time, $venue)
+    public function sendOrientationScheduleEmail($applicant, $batch, $date, $time, $venue, $message)
     {
         $fullName = $applicant['first_name'] . ' ' . $applicant['last_name'];
         $formattedDate = date('F d, Y', strtotime($date));
@@ -431,10 +434,7 @@ class PHPMailerBrevoService
         <div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">
             <p>Dear {$fullName},</p>
             <p style=\"margin-bottom: 16px;\">
-                We are pleased to inform you that you are scheduled to attend the 
-                <strong>Orientation Program</strong> for the 
-                <strong>Tzu Chi Scholarship Program</strong> for Academic Year 
-                <strong>{$applicant['school_year']}</strong>.
+                    {$message}
             </p>
             <p style=\"margin-bottom: 16px;\">
                     <strong>Batch:</strong> {$batch}<br>
@@ -581,7 +581,7 @@ class PHPMailerBrevoService
         $subject,
         $htmlContent,
         $attachmentPath,
-        $attachmentName
+        $attachmentName,
     ) {
         if (!file_exists($attachmentPath)) {
             error_log('Attachment not found at path: ' . $attachmentPath);
