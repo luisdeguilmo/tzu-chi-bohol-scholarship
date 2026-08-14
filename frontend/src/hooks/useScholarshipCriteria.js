@@ -58,7 +58,7 @@ export const useScholarshipCriteria = (endpoint, entityName, filter) => {
                         : item,
                 );
                 setItems(updatedItems);
-                toast.success(`${entityName} updated successfully.`);
+                // toast.success(`${entityName} updated successfully.`);
                 return true;
             } else {
                 throw new Error(result.message || "Update failed");
