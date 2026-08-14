@@ -37,7 +37,8 @@ class ApplicationRecordsModel
                 ai.is_examination_passed,
                 ai.is_examination_failed,
                 ai.is_application_approved,
-                ai.is_application_rejected
+                ai.is_application_rejected,
+                ai.is_added_from_admin
             FROM personal_information pi JOIN application_info ai ON pi.application_id = ai.application_id WHERE ai.type= 'New'";
 
         if ($status === 'fully_qualified') {

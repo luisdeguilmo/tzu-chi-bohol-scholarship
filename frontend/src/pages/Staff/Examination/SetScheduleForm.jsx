@@ -19,6 +19,7 @@ export default function SetScheduleForm({
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [venue, setVenue] = useState("");
+    const [message, setMessage] = useState("");
     const [editing, setEditing] = useState(false);
     const [isEmailSent, setIsEmailSent] = useState(false);
     const [isEmailSentToAll, setIsEmailSentToAll] = useState(false);
@@ -193,7 +194,7 @@ export default function SetScheduleForm({
                                     />
                                 </label>
                             </div>
-                            <label className="py-1 flex flex-col gap-[1px] text-gray-600 text-xs">
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
                                 Venue *
                                 <input
                                     required
@@ -206,6 +207,22 @@ export default function SetScheduleForm({
                                     }}
                                     className="w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
                                 />
+                            </label>
+
+                            <label className="py-1 flex flex-col gap-[1px] text-gray-800 text-xs">
+                                Message *
+                                <textarea
+                                    required
+                                    type="text"
+                                    placeholder="Enter message"
+                                    value={message}
+                                    rows={4}
+                                    onChange={(e) => {
+                                        setMessage(e.target.value);
+                                        setIsInputChanged(true);
+                                    }}
+                                    className="resize-none w-full border border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                ></textarea>
                             </label>
 
                             {/* <SendEmailButton

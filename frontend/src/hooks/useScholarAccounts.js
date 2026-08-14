@@ -81,7 +81,12 @@ export const useScholarAccounts = (tab, sort, status) => {
         }
     };
 
-    const updateScholarAccountStatus = async (scholarId, action, reason) => {
+    const updateScholarAccountStatus = async (
+        scholarId,
+        action,
+        reason,
+        awardOrReason,
+    ) => {
         try {
             setLoading(true);
 
@@ -89,6 +94,7 @@ export const useScholarAccounts = (tab, sort, status) => {
                 `${BASE_URL}app/api/scholar-accounts.php?action=${action}&reason=${reason}`,
                 {
                     scholarId: scholarId,
+                    awardOrReason: awardOrReason,
                 },
             );
 

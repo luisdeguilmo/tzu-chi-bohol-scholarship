@@ -101,6 +101,53 @@ export default function ScholarsAndAllowances() {
         }
     }, [isAllowanceSettingsModalOpen]);
 
+    console.log(scholarAllowances);
+
+    const handleAllowanceOverview = async () => {
+        try {
+            if (
+                allowanceSettings?.maximum_hours === 0 ||
+                allowanceSettings?.amount_per_hour === 0
+            ) {
+                toast.error(
+                    "Please set the allowance settings before processing allowances.",
+                );
+                setIsConfirmationModalOpen(false);
+                return;
+            }
+
+            const fileName = `Scholar_Allowances_${date.getCurrentMonthFormatted()}_${date.getCurrentYear()}`;
+
+            // Step 1: Process allowance
+            const success = await processAllowance(
+                "process_overview_allowance",
+            );
+
+            if (success) {
+                // Step 2: Export to Excel (this also uploads to database)
+                const exported = await exportAllowancesToExcel(
+                    scholarAllowances,
+                    fileName,
+                );
+
+                // if (exported) {
+                //     // Step 3: Reset allowances after successful export
+                //     await resetAllowances();
+
+                //     // Step 4: Refresh data
+                //     await Promise.all([fetchScholars(), fetchStatus()]);
+                // }
+            }
+
+            // Close modal after all operations
+            // setIsConfirmationModalOpen(false);
+        } catch (error) {
+            console.error("Error during allowance processing:", error);
+            setIsConfirmationModalOpen(false);
+            // Consider showing an error message to the user here
+        }
+    };
+
     const handleProcessAllowance = async () => {
         try {
             if (
@@ -117,13 +164,14 @@ export default function ScholarsAndAllowances() {
             const fileName = `Scholar_Allowances_${date.getCurrentMonthFormatted()}_${date.getCurrentYear()}`;
 
             // Step 1: Process allowance
-            const success = await processAllowance();
+            const success = await processAllowance("process_final_allowance");
 
             if (success) {
                 // Step 2: Export to Excel (this also uploads to database)
                 const exported = await exportAllowancesToExcel(
                     scholarAllowances,
                     fileName,
+                    "process_final_allowance",
                 );
 
                 if (exported) {
@@ -483,13 +531,12 @@ export default function ScholarsAndAllowances() {
                         isOpen={isConfirmationModalOpen}
                         onClose={setIsConfirmationModalOpen}
                         isLoading={loading}
-                        label={"Confirmation"}
-                        message={
-                            "This action cannot be undone. Do you want to proceed?"
-                        }
+                        label={`Process Allowance for ${date.getCurrentMonthFormatted()}`}
+                        message={"This action cannot be undone."}
                         isForProcessAllowance={true}
                         allowanceSettings={allowanceSettings}
                         onClick={handleProcessAllowance}
+                        onClickOverview={handleAllowanceOverview}
                     />
                 )}
             </div>

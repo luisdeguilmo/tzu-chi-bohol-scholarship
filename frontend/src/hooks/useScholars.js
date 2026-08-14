@@ -48,12 +48,12 @@ export const useScholars = (
         }
     };
 
-    const processAllowance = async () => {
+    const processAllowance = async (type) => {
         try {
             setLoading(true);
             const response = await axios.put(
                 `${BASE_URL}app/api/process-allowance.php`,
-                {},
+                { type: type },
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -65,7 +65,9 @@ export const useScholars = (
             const data = response.data;
 
             if (data.success) {
-                toast.success("Allowance Processed Successfully");
+                if (type === "process_final_allowance") {
+                    toast.success("Allowance Processed Successfully");
+                }
                 setLoading(false);
                 return true;
             } else {

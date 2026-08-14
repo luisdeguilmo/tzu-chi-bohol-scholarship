@@ -20,6 +20,7 @@ use App\Models\StaffAccountModel;
 use App\Services\PHPMailerBrevoService;
 use Config\Database;
 use App\Middleware\Auth;
+use App\Models\BatchModel;
 
 class ApplicationPeriodController
 {
@@ -142,6 +143,7 @@ class ApplicationPeriodController
             $applicationPeriod = new ApplicationPeriodModel();
             $scholarsModel = new ScholarsModel();
             $scholarModel = new ScholarModel();
+            $batchModel = new BatchModel();
             $applicationModel = new ApplicationModel();
             $notification = new NotificationsModel();
             $schoolYear = new SchoolYearModel();
@@ -167,6 +169,10 @@ class ApplicationPeriodController
 
             if (!$applicationPeriod->createApplicationPeriod($application)) {
                 throw new \RuntimeException('Failed to save application period information');
+            }
+
+            if (!$batchModel->deleteAllBatch()) {
+                throw new \Exception('Failed to delete batches');
             }
 
             if (!$schoolYear->getSchoolYear($application['schoolYear'])) {

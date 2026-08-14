@@ -210,6 +210,7 @@ class ScholarAccountController
                     $transportDetails = $info->getTransportDetails($scholar['account_id']);
                     $scholarStatus = $info->getScholarStatus($scholar['account_id']);
                     $renderedHours = $info->getRenderedHours($scholar['account_id']);
+                    $award_or_reason = $info->getAwardOrReason($scholar['account_id']);
 
                     $scholar[] = [
                         'basic_information' => $basicInfo,
@@ -217,6 +218,7 @@ class ScholarAccountController
                         'transport_details' => $transportDetails,
                         'scholar_status' => $scholarStatus,
                         'rendered_hours' => $renderedHours,
+                        'award_or_reason' => $award_or_reason,
                     ];
 
                     $results[] = $scholar;
@@ -259,6 +261,7 @@ class ScholarAccountController
             $data = json_decode(file_get_contents('php://input'), true);
             $action = $_GET['action'] ?? null;
             $reason = $_GET['reason'] ?? null;
+            $award_or_reason = $data['awardOrReason'] ?? '';
 
             if (!$data || !isset($data['scholarId'])) {
                 throw new \Exception('Missing required field: scholar_id');
@@ -275,9 +278,27 @@ class ScholarAccountController
                     if (!$model->updateAccountStatus($data['scholarId'], 'graduated')) {
                         throw new \Exception('Failed to deactivate account');
                     }
+
+                    if (
+                        !$model->setScholarReasonForDeactivation(
+                            $data['scholarId'],
+                            $award_or_reason,
+                        )
+                    ) {
+                        throw new \Exception('Failed to set reason for deactivation');
+                    }
                 } elseif ($reason === 'terminated') {
                     if (!$model->updateAccountStatus($data['scholarId'], 'terminated')) {
                         throw new \Exception('Failed to deactivate account');
+                    }
+
+                    if (
+                        !$model->setScholarReasonForDeactivation(
+                            $data['scholarId'],
+                            $award_or_reason,
+                        )
+                    ) {
+                        throw new \Exception('Failed to set reason for deactivation');
                     }
                 }
             }

@@ -119,5 +119,14 @@ class BatchModel
 
         return $stmt->execute();
     }
+
+     public function deleteAllBatch()
+    {
+        $query = 'DELETE FROM ' . $this->table_name;
+
+        $stmt = $this->pdo->prepare($query);
+
+        return $stmt->execute();
+    }
 }
 ?>

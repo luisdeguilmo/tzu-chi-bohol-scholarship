@@ -41,8 +41,13 @@ export default function InitialInterview() {
         fetchApplications();
     }, [activeTab]);
 
-    const { applicationFiles, fetchApplicationFiles, reUploadFiles } =
-        useApplicationFiles("initial_interview", selectedId);
+    const {
+        uploadLoading,
+        loadingFiles,
+        applicationFiles,
+        fetchApplicationFiles,
+        reUploadFiles,
+    } = useApplicationFiles("initial_interview", selectedId);
 
     useEffect(() => {
         fetchApplicationFiles("initial_interview", selectedId);
@@ -273,6 +278,7 @@ export default function InitialInterview() {
                     selectedId={selectedId}
                     applicationFiles={applicationFiles}
                     onReUploadFiles={reUploadFiles}
+                    isLoading={uploadLoading}
                 />
             )}
 

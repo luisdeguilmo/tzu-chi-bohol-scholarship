@@ -35,8 +35,6 @@ export default function AuditLogRetention({ label, isOpen, onClose }) {
         }
     };
 
-    console.log(retention);
-
     return (
         <InputModal
             label={label}

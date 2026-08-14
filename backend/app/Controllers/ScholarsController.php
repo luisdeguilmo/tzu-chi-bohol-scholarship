@@ -177,6 +177,7 @@ class ScholarsController
                 $transportDetails = $info->getTransportDetails($s['account_id']);
                 $scholarStatus = $info->getScholarStatus($s['account_id']);
                 $renderedHours = $info->getRenderedHours($s['account_id']);
+                $awardOrReason = $info->getAwardOrReason($s['account_id']);
 
                 $s[] = [
                     'basic_information' => $basicInfo,
@@ -184,6 +185,7 @@ class ScholarsController
                     'transport_details' => $transportDetails,
                     'scholar_status' => $scholarStatus,
                     'rendered_hours' => $renderedHours,
+                    'award_or_reason' => $awardOrReason,
                 ];
 
                 $results[] = $s;
@@ -236,12 +238,17 @@ class ScholarsController
                 return;
             }
 
-            $result = $allowanceCycleModel->processAllowanceCycle();
+            $data = json_decode(file_get_contents('php://input'), true);
+            $type = $data['type'] ?? '';
+
+            $result = null;
 
             $scholars = $model->getAllScholarsId();
             $isProcessed = $allowanceCycleModel->isPreviousMonthProcessed();
 
-            if ($isProcessed) {
+            if ($type === 'process_final_allowance') {
+                $result = $allowanceCycleModel->processAllowanceCycle();
+
                 foreach ($scholars as $scholar) {
                     $renderedHours = $model->getScholarRenderedHours($scholar['account_id']);
                     [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
@@ -263,29 +270,38 @@ class ScholarsController
                         $newRenderedHours,
                     );
                 }
+            } elseif ($isProcessed && $type === 'process_overview_allowance') {
+                foreach ($scholars as $scholar) {
+                    $renderedHours = $model->getScholarRenderedHours($scholar['account_id']);
+                    [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
+
+                    $model->processScholarsOverviewAllowance($scholar['account_id'], $allowance);
+                }
             }
 
             $staffId = Auth::id();
             $staff = $this->staffModel->getStaffInfoById($staffId);
 
-            if (
-                !$this->auditLogModel->create([
-                    'user_id' => $staffId,
-                    'actor' => "{$staff['first_name']} {$staff['last_name']}",
-                    'user_role' => 'staff',
-                    'action' => Action::ALLOWANCE_PROCESS,
-                    'entity_type' => 'allowance',
-                    'entity_id' => null,
+            if ($type === 'process_final_allowance') {
+                if (
+                    !$this->auditLogModel->create([
+                        'user_id' => $staffId,
+                        'actor' => "{$staff['first_name']} {$staff['last_name']}",
+                        'user_role' => 'staff',
+                        'action' => Action::ALLOWANCE_PROCESS,
+                        'entity_type' => 'allowance',
+                        'entity_id' => null,
 
-                    'description' => "{$staff['first_name']} {$staff['last_name']} processed allowances for {$result['allowance_month']}.",
+                        'description' => "{$staff['first_name']} {$staff['last_name']} processed allowances for {$result['allowance_month']}.",
 
-                    'old_values' => null,
-                    'new_values' => ['status' => 'processed'],
-                    'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
-                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-                ])
-            ) {
-                throw new \Exception('Failed to create audit log');
+                        'old_values' => null,
+                        'new_values' => ['status' => 'processed'],
+                        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    ])
+                ) {
+                    throw new \Exception('Failed to create audit log');
+                }
             }
 
             $this->pdo->commit();

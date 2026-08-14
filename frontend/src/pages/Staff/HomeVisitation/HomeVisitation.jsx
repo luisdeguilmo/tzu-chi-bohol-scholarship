@@ -43,7 +43,7 @@ export default function HomeVisitation() {
         fetchApplications();
     }, [activeTab]);
 
-    const { applicationFiles, fetchApplicationFiles, reUploadFiles } =
+    const { uploadLoading, loadingFiles, applicationFiles, fetchApplicationFiles, reUploadFiles } =
         useApplicationFiles("home_visitation", selectedId);
 
     useEffect(() => {
@@ -272,6 +272,7 @@ export default function HomeVisitation() {
                     selectedId={selectedId}
                     applicationFiles={applicationFiles}
                     onReUploadFiles={reUploadFiles}
+                    isLoading={uploadLoading}
                 />
             )}
 

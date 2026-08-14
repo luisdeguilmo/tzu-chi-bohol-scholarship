@@ -67,6 +67,7 @@ class ScholarAccountInformationController
             $transportDetails = $model->getTransportDetails($scholarId);
             $scholarStatus = $model->getScholarStatus($scholarId);
             $renderedHours = $model->getRenderedHours($scholarId);
+            $awardOrReason = $model->getAwardOrReason($scholarId);
 
             $result = [
                 'basic_information' => $basicInfo,
@@ -74,6 +75,7 @@ class ScholarAccountInformationController
                 'transport_details' => $transportDetails,
                 'scholar_status' => $scholarStatus,
                 'rendered_hours' => $renderedHours,
+                'award_or_reason' => $awardOrReason,
             ];
 
             http_response_code(200);

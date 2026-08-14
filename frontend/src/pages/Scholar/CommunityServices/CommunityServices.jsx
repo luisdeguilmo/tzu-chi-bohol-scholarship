@@ -33,9 +33,7 @@ export default function CommunityServices() {
 
     const { user } = useAuth();
     const { loading, activities, fetchActivities } = useActivities(activeTab);
-    const { overviewData } = useScholarOverviewData(
-        "volunteer_activities",
-    );
+    const { overviewData } = useScholarOverviewData("volunteer_activities");
     const { communityServiceOverviewData } = scholarOverviewData(overviewData);
 
     useEffect(() => {
@@ -195,11 +193,13 @@ export default function CommunityServices() {
                 <Plus className="w-4 h-4  text-white" />
             </button>
 
-            <ActivityFormModal
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                onSuccess={handleRefresh}
-            />
+            {isOpen && (
+                <ActivityFormModal
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    onSuccess={handleRefresh}
+                />
+            )}
 
             {isEditFormModalOpen && (
                 <EditFormModal
@@ -210,11 +210,13 @@ export default function CommunityServices() {
                 />
             )}
 
-            <CommunityServiceDetailsModal
-                activity={selectedActivity}
-                isOpen={isOpenModal}
-                onClose={setIsOpenModal}
-            />
+            {isOpenModal && (
+                <CommunityServiceDetailsModal
+                    activity={selectedActivity}
+                    isOpen={isOpenModal}
+                    onClose={setIsOpenModal}
+                />
+            )}
         </div>
     );
 }

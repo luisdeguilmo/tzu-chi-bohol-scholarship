@@ -64,150 +64,163 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                         {/* Content */}
                         <div className="border max-h-[550px] rounded-b-lg overflow-y-auto scroll-smooth ">
                             {/* Event Details Grid */}
-                            <div className="p-6 space-y-6">
+                            <div className="p-6 space-y-2">
                                 <div className="space-y-2">
                                     <div>
-                                        <p className="text-gray-700 text-xs">
-                                            Year Level:{" "}
-                                            <span className="">
-                                                {submission.year_level === 1
-                                                    ? "1st Year"
+                                        <p className="text-gray-500 text-[11px]">
+                                            Year Level{" "}
+                                        </p>
+                                        <p className="text-xs text-gray-800">
+                                            {submission.year_level === 1
+                                                ? "1st Year"
+                                                : submission.year_level === 2
+                                                  ? "2nd Year"
+                                                  : submission.year_level === 3
+                                                    ? "3rd Year"
                                                     : submission.year_level ===
-                                                        2
-                                                      ? "2nd Year"
-                                                      : submission.year_level ===
-                                                          3
-                                                        ? "3rd Year"
-                                                        : submission.year_level ===
-                                                            4
-                                                          ? "4th Year"
-                                                          : "5th Year"}
-                                            </span>
+                                                        4
+                                                      ? "4th Year"
+                                                      : "5th Year"}
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 text-xs">
-                                            Semester:&nbsp;{" "}
-                                            <span className="">
-                                                {submission?.semester}
-                                            </span>
+                                        <p className="text-gray-500 text-[11px]">
+                                            Semester{" "}
+                                        </p>
+                                        <p className="text-xs text-gray-800">
+                                            {submission?.semester}
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 text-xs">
-                                            Academic Year:&nbsp;{" "}
-                                            <span className="">
-                                                {submission?.academic_year}
-                                            </span>
+                                        <p className="text-gray-500 text-[11px]">
+                                            Academic Year{" "}
+                                        </p>
+                                        <p className="text-xs text-gray-800">
+                                            {submission?.academic_year}
                                         </p>
                                     </div>
                                 </div>
 
-                                {filePreviews.length > 0 && (
-                                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 my-1 text-sm text-gray-700">
-                                        {filePreviews.map(
-                                            (filePreview, index) => (
-                                                <li
-                                                    key={
-                                                        filePreview.id || index
-                                                    }
-                                                    className="p-2 bg-gray-50 rounded-lg flex justify-between text-xs items-center text-gray-500 border"
-                                                >
-                                                    <div className="flex items-center">
-                                                        {isImage(
-                                                            filePreview.file_type,
-                                                        ) ? (
-                                                            <img
-                                                                src={
-                                                                    filePreview.file_url
-                                                                }
-                                                                alt={
-                                                                    filePreview.name
-                                                                }
-                                                                className="w-12 h-12 object-cover rounded mr-2"
-                                                            />
-                                                        ) : isPdf(
-                                                              filePreview.file_type,
-                                                          ) ? (
-                                                            <img
-                                                                src={pdfIcon}
-                                                                alt={
-                                                                    filePreview.name
-                                                                }
-                                                                className="w-12 h-12 object-cover rounded mr-2"
-                                                            />
-                                                        ) : (
-                                                            <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    className="h-6 w-6 text-red-600"
-                                                                    fill="none"
-                                                                    viewBox="0 0 24 24"
-                                                                    stroke="currentColor"
-                                                                >
-                                                                    <path
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        strokeWidth={
-                                                                            2
-                                                                        }
-                                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                                                    />
-                                                                </svg>
-                                                            </div>
-                                                        )}
+                                <div className="pt-3">
+                                    <hr />
+                                </div>
 
-                                                        <div className="flex-1">
-                                                            <div className="font-medium text-gray-700 flex items-center">
-                                                                <p
-                                                                    className="truncate max-w-[150px]"
-                                                                    title={
-                                                                        filePreview.file_name
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        filePreview.file_name
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                            {isPdf(
-                                                                filePreview.file_type,
-                                                            ) && (
-                                                                <button
-                                                                    onClick={() =>
-                                                                        window.open(
-                                                                            filePreview.file_url,
-                                                                            "_blank",
-                                                                        )
-                                                                    }
-                                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1"
-                                                                >
-                                                                    Click to
-                                                                    view PDF
-                                                                </button>
-                                                            )}
+                                {filePreviews.length > 0 && (
+                                    <>
+                                        <p className="-mb-2 text-gray-500 text-[11px]">
+                                            {filePreviews.length > 1
+                                                ? "Documents"
+                                                : "Document"}
+                                        </p>
+                                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 my-1 text-sm text-gray-700">
+                                            {filePreviews.map(
+                                                (filePreview, index) => (
+                                                    <li
+                                                        key={
+                                                            filePreview.id ||
+                                                            index
+                                                        }
+                                                        className="p-2 bg-gray-50 rounded-lg flex justify-between text-xs items-center text-gray-500 border"
+                                                    >
+                                                        <div className="flex items-center">
                                                             {isImage(
                                                                 filePreview.file_type,
-                                                            ) && (
-                                                                <button
-                                                                    onClick={() =>
-                                                                        window.open(
-                                                                            filePreview.file_url,
-                                                                            "_blank",
-                                                                        )
+                                                            ) ? (
+                                                                <img
+                                                                    src={
+                                                                        filePreview.file_url
                                                                     }
-                                                                    className="text-blue-600 hover:text-blue-800 text-xs mt-1"
-                                                                >
-                                                                    Click to
-                                                                    view image
-                                                                </button>
+                                                                    alt={
+                                                                        filePreview.name
+                                                                    }
+                                                                    className="w-12 h-12 object-cover rounded mr-2"
+                                                                />
+                                                            ) : isPdf(
+                                                                  filePreview.file_type,
+                                                              ) ? (
+                                                                <img
+                                                                    src={
+                                                                        pdfIcon
+                                                                    }
+                                                                    alt={
+                                                                        filePreview.name
+                                                                    }
+                                                                    className="w-12 h-12 object-cover rounded mr-2"
+                                                                />
+                                                            ) : (
+                                                                <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        className="h-6 w-6 text-red-600"
+                                                                        fill="none"
+                                                                        viewBox="0 0 24 24"
+                                                                        stroke="currentColor"
+                                                                    >
+                                                                        <path
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round"
+                                                                            strokeWidth={
+                                                                                2
+                                                                            }
+                                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                                        />
+                                                                    </svg>
+                                                                </div>
                                                             )}
+
+                                                            <div className="flex-1">
+                                                                <div className="font-medium text-gray-700 flex items-center">
+                                                                    <p
+                                                                        className="truncate max-w-[150px]"
+                                                                        title={
+                                                                            filePreview.file_name
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            filePreview.file_name
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                                {isPdf(
+                                                                    filePreview.file_type,
+                                                                ) && (
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            window.open(
+                                                                                filePreview.file_url,
+                                                                                "_blank",
+                                                                            )
+                                                                        }
+                                                                        className="text-blue-600 hover:text-blue-800 text-xs mt-1"
+                                                                    >
+                                                                        Click to
+                                                                        view PDF
+                                                                    </button>
+                                                                )}
+                                                                {isImage(
+                                                                    filePreview.file_type,
+                                                                ) && (
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            window.open(
+                                                                                filePreview.file_url,
+                                                                                "_blank",
+                                                                            )
+                                                                        }
+                                                                        className="text-blue-600 hover:text-blue-800 text-xs mt-1"
+                                                                    >
+                                                                        Click to
+                                                                        view
+                                                                        image
+                                                                    </button>
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </li>
-                                            ),
-                                        )}
-                                    </ul>
+                                                    </li>
+                                                ),
+                                            )}
+                                        </ul>
+                                    </>
                                 )}
                             </div>
 

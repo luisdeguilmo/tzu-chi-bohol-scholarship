@@ -37,6 +37,7 @@ const UserAccount = ({
 
     const info = "block md:hidden";
 
+    console.log(scholarInfo);
     const handleSendTempPassword = async (userId, email) => {
         try {
             setLoading(true);
@@ -296,6 +297,21 @@ const UserAccount = ({
                                         }
                                         mobileClass={info}
                                     />
+                                    {(scholarInfo?.scholar_status ===
+                                        "graduated" ||
+                                        scholarInfo?.scholar_status ===
+                                            "terminated") && (
+                                        <InfoField
+                                            label={
+                                                scholarInfo?.scholar_status ===
+                                                "graduated"
+                                                    ? "Special Award"
+                                                    : "Reason"
+                                            }
+                                            value={scholarInfo?.award_or_reason}
+                                            mobileClass={info}
+                                        />
+                                    )}
                                     <InfoField
                                         label="Rendered Hours"
                                         value={
@@ -338,6 +354,14 @@ const UserAccount = ({
                                                     : "orange"
                                         }
                                     />
+                                    {(scholarInfo?.scholar_status ===
+                                        "graduated" ||
+                                        scholarInfo?.scholar_status ===
+                                            "terminated") && (
+                                        <ValueField
+                                            value={scholarInfo?.award_or_reason}
+                                        />
+                                    )}
                                     <ValueField
                                         value={
                                             scholarInfo?.rendered_hours || "0"
@@ -653,7 +677,9 @@ const UserAccount = ({
                     }}
                     isScholarAccount={true}
                     deactivationReason={data.deactivationReason}
+                    deactivationType={data.deactivationType}
                     setDeactivationReason={data.setDeactivationReason}
+                    setDeactivationType={data.setDeactivationType}
                 />
             )}
         </div>

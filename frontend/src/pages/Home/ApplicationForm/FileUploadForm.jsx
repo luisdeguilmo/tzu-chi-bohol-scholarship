@@ -328,7 +328,6 @@
 
 // export default FileUploadForm;
 
-
 import { Upload } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
@@ -400,16 +399,7 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
         getInputProps: getPictureInputProps,
     } = useDropzone({
         accept: {
-            "image/*": [
-                ".jpeg",
-                ".jpg",
-                ".png",
-                ".gif",
-                ".bmp",
-                ".webp",
-                ".heic",
-                ".heif",
-            ],
+            "image/*": [".jpeg", ".jpg", ".png", ".heic", ".heif"],
         },
         maxFiles: 1,
         onDrop: (acceptedFiles) => {
@@ -448,7 +438,9 @@ const FileUploadForm = ({ formData, updateFilesData }) => {
         getInputProps: getOtherInputProps,
     } = useDropzone({
         // accept: "image/*, .pdf, .doc, .docx",
-        accept: "image/*",
+        accept: {
+            "image/*": [".jpeg", ".jpg", ".png", ".heic", ".heif"],
+        },
         onDrop: (acceptedFiles) => {
             const renamedFiles = acceptedFiles.map(renameFile);
 

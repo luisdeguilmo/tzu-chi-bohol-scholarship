@@ -42,8 +42,13 @@ export default function FinalInterview() {
         fetchApplications();
     }, [activeTab]);
 
-    const { applicationFiles, fetchApplicationFiles, reUploadFiles } =
-        useApplicationFiles("final_interview", selectedId);
+    const {
+        uploadLoading,
+        loadingFiles,
+        applicationFiles,
+        fetchApplicationFiles,
+        reUploadFiles,
+    } = useApplicationFiles("final_interview", selectedId);
 
     useEffect(() => {
         fetchApplicationFiles("final_interview", selectedId);
@@ -267,6 +272,7 @@ export default function FinalInterview() {
                         selectedId={selectedId}
                         applicationFiles={applicationFiles}
                         onReUploadFiles={reUploadFiles}
+                        isLoading={uploadLoading}
                     />
                 )}
 

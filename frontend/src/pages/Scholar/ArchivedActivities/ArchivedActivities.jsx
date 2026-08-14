@@ -129,8 +129,8 @@ export default function ArchivedActivities() {
             </div>
 
             {/* Scrollable Content Area */}
-            <div className="p-4 md:p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <div className="p-4 md:p-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-4">
                     {loading ? (
                         <BackgroundLoadingIndicator />
                     ) : (
@@ -201,15 +201,18 @@ export default function ArchivedActivities() {
                 )}
             </div>
 
-            {isEventDetailsOpen ? (
+            {isEventDetailsOpen && (
                 <EventDetailsModal
                     event={selectedActivity}
                     isOpen={isEventDetailsOpen}
                     onClose={setIsEventDetailsOpen}
                     fetchEvents={fetchArchivedActivities}
                     activeTab={activeTab}
+                    isArchived={true}
                 />
-            ) : (
+            )}
+
+            {isVolunteerActivityDetailsOpen && (
                 <CommunityServiceDetailsModal
                     activity={selectedActivity}
                     isOpen={isVolunteerActivityDetailsOpen}

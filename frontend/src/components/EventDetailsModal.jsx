@@ -42,6 +42,7 @@ const EventDetailsModal = React.memo(
         fetchEvents,
         activeTab,
         isScholar = false,
+        isArchived = false,
         shouldScrollToComments = false,
         onStaffEventsRefresh = null,
         onScholarEventsRefresh = null,
@@ -327,54 +328,85 @@ const EventDetailsModal = React.memo(
                 >
                     {/* Content */}
                     <div
-                        className={`max-h-[400px] overflow-y-auto scroll-smooth p-6 ${localEvent?.participants.length > 0 && "space-y-6"}`}
+                        className={`max-h-[400px] overflow-y-auto scroll-smooth p-6 ${localEvent?.participants.length > 0 && "space-y-2"}`}
                     >
                         {/* Event Details Grid */}
-                        <h3
-                            className={`flex items-center gap-2 rounded-md text-[16px] text-gray-800 ${localEvent?.participants.length > 0 ? "-mb-3" : "mb-3.5"}`}
-                        >
-                            {localEvent?.event_name}
-                        </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-12  text-xs">
-                            <div className="mb-3 sm:mb-0 space-y-3">
-                                <div className="flex items-center text-slate-600">
-                                    <Calendar className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                    <span className="text-slate-700 font-medium">
+
+                        <div className="">
+                            <div className="space-y-2">
+                                <div>
+                                    <p className="text-gray-500 text-[11px]">
+                                        Event Name
+                                    </p>
+                                    <p className="text-xs text-gray-800">
+                                        {localEvent?.event_name}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-500 text-[11px]">
+                                        Date
+                                    </p>
+                                    <p className="text-xs text-gray-800">
                                         {formatDate(localEvent?.date)}
-                                    </span>
+                                    </p>
                                 </div>
-
-                                <div className="flex items-center text-slate-600">
-                                    <MapPin className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                    <span className="text-slate-700 font-medium truncate">
+                                <div>
+                                    <p className="text-gray-500 text-[11px]">
+                                        Location
+                                    </p>
+                                    <p className="text-xs text-gray-800">
                                         {localEvent?.event_location}
-                                    </span>
+                                    </p>
                                 </div>
-                            </div>
-
-                            <div className="space-y-3">
-                                <div className="flex items-center text-slate-600">
-                                    <Clock className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                    <span className="text-slate-700 font-medium">
+                                <div>
+                                    <p className="text-gray-500 text-[11px]">
+                                        Time
+                                    </p>
+                                    <p className="text-xs text-gray-800">
                                         {formatTime(localEvent?.start_time)} -{" "}
                                         {formatTime(localEvent?.end_time)}
-                                    </span>
+                                    </p>
                                 </div>
-
-                                <div className="flex items-center text-slate-600">
-                                    <Users className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                    {localEvent?.event_type === "optional" ? (
-                                        localEvent?.date +
-                                            " " +
-                                            localEvent?.end_time >
-                                        date.getCurrentDateAndTime() ? (
+                                <div>
+                                    <p className="text-gray-500 text-[11px]">
+                                        Participants
+                                    </p>
+                                    <p className="text-xs text-gray-800">
+                                        {localEvent?.event_type ===
+                                        "optional" ? (
+                                            localEvent?.date +
+                                                " " +
+                                                localEvent?.end_time >
+                                            date.getCurrentDateAndTime() ? (
+                                                <span className="text-slate-700 font-medium">
+                                                    {
+                                                        localEvent?.numberOfParticipants
+                                                    }
+                                                    {" / "}
+                                                    {
+                                                        localEvent?.participant_limit
+                                                    }{" "}
+                                                    Participants
+                                                </span>
+                                            ) : (
+                                                <span className="text-slate-700 font-medium">
+                                                    {
+                                                        localEvent?.numberOfParticipants
+                                                    }
+                                                    {" / "}
+                                                    {
+                                                        localEvent?.participant_limit
+                                                    }{" "}
+                                                    Participated
+                                                </span>
+                                            )
+                                        ) : localEvent?.date +
+                                              " " +
+                                              localEvent?.end_time >
+                                          date.getCurrentDateAndTime() ? (
                                             <span className="text-slate-700 font-medium">
                                                 {
                                                     localEvent?.numberOfParticipants
-                                                }
-                                                {" / "}
-                                                {
-                                                    localEvent?.participant_limit
                                                 }{" "}
                                                 Participants
                                             </span>
@@ -382,49 +414,38 @@ const EventDetailsModal = React.memo(
                                             <span className="text-slate-700 font-medium">
                                                 {
                                                     localEvent?.numberOfParticipants
-                                                }
-                                                {" / "}
-                                                {
-                                                    localEvent?.participant_limit
                                                 }{" "}
                                                 Participated
                                             </span>
-                                        )
-                                    ) : localEvent?.date +
-                                          " " +
-                                          localEvent?.end_time >
-                                      date.getCurrentDateAndTime() ? (
-                                        <span className="text-slate-700 font-medium">
-                                            {localEvent?.numberOfParticipants}{" "}
-                                            Participants
-                                        </span>
-                                    ) : (
-                                        <span className="text-slate-700 font-medium">
-                                            {localEvent?.numberOfParticipants}{" "}
-                                            Participated
-                                        </span>
-                                    )}
+                                        )}
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
+                        {localEvent?.participants?.length > 0 && (
+                            <div className="pt-3">
+                                <hr />
+                            </div>
+                        )}
+
                         <div>
                             <div
-                                className={`mt-2 ${localEvent?.participants?.length > 0 ? "block" : "hidden"}  rounded-md`}
+                                className={`${localEvent?.participants?.length > 0 ? "block" : "hidden"}  rounded-md`}
                             >
                                 <h3
                                     className={`${
                                         localEvent?.participants?.length > 0
                                             ? "block"
                                             : "hidden"
-                                    } bg-green-600 border-b rounded-lg px-4 py-3 text-xs text-white `}
+                                    } text-[11px] text-gray-700`}
                                 >
                                     {localEvent?.date +
                                         " " +
                                         localEvent?.end_time >
                                     date.getCurrentDateAndTime()
-                                        ? "Scholars Who Will Participate:"
-                                        : "Scholars Who Participated:"}
+                                        ? "Scholars Who Will Participate"
+                                        : "Scholars Who Participated"}
                                 </h3>
                                 <ul
                                     className={`py-2 space-y-0.5 grid ${
@@ -691,13 +712,19 @@ const EventDetailsModal = React.memo(
                             </div>
                         )}
 
+                        {!isArchived && (
+                            <div
+                                className={`${localEvent?.participants?.length > 0 ? "pt-3" : "pt-6 -mb-4"}`}
+                            >
+                                <hr />
+                            </div>
+                        )}
+
                         {isScholar && (
                             <div
                                 className={`${localEvent?.event_type === "optional" ? "mt-6" : "mt-2"} rounded-md`}
                             >
-                                <h3
-                                    className={`bg-green-600 mb-2 rounded-lg px-4 py-3 text-xs text-white`}
-                                >
+                                <h3 className={`mb-2 text-xs text-gray-700`}>
                                     Private comments
                                 </h3>
 
@@ -740,7 +767,7 @@ const EventDetailsModal = React.memo(
                                                         true,
                                                     )
                                                 }
-                                                className="private_comments px-4 pt-3 pb-5 italic text-xs text-green-600 hover:underline"
+                                                className="private_comments pb-5 italic text-xs text-green-600 hover:underline"
                                             >
                                                 Add a private comment (e.g.,
                                                 questions, concerns, or reasons
@@ -774,9 +801,9 @@ const EventDetailsModal = React.memo(
                                                         handleSubmit(userId);
                                                     }}
                                                     type="button"
-                                                    className="pl-1 py-2 flex"
+                                                    className="pl-2 py-2 flex text-sm text-green-800"
                                                 >
-                                                    <SendHorizonal className="w-7 h-7 text-gray-600" />
+                                                    <SendHorizonal className="w-7 h-7 text-green-700" />
                                                 </button>
                                             </div>
                                         </div>

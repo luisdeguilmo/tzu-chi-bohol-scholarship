@@ -224,12 +224,14 @@ export default function CoeGrades() {
             </button>
 
             {/* Modals */}
-            <CoeGradesFormModal // Changed component name
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                onSuccess={handleRefresh}
-                yearLevel={yearLevel}
-            />
+            {isOpen && (
+                <CoeGradesFormModal // Changed component name
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    onSuccess={handleRefresh}
+                    yearLevel={yearLevel}
+                />
+            )}
 
             {isEditFormModalOpen && (
                 <EditFormModal
@@ -240,11 +242,13 @@ export default function CoeGrades() {
                 />
             )}
 
-            <CoeGradesDetailsModal
-                submission={selectedSubmission}
-                isOpen={isOpenModal}
-                onClose={setIsOpenModal}
-            />
+            {isOpenModal && (
+                <CoeGradesDetailsModal
+                    submission={selectedSubmission}
+                    isOpen={isOpenModal}
+                    onClose={setIsOpenModal}
+                />
+            )}
         </div>
     );
 }

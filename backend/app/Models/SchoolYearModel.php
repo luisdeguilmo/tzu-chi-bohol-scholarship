@@ -45,7 +45,7 @@ class SchoolYearModel
 
     public function getAllSchoolYears()
     {
-        $query = 'SELECT school_year FROM ' . $this->table_name;
+        $query = 'SELECT id, school_year, status FROM ' . $this->table_name;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 

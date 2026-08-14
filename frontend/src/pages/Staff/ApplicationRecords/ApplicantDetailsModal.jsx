@@ -8,13 +8,14 @@ import {
     FileText,
     Hash,
     Loader,
+    Upload,
     User,
 } from "lucide-react";
 import { formatDate } from "../../../utils/formatDate";
-import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 import BASE_URL from "../../../config";
 import pdfIcon from "../../../assets/pdf.png";
 import { useSchoolYearContext } from "../../../context/SchoolYearContext";
+// import FileUploadFormModal from "../../../components/FileUploadFormModal";
 
 function ApplicantDetailsModal({
     schoolYear,
@@ -24,6 +25,9 @@ function ApplicantDetailsModal({
     label,
     viewPdf,
     downloadPdf,
+    setIsOpenFileUploadFormModal,
+    applicationFiles,
+    fetchApplicationFiles,
 }) {
     const {
         is_application_approved,
@@ -40,6 +44,7 @@ function ApplicantDetailsModal({
         is_not_attended_orientation,
         is_attended_awarding,
         is_not_attended_awarding,
+        is_added_from_admin,
     } = applicant ?? {};
 
     const BASE_PUBLIC_URL = `${BASE_URL}public/`;
@@ -50,8 +55,6 @@ function ApplicantDetailsModal({
     const fileInputRef = useRef(null);
     const [existingFiles, setExistingFiles] = useState([]);
     const [existingFilesRemoved, setExistingFilesRemoved] = useState([]);
-
-    const { applicationFiles, fetchApplicationFiles } = useApplicationFiles();
 
     useEffect(() => {
         if (isOpen && applicant?.application_id) {
@@ -401,9 +404,25 @@ function ApplicantDetailsModal({
 
                     {filePreviews.length < 1 && (
                         <p className="text-center text-xs text-gray-500 flex flex-col items-center gap-1">
-                            <Files className="w-6 h-6 text-gray-500/80" />
+                            <Files className="w-10 h-10 text-gray-500/70" />
                             No applications files.
                         </p>
+                    )}
+
+                    {is_added_from_admin === 1 && (
+                        <div>
+                            <button
+                                onClick={() =>
+                                    setIsOpenFileUploadFormModal(true)
+                                }
+                                className="mt-5 w-full p-2 rounded-md flex items-center justify-center gap-3 bg-green-600"
+                            >
+                                <Upload className="w-4 h-4 text-white" />
+                                <span className="text-xs text-white">
+                                    Upload application files
+                                </span>
+                            </button>{" "}
+                        </div>
                     )}
                 </div>
 
@@ -433,6 +452,20 @@ function ApplicantDetailsModal({
                     </button>
                 </div>
             </div>
+
+            {/* {isOpenFileUploadFormModal && (
+                <FileUploadFormModal
+                    label={"Application Files"}
+                    type={"initial_interview"}
+                    isOpen={isOpenFileUploadFormModal}
+                    setIsOpen={setIsOpenFileUploadFormModal}
+                    onSuccess={() => {}}
+                    selectedId={applicant?.application_id}
+                    applicationFiles={applicationFiles}
+                    onReUploadFiles={reUploadFiles}
+                    isLoading={uploadLoading}
+                />
+            )} */}
         </InputModal>
     );
 }

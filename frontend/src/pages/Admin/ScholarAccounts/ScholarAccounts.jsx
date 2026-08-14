@@ -36,6 +36,7 @@ const ScholarAccounts = () => {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [accountStatus, setAccountStatus] = useState("");
     const [action, setAction] = useState("");
+    const [deactivationType, setDeactivationType] = useState("");
     const [deactivationReason, setDeactivationReason] = useState("");
 
     const { loading, scholars, createScholarAccount, fetchScholars } =
@@ -148,6 +149,7 @@ const ScholarAccounts = () => {
                 accountId,
                 action,
                 deactivationReason,
+                deactivationType,
             );
             if (success) {
                 toast.success(
@@ -339,7 +341,9 @@ const ScholarAccounts = () => {
                         message3:
                             "Are you sure you want to reset the password for this account?",
                         deactivationReason: deactivationReason,
+                        deactivationType: deactivationType,
                         setDeactivationReason: setDeactivationReason,
+                        setDeactivationType: setDeactivationType,
                     }}
                 />
             )}
@@ -365,7 +369,9 @@ const ScholarAccounts = () => {
                     }
                     isScholarAccount={true}
                     deactivationReason={deactivationReason}
+                    deactivationType={deactivationType}
                     setDeactivationReason={setDeactivationReason}
+                    setDeactivationType={setDeactivationType}
                 />
             )}
 

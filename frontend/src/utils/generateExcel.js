@@ -46,7 +46,7 @@ export const generateExcel = () => {
         }
     };
 
-    const exportAllowancesToExcel = async (data, fileName) => {
+    const exportAllowancesToExcel = async (data, fileName, type = null) => {
         const ExcelJS = (await import("exceljs")).default;
         const workbook = new ExcelJS.Workbook();
 
@@ -337,7 +337,9 @@ export const generateExcel = () => {
 
         const overallGrandTotal = privateGrandTotal + publicGrandTotal;
 
-        await uploadExcelToDatabase(workbook, fileName, overallGrandTotal);
+        if (type === "process_final_allowance") {
+            await uploadExcelToDatabase(workbook, fileName, overallGrandTotal);
+        }
 
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], {

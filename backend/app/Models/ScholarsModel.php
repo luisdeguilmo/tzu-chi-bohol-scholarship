@@ -60,7 +60,12 @@ class ScholarsModel
         $query =
             'SELECT s.*, u.type, u.status, ai.type, ai.school_year, ai.type, pi.email, pi.middle_name, eb.incoming_grade, eb.present_school, eb.present_course1, eb.year_level FROM ' .
             $this->table_name .
-            " s JOIN personal_information pi ON s.account_id = pi.application_id JOIN educational_background eb ON s.account_id = eb.application_id JOIN users u ON s.account_id = u.account_id JOIN application_info ai ON s.account_id = ai.application_id WHERE u.type = 'scholar' AND ai.type = 'New' AND u.status = 'active' AND ai.status = 'scholar' AND ai.school_year = :school_year ";
+            " s 
+            JOIN personal_information pi ON s.account_id = pi.application_id 
+            JOIN educational_background eb ON s.account_id = eb.application_id 
+            JOIN users u ON s.account_id = u.account_id 
+            JOIN application_info ai ON s.account_id = ai.application_id 
+            WHERE u.type = 'scholar' AND ai.type = 'New' AND u.status = 'active' AND ai.status = 'scholar' AND ai.school_year = :school_year ";
 
         if ($school !== 'all') {
             $query .= " AND eb.present_school = '$school'";
@@ -270,7 +275,7 @@ class ScholarsModel
     {
         $query =
             'SELECT 
-            s.last_name, s.first_name, s.account_id, 
+            s.last_name, s.first_name, s.account_id,
             u.type, 
             u.status, 
             ai.type as application_type, 
@@ -580,6 +585,18 @@ class ScholarsModel
     }
 
     public function unProcessScholarsAllowance($scholarId, $allowance)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            ' SET allowance = :allowance WHERE account_id = :scholar_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':scholar_id', $scholarId, \PDO::PARAM_INT);
+        $stmt->bindParam(':allowance', $allowance);
+        return $stmt->execute();
+    }
+
+    public function processScholarsOverviewAllowance($scholarId, $allowance)
     {
         $query =
             'UPDATE ' .

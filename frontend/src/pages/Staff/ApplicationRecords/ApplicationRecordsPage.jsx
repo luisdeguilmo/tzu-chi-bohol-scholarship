@@ -16,6 +16,8 @@ import ApplicantDetailsModal from "./ApplicantDetailsModal";
 import { Loader2 } from "lucide-react";
 import PageLoader from "../../../components/PageLoader";
 import { useSchoolYearContext } from "../../../context/SchoolYearContext";
+import FileUploadFormModal from "../../../components/FileUploadFormModal";
+import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
 
 export default function ApplicationRecordsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,10 +27,14 @@ export default function ApplicationRecordsPage() {
     const [activeTab, setActiveTab] = useState("new");
     const [sortBy, setSortBy] = useState("newest");
     const [status, setStatus] = useState("all_years");
+    const [isOpenFileUploadFormModal, setIsOpenFileUploadFormModal] =
+        useState(false);
 
     const { schoolYears, activeSchoolYear } = useSchoolYearContext();
 
-    const [schoolYear, setSchoolYear] = useState(activeSchoolYear || "all_years");
+    const [schoolYear, setSchoolYear] = useState(
+        activeSchoolYear || "all_years",
+    );
 
     const { loading, applications, fetchApplications } = useApplicationRecords(
         activeTab,
@@ -42,6 +48,14 @@ export default function ApplicationRecordsPage() {
         activeTab,
         fetchApplicantData,
     );
+
+    const {
+        applicationFiles,
+        fetchApplicationFiles,
+        uploadLoading,
+        loadingFiles,
+        reUploadFiles,
+    } = useApplicationFiles();
 
     useEffect(() => {
         fetchApplications();
@@ -236,10 +250,7 @@ export default function ApplicationRecordsPage() {
                     >
                         <option value="all_years">All Years</option>
                         {schoolYears.map((schoolYear, index) => (
-                            <option
-                                key={index}
-                                value={schoolYear.school_year}
-                            >
+                            <option key={index} value={schoolYear.school_year}>
                                 {schoolYear.school_year}
                             </option>
                         ))}
@@ -308,7 +319,8 @@ export default function ApplicationRecordsPage() {
 
                                 {activeTab === "new" ? (
                                     <>
-                                        {info.school_year === activeSchoolYear ? (
+                                        {info.school_year ===
+                                        activeSchoolYear ? (
                                             <td className="py-2.5 whitespace-nowrap text-xs">
                                                 <span
                                                     className={`inline-flex items-center px-2.5 py-0.5 rounded-lg ${
@@ -541,6 +553,23 @@ export default function ApplicationRecordsPage() {
                     applicant={selectedScholar}
                     viewPdf={viewPdf}
                     downloadPdf={downloadPdf}
+                    applicationFiles={applicationFiles}
+                    fetchApplicationFiles={fetchApplicationFiles}
+                    setIsOpenFileUploadFormModal={setIsOpenFileUploadFormModal}
+                />
+            )}
+
+            {isOpenFileUploadFormModal && (
+                <FileUploadFormModal
+                    label={"Application Files"}
+                    type={"initial_interview"}
+                    isOpen={isOpenFileUploadFormModal}
+                    setIsOpen={setIsOpenFileUploadFormModal}
+                    onSuccess={() => {}}
+                    selectedId={selectedScholar.application_id}
+                    applicationFiles={applicationFiles}
+                    onReUploadFiles={reUploadFiles}
+                    isLoading={uploadLoading}
                 />
             )}
         </PageContent>

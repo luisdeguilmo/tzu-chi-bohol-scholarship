@@ -172,20 +172,22 @@ export default function Events() {
             </div>
 
             {/* Modals */}
-            <EventDetailsModal
-                event={selectedEvent}
-                isOpen={isDetailsOpen}
-                onClose={setIsDetailsOpen}
-                joinEvent={joinEvent}
-                cancelEvent={cancelEvent}
-                userId={user.user_id}
-                fetchEvents={fetchEvents}
-                activeTab={activeTab}
-                isScholar={true}
-                firstName={user.first_name}
-                lastName={user.last_name}
-                onScholarEventsRefresh={fetchEvents}
-            />
+            {isDetailsOpen && (
+                <EventDetailsModal
+                    event={selectedEvent}
+                    isOpen={isDetailsOpen}
+                    onClose={setIsDetailsOpen}
+                    joinEvent={joinEvent}
+                    cancelEvent={cancelEvent}
+                    userId={user.user_id}
+                    fetchEvents={fetchEvents}
+                    activeTab={activeTab}
+                    isScholar={true}
+                    firstName={user.first_name}
+                    lastName={user.last_name}
+                    onScholarEventsRefresh={fetchEvents}
+                />
+            )}
         </div>
     );
 }

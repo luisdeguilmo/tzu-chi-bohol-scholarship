@@ -180,24 +180,30 @@ const CommunityServiceDetailsModal = React.memo(
                             {/* Content */}
                             <form onSubmit={handleSubmit} className="">
                                 {/* Event Details Grid */}
-                                <div className="p-6 space-y-6 max-h-[550px] overflow-y-auto scroll-smooth">
-                                    <h3 className="flex items-center gap-2 -mt-1 -mb-3 rounded-md text-[16px] text-gray-800">
-                                        {activity?.activity_name}
-                                    </h3>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-4 gap-6 text-xs">
-                                        <div className="-mb-3 sm:mb-0 space-y-3">
-                                            <div className="flex items-center text-slate-600">
-                                                <Calendar className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                                <span className="text-slate-700 font-medium">
-                                                    {formatDate(
-                                                        activity?.activity_date,
-                                                    )}
-                                                </span>
+                                <div className="p-6 space-y-2 max-h-[550px] overflow-y-auto scroll-smooth">
+                                    <div className="">
+                                        <div className="space-y-2">
+                                            <div>
+                                                <p className="text-gray-500 text-[11px]">
+                                                    Activity
+                                                </p>
+                                                <p className="text-xs text-gray-800">
+                                                    {activity?.activity_name}
+                                                </p>
                                             </div>
-
-                                            <div className="flex items-center text-slate-600">
-                                                <Clock className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                                <span className="text-slate-700 font-medium">
+                                            <div>
+                                                <p className="text-gray-500 text-[11px]">
+                                                    Date
+                                                </p>
+                                                <p className="text-xs text-gray-800">
+                                                    {activity?.activity_date}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-gray-500 text-[11px]">
+                                                    Time
+                                                </p>
+                                                <p className="text-xs text-gray-800">
                                                     {formatTime(
                                                         activity?.start_time,
                                                     )}{" "}
@@ -205,175 +211,186 @@ const CommunityServiceDetailsModal = React.memo(
                                                     {formatTime(
                                                         activity?.end_time,
                                                     )}
-                                                </span>
+                                                </p>
                                             </div>
-                                        </div>
-
-                                        <div className="space-y-3">
-                                            <div className="flex items-center text-slate-600">
-                                                <MapPin className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                                <span className="text-slate-700 font-medium truncate">
+                                            <div>
+                                                <p className="text-gray-500 text-[11px]">
+                                                    Location
+                                                </p>
+                                                <p className="text-xs text-gray-800">
                                                     {
                                                         activity?.activity_location
                                                     }
-                                                </span>
+                                                </p>
                                             </div>
-
-                                            <div className="flex items-center text-slate-600">
-                                                {activity?.activity_status ===
-                                                "Pending" ? (
-                                                    <CircleAlert className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                                ) : (
-                                                    <CheckCircle className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0" />
-                                                )}
-                                                <span>
-                                                    {activity?.activity_status ===
+                                            <div>
+                                                <p className="text-gray-500 text-[11px]">
+                                                    Status
+                                                </p>
+                                                <p className="text-xs text-gray-800">
+                                                    {activity.activity_status ===
                                                     "Pending"
                                                         ? "Pending"
-                                                        : "Recorded"}
-                                                </span>
+                                                        : activity.activity_status ===
+                                                            "Recorded"
+                                                          ? "Recorded"
+                                                          : "Not Recorded"}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
 
+                                    <div className="pt-3">
+                                        <hr />
+                                    </div>
+
                                     {filePreviews.length > 0 && (
-                                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 my-1 text-sm text-gray-700">
-                                            {filePreviews.map(
-                                                (filePreview, index) => (
-                                                    <li
-                                                        key={
-                                                            filePreview.id ||
-                                                            index
-                                                        }
-                                                        className="p-2 bg-gray-50 rounded-md flex justify-between text-xs items-center text-gray-500 border"
-                                                    >
-                                                        <div className="flex items-center">
-                                                            {isImage(
-                                                                filePreview.file_type,
-                                                            ) ? (
-                                                                <img
-                                                                    src={
-                                                                        filePreview.file_url
-                                                                    }
-                                                                    alt={
-                                                                        filePreview.name
-                                                                    }
-                                                                    className="w-12 h-12 object-cover rounded mr-2"
-                                                                    onError={(
-                                                                        e,
-                                                                    ) => {
-                                                                        e.target.style.display =
-                                                                            "none";
-                                                                    }}
-                                                                />
-                                                            ) : isPdf(
-                                                                  filePreview.file_type,
-                                                              ) ? (
-                                                                <img
-                                                                    src={
-                                                                        pdfIcon
-                                                                    }
-                                                                    alt={
-                                                                        filePreview.name
-                                                                    }
-                                                                    className="w-12 h-12 object-cover rounded mr-2"
-                                                                    onError={(
-                                                                        e,
-                                                                    ) => {
-                                                                        e.target.style.display =
-                                                                            "none";
-                                                                    }}
-                                                                />
-                                                            ) : (
-                                                                <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
-                                                                    <svg
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        className="h-6 w-6 text-red-600"
-                                                                        fill="none"
-                                                                        viewBox="0 0 24 24"
-                                                                        stroke="currentColor"
-                                                                    >
-                                                                        <path
-                                                                            strokeLinecap="round"
-                                                                            strokeLinejoin="round"
-                                                                            strokeWidth={
-                                                                                2
-                                                                            }
-                                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                                                        />
-                                                                    </svg>
-                                                                </div>
-                                                            )}
-                                                            <div className="flex-1">
-                                                                <div className="w-full md:w-[150px] lg:w-[130px] font-medium text-gray-700 flex items-center text-xs">
-                                                                    <p
-                                                                        title={
-                                                                            filePreview.file_name
-                                                                        }
-                                                                        className="truncate"
-                                                                    >
-                                                                        {
-                                                                            filePreview.file_name
-                                                                        }
-                                                                    </p>
-                                                                </div>
-
-                                                                {isPdf(
-                                                                    filePreview.file_type,
-                                                                ) && (
-                                                                    <button
-                                                                        onClick={(
-                                                                            e,
-                                                                        ) => {
-                                                                            e.preventDefault();
-                                                                            // window.open(
-                                                                            //     BASE_PUBLIC_URL +
-                                                                            //         filePreview.file_path,
-                                                                            //     "_blank",
-                                                                            // )
-                                                                            window.open(
-                                                                                filePreview.file_url,
-                                                                                "_blank",
-                                                                            );
-                                                                            // setShowPdf(true);
-                                                                            // setFileURL(
-                                                                            //     filePreview.file_url,
-                                                                            // );
-                                                                        }}
-                                                                        className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
-                                                                    >
-                                                                        Click to
-                                                                        view PDF
-                                                                    </button>
-                                                                )}
-
+                                        <>
+                                            <p className="-mb-2 text-gray-500 text-[11px]">
+                                                {filePreviews.length > 1
+                                                    ? "Documents"
+                                                    : "Document"}
+                                            </p>
+                                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 my-1 text-sm text-gray-700">
+                                                {filePreviews.map(
+                                                    (filePreview, index) => (
+                                                        <li
+                                                            key={
+                                                                filePreview.id ||
+                                                                index
+                                                            }
+                                                            className="p-2 bg-gray-50 rounded-md flex justify-between text-xs items-center text-gray-500 border"
+                                                        >
+                                                            <div className="flex items-center">
                                                                 {isImage(
                                                                     filePreview.file_type,
-                                                                ) && (
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() =>
-                                                                            // window.open(
-                                                                            //     BASE_PUBLIC_URL +
-                                                                            //         filePreview.file_path,
-                                                                            //     "_blank",
-                                                                            // )
-                                                                            window.open(
-                                                                                filePreview.file_url,
-                                                                                "_blank",
-                                                                            )
+                                                                ) ? (
+                                                                    <img
+                                                                        src={
+                                                                            filePreview.file_url
                                                                         }
-                                                                        className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
-                                                                    >
-                                                                        Click to
-                                                                        view
-                                                                        image
-                                                                    </button>
+                                                                        alt={
+                                                                            filePreview.name
+                                                                        }
+                                                                        className="w-12 h-12 object-cover rounded mr-2"
+                                                                        onError={(
+                                                                            e,
+                                                                        ) => {
+                                                                            e.target.style.display =
+                                                                                "none";
+                                                                        }}
+                                                                    />
+                                                                ) : isPdf(
+                                                                      filePreview.file_type,
+                                                                  ) ? (
+                                                                    <img
+                                                                        src={
+                                                                            pdfIcon
+                                                                        }
+                                                                        alt={
+                                                                            filePreview.name
+                                                                        }
+                                                                        className="w-12 h-12 object-cover rounded mr-2"
+                                                                        onError={(
+                                                                            e,
+                                                                        ) => {
+                                                                            e.target.style.display =
+                                                                                "none";
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    <div className="w-12 h-12 bg-red-100 rounded mr-2 flex items-center justify-center">
+                                                                        <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            className="h-6 w-6 text-red-600"
+                                                                            fill="none"
+                                                                            viewBox="0 0 24 24"
+                                                                            stroke="currentColor"
+                                                                        >
+                                                                            <path
+                                                                                strokeLinecap="round"
+                                                                                strokeLinejoin="round"
+                                                                                strokeWidth={
+                                                                                    2
+                                                                                }
+                                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                                            />
+                                                                        </svg>
+                                                                    </div>
                                                                 )}
-                                                            </div>
-                                                        </div>
+                                                                <div className="flex-1">
+                                                                    <div className="w-full md:w-[150px] lg:w-[130px] font-medium text-gray-700 flex items-center text-xs">
+                                                                        <p
+                                                                            title={
+                                                                                filePreview.file_name
+                                                                            }
+                                                                            className="truncate"
+                                                                        >
+                                                                            {
+                                                                                filePreview.file_name
+                                                                            }
+                                                                        </p>
+                                                                    </div>
 
-                                                        {/* <button
+                                                                    {isPdf(
+                                                                        filePreview.file_type,
+                                                                    ) && (
+                                                                        <button
+                                                                            onClick={(
+                                                                                e,
+                                                                            ) => {
+                                                                                e.preventDefault();
+                                                                                // window.open(
+                                                                                //     BASE_PUBLIC_URL +
+                                                                                //         filePreview.file_path,
+                                                                                //     "_blank",
+                                                                                // )
+                                                                                window.open(
+                                                                                    filePreview.file_url,
+                                                                                    "_blank",
+                                                                                );
+                                                                                // setShowPdf(true);
+                                                                                // setFileURL(
+                                                                                //     filePreview.file_url,
+                                                                                // );
+                                                                            }}
+                                                                            className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
+                                                                        >
+                                                                            Click
+                                                                            to
+                                                                            view
+                                                                            PDF
+                                                                        </button>
+                                                                    )}
+
+                                                                    {isImage(
+                                                                        filePreview.file_type,
+                                                                    ) && (
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() =>
+                                                                                // window.open(
+                                                                                //     BASE_PUBLIC_URL +
+                                                                                //         filePreview.file_path,
+                                                                                //     "_blank",
+                                                                                // )
+                                                                                window.open(
+                                                                                    filePreview.file_url,
+                                                                                    "_blank",
+                                                                                )
+                                                                            }
+                                                                            className="text-blue-600 hover:text-blue-800 text-xs mt-1.5"
+                                                                        >
+                                                                            Click
+                                                                            to
+                                                                            view
+                                                                            image
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* <button
                                         onClick={() => removeFile(index)}
                                         className="hover:text-red-700 text-red-500 p-1 ml-2"
                                         type="button"
@@ -394,10 +411,11 @@ const CommunityServiceDetailsModal = React.memo(
                                             />
                                         </svg>
                                     </button> */}
-                                                    </li>
-                                                ),
-                                            )}
-                                        </ul>
+                                                        </li>
+                                                    ),
+                                                )}
+                                            </ul>
+                                        </>
                                     )}
 
                                     <div

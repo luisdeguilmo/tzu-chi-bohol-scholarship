@@ -181,6 +181,15 @@ class ScholarAccountModel
         return $stmt->execute();
     }
 
+    public function setScholarReasonForDeactivation($scholar_id, $text)
+    {
+        $query = 'UPDATE scholars SET award_or_reason = :award_or_reason WHERE account_id = :scholar_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':award_or_reason', $text);
+        $stmt->bindParam(':scholar_id', $scholar_id);
+        return $stmt->execute();
+    }
+
     public function updateApplicationStatus($scholar_id, $status)
     {
         $query = 'UPDATE application_info SET status = :status WHERE application_id = :scholar_id';

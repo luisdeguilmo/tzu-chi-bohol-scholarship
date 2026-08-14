@@ -62,9 +62,19 @@ class ScholarAccountInformationModel
         return $stmt->fetchColumn();
     }
 
+    public function getAwardOrReason($scholarId)
+    {
+        $query = 'SELECT award_or_reason FROM scholars WHERE account_id = :scholar_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':scholar_id', $scholarId);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function getTransportDetails($scholarId)
     {
-        $query = 'SELECT stay_type, address, daily_transport_cost, route_explanation FROM scholar_transport_info WHERE scholar_id = :scholar_id';
+        $query =
+            'SELECT stay_type, address, daily_transport_cost, route_explanation FROM scholar_transport_info WHERE scholar_id = :scholar_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':scholar_id', $scholarId);
         $stmt->execute();

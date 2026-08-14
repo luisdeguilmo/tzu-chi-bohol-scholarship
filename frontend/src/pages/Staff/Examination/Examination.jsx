@@ -100,7 +100,7 @@ export default function Examination() {
     }, [
         activeTab,
         // selectedBatchInBatches,
-        selectedApplicants,
+        // selectedApplicants,
         isRefresh,
         // isCreateBatchModalOpen,
         // isModalOpen,
@@ -159,6 +159,7 @@ export default function Examination() {
     ]);
 
     const {
+        uploadLoading,
         loadingFiles,
         applicationFiles,
         fetchApplicationFiles,
@@ -598,9 +599,27 @@ export default function Examination() {
                     onClose={setIsConfirmationModalOpen}
                     message={
                         passedApplicants.length > 0 &&
-                        failedApplicants.length > 0
-                            ? `You’re about to email ${passedApplicants.length} passed and ${failedApplicants.length} failed applicants.`
-                            : `You’re about to email ${passedApplicants.length} passed applicants.`
+                        failedApplicants.length > 0 ? (
+                            <p>
+                                You’re about to email{" "}
+                                <span className="text-green-700 font-bold">
+                                    {passedApplicants.length}
+                                </span>{" "}
+                                passed and{" "}
+                                <span className="text-red-700 font-bold">
+                                    {failedApplicants.length}
+                                </span>{" "}
+                                failed applicants.
+                            </p>
+                        ) : (
+                            <p>
+                                You’re about to email{" "}
+                                <span className="text-green-700 font-bold">
+                                    {passedApplicants.length}
+                                </span>{" "}
+                                passed applicants.
+                            </p>
+                        )
                     }
                     passedApplicants={passedApplicants}
                     failedApplicants={failedApplicants}
@@ -650,7 +669,7 @@ export default function Examination() {
                     selectedId={selectedId}
                     applicationFiles={applicationFiles}
                     onReUploadFiles={reUploadFiles}
-                    isLoading={loadingFiles}
+                    isLoading={uploadLoading}
                     onRefresh={fetchApplicationsOnResultTab}
                 />
             )}

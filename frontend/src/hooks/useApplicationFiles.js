@@ -5,12 +5,13 @@ import { toast } from "react-toastify";
 
 export const useApplicationFiles = (type, applicationId) => {
     const [applicationFiles, setApplicationFiles] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [uploadLoading, setUploadLoading] = useState(false);
+    const [loadingFiles, setLoadingFiles] = useState(false);
     const [error, setError] = useState(null);
 
     const fetchApplicationFiles = async (type = null, applicationId) => {
         try {
-            setLoading(true);
+            setLoadingFiles(true);
             const response = await axios.get(
                 `${BASE_URL}app/api/application-files.php`,
                 {
@@ -23,13 +24,13 @@ export const useApplicationFiles = (type, applicationId) => {
             // Set application periods data
             setApplicationFiles(response.data.data || []);
             // Set active application period flag
-            setLoading(false);
+            setLoadingFiles(false);
         } catch (err) {
             console.error("Error fetching application period data:", err);
             setError(
                 "Failed to load application period data. Please try again.",
             );
-            setLoading(false);
+            setLoadingFiles(false);
         }
     };
 
@@ -49,7 +50,7 @@ export const useApplicationFiles = (type, applicationId) => {
         setIsSubmitting(true);
 
         try {
-            setLoading(true);
+            setUploadLoading(true);
             const activityData = {
                 [type]: {
                     application_id: applicationId,
@@ -147,7 +148,7 @@ export const useApplicationFiles = (type, applicationId) => {
                 setIsOpen(false);
                 setIsSubmitting(false);
                 // if (onSuccess) onSuccess();
-                setLoading(false);
+                setUploadLoading(false);
                 return false;
             } else {
                 toast.error("Error: " + result.message);
@@ -159,7 +160,7 @@ export const useApplicationFiles = (type, applicationId) => {
             console.error("Submission error:", error);
             toast.error("Failed to submit the form. Please try again.");
             setIsSubmitting(false);
-            setLoading(false);
+            setUploadLoading(false);
             return false;
         }
     };
@@ -170,5 +171,5 @@ export const useApplicationFiles = (type, applicationId) => {
         }
     }, [type, applicationId]);
 
-    return { loading, applicationFiles, fetchApplicationFiles, reUploadFiles };
+    return { uploadLoading, loadingFiles, applicationFiles, fetchApplicationFiles, reUploadFiles };
 };

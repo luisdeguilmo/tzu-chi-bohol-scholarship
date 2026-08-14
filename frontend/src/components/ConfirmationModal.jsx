@@ -3,7 +3,7 @@ import InputModal from "./InputModal";
 import { formatCurrency } from "../utils/formatCurrency";
 import { all } from "axios";
 import React from "react";
-import { Check, X } from "lucide-react";
+import { Check, Download, FileWarning, TriangleAlert, X } from "lucide-react";
 
 function ConfirmationModal({
     isOpen,
@@ -15,17 +15,26 @@ function ConfirmationModal({
     message,
     action = "",
     onClick,
+    onClickOverview,
     removeBackground = false,
     feedback,
     setFeedback,
     deactivationReason,
+    deactivationType,
     setDeactivationReason,
+    setDeactivationType,
     isScholarAccount = false,
     isForProcessAllowance = false,
     allowanceSettings = null,
     passedApplicants = [],
     failedApplicants = [],
 }) {
+    const [isButtonEnabled, setIsButtonEnabled] = useState(true);
+
+    const handleButtonState = () => {
+        setIsButtonEnabled(!isButtonEnabled);
+    };
+
     const resetFields = () => {
         if (action === "reject") {
             setFeedback("");
@@ -49,15 +58,24 @@ function ConfirmationModal({
             onCancel={handleCancel}
             onSubmit={onClick}
             isLoading={isLoading}
+            disabledButtonSave={
+                isForProcessAllowance ||
+                passedApplicants.length > 0 ||
+                failedApplicants.length > 0
+                    ? !isButtonEnabled
+                        ? false
+                        : true
+                    : false
+            }
         >
             <div className={`p-4`}>
                 <div>
                     {isForProcessAllowance && (
                         <>
-                            <h2 className="text-sm font-semibold text-gray-700">
-                                Process Allowance for December
-                            </h2>
-                            <p className="py-2.5 text-justify text-xs text-gray-600">
+                            {/* <h2 className="text-sm font-semibold text-gray-700">
+                                Process Allowance
+                            </h2> */}
+                            <p className="pt-2 pb-2.5 text-justify text-xs text-gray-600">
                                 This will calculate the allowance for all
                                 scholars using the following rules:
                             </p>
@@ -90,55 +108,146 @@ function ConfirmationModal({
                                 <li>Transportation Allowance</li>
                                 <li>Load Allowance</li>
                             </ul>
+
+                            <button
+                                type="button"
+                                className="py-4 flex items-center gap-2"
+                                onClick={onClickOverview}
+                            >
+                                <Download className="w-3.5 h-3.5 text-gray-700" />
+                                <span className="text-xs text-blue-600 hover:text-blue-800 hover:underline">
+                                    Download Allowance Sheet
+                                </span>
+                            </button>
                         </>
                     )}
-                    <p className="mb-1 py-2.5 text-justify text-sm text-gray-700">
-                        {message}
-                    </p>
+
                     {(passedApplicants.length > 0 ||
                         failedApplicants.length < 0) && (
-                        <div>
-                            <p className="mb-1 text-gray-800 text-sm">Passed: </p>
-                            <ul className="text-xs text-gray-700">
+                        <div className="mb-4">
+                            <h3 className="mb-4 text-sm text-gray-700">
+                                Review applicants before sending their
+                                results.{" "}
+                            </h3>
+
+                            <div className="flex justify-between">
+                                <div className="flex items-center">
+                                    <span className="mr-2 p-[3px] rounded-full bg-green-600">
+                                        <Check className="w-3 h-3 text-white" />
+                                    </span>
+                                    <p className="text-gray-800 text-sm">
+                                        Passed{" "}
+                                    </p>
+                                </div>
+                                <p className="text-lg text-green-700 font-bold mr-2">
+                                    {passedApplicants.length}
+                                </p>
+                            </div>
+                            <hr />
+                            <ul className="mt-3 text-xs space-y-1 text-gray-700">
                                 {passedApplicants.map((applicant) => (
                                     <li
                                         key={applicant.id}
                                         className="flex items-center gap-2"
                                     >
-                                        <Check className="w-4 h-4 text-green-600" />
-                                        <span>
-                                            {applicant.last_name +
-                                                ", " +
-                                                applicant.first_name}{" "}
-                                            {applicant.middle_name
-                                                ? applicant.middle_name[0] + "."
-                                                : ""}
-                                        </span>
+                                        {/* <span className="p-[3px] rounded-full bg-green-600">
+                                            <Check className="w-3 h-3 text-white" />
+                                        </span> */}
+                                        <div className="w-full flex justify-between items-center">
+                                            <span>
+                                                {applicant.last_name +
+                                                    ", " +
+                                                    applicant.first_name}{" "}
+                                                {applicant.middle_name
+                                                    ? applicant.middle_name[0] +
+                                                      "."
+                                                    : ""}
+                                            </span>
+                                            <span>{applicant.score}</span>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
 
-                            <p className="mb-1 mt-4 text-gray-800 text-sm">
-                                Failed:{" "}
-                            </p>
-                            <ul className="text-xs text-gray-700">
+                            <div className="mt-4 flex justify-between">
+                                <div className="flex items-center">
+                                    <span className="mr-2 p-[3px] rounded-full bg-red-600">
+                                        <X className="w-3 h-3 text-white" />
+                                    </span>
+                                    <p className="text-gray-800 text-sm">
+                                        Failed{" "}
+                                    </p>
+                                </div>
+                                <p className="text-lg text-red-700 font-bold mr-2">
+                                    {failedApplicants.length}
+                                </p>
+                            </div>
+
+                            <hr />
+                            <ul className="mt-3 text-xs space-y-1 text-gray-700">
                                 {failedApplicants.map((applicant) => (
                                     <li
                                         key={applicant.id}
                                         className="flex items-center gap-2"
                                     >
-                                        <X className="w-4 h-4 text-red-600" />
-                                        <span>
-                                            {applicant.last_name +
-                                                ", " +
-                                                applicant.first_name}{" "}
-                                            {applicant.middle_name
-                                                ? applicant.middle_name[0] + "."
-                                                : ""}
-                                        </span>
+                                        {/* <span className="p-[3px] rounded-full bg-red-600">
+                                            <X className="w-3 h-3 text-white" />
+                                        </span> */}
+                                        <div className="w-full flex justify-between items-center">
+                                            <span>
+                                                {applicant.last_name +
+                                                    ", " +
+                                                    applicant.first_name}{" "}
+                                                {applicant.middle_name
+                                                    ? applicant.middle_name[0] +
+                                                      "."
+                                                    : ""}
+                                            </span>
+                                            <span>{applicant.score}</span>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
+
+                            {/* <div className="mt-6 mb-1 flex gap-2 items-center">
+                                <TriangleAlert className="w-4 h-4.5 text-red-600" />
+                                <h3 className="text-gray-700 text-sm font-bold">
+                                    Confirmation
+                                </h3>
+                            </div> */}
+                        </div>
+                    )}
+                    <p className="py-2 pb-2.5 text-justify text-xs text-gray-700">
+                        {message}
+                    </p>
+
+                    {isForProcessAllowance && (
+                        <div className="mt-1 flex">
+                            <input
+                                type="checkbox"
+                                value={isButtonEnabled}
+                                onChange={handleButtonState}
+                                className="accent-green-600"
+                            />
+                            <p className="ml-2 text-xs text-justify text-gray-700">
+                                I have reviewed the allowance sheet and confirm
+                                that the scholars and allowance amounts are
+                                correct.
+                            </p>
+                        </div>
+                    )}
+                    {(passedApplicants.length > 0 ||
+                        failedApplicants.length > 0) && (
+                        <div className="flex">
+                            <input
+                                type="checkbox"
+                                value={isButtonEnabled}
+                                onChange={handleButtonState}
+                            />
+                            <p className="ml-2 text-xs text-gray-700">
+                                I confirm that I want to send these results to
+                                the listed applicants.
+                            </p>
                         </div>
                     )}
                     {action === "reject" && (
@@ -179,6 +288,30 @@ function ConfirmationModal({
                                 <option value="terminated">Terminated</option>
                                 {/* <option value="terminated">Other</option> */}
                             </select>
+
+                            {deactivationReason !== "" && (
+                                <div>
+                                    {" "}
+                                    <label className="block mt-3 mb-1 text-gray-600 text-xs">
+                                        {deactivationReason === "terminated"
+                                            ? "Reason"
+                                            : "Special Award"}
+                                    </label>
+                                    <textarea
+                                        value={deactivationType}
+                                        onChange={(e) =>
+                                            setDeactivationType(e.target.value)
+                                        }
+                                        placeholder={`${
+                                            deactivationReason === "terminated"
+                                                ? "Reason..."
+                                                : "Special Award..."
+                                        }`}
+                                        rows={3}
+                                        className="resize-none w-full border text-xs border-gray-300 rounded-md px-2 py-2.5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                    ></textarea>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
