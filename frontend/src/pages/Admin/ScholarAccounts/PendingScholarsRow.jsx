@@ -37,7 +37,7 @@ const PendingScholarsRow = ({
             {!loading &&
                 currentItems.map((scholar) => (
                     <tr
-                        key={scholar.id}
+                        key={scholar.application_id}
                         className={`transition-colors text-center border-b border-gray-200 ${
                             selectedScholars.includes(scholar.application_id)
                                 ? "bg-gray-50"

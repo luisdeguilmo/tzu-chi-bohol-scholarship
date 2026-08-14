@@ -65,9 +65,9 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                         <div className="border max-h-[550px] rounded-b-lg overflow-y-auto scroll-smooth ">
                             {/* Event Details Grid */}
                             <div className="p-6 space-y-2">
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                     <div>
-                                        <p className="text-gray-500 text-[11px]">
+                                        <p className="text-gray-500 text-xs">
                                             Year Level{" "}
                                         </p>
                                         <p className="text-xs text-gray-800">
@@ -84,7 +84,7 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-500 text-[11px]">
+                                        <p className="text-gray-500 text-xs">
                                             Semester{" "}
                                         </p>
                                         <p className="text-xs text-gray-800">
@@ -92,7 +92,7 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-500 text-[11px]">
+                                        <p className="text-gray-500 text-xs">
                                             Academic Year{" "}
                                         </p>
                                         <p className="text-xs text-gray-800">
@@ -107,7 +107,7 @@ const CoeGradesDetailsModal = React.memo(({ isOpen, onClose, submission }) => {
 
                                 {filePreviews.length > 0 && (
                                     <>
-                                        <p className="-mb-2 text-gray-500 text-[11px]">
+                                        <p className="-mb-2 text-gray-500 text-xs">
                                             {filePreviews.length > 1
                                                 ? "Documents"
                                                 : "Document"}

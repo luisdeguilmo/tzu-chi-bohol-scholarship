@@ -182,9 +182,9 @@ const CommunityServiceDetailsModal = React.memo(
                                 {/* Event Details Grid */}
                                 <div className="p-6 space-y-2 max-h-[550px] overflow-y-auto scroll-smooth">
                                     <div className="">
-                                        <div className="space-y-2">
+                                        <div className="space-y-3">
                                             <div>
-                                                <p className="text-gray-500 text-[11px]">
+                                                <p className="text-gray-500 text-xs">
                                                     Activity
                                                 </p>
                                                 <p className="text-xs text-gray-800">
@@ -192,7 +192,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                 </p>
                                             </div>
                                             <div>
-                                                <p className="text-gray-500 text-[11px]">
+                                                <p className="text-gray-500 text-xs">
                                                     Date
                                                 </p>
                                                 <p className="text-xs text-gray-800">
@@ -200,7 +200,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                 </p>
                                             </div>
                                             <div>
-                                                <p className="text-gray-500 text-[11px]">
+                                                <p className="text-gray-500 text-xs">
                                                     Time
                                                 </p>
                                                 <p className="text-xs text-gray-800">
@@ -214,7 +214,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                 </p>
                                             </div>
                                             <div>
-                                                <p className="text-gray-500 text-[11px]">
+                                                <p className="text-gray-500 text-xs">
                                                     Location
                                                 </p>
                                                 <p className="text-xs text-gray-800">
@@ -224,7 +224,7 @@ const CommunityServiceDetailsModal = React.memo(
                                                 </p>
                                             </div>
                                             <div>
-                                                <p className="text-gray-500 text-[11px]">
+                                                <p className="text-gray-500 text-xs">
                                                     Status
                                                 </p>
                                                 <p className="text-xs text-gray-800">
@@ -246,7 +246,7 @@ const CommunityServiceDetailsModal = React.memo(
 
                                     {filePreviews.length > 0 && (
                                         <>
-                                            <p className="-mb-2 text-gray-500 text-[11px]">
+                                            <p className="-mb-2 text-gray-500 text-xs">
                                                 {filePreviews.length > 1
                                                     ? "Documents"
                                                     : "Document"}

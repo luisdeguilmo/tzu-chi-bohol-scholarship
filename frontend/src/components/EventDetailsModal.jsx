@@ -333,9 +333,9 @@ const EventDetailsModal = React.memo(
                         {/* Event Details Grid */}
 
                         <div className="">
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 <div>
-                                    <p className="text-gray-500 text-[11px]">
+                                    <p className="text-gray-500 text-xs">
                                         Event Name
                                     </p>
                                     <p className="text-xs text-gray-800">
@@ -343,7 +343,7 @@ const EventDetailsModal = React.memo(
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-gray-500 text-[11px]">
+                                    <p className="text-gray-500 text-xs">
                                         Date
                                     </p>
                                     <p className="text-xs text-gray-800">
@@ -351,7 +351,7 @@ const EventDetailsModal = React.memo(
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-gray-500 text-[11px]">
+                                    <p className="text-gray-500 text-xs">
                                         Location
                                     </p>
                                     <p className="text-xs text-gray-800">
@@ -359,7 +359,7 @@ const EventDetailsModal = React.memo(
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-gray-500 text-[11px]">
+                                    <p className="text-gray-500 text-xs">
                                         Time
                                     </p>
                                     <p className="text-xs text-gray-800">
@@ -368,7 +368,7 @@ const EventDetailsModal = React.memo(
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-gray-500 text-[11px]">
+                                    <p className="text-gray-500 text-xs">
                                         Participants
                                     </p>
                                     <p className="text-xs text-gray-800">
@@ -587,132 +587,150 @@ const EventDetailsModal = React.memo(
                                     Private Comments
                                 </h3>
                                 <ul className="">
-                                    {privateComments.map(
-                                        (group, groupIndex) => (
-                                            <li
-                                                key={groupIndex}
-                                                className={`${groupIndex !== privateComments.length - 1 && "border-b"}`}
-                                            >
-                                                {group.map((comment, index) => (
-                                                    <div
-                                                        key={comment.id}
-                                                        className={`group re relative px-4 py-4 flex flex-col ${index !== group.length - 1 && "border-b"}`}
-                                                    >
-                                                        <div
-                                                            className={`flex items-center gap-1`}
-                                                        >
-                                                            <p className="mb-2 text-[11px] font-bold text-gray-600">
-                                                                {comment.first_name +
-                                                                    " " +
-                                                                    comment.last_name}
-                                                            </p>
-                                                            <span className="mb-3 text-xs text-gray-600">
-                                                                {"•"}
-                                                            </span>
-                                                            <p className="mb-2 text-[11px] text-gray-500">
-                                                                {formatTimestamp(
-                                                                    comment.created_at,
-                                                                )}
-                                                            </p>
-                                                        </div>
-                                                        <p className="text-xs text-gray-600">
-                                                            {comment.message}
-                                                        </p>
-
-                                                        {isStaff && (
-                                                            <button
-                                                                onClick={(e) =>
-                                                                    handleOpenDotMenu(
-                                                                        e,
-                                                                        index,
-                                                                    )
-                                                                }
-                                                                type="button"
-                                                                className="hidden absolute top-2 right-1 group-hover:block p-2 hover:bg-gray-100 rounded-full"
+                                    {privateComments.length > 0 ? (
+                                        privateComments.map(
+                                            (group, groupIndex) => (
+                                                <li
+                                                    key={groupIndex}
+                                                    className={`${groupIndex !== privateComments.length - 1 && "border-b"}`}
+                                                >
+                                                    {group.map(
+                                                        (comment, index) => (
+                                                            <div
+                                                                key={comment.id}
+                                                                className={`group re relative px-4 py-4 flex flex-col ${index !== group.length - 1 && "border-b"}`}
                                                             >
-                                                                <EllipsisVertical className="w-4 h-4 text-gray-600" />
-                                                            </button>
-                                                        )}
+                                                                <div
+                                                                    className={`flex items-center gap-1`}
+                                                                >
+                                                                    <p className="mb-2 text-[11px] font-bold text-gray-600">
+                                                                        {comment.first_name +
+                                                                            " " +
+                                                                            comment.last_name}
+                                                                    </p>
+                                                                    <span className="mb-3 text-xs text-gray-600">
+                                                                        {"•"}
+                                                                    </span>
+                                                                    <p className="mb-2 text-[11px] text-gray-500">
+                                                                        {formatTimestamp(
+                                                                            comment.created_at,
+                                                                        )}
+                                                                    </p>
+                                                                </div>
+                                                                <p className="text-xs text-gray-600">
+                                                                    {
+                                                                        comment.message
+                                                                    }
+                                                                </p>
 
-                                                        {isDotMenuOpen &&
-                                                            index ===
-                                                                itemIndex && (
-                                                                <div className="dot_menu absolute top-10 -right-6 bg-white rounded-xl shadow-lg border border-slate-200 z-50 min-w-[80px] p-1">
+                                                                {isStaff && (
                                                                     <button
-                                                                        type="button"
                                                                         onClick={(
                                                                             e,
-                                                                        ) => {
-                                                                            e.stopPropagation();
-                                                                            handleDeleteComment(
-                                                                                comment.id,
-                                                                            );
-                                                                            setIsDostMenuOpen(
-                                                                                false,
-                                                                            );
-                                                                        }}
-                                                                        className="w-full text-center rounded-lg px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 transition-colors duration-150"
+                                                                        ) =>
+                                                                            handleOpenDotMenu(
+                                                                                e,
+                                                                                index,
+                                                                            )
+                                                                        }
+                                                                        type="button"
+                                                                        className="hidden absolute top-2 right-1 group-hover:block p-2 hover:bg-gray-100 rounded-full"
                                                                     >
-                                                                        Delete
+                                                                        <EllipsisVertical className="w-4 h-4 text-gray-600" />
                                                                     </button>
-                                                                </div>
-                                                            )}
-                                                    </div>
-                                                ))}
+                                                                )}
 
-                                                <div className="px-4 pb-2 flex items-center">
-                                                    <label className="flex-1">
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Add a comment..."
-                                                            value={
-                                                                staffPrivateComment[
-                                                                    groupIndex
-                                                                ] || ""
-                                                            }
-                                                            onChange={(e) => {
-                                                                setStaffPrivateComment(
-                                                                    (prev) => ({
-                                                                        ...prev,
-                                                                        [groupIndex]:
-                                                                            e
-                                                                                .target
-                                                                                .value,
-                                                                    }),
-                                                                );
+                                                                {isDotMenuOpen &&
+                                                                    index ===
+                                                                        itemIndex && (
+                                                                        <div className="dot_menu absolute top-10 -right-6 bg-white rounded-xl shadow-lg border border-slate-200 z-50 min-w-[80px] p-1">
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={(
+                                                                                    e,
+                                                                                ) => {
+                                                                                    e.stopPropagation();
+                                                                                    handleDeleteComment(
+                                                                                        comment.id,
+                                                                                    );
+                                                                                    setIsDostMenuOpen(
+                                                                                        false,
+                                                                                    );
+                                                                                }}
+                                                                                className="w-full text-center rounded-lg px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 transition-colors duration-150"
+                                                                            >
+                                                                                Delete
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
+                                                            </div>
+                                                        ),
+                                                    )}
 
-                                                                setGroupIndex(
-                                                                    groupIndex,
-                                                                );
-                                                            }}
-                                                            className="w-[100%] border text-xs border-gray-300 rounded-lg py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
-                                                            required
-                                                        />
-                                                    </label>
-                                                    <div className="">
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                handleSubmit(
-                                                                    group[0]
-                                                                        .scholar_id,
-                                                                );
-                                                            }}
-                                                            type="button"
-                                                            className="pl-2 py-2 flex"
-                                                        >
-                                                            <SendHorizonal className="w-6 h-6 text-gray-400/80" />
-                                                        </button>
+                                                    <div className="px-4 pb-2 flex items-center">
+                                                        <label className="flex-1">
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Add a comment..."
+                                                                value={
+                                                                    staffPrivateComment[
+                                                                        groupIndex
+                                                                    ] || ""
+                                                                }
+                                                                onChange={(
+                                                                    e,
+                                                                ) => {
+                                                                    setStaffPrivateComment(
+                                                                        (
+                                                                            prev,
+                                                                        ) => ({
+                                                                            ...prev,
+                                                                            [groupIndex]:
+                                                                                e
+                                                                                    .target
+                                                                                    .value,
+                                                                        }),
+                                                                    );
+
+                                                                    setGroupIndex(
+                                                                        groupIndex,
+                                                                    );
+                                                                }}
+                                                                className="w-[100%] border text-xs border-gray-300 rounded-lg py-2.5 px-2 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                                                required
+                                                            />
+                                                        </label>
+                                                        <div className="">
+                                                            <button
+                                                                onClick={(
+                                                                    e,
+                                                                ) => {
+                                                                    e.preventDefault();
+                                                                    handleSubmit(
+                                                                        group[0]
+                                                                            .scholar_id,
+                                                                    );
+                                                                }}
+                                                                type="button"
+                                                                className="pl-2 py-2 flex"
+                                                            >
+                                                                <SendHorizonal className="w-6 h-6 text-gray-400/80" />
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                        ),
+                                                </li>
+                                            ),
+                                        )
+                                    ) : (
+                                        <p className="text-center p-6 text-xs text-gray-600">
+                                            No private comments.
+                                        </p>
                                     )}
                                 </ul>
                             </div>
                         )}
 
-                        {!isArchived && (
+                        {!isArchived && !isStaff && (
                             <div
                                 className={`${localEvent?.participants?.length > 0 ? "pt-3" : "pt-6 -mb-4"}`}
                             >

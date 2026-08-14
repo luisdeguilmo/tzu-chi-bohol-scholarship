@@ -65,7 +65,7 @@ class ScholarsModel
             JOIN educational_background eb ON s.account_id = eb.application_id 
             JOIN users u ON s.account_id = u.account_id 
             JOIN application_info ai ON s.account_id = ai.application_id 
-            WHERE u.type = 'scholar' AND ai.type = 'New' AND u.status = 'active' AND ai.status = 'scholar' AND ai.school_year = :school_year ";
+            WHERE u.type = 'scholar' AND ai.type = 'New' AND u.status = 'active' AND ai.status = 'scholar' AND ai.school_year = :school_year";
 
         if ($school !== 'all') {
             $query .= " AND eb.present_school = '$school'";
