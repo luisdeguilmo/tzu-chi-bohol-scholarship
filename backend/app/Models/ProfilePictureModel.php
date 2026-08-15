@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Config\Database;
+use App\Services\B2StorageService;
+
+require_once __DIR__ . '/../Services/B2StorageService.php';
 
 class ProfilePictureModel
 {
@@ -167,33 +170,21 @@ class ProfilePictureModel
                     return $filePath;
                 }
 
-                $path = trim($filePath, '/');
-                $encodedPath = implode('/', array_map('rawurlencode', explode('/', $path)));
-
-                $supabaseUrl = rtrim($_ENV['SUPABASE_URL'] ?? '', '/');
-                $storageBucket = 'scholarship-files';
+                $storage = new B2StorageService();
+                $builtUrl = $storage->getPublicUrl($filePath);
 
                 // DEBUG
-                echo json_encode([
-                    'debug_model' => [
-                        'raw_file_path' => $row['file_path'],
-                        'encoded_path' => $encodedPath,
-                        'supabase_url' => $supabaseUrl,
-                        'bucket' => $storageBucket,
-                        'built_url' =>
-                            $supabaseUrl .
-                            '/storage/v1/object/public/' .
-                            $storageBucket .
-                            '/' .
-                            $encodedPath,
-                    ],
-                ]);
+                error_log(
+                    '[ProfilePictureModel::getFileUrlByApplicationId] ' .
+                        json_encode([
+                            'raw_file_path' => $row['file_path'],
+                            'resolved_path' => $filePath,
+                            'bucket' => $storage->getBucket(),
+                            'built_url' => $builtUrl,
+                        ]),
+                );
 
-                return $supabaseUrl .
-                    '/storage/v1/object/public/' .
-                    $storageBucket .
-                    '/' .
-                    $encodedPath;
+                return $builtUrl;
             }
 
             return null;

@@ -3,8 +3,8 @@ namespace App\Models;
 
 date_default_timezone_set('Asia/Manila');
 
+use App\Services\B2StorageService;
 use Config\Database;
-use App\Services\SupabaseStorageService;
 
 class CoeGradesModel
 {
@@ -213,7 +213,7 @@ class CoeGradesModel
     }
 
     /**
-     * Generates a temporary signed URL directly from the stored Supabase path.
+     * Generates a temporary signed URL directly from the stored Backblaze path.
      * No scanning/proxy needed since file_path is already known from the DB.
      */
     private function getFileUrl($filePath)
@@ -224,7 +224,7 @@ class CoeGradesModel
 
         try {
             if (!$this->storage) {
-                $this->storage = new SupabaseStorageService();
+                $this->storage = new B2StorageService();
             }
 
             return $this->storage->getSignedUrl($filePath, 3600); // valid for 1 hour

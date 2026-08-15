@@ -6,9 +6,9 @@ class ApplicationFileUploadService
     private $storageService;
     private $subFolder = 'files';
 
-    public function __construct(SupabaseStorageService $storageService = null)
+    public function __construct(B2StorageService $storageService = null)
     {
-        $this->storageService = $storageService ?? new SupabaseStorageService();
+        $this->storageService = $storageService ?? new B2StorageService();
     }
 
     public function handleFormDataFiles($folderName, $files, $applicationId)

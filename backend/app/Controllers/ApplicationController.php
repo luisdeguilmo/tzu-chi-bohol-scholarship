@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 require_once __DIR__ . '/../../config/Database.php';
+require_once __DIR__ . '/../Services/B2StorageService.php';
 require_once __DIR__ . '/../Models/ApplicationModel.php';
 require_once __DIR__ . '/../Models/PersonalModel.php';
 require_once __DIR__ . '/../Models/EducationModel.php';
@@ -38,7 +39,7 @@ use App\Models\InitialInterviewFilesModel;
 use App\Models\RequirementModel;
 use App\Models\ProfilePictureModel;
 use App\Models\RequirementsModel;
-use App\Services\SupabaseStorageService;
+use App\Services\B2StorageService;
 
 class ApplicationController
 {
@@ -49,114 +50,8 @@ class ApplicationController
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
-        $this->storageService = new SupabaseStorageService();
+        $this->storageService = new B2StorageService();
     }
-
-    //     public function createApplication()
-    // {
-    //     $this->pdo->beginTransaction();
-    //     error_log("[APP_SUBMIT] Transaction started");
-
-    //     try {
-    //         if (isset($_POST['applicationData'])) {
-    //             $data = json_decode($_POST['applicationData'], true);
-    //         } else {
-    //             $data = json_decode(file_get_contents('php://input'), true);
-    //         }
-
-    //         if (!$data) {
-    //             throw new \Exception('No data provided');
-    //         }
-    //         error_log("[APP_SUBMIT] Payload decoded, keys: " . implode(',', array_keys($data)));
-
-    //         $application = new ApplicationModel();
-    //         $application_id = $this->generateUniqueApplicationId();
-    //         error_log("[APP_SUBMIT] Generated application_id: {$application_id}");
-
-    //         $created = $application->create(
-    //             $data['application_info'],
-    //             $data['other_information'],
-    //             $application_id
-    //         );
-    //         error_log("[APP_SUBMIT] ApplicationModel->create returned: " . var_export($created, true));
-
-    //         if (!$application_id) {
-    //             throw new \Exception('Failed to create application');
-    //         }
-
-    //         error_log("[APP_SUBMIT] Starting processApplicationData for {$application_id}");
-    //         $this->processApplicationData($data, $application_id);
-    //         error_log("[APP_SUBMIT] Finished processApplicationData for {$application_id}");
-
-    //         if (isset($_FILES['picture'])) {
-    //             $this->handleProfilePictureUpload($_FILES['picture'], $application_id);
-    //             error_log("[APP_SUBMIT] Profile picture handled");
-    //         }
-
-    //         if (isset($_FILES['files'])) {
-    //             $this->handleRequirementFilesUpload($_FILES['files'], $application_id);
-    //             error_log("[APP_SUBMIT] Requirement files (multipart) handled");
-    //         }
-
-    //         if (isset($data['uploaded_files']) && is_array($data['uploaded_files'])) {
-    //             $this->handleRequirementFilesFromJson($data['uploaded_files'], $application_id);
-    //             error_log("[APP_SUBMIT] Requirement files (base64) handled");
-    //         }
-
-    //         if (isset($data['picture_file']) && is_array($data['picture_file']) && !empty($data['picture_file']['base64_data'])) {
-    //             $this->handleProfilePictureFromJson($data['picture_file'], $application_id);
-    //             error_log("[APP_SUBMIT] Profile picture (base64) handled");
-    //         }
-
-    //         $auditLogModel = new AuditLogModel();
-    //         $auditCreated = $auditLogModel->create([
-    //             'user_id' => null,
-    //             'actor' => "{$data['personal_information']['first_name']} {$data['personal_information']['last_name']}",
-    //             'user_role' => 'applicant',
-    //             'action' => Action::APPLICATION_SUBMITTED,
-    //             'entity_type' => 'application',
-    //             'entity_id' => $application_id,
-    //             'description' => $data['personal_information']['first_name'] . ' ' . $data['personal_information']['last_name'] . ' submitted application.',
-    //             'old_values' => null,
-    //             'new_values' => ['status' => 'submitted'],
-    //             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
-    //             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-    //         ]);
-    //         error_log("[APP_SUBMIT] Audit log created: " . var_export($auditCreated, true));
-
-    //         if (!$auditCreated) {
-    //             throw new \Exception('Failed to create audit log');
-    //         }
-
-    //         $commitResult = $this->pdo->commit();
-    //         error_log("[APP_SUBMIT] Commit result: " . var_export($commitResult, true));
-
-    //         if (!$commitResult) {
-    //             throw new \Exception('Transaction commit failed for application_id ' . $application_id);
-    //         }
-
-    //         http_response_code(201);
-    //         echo json_encode([
-    //             'success' => true,
-    //             'message' => 'Application created successfully...',
-    //             'application_id' => $application_id,
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         error_log("[APP_SUBMIT][ERROR] " . $e->getMessage() . " | " . $e->getFile() . ':' . $e->getLine());
-    //         error_log("[APP_SUBMIT][TRACE] " . $e->getTraceAsString());
-
-    //         if ($this->pdo->inTransaction()) {
-    //             $this->pdo->rollBack();
-    //             error_log("[APP_SUBMIT] Rolled back transaction");
-    //         }
-
-    //         http_response_code(400);
-    //         echo json_encode([
-    //             'success' => false,
-    //             'message' => $e->getMessage(),
-    //         ]);
-    //     }
-    // }
 
     public function createApplication()
     {
@@ -400,63 +295,37 @@ class ApplicationController
     }
 
     /**
-     * Fetches a file from a Supabase public URL and returns it as a base64 data URI.
+     * Fetches a file from Backblaze B2 and returns it as a base64 data URI.
      * Returns an array with 'success', and on success: 'base64Image' and 'mimeType'.
      */
     private function fetchFileAsBase64(string $path): array
     {
-        $supabaseUrl = rtrim($_ENV['SUPABASE_URL'] ?? getenv('SUPABASE_URL'), '/');
-        $serviceKey = $_ENV['SUPABASE_SERVICE_KEY'] ?? getenv('SUPABASE_SERVICE_KEY');
-        $bucket = $_ENV['SUPABASE_BUCKET'] ?? getenv('SUPABASE_BUCKET') ?: 'scholarship-files';
-
-        $path = trim($path, '/');
-        $encodedPath = implode('/', array_map('rawurlencode', explode('/', $path)));
-        $url = $supabaseUrl . '/storage/v1/object/' . $bucket . '/' . $encodedPath;
-
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer ' . $serviceKey,
-                'apikey: ' . $serviceKey,
-            ],
-        ]);
-
-        $imageData = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-        $curlErrNo = curl_errno($ch);
-        $curlError = curl_error($ch);
-        curl_close($ch);
-
-        if ($imageData === false || $curlErrNo !== 0) {
+        try {
+            $downloaded = $this->storageService->download($path);
+        } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Supabase download connection failed: ' . $curlError,
+                'message' => 'B2 download failed: ' . $e->getMessage(),
             ];
         }
 
-        if ($httpCode === 404) {
+        if (!$downloaded) {
             return ['success' => false, 'message' => 'File not found in storage'];
         }
 
-        if ($httpCode >= 300) {
-            return [
-                'success' => false,
-                'message' =>
-                    'Supabase download failed (HTTP ' .
-                    $httpCode .
-                    '): ' .
-                    substr($imageData, 0, 300),
-            ];
-        }
+        $imageData = $downloaded['content'];
 
-        // Use content_type from Supabase response directly, fall back to detection
-        $mimeType = $contentType ? explode(';', $contentType)[0] : null;
+        // Use content_type from B2's response directly, fall back to detection
+        $mimeType = $downloaded['content_type']
+            ? explode(';', $downloaded['content_type'])[0]
+            : null;
 
-        if (!$mimeType && class_exists('finfo')) {
+        if ((!$mimeType || $mimeType === 'application/octet-stream') && class_exists('finfo')) {
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $mimeType = $finfo->buffer($imageData) ?: null;
+            $detected = $finfo->buffer($imageData) ?: null;
+            if ($detected) {
+                $mimeType = $detected;
+            }
         }
 
         if (!$mimeType) {
@@ -532,12 +401,12 @@ class ApplicationController
 
     /**
      * Generic helper for all get*Files64 methods.
-     * Fetches each URL from Supabase and returns the base64-encoded array.
+     * Fetches each path from B2 and returns the base64-encoded array.
      *
      * @param string   $notFoundMessage    404 message when model returns nothing
      * @param string   $responseKey        Key name in the JSON response (e.g. 'requirements')
      * @param string   $itemKey            Per-item key for the base64 value (e.g. 'requirement_base64')
-     * @param callable $getUrls            Callable that returns the array of URLs
+     * @param callable $getUrls            Callable that returns the array of paths
      */
     private function getFilesAs64(
         string $notFoundMessage,
@@ -613,46 +482,6 @@ class ApplicationController
             fn() => (new RequirementsModel())->getFilePathByApplicationId($application_id),
         );
     }
-
-    // public function getExaminationFiles64($application_id)
-    // {
-    //     $this->getFilesAs64(
-    //         'Examination files not found',
-    //         'examination_files',
-    //         'examination_files_base64',
-    //         fn() => (new ExaminationFilesModel())->getFilePathByApplicationId($application_id),
-    //     );
-    // }
-
-    // public function getInitialInterviewFiles64($application_id)
-    // {
-    //     $this->getFilesAs64(
-    //         'Initial interview files not found',
-    //         'initial_interview_files',
-    //         'initial_interview_files_base64',
-    //         fn() => (new InitialInterviewFilesModel())->getFilePathByApplicationId($application_id),
-    //     );
-    // }
-
-    // public function getHomeVisitationFiles64($application_id)
-    // {
-    //     $this->getFilesAs64(
-    //         'Home visitation files not found',
-    //         'home_visitation_files',
-    //         'home_visitation_files_base64',
-    //         fn() => (new HomeVisitationFilesModel())->getFilePathByApplicationId($application_id),
-    //     );
-    // }
-
-    // public function getFinalInterviewFiles64($application_id)
-    // {
-    //     $this->getFilesAs64(
-    //         'Final interview files not found',
-    //         'final_interview_files',
-    //         'final_interview_files_base64',
-    //         fn() => (new FinalInterviewFilesModel())->getFilePathByApplicationId($application_id),
-    //     );
-    // }
 
     private function handleProfilePictureUpload($file, $application_id)
     {

@@ -2,8 +2,10 @@
 namespace App\Controllers;
 
 require_once __DIR__ . '/../../config/Database.php';
+require_once __DIR__ . '/../Services/B2StorageService.php';
 
 use Config\Database;
+use App\Services\B2StorageService;
 
 $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
 
@@ -14,17 +16,14 @@ if (file_exists(__DIR__ . '/../../.env')) {
 class ProfileController
 {
     private $pdo;
-    private $supabaseUrl;
-    private $serviceKey;
-    private $bucket = 'scholarship-files';
+    private $storage;
 
     public function __construct()
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
 
-        $this->supabaseUrl = $_ENV['SUPABASE_URL'] ?? getenv('SUPABASE_URL');
-        $this->serviceKey = $_ENV['SUPABASE_SERVICE_KEY'] ?? getenv('SUPABASE_SERVICE_KEY');
+        $this->storage = new B2StorageService();
     }
 
     public function view()
@@ -60,7 +59,7 @@ class ProfileController
         // Strip the bucket prefix from the stored path if present
         // e.g. "scholarship-files/applications/123/profile/image.jpg" -> "applications/123/profile/image.jpg"
         $storedPath = $file['file_path'];
-        $bucketPrefix = $this->bucket . '/';
+        $bucketPrefix = $this->storage->getBucket() . '/';
         if (str_starts_with($storedPath, $bucketPrefix)) {
             $storedPath = substr($storedPath, strlen($bucketPrefix));
         }
@@ -70,7 +69,7 @@ class ProfileController
         $downloadStart = microtime(true);
 
         try {
-            $downloaded = $this->download($storedPath);
+            $downloaded = $this->storage->download($storedPath);
         } catch (\Exception $e) {
             error_log(
                 "[ProfileController::view] Download EXCEPTION for path=\"$storedPath\": " .
@@ -110,52 +109,6 @@ class ProfileController
 
         echo $downloaded['content'];
         exit();
-    }
-
-    private function download($path)
-    {
-        $path = trim($path, '/');
-        $encodedPath = implode('/', array_map('rawurlencode', explode('/', $path)));
-        $url = $this->supabaseUrl . '/storage/v1/object/' . $this->bucket . '/' . $encodedPath;
-
-        error_log("[ProfileController::download] Fetching URL=\"$url\"");
-
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer ' . $this->serviceKey,
-                'apikey: ' . $this->serviceKey,
-            ],
-        ]);
-
-        $response = curl_exec($ch);
-        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-        $curlErrNo = curl_errno($ch);
-        $curlError = curl_error($ch);
-        curl_close($ch);
-
-        error_log(
-            "[ProfileController::download] HTTP=$status | content_type=\"$contentType\" | curlErrNo=$curlErrNo",
-        );
-
-        if ($response === false || $curlErrNo !== 0) {
-            throw new \Exception('Supabase download connection failed: ' . $curlError);
-        }
-
-        if ($status === 404) {
-            return null;
-        }
-
-        if ($status >= 300) {
-            throw new \Exception("Supabase download failed (HTTP $status): " . $response);
-        }
-
-        return [
-            'content' => $response,
-            'content_type' => $contentType ?: 'application/octet-stream',
-        ];
     }
 
     private function getFileRecord($type, $fileId)

@@ -11,9 +11,9 @@ class FileUploadService
 {
     private $storageService;
 
-    public function __construct(SupabaseStorageService $storageService = null)
+    public function __construct(B2StorageService $storageService = null)
     {
-        $this->storageService = $storageService ?? new SupabaseStorageService();
+        $this->storageService = $storageService ?? new B2StorageService();
     }
 
     public function handleFormDataFiles($folderName, $files, $activityId)
