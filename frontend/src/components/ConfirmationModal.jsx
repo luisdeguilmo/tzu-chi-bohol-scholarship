@@ -123,7 +123,7 @@ function ConfirmationModal({
                     )}
 
                     {(passedApplicants.length > 0 ||
-                        failedApplicants.length < 0) && (
+                        failedApplicants.length > 0) && (
                         <div className="mb-4">
                             <h3 className="mb-4 text-sm text-gray-700">
                                 Review applicants before sending their
