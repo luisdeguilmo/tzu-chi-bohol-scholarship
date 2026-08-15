@@ -42,7 +42,7 @@ class SchoolTransportInfoModel
         $this->scholarId = $scholarId;
         $this->stayType = strip_tags($data['stay_type']);
         $this->address = strip_tags($data['address']);
-        $this->dailyTransportCost = strip_tags($data['daily_transport_cost']);
+        $this->dailyTransportCost = strip_tags($data['daily_transport_cost'] ?? 0.00);
         $this->routeExplanation = strip_tags($data['route_explanation']);
 
         // Bind values
@@ -74,7 +74,7 @@ class SchoolTransportInfoModel
         $this->scholarId = $scholarId;
         $this->stayType = strip_tags($data['stay_type']);
         $this->address = strip_tags($data['address']);
-        $this->dailyTransportCost = strip_tags($data['daily_transport_cost']);
+        $this->dailyTransportCost = strip_tags($data['daily_transport_cost'] ?? 0.00);
         $this->routeExplanation = strip_tags($data['route_explanation']);
 
         // Bind values
