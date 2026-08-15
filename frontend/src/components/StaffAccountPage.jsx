@@ -171,7 +171,8 @@ const StaffAccount = ({
                                     <div className="relative w-20 h-20 md:w-24 md:h-24 mr-1 rounded-full text-white text-3xl bg-black flex justify-center items-center">
                                         {staffInfo?.first_name}{" "}
                                         {staffInfo?.last_name}
-                                        <button
+                                        {!isModal && (
+                                            <button
                                             onClick={() => {
                                                 setIsOpenProfileUpload(true);
                                             }}
@@ -179,6 +180,7 @@ const StaffAccount = ({
                                         >
                                             <Camera className="w-4 h-4 text-gray-800" />
                                         </button>
+                                        )}
                                     </div>
                                 )}
 
