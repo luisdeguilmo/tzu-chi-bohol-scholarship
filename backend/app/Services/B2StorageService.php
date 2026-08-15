@@ -1,10 +1,25 @@
 <?php
 namespace App\Services;
 
-$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+// $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 
-if (file_exists(__DIR__ . '/../.env')) {
-    $dotenv->load();
+// if (file_exists(__DIR__ . '/../.env')) {
+//     $dotenv->load();
+// }
+
+if (!class_exists('\Dotenv\Dotenv')) {
+    $autoload = __DIR__ . '/../../vendor/autoload.php';
+    if (file_exists($autoload)) {
+        require_once $autoload;
+    }
+}
+ 
+if (class_exists('\Dotenv\Dotenv')) {
+    $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+ 
+    if (file_exists(__DIR__ . '/../.env')) {
+        $dotenv->load();
+    }
 }
 
 class B2StorageService
