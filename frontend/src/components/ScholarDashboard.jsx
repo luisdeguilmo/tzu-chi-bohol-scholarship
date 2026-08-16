@@ -41,8 +41,6 @@ function ScholarDashboard() {
         }
     }, [dashboardData.hasSubmittedLivingInfo]);
 
-    console.log(dashboardData);
-
     const filtered = scholarOverviewData.filter((item) => {
         if (item.status === "Not Submitted") {
             return item.title !== "Renewal Application";

@@ -386,7 +386,7 @@ const EventDetailsModal = React.memo(
                                                     {
                                                         localEvent?.participant_limit
                                                     }{" "}
-                                                    Participants
+                                                    {/* Participants */}
                                                 </span>
                                             ) : (
                                                 <span className="text-slate-700 font-medium">
@@ -397,7 +397,7 @@ const EventDetailsModal = React.memo(
                                                     {
                                                         localEvent?.participant_limit
                                                     }{" "}
-                                                    Participated
+                                                    {/* Participated */}
                                                 </span>
                                             )
                                         ) : localEvent?.date +
@@ -408,14 +408,14 @@ const EventDetailsModal = React.memo(
                                                 {
                                                     localEvent?.numberOfParticipants
                                                 }{" "}
-                                                Participants
+                                                {/* Participants */}
                                             </span>
                                         ) : (
                                             <span className="text-slate-700 font-medium">
                                                 {
                                                     localEvent?.numberOfParticipants
                                                 }{" "}
-                                                Participated
+                                                {/* Participated */}
                                             </span>
                                         )}
                                     </p>

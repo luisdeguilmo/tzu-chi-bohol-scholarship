@@ -37,7 +37,6 @@ const UserAccount = ({
 
     const info = "block md:hidden";
 
-    console.log(scholarInfo);
     const handleSendTempPassword = async (userId, email) => {
         try {
             setLoading(true);

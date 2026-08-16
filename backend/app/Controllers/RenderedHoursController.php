@@ -240,6 +240,16 @@ class RenderedHoursController
                         throw new \Exception('Failed to record hours');
                     }
 
+                    if ($activityRenderedHours > 0) {
+                        $hoursModel->createHistory([
+                            'account_id' => $data['account_id'],
+                            'transaction_type' => 'deduct',
+                            'event_name' => $data['activity_name'],
+                            'source_type' => 'duty',
+                            'hours' => $activityRenderedHours,
+                        ]);
+                    }
+
                     $activity->revertRenderedHours($data['id']);
 
                     if (!$renderedHours->recordHours($data['account_id'])) {

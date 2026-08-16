@@ -101,8 +101,6 @@ export default function ScholarsAndAllowances() {
         }
     }, [isAllowanceSettingsModalOpen]);
 
-    console.log(scholarAllowances);
-
     const handleAllowanceOverview = async () => {
         try {
             if (

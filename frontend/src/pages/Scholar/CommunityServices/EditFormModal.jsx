@@ -319,8 +319,12 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
                         </button>
                     </label>
 
-                    <p className="px-8 pt-2 pb-1 flex flex-col gap-[1px] text-gray-800 text-xs">
-                        Attached Files:{" "}
+                    <div className="px-8 pt-3">
+                        <hr />
+                    </div>
+
+                    <p className="px-8 pt-2 pb-1 flex flex-col gap-[1px] text-gray-500 text-xs">
+                        Attached Files{" "}
                     </p>
 
                     {filePreviews.length > 0 && (
@@ -449,11 +453,14 @@ const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {
 
                     {activity.activity_status === "Not Recorded" && (
                         <div className="px-8 pt-6 pb-8">
-                            <p className="text-xs mb-1 text-gray-800">
-                                Feedback:{" "}
+                            <div className="">
+                                <hr />
+                            </div>
+                            <p className="text-xs pt-2 mb-1 text-gray-500">
+                                Feedback{" "}
                             </p>
                             <p className="text-xs mt-2 rounded-md text-gray-600">
-                                {activity.feedback}
+                                {activity?.feedback}
                             </p>
                         </div>
                     )}

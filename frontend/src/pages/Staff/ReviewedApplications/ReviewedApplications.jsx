@@ -68,9 +68,6 @@ const ReviewedApplications = () => {
         );
     });
 
-    console.log(activeTab);
-    console.log(applications);
-
     const sortedApplications = [...filteredApplications].sort((a, b) => {
         switch (sortBy) {
             case "newest":

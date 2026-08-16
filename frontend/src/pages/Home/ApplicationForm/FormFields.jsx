@@ -61,11 +61,6 @@ const FormFields = ({
         section === FORM_SECTIONS.EDUCATION ? fields.slice(0, 5) : [];
     const present = section === FORM_SECTIONS.EDUCATION ? fields.slice(6) : [];
 
-    console.log(collegesAndUniversities);
-    console.log(coursesAccepted);
-    console.log(present);
-    console.log(formData);
-
     // useEffect(() => {
     //     if (isRenewal === false) {
     //         const options = formConfig[FORM_SECTIONS.EDUCATION][10].options;
@@ -91,9 +86,6 @@ const FormFields = ({
     const originalOptions = useRef([
         ...formConfig[FORM_SECTIONS.EDUCATION][10].options,
     ]);
-
-    console.log(isForExistingScholar);
-    console.log(isRenewal);
 
     useEffect(() => {
         formConfig[FORM_SECTIONS.EDUCATION][10].options =
@@ -132,9 +124,6 @@ const FormFields = ({
     //         }
     //     }
     // }, [isRenewal, isForExistingScholar]);
-
-    console.log("isRenewal: " + isRenewal);
-    console.log("isForExistingScholar: " + isForExistingScholar);
 
     const filteredPresent = present.filter((field) => {
         // if (isRenewal === false && !isForExistingScholar) {
