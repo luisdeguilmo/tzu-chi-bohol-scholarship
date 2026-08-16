@@ -538,7 +538,7 @@ const UserAccount = ({
 
                         {/* Account Settings */}
 
-                        {user.type === "admin" && (
+                        {(user.type === "admin" || user.type === "scholar") && (
                             <section>
                                 <div className="flex items-center gap-2 mb-6">
                                     <Settings className="w-4 h-4 text-gray-600" />
