@@ -90,7 +90,7 @@ input[type="date"]:focus::before {
     content: "";
 } */
 
-@keyframes wave {
+/* @keyframes wave {
     0%,
     100% {
         transform: scaleY(0.5);
@@ -106,4 +106,4 @@ input[type="date"]:focus::before {
 .animate-wave {
     animation: wave 1s ease-in-out infinite;
     transform-origin: bottom;
-}
+} */
