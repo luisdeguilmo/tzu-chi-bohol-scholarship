@@ -68,7 +68,7 @@ const ScholarAccountsRow = ({
                             }
                         />
                     </td> */}
-                        <td className="py-2.5 whitespace-nowrap text-gray-500">
+                        <td className="py-2.5 whitespace-nowrap font-bold text-gray-700">
                             {account.account_id}
                         </td>
                         <td className="py-2.5 flex justify-start whitespace-nowrap text-sm text-gray-700">

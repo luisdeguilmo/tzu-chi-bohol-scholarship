@@ -36,8 +36,13 @@ const CommunityServicePage = () => {
     }, [year, month, status, sortBy]);
 
     // Filter data based on search term
-    const filteredActivities = scholars.filter((applicant) =>
-        applicant.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    const filteredActivities = scholars.filter(
+        (applicant) =>
+            applicant?.application_id
+                ?.toString()
+                .includes(searchTerm.toString()) ||
+            applicant?.scholar_id?.toString().includes(searchTerm.toString()) ||
+            applicant.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     const sortedActivities = [...filteredActivities].sort((a, b) => {
@@ -155,18 +160,19 @@ const CommunityServicePage = () => {
                             onChange={(e) => setMonth(e.target.value)}
                             className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
-                            <option value={1}>Jan</option>
-                            <option value={2}>Feb</option>
-                            <option value={3}>Mar</option>
-                            <option value={4}>Apr</option>
+                            <option value={0}>All months</option>
+                            <option value={1}>January</option>
+                            <option value={2}>February</option>
+                            <option value={3}>March</option>
+                            <option value={4}>April</option>
                             <option value={5}>May</option>
-                            <option value={6}>Jun</option>
-                            <option value={7}>Jul</option>
-                            <option value={8}>Aug</option>
-                            <option value={9}>Sep</option>
-                            <option value={10}>Oct</option>
-                            <option value={11}>Nov</option>
-                            <option value={12}>Dec</option>
+                            <option value={6}>June</option>
+                            <option value={7}>July</option>
+                            <option value={8}>August</option>
+                            <option value={9}>September</option>
+                            <option value={10}>October</option>
+                            <option value={11}>November</option>
+                            <option value={12}>December</option>
                         </select>
                     </div>
                 </TableToolbar>

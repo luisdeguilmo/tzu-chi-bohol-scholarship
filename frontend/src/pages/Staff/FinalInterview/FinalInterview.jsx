@@ -83,6 +83,9 @@ export default function FinalInterview() {
     // Filter data based on search term
     const filteredApplications = applications.filter(
         (applicant) =>
+            applicant?.application_id
+                ?.toString()
+                .includes(searchTerm.toString()) ||
             applicant.last_name
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
@@ -91,8 +94,7 @@ export default function FinalInterview() {
                 .includes(searchTerm.toLowerCase()) ||
             applicant.first_name
                 .toLowerCase()
-                .includes(searchTerm.toLowerCase()) ||
-            applicant.created_at.includes(searchTerm),
+                .includes(searchTerm.toLowerCase()),
     );
 
     // Sort applications

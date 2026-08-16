@@ -107,6 +107,10 @@ export default function Applications() {
     // Filter data based on search term
     const filteredApplications = applications.filter(
         (applicant) =>
+            applicant?.application_id
+                ?.toString()
+                .includes(searchTerm.toString()) ||
+            applicant?.scholar_id?.toString().includes(searchTerm.toString()) ||
             applicant.last_name
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
@@ -374,7 +378,7 @@ export default function Applications() {
                                         key={info.application_id}
                                         className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50 `}
                                     >
-                                        <td className="py-2.5 font-bold whitespace-nowrap text-gray-600">
+                                        <td className="py-2.5 font-bold whitespace-nowrap text-gray-700">
                                             {info.application_id}
                                         </td>
                                         {activeTab === "old" && (

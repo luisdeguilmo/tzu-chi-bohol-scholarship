@@ -61,6 +61,10 @@ const ReviewedApplications = () => {
         }
 
         return (
+            applicant?.application_id
+                ?.toString()
+                .includes(searchTerm.toString()) ||
+            applicant?.scholar_id?.toString().includes(searchTerm.toString()) ||
             applicant.last_name.toLowerCase().includes(term) ||
             applicant.middle_name.toLowerCase().includes(term) ||
             applicant.first_name.toLowerCase().includes(term) ||
@@ -294,7 +298,7 @@ const ReviewedApplications = () => {
                                     key={info.application_id}
                                     className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
                                 >
-                                    <td className="py-2.5 whitespace-nowrap text-gray-600 font-bold">
+                                    <td className="py-2.5 whitespace-nowrap text-gray-700 font-bold">
                                         {info.application_id}
                                     </td>
                                     {activeTab === "old" && (

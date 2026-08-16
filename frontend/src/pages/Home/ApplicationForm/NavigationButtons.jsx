@@ -62,6 +62,8 @@ const NavigationButtons = ({
         }
     }, [formData?.personal_information.email]);
 
+    console.log(formData);
+
     const checkAndProceed = async (e) => {
         e.preventDefault();
 

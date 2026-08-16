@@ -43,8 +43,13 @@ export default function HomeVisitation() {
         fetchApplications();
     }, [activeTab]);
 
-    const { uploadLoading, loadingFiles, applicationFiles, fetchApplicationFiles, reUploadFiles } =
-        useApplicationFiles("home_visitation", selectedId);
+    const {
+        uploadLoading,
+        loadingFiles,
+        applicationFiles,
+        fetchApplicationFiles,
+        reUploadFiles,
+    } = useApplicationFiles("home_visitation", selectedId);
 
     useEffect(() => {
         fetchApplicationFiles("home_visitation", selectedId);
@@ -79,6 +84,9 @@ export default function HomeVisitation() {
     // Filter data based on search term
     const filteredApplications = applications.filter(
         (applicant) =>
+            applicant?.application_id
+                ?.toString()
+                .includes(searchTerm.toString()) ||
             applicant.last_name
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
@@ -87,8 +95,7 @@ export default function HomeVisitation() {
                 .includes(searchTerm.toLowerCase()) ||
             applicant.first_name
                 .toLowerCase()
-                .includes(searchTerm.toLowerCase()) ||
-            applicant.created_at.includes(searchTerm),
+                .includes(searchTerm.toLowerCase()),
     );
 
     // Sort applications

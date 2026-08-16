@@ -204,6 +204,9 @@ export default function ScholarsAndAllowances() {
     // Filter data based on search term
     const filteredScholars = scholars.filter(
         (applicant) =>
+            applicant?.account_id
+                ?.toString()
+                .includes(searchTerm.toString()) ||
             applicant?.last_name
                 ?.toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||

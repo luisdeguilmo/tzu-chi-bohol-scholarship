@@ -46,7 +46,7 @@ export default function AuditLogRetention({ label, isOpen, onClose }) {
             buttonLabel={"Save Changes"}
             isLoading={loading}
         >
-            <div className="w-full max-w-xl bg-white p-6 shadow-sm">
+            <div className="w-full bg-white p-6 shadow-sm">
                 {/* Header */}
                 <div className="mb-5">
                     {/* <h2 className="text-[15px] font-semibold tracking-tight text-gray-700">

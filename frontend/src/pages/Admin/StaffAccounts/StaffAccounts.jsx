@@ -206,7 +206,7 @@ const StaffAccounts = () => {
                                     key={staff.account_id}
                                     className="transition-colors text-center border-b border-gray-100 hover:bg-gray-50"
                                 >
-                                    <td className="py-2.5 whitespace-nowrap text-gray-700">
+                                    <td className="py-2.5 whitespace-nowrap font-bold text-gray-700">
                                         {staff.account_id}
                                     </td>
                                     <td className="py-2.5 flex justify-start whitespace-nowrap text-sm text-gray-700">

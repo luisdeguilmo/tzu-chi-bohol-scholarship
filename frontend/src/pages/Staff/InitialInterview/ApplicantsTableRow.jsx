@@ -48,7 +48,7 @@ const ApplicantsTableRow = ({
                         selectedItems={selectedApplicants}
                         id={info.application_id}
                     >
-                        <td className="py-2.5 whitespace-nowrap text-center text-gray-900 font-bold">
+                        <td className="py-2.5 whitespace-nowrap text-center text-gray-700 font-bold">
                             {info.application_id}
                         </td>
                         {/* {activeTab === "old" && (

@@ -75,6 +75,10 @@ const ScholarAccounts = () => {
     // Filter data based on search term
     const filteredScholars = scholars.filter(
         (scholar) =>
+            scholar?.application_id
+                ?.toString()
+                .includes(searchTerm.toString()) ||
+            scholar?.account_id?.toString().includes(searchTerm.toString()) ||
             scholar.first_name
                 ?.toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||

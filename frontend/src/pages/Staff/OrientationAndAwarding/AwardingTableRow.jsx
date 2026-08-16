@@ -56,7 +56,7 @@ const AwardingTableRow = ({
                         key={index}
                         className="transition-colors border-b border-gray-100 hover:bg-gray-50 text-center"
                     >
-                        <td className="py-2.5 whitespace-nowrap text-gray-500">
+                        <td className="py-2.5 whitespace-nowrap font-bold text-gray-700">
                             {info.application_id}
                         </td>
                         <td className="py-2.5 flex whitespace-nowrap text-sm text-gray-700">

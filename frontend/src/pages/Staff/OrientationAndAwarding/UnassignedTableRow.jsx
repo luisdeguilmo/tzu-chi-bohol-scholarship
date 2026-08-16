@@ -46,7 +46,7 @@ const UnassignedTableRow = ({
                         selectedItems={selectedApplicants}
                         id={info.application_id}
                     >
-                        <td className="py-2.5 pl-3 text-left whitespace-nowrap text-gray-500">
+                        <td className="py-2.5 pl-3 text-left whitespace-nowrap font-bold text-gray-700">
                             <input
                                 type="checkbox"
                                 className="h-3.5 w-3.5 accent-green-600 text-green-600 focus:ring-green-500 border-gray-300 rounded"

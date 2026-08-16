@@ -370,8 +370,11 @@ class ActivityModel
         $query = "SELECT pi.application_id, pi.first_name, pi.last_name, pi.middle_name, pi.email, va.*
                 FROM personal_information pi 
                 JOIN volunteer_activities va ON pi.application_id = va.account_id 
-                WHERE YEAR(va.uploaded_at) = :year AND MONTH(va.uploaded_at) = :month
-                AND va.batch_id IS NOT NULL";
+                WHERE YEAR(va.uploaded_at) = :year AND va.batch_id IS NOT NULL";
+
+        if ($month > 0) {
+            $query .= " AND MONTH(va.uploaded_at) = '$month'";
+        }
 
         if ($status === 'all') {
             $query .=
@@ -394,7 +397,6 @@ class ActivityModel
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':year', $year);
-        $stmt->bindParam(':month', $month);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }

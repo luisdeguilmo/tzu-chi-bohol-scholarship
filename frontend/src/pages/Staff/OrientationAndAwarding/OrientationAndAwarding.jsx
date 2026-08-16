@@ -147,10 +147,12 @@ export default function OrientationAndAwarding() {
         const term = searchTerm.trim().toLowerCase();
 
         return (
+            applicant?.application_id
+                ?.toString()
+                .includes(searchTerm.toString()) ||
             applicant.last_name.toLowerCase().includes(term) ||
             applicant.middle_name.toLowerCase().includes(term) ||
-            applicant.first_name.toLowerCase().includes(term) ||
-            applicant.created_at.includes(term)
+            applicant.first_name.toLowerCase().includes(term)
         );
     });
 
