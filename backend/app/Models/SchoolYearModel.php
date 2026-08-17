@@ -52,6 +52,15 @@ class SchoolYearModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function getAllSchoolYearsDesc()
+    {
+        $query = 'SELECT id, school_year, status FROM ' . $this->table_name . ' ORDER BY created_at DESC';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getSchoolYear($school_year)
     {
         $query = 'SELECT id FROM ' . $this->table_name . ' WHERE school_year = :school_year';

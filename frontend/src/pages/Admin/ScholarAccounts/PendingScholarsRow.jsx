@@ -59,7 +59,7 @@ const PendingScholarsRow = ({
                                 // disabled={scholar.application_status !== "pending"}
                             />
                         </td>
-                        <td className="py-2.5 whitespace-nowrap font-bold text-gray-700">
+                        <td className="py-2.5 text-center whitespace-nowrap font-bold text-gray-700">
                             {scholar.application_id}
                         </td>
                         <td className="py-2.5 flex justify-start whitespace-nowrap text-sm text-gray-700">
@@ -68,7 +68,7 @@ const PendingScholarsRow = ({
                                 <img
                                     src={scholar[0]?.profile}
                                     alt="Profile"
-                                    className="w-8 h-8 object-cover rounded-full mx-auto"
+                                    className="w-10 h-10 object-cover rounded-full mx-auto"
                                 />
                                 <div>
                                     <p className="font-bold text-xs">
@@ -85,10 +85,13 @@ const PendingScholarsRow = ({
                                 </div>
                             </div>
                         </td>
-                        <td className="py-2.5 whitespace-nowrap text-gray-500">
+                        <td className="py-2.5 pr-4 whitespace-nowrap text-gray-500">
                             <span className="px-2 inline-flex text-xs leading-5 rounded-full bg-yellow-100 text-yellow-900">
                                 Pending
                             </span>
+                        </td>
+                        <td className="py-2.5 whitespace-nowrap text-gray-500">
+                            {scholar.is_added_from_admin ? "Existing Scholar" : "New Scholar"}
                         </td>
                         <td>
                             <button

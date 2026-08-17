@@ -221,6 +221,7 @@ export const pendingScholarHeaders = [
     { name: "Scholar ID" },
     { name: "Scholar" },
     { name: "Status" },
+    { name: "Type" },
     { name: "Action" },
 ];
 

@@ -13,7 +13,7 @@ const RequirementsSection = ({ formData, setFormData, prevStep, nextStep }) => {
                 ...filesData, // This will add/update uploaded_files
             }));
         },
-        [setFormData]
+        [setFormData],
     );
 
     const { pathname } = useLocation();
@@ -38,9 +38,9 @@ const RequirementsSection = ({ formData, setFormData, prevStep, nextStep }) => {
             <p className="my-8 text-xs font-bold text-gray-700">
                 Tip:
                 <span className="ml-1 font-normal text-xs text-gray-600 italic">
-                    If you're using your phone to take pictures of documents,
-                    place them on a flat surface in good lighting, and make sure
-                    the entire document fits in the frame.
+                    Take photos on a flat surface with good lighting and make
+                    sure the whole document is visible. You can also use
+                    CamScanner to scan and improve the document’s clarity.
                 </span>
             </p>
             <NavigationButtons

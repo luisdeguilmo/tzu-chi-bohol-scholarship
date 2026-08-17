@@ -37,7 +37,7 @@ const PersonalSection = ({
                 isRenewal={isRenewal}
             />
             <NavigationButtons
-                isFirst={false}
+                isFirst={true}
                 isLast={false}
                 prevStep={prevStep}
                 nextStep={nextStep}

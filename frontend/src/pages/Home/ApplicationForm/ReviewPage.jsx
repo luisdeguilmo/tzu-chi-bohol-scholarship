@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FORM_SECTIONS from "../../../constant/application/formSections";
 import formConfig from "../../../constant/application/formConfig";
 
-const PersonalInformation = ({ personal }) => {
+const PersonalInformation = ({ personal, age }) => {
     return (
         <>
             {/* <h3 className="text-gray-700 py-8 font-bold md:text-lg text-sm">
@@ -13,14 +13,26 @@ const PersonalInformation = ({ personal }) => {
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-4">
                 {formConfig[FORM_SECTIONS.PERSONAL].map((item, index) => (
-                    <div key={index}>
-                        <p className="text-xs text-gray-500 mb-1.5">
-                            {item.label}
-                        </p>
-                        <p className="text-sm font-medium text-gray-900">
-                            {personal[item.name]}
-                        </p>
-                    </div>
+                    <>
+                        <div key={index}>
+                            <p className="text-xs text-gray-500 mb-1.5">
+                                {item.label}
+                            </p>
+                            <p className="text-sm font-medium text-gray-900">
+                                {personal[item.name]}
+                            </p>
+                        </div>
+                        {item.label === "Gender" && (
+                            <div key={30}>
+                                <p className="text-xs text-gray-500 mb-1.5">
+                                    Age
+                                </p>
+                                <p className="text-sm font-medium text-gray-900">
+                                    {age}
+                                </p>
+                            </div>
+                        )}
+                    </>
                 ))}
             </div>
         </>
@@ -336,6 +348,113 @@ const Assistance = ({ assistance }) => {
     );
 };
 
+const Requirements = ({ picture_file, uploaded_files }) => {
+    const [filePreviews, setFilePreviews] = useState([]);
+    // Separate state for 2x2 picture
+    const [pictureFile, setPictureFile] = useState(picture_file || null);
+    const [picturePreview, setPicturePreview] = useState(null);
+
+    useEffect(() => {
+        if (picture_file?.fileObj) {
+            const preview = URL.createObjectURL(picture_file.fileObj);
+
+            setPicturePreview({
+                // name: sanitizeFileName(picture_file.fileObj.name),
+                name: picture_file.fileObj.name,
+                size: picture_file.size,
+                type: picture_file.fileObj.type,
+                preview: preview,
+            });
+        }
+
+        if (uploaded_files.length > 0) {
+            const newPrevious = [];
+
+            uploaded_files.forEach((item) => {
+                const preview = URL.createObjectURL(item.fileObj);
+                newPrevious.push({
+                    // name: sanitizeFileName(item.fileObj.name),
+                    name: item.fileObj.name,
+                    size: item.fileObj.size,
+                    type: item.fileObj.type,
+                    preview: preview,
+                });
+            });
+
+            setFilePreviews([...filePreviews, ...newPrevious]);
+        }
+    }, []);
+
+    return (
+        <>
+            {/* <h3 className="text-gray-700 py-10 font-bold md:text-lg text-sm">
+                Other Information
+            </h3> */}
+            {(picture_file || uploaded_files.length > 0) && (
+                <h3 className="mt-12 mb-10 py-3 font-bold rounded-lg text-green-900 text-sm md:text-sm">
+                    Requirements
+                </h3>
+            )}
+
+            {picture_file && (
+                <div className="">
+                    <span className="text-xs text-gray-500">
+                        1x1 ID Photo with White Background
+                    </span>
+
+                    {picturePreview && (
+                        <div className="mt-2 w-full">
+                            <div className="p-2 bg-white rounded-lg shadow flex justify-between items-center">
+                                <img
+                                    src={picturePreview.preview}
+                                    alt={picturePreview.name}
+                                    className="w-12 h-12 object-cover rounded mr-2"
+                                />
+                                <span className="text-xs text-gray-700">
+                                    {picturePreview.name}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {uploaded_files.length > 0 && (
+                <div className="mt-6">
+                    <span className="text-xs text-gray-500">
+                        Other documents
+                    </span>
+
+                    {filePreviews.length > 0 && (
+                        <ul className="w-full text-sm text-gray-700">
+                            {filePreviews.map((filePreview, index) => (
+                                <li
+                                    key={index}
+                                    className="p-2 bg-white rounded-lg shadow mt-2 flex justify-between items-center"
+                                >
+                                    {filePreview.type &&
+                                        filePreview.type.startsWith(
+                                            "image/",
+                                        ) && (
+                                            <img
+                                                src={filePreview.preview}
+                                                alt={filePreview.name}
+                                                className="w-12 h-12 object-cover rounded mr-2"
+                                            />
+                                        )}
+                                    <span className="text-xs text-gray-700">
+                                        {filePreview.name}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            )}
+        </>
+    );
+};
+
 const OtherInformation = ({ expectation, character_reference }) => {
     return (
         <>
@@ -421,7 +540,10 @@ const ReviewPage = ({ formData, isConsent, onSetConsent }) => {
     return (
         <div className="bg-white">
             <div className="bg-white mx-auto">
-                <PersonalInformation personal={formData.personal_information} />
+                <PersonalInformation
+                    personal={formData.personal_information}
+                    age={formData?.personal_information?.age}
+                />
                 <EducationalBackground
                     education={formData.educational_background}
                 />
@@ -432,6 +554,10 @@ const ReviewPage = ({ formData, isConsent, onSetConsent }) => {
                     scholars={formData.tzu_chi_siblings}
                 />
                 <Assistance assistance={formData.other_assistance} />
+                <Requirements
+                    picture_file={formData.picture_file}
+                    uploaded_files={formData.uploaded_files}
+                />
                 <OtherInformation
                     expectation={formData.other_information.expectation}
                     character_reference={formData.character_reference}

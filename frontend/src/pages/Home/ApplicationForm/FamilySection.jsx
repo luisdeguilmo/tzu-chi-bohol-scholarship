@@ -93,7 +93,6 @@ const FamilySection = ({
                 isFirstFormApplicable={isFirstFormApplicable}
                 isSecondFormApplicable={isSecondFormApplicable}
                 isThirdFormApplicable={isThirdFormApplicable}
-                // handleRenewSubmit={handleRenewSubmit}
                 sections={[FORM_SECTIONS.FAMILY, FORM_SECTIONS.CONTACT_PERSON]}
             />
         </form>

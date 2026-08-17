@@ -122,7 +122,7 @@ class ScholarAccountModel
     {
         try {
             $query =
-                'SELECT ai.application_id, pi.last_name, pi.middle_name, pi.first_name, pi.email FROM ' .
+                'SELECT ai.application_id, ai.is_added_from_admin, pi.last_name, pi.middle_name, pi.first_name, pi.email FROM ' .
                 $this->table_name .
                 " ai 
                      JOIN personal_information pi ON ai.application_id = pi.application_id WHERE ai.is_application_approved = '1' AND ai.is_examination_passed = '1' AND ai.is_initial_interview_passed = '1'
@@ -183,7 +183,8 @@ class ScholarAccountModel
 
     public function setScholarReasonForDeactivation($scholar_id, $text)
     {
-        $query = 'UPDATE scholars SET award_or_reason = :award_or_reason WHERE account_id = :scholar_id';
+        $query =
+            'UPDATE scholars SET award_or_reason = :award_or_reason WHERE account_id = :scholar_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':award_or_reason', $text);
         $stmt->bindParam(':scholar_id', $scholar_id);

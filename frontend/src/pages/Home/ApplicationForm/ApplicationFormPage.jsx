@@ -88,8 +88,12 @@ function ApplicationForm({
 
     const totalSteps = steps.length;
 
+    const STORAGE_KEY = includeRequirements
+        ? "new_application_form_data"
+        : "renewal_application_form_data";
+
     // Consolidated form state
-    const [formData, setFormData] = useState({
+    const getDefaultFormData = () => ({
         application_info: generateInitialState(
             formConfig[FORM_SECTIONS.APPLICATION],
         ),
@@ -115,9 +119,65 @@ function ApplicationForm({
         uploaded_files: [],
     });
 
+    // const [formData, setFormData] = useState(() => {
+    //     try {
+    //         const saved = localStorage.getItem(STORAGE_KEY);
+    //         return saved ? JSON.parse(saved) : getDefaultFormData();
+    //     } catch (error) {
+    //         console.error("Failed to load saved form:", error);
+    //         return getDefaultFormData();
+    //     }
+    // });
+
+    const [formData, setFormData] = useState(() => {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                return {
+                    ...parsed,
+                    picture_file: null,
+                    uploaded_files: [],
+                };
+            }
+            return getDefaultFormData();
+        } catch (error) {
+            console.error("Failed to load saved form:", error);
+            return getDefaultFormData();
+        }
+    });
+
+    // useEffect(() => {
+    //     try {
+    //         localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    //     } catch (error) {
+    //         console.error("Failed to save form:", error);
+    //     }
+    // }, [formData, STORAGE_KEY]);
+
+    // useEffect(() => {
+    //     localStorage.removeItem(STORAGE_KEY);
+    //     setFormData(getDefaultFormData());
+    // }, []);
+
+    useEffect(() => {
+        try {
+            const { picture_file, uploaded_files, ...dataToPersist } = formData;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToPersist));
+        } catch (error) {
+            console.error("Failed to save form:", error);
+        }
+    }, [formData, STORAGE_KEY]);
+
     // Initialize personal information from API
     useEffect(() => {
-        if (applicantInformation?.personalInfo && !includeRequirements) {
+        const hasSavedDraft = !localStorage.getItem(STORAGE_KEY);
+
+        if (
+            applicantInformation?.personalInfo &&
+            !includeRequirements &&
+            !hasSavedDraft
+        ) {
             const {
                 applicationInfo,
                 personalInfo,
@@ -314,12 +374,19 @@ function ApplicationForm({
                 },
             );
 
-            toast.success("Application submitted successfully!");
-            setLoading(false);
-            setTimeout(() => {
-                navigate("/scholar/dashboard");
-            }, 1000);
-            setActiveTab("dashboard");
+            if (response.status === 201) {
+                toast.success("Application submitted successfully!");
+                localStorage.removeItem(STORAGE_KEY);
+                setFormData(getDefaultFormData());
+                setLoading(false);
+                setTimeout(() => {
+                    navigate("/scholar/dashboard");
+                }, 1000);
+                setActiveTab("dashboard");
+            } else {
+                toast.error("Failed to submit application. Please try again.");
+                setLoading(false);
+            }
         } catch (error) {
             console.log("Error: ", error);
             alert("Failed: ", error);
@@ -354,12 +421,19 @@ function ApplicationForm({
                 },
             );
 
-            toast.success("Application submitted successfully!");
-            setLoading(false);
-            setTimeout(() => {
-                navigate("/scholar/dashboard");
-            }, 1000);
-            setActiveTab("dashboard");
+            if (response.status === 201) {
+                toast.success("Application submitted successfully!");
+                localStorage.removeItem(STORAGE_KEY);
+                setFormData(getDefaultFormData());
+                setLoading(false);
+                setTimeout(() => {
+                    navigate("/scholar/dashboard");
+                }, 1000);
+                setActiveTab("dashboard");
+            } else {
+                toast.error("Failed to submit application. Please try again.");
+                setLoading(false);
+            }
         } catch (error) {
             alert("Failed: ", error);
         }
@@ -432,20 +506,29 @@ function ApplicationForm({
                     },
                 );
 
-                toast.success("Application submitted successfully!");
-                setLoading(false);
+                if (response.status === 201) {
+                    toast.success("Application submitted successfully!");
+                    localStorage.removeItem(STORAGE_KEY);
+                    setFormData(getDefaultFormData());
+                    setLoading(false);
 
-                if (isForExistingScholar) {
-                    setTimeout(() => {
-                        navigate(
-                            "/admin/users-accounts/scholar-account-management",
-                        );
-                    }, 1000);
-                    onClose(false);
+                    if (isForExistingScholar) {
+                        setTimeout(() => {
+                            navigate(
+                                "/admin/users-accounts/scholar-account-management",
+                            );
+                        }, 1000);
+                        onClose(false);
+                    } else {
+                        setTimeout(() => {
+                            navigate("/");
+                        }, 1000);
+                    }
                 } else {
-                    setTimeout(() => {
-                        navigate("/");
-                    }, 1000);
+                    toast.error(
+                        "Failed to submit application. Please try again.",
+                    );
+                    setLoading(false);
                 }
             } catch (err) {
                 console.error("Error submitting data:", err);
@@ -490,13 +573,16 @@ function ApplicationForm({
                         prevStep={prevStep}
                         nextStep={nextStep}
                         isSiblingsExisted={
-                            applicantInformation?.familyMembers?.length > 0
+                            applicantInformation?.familyMembers?.length > 0 ||
+                            formData?.family_members?.length > 0
                         }
                         isTzuChiSiblingsExisted={
-                            applicantInformation?.tzuChiSiblings?.length > 0
+                            applicantInformation?.tzuChiSiblings?.length > 0 ||
+                            formData?.tzu_chi_siblings?.length > 0
                         }
                         isOtherAssistanceExisted={
-                            applicantInformation?.assistanceInfo?.length > 0
+                            applicantInformation?.assistanceInfo?.length > 0 ||
+                            formData?.other_assistance?.length > 0
                         }
                     />
                 );

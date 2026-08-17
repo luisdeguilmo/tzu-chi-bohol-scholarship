@@ -75,8 +75,8 @@ class ApplicantInformationController
             $applicantInfo = $applicantModel->getApplicantInfo($id, $schoolYear);
             $applicationId = $applicantInfo['application_id'] ?? null;
 
-            if (!$applicantInfo) {
-                $schoolYears = $schoolYearModel->getAllSchoolYears();
+            if (!$applicantInfo && $applicationId === null) {
+                $schoolYears = $schoolYearModel->getAllSchoolYearsDesc();
 
                 foreach ($schoolYears as $year) {
                     $existingId = $applicantModel->getApplicantInfo($id, $year['school_year']);
@@ -107,7 +107,7 @@ class ApplicantInformationController
                 'tzuChiSiblings' => $tzuChiSiblings,
                 'assistanceInfo' => $assistanceInfo,
                 'characterReference' => $characterReference,
-                'otherInformation' => $otherInformation
+                'otherInformation' => $otherInformation,
             ];
 
             http_response_code(200);
