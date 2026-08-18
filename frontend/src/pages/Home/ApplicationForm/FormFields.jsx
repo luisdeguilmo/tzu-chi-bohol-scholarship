@@ -216,8 +216,9 @@ const FormFields = ({
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4">
                         {previous.map((field, index) => (
                             <div key={index} className="relative">
-                                <label className="block mb-1 text-gray-500 text-xs">
-                                    {field.label} {field.required ? "*" : ""}
+                                <label className="block mb-2 text-gray-500 text-xs">
+                                    {field.label}{" "}
+                                    <span className="text-red-600">{field.required ? " *" : ""}</span>
                                 </label>
                                 <input
                                     type={field.type}
@@ -267,9 +268,11 @@ const FormFields = ({
                             >
                                 {field.type === "select" ? (
                                     <div className="block w-full relative">
-                                        <label className="block mb-1 text-gray-500 text-xs">
+                                        <label className="block mb-2 text-gray-500 text-xs">
                                             {field.label}
-                                            {field.required ? "*" : ""}
+                                            <span className="text-red-600">
+                                                {field.required ? " *" : ""}
+                                            </span>
                                         </label>
                                         <select
                                             id={field.name}
@@ -382,9 +385,11 @@ const FormFields = ({
                                     </div>
                                 ) : (
                                     <div className="relative">
-                                        <label className="block mb-1 text-gray-500 text-xs">
+                                        <label className="block mb-2 text-gray-500 text-xs">
                                             {field.label}
-                                            {field.required ? "*" : ""}
+                                            <span className="text-red-600">
+                                                {field.required ? " *" : ""}
+                                            </span>
                                         </label>
                                         <input
                                             type={field.type}
@@ -436,9 +441,11 @@ const FormFields = ({
                         >
                             {field.type === "select" ? (
                                 <div className="block w-full relative">
-                                    <label className="block mb-1 text-gray-600 text-xs">
+                                    <label className="block mb-2 text-gray-500 text-xs">
                                         {field.label}
-                                        {field.required ? "*" : ""}
+                                        <span className="text-red-600">
+                                            {field.required ? " *" : ""}
+                                        </span>
                                     </label>
                                     <select
                                         id={field.name}
@@ -451,7 +458,7 @@ const FormFields = ({
                                                 e.target.value,
                                             )
                                         }
-                                        className="w-full border text-gray-800 text-xs border-gray-300 bg-white rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        className="w-full border text-gray-800 text-xs border-gray-300 bg-white rounded-lg py-[11px] px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required={field.required}
                                     >
                                         {field.options.map((option) => (
@@ -475,9 +482,11 @@ const FormFields = ({
                                 </div>
                             ) : field.type === "textarea" ? (
                                 <div className="relative">
-                                    <label className="block mb-1 text-gray-600 text-xs">
+                                    <label className="block mb-2 text-gray-500 text-xs">
                                         {field.label}
-                                        {field.required ? "*" : ""}
+                                        <span className="text-red-600">
+                                            {field.required ? " *" : ""}
+                                        </span>
                                     </label>
 
                                     <textarea
@@ -494,7 +503,7 @@ const FormFields = ({
                                             )
                                         }
                                         placeholder={`${field.placeholder}`}
-                                        className="w-full resize-none border text-xs text-slate-700 border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        className="w-full resize-none border text-xs text-slate-700 border-gray-300 rounded-lg py-3 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required={field.required}
                                     ></textarea>
 
@@ -506,9 +515,11 @@ const FormFields = ({
                                 </div>
                             ) : (
                                 <div className="relative">
-                                    <label className="block mb-1 text-gray-600 text-xs">
+                                    <label className="block mb-2 text-gray-500 text-xs">
                                         {field.label}
-                                        {field.required ? "*" : ""}
+                                        <span className="text-red-600">
+                                            {field.required ? " *" : ""}
+                                        </span>
                                     </label>
 
                                     {/* {field.name === "birthdate" &&
@@ -630,7 +641,7 @@ const FormFields = ({
                                                   : undefined
                                         }
                                         placeholder={`${isForExistingScholar === true ? field.placeholder.replace("your ", "") : field.placeholder}`}
-                                        className="w-full border text-xs text-slate-800 border-gray-300 bg-white rounded-lg py-2.5 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
+                                        className="w-full border text-xs text-slate-800 border-gray-300 bg-white rounded-lg py-3 px-3 focus:outline-none focus:ring-1 focus:ring-green-500"
                                         required
                                     />
                                     {errors && errors[field.name] && (

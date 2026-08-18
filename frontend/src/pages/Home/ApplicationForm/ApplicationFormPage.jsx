@@ -450,7 +450,7 @@ function ApplicationForm({
         formData.educational_background.year_level = isForExistingScholar
             ? formData.educational_background.year_level
             : 1;
-        console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
+        // console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
 
         const submitStudentData = async () => {
             try {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import characterReferenceInputFields from "../../../constant/application/characterReferenceInputFields";
-import { Plus, TrashIcon } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import {
     isValidContactNumber,
     lettersNumbers,
@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 const CharacterReferenceForm = ({ formData, updateFormData }) => {
     // Initialize state from formData or use empty arrays if not present
     const [character_reference, setCharacterReference] = useState(
-        formData.character_reference || []
+        formData.character_reference || [],
     );
 
     const [newCharacter, setNewCharacter] = useState({
@@ -44,7 +44,21 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
 
     // Add new Tzu Chi scholar
     const addCharacter = () => {
-        if (newCharacter.contact_number !== "" && !isValidContactNumber(newCharacter.contact_number)) {
+        if (
+            !newCharacter.name ||
+            !newCharacter.address ||
+            !newCharacter.company ||
+            !newCharacter.position ||
+            !newCharacter.contact_number
+        ) {
+            toast.error("Please fill in all required fields");
+            return;
+        }
+
+        if (
+            newCharacter.contact_number !== "" &&
+            !isValidContactNumber(newCharacter.contact_number)
+        ) {
             toast.error("Invalid contact number.");
             return;
         }
@@ -87,8 +101,9 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-4">
                     {characterReferenceInputFields.map((input, index) => (
                         <div key={index}>
-                            <label className="block mb-1 text-gray-600 text-xs">
+                            <label className="block mb-2 text-gray-500 text-xs">
                                 {input.label}
+                                <span className="text-red-600">{" *"}</span>
                             </label>
                             <input
                                 type={input.type}
@@ -138,7 +153,7 @@ const CharacterReferenceForm = ({ formData, updateFormData }) => {
                                 onClick={() => removeCharacter(index)}
                                 className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                             >
-                                <TrashIcon className="w-4 h-4" />
+                                <X className="w-4 h-4" />
                             </button>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">

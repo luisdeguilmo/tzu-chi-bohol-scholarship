@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, use } from "react";
 import familyMembersInputFields from "../../../constant/application/familyMembersInputFields";
 import scholarsInputFields from "../../../constant/application/scholarsInputFields";
 import assistanceInputFields from "../../../constant/application/assistanceInputFields";
-import { Plus, Trash2, TrashIcon } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useApplicationForm } from "../../../context/ApplicationFormContext";
 import { toast } from "react-toastify";
 import {
@@ -280,16 +280,16 @@ const FamilyListForm = ({
                         input.type === "select" ? (
                             <div key={input.name}>
                                 <label
-                                    className={`block mb-1 text-gray-500 text-xs ${
+                                    className={`block mb-2 text-gray-500 text-xs ${
                                         isSiblingsApplicable === null ||
                                         isSiblingsApplicable ===
                                             "not_applicable"
                                             ? "text-gray-400 hidden"
-                                            : "text-gray-600 block"
+                                            : "text-gray-500 block"
                                     }`}
                                 >
                                     {input.label}
-                                    {"*"}
+                                    <span className="text-red-600">{" *"}</span>
                                 </label>
                                 <select
                                     name={input.name}
@@ -333,16 +333,16 @@ const FamilyListForm = ({
                         ) : (
                             <div key={input.name}>
                                 <label
-                                    className={`block mb-1 text-gray-500 text-xs ${
+                                    className={`block mb-2 text-gray-500 text-xs ${
                                         isSiblingsApplicable === null ||
                                         isSiblingsApplicable ===
                                             "not_applicable"
                                             ? "text-gray-400 hidden"
-                                            : "text-gray-600 block"
+                                            : "text-gray-500 block"
                                     }`}
                                 >
                                     {input.label}
-                                    {"*"}
+                                    <span className="text-red-600">{" *"}</span>
                                 </label>
                                 <input
                                     type={input.type}
@@ -411,7 +411,7 @@ const FamilyListForm = ({
                                     onClick={() => removeFamilyMember(index)}
                                     className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <X className="w-4 h-4" />
                                 </button>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
@@ -561,15 +561,16 @@ const FamilyListForm = ({
                     {scholarsInputFields.map((input, index) => (
                         <div key={index}>
                             <label
-                                className={`block mb-1 text-xs ${
+                                className={`block mb-2 text-xs ${
                                     isTzuChiSiblingsApplicable === null ||
                                     isTzuChiSiblingsApplicable ===
                                         "not_applicable"
                                         ? "text-gray-400 hidden"
-                                        : "text-gray-600 block"
+                                        : "text-gray-500 block"
                                 }`}
                             >
                                 {input.label}
+                                <span className="text-red-600">{" *"}</span>
                             </label>
                             <input
                                 type={input.type}
@@ -633,7 +634,7 @@ const FamilyListForm = ({
                                     onClick={() => removeScholar(index)}
                                     className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                                 >
-                                    <TrashIcon className="w-4 h-4" />
+                                    <X className="w-4 h-4" />
                                 </button>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
                                     <p>
@@ -755,15 +756,16 @@ const FamilyListForm = ({
                     {assistanceInputFields.map((input) => (
                         <div>
                             <label
-                                className={`block mb-1 ${
+                                className={`block mb-2 ${
                                     isOtherAssistanceApplicable === null ||
                                     isOtherAssistanceApplicable ===
                                         "not_applicable"
                                         ? "text-gray-400 hidden"
-                                        : "text-gray-600 block"
+                                        : "text-gray-500 block"
                                 } text-xs font-medium`}
                             >
                                 {input.label}
+                                <span className="text-red-600">{" *"}</span>
                             </label>
                             <input
                                 type={input.type}
@@ -827,7 +829,7 @@ const FamilyListForm = ({
                                     onClick={() => removeAssistance(index)}
                                     className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                                 >
-                                    <TrashIcon className="w-4 h-4" />
+                                    <X className="w-4 h-4" />
                                 </button>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
