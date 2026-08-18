@@ -11,7 +11,7 @@ const ProgressIndicator = ({ includeRequirements, steps, currentStep }) => {
             : 0;
 
     return (
-        <div className="w-[85%] sm:w-[80%] xl:w-[70%] mx-auto mb-8 mt-6">
+        <div className="w-[90%] sm:w-[80%] xl:w-[70%] mx-auto mb-8 mt-6">
             <div className="relative flex items-center justify-between">
                 {/* Background line */}
                 <div className="absolute top-1/2 left-0 w-full h-1 -translate-y-1/2 bg-gray-200 rounded"></div>
