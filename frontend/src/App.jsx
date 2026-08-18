@@ -389,9 +389,10 @@ export function App() {
             </Routes>
 
             <ToastContainer
-                toastClassName={"md:text-xs text-xs text-gray-700 text-center"}
                 position="top-center"
                 autoClose={3000}
+                className="sm:!w-[300px] !w-[100%] !mt-2 sm:!mt-0"
+                toastClassName="!w-[95%] text-xs text-gray-700 text-center"
             />
 
             {idleWarning && (
