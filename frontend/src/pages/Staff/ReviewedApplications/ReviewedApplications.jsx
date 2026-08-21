@@ -349,9 +349,11 @@ const ReviewedApplications = () => {
                                         {formatDateTime(info.created_at)}
                                     </td>
                                     <td className="py-2 whitespace-nowrap text-gray-500 text-xs">
-                                        {info.approved_at
+                                       {info.is_application_approved
                                             ? formatDateTime(info.approved_at)
-                                            : "--"}
+                                            : info.is_application_rejected
+                                              ? formatDateTime(info.rejected_at)
+                                              : "--"}
                                     </td>
                                     <td className="py-2 whitespace-nowrap font-medium">
                                         <button
