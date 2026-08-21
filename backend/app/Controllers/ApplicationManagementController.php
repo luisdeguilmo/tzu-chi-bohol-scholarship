@@ -273,6 +273,7 @@ class ApplicationManagementController
                             $data['date'],
                             $data['time'],
                             $data['venue'],
+                            $data['message'],
                         )
                     ) {
                         throw new \Exception('Failed to send examination schedule email');
