@@ -431,7 +431,7 @@ class ApplicantModel
         if ($status === 'new') {
             $query = "SELECT 
                     pi.last_name, pi.first_name, pi.middle_name, pi.email, 
-                    ai.application_id, ai.created_at, ai.approved_at, ai.is_application_approved, ai.is_application_rejected
+                    ai.application_id, ai.created_at, ai.approved_at, ai.rejected_at, ai.is_application_approved, ai.is_application_rejected
                 FROM personal_information pi
                 JOIN application_info ai ON pi.application_id = ai.application_id
                 WHERE 
@@ -451,7 +451,8 @@ class ApplicantModel
                 ai.scholar_id,
                 ai.type,
                 ai.created_at,
-                ai.approved_at
+                ai.approved_at,
+                ai.rejected_at
               FROM application_info ai
               JOIN personal_information pi ON pi.application_id = ai.application_id
               WHERE (ai.is_application_approved = '1' OR ai.is_application_rejected = '1')
