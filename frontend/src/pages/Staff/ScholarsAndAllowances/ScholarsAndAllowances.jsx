@@ -92,6 +92,7 @@ export default function ScholarsAndAllowances() {
         yearLevel,
         sortBy,
         filter,
+        // isConfirmationModalOpen,
     ]);
 
     useEffect(() => {
@@ -101,8 +102,9 @@ export default function ScholarsAndAllowances() {
     }, [isAllowanceSettingsModalOpen]);
 
     useEffect(() => {
-        fetchScholarAllowances();
         fetchMaximumHoursAndAmountPerHour();
+        fetchScholarAllowances();
+        fetchScholars();
     }, [isConfirmationModalOpen]);
 
     const handleAllowanceOverview = async () => {
