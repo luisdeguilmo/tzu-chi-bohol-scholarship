@@ -77,6 +77,11 @@ class ScholarsController
             $cycleModel = new AllowanceCycleModel();
             $schoolYearModel = new SchoolYearModel();
             $info = new ScholarAccountInformationModel();
+            $allowanceSettingsModel = new AllowanceSettingsModel();
+            $allowanceSettings = $allowanceSettingsModel->getMaximumHoursAndAmountPerHour();
+
+            $maximumHours = $allowanceSettings['maximum_hours'];
+            $amountPerHour = $allowanceSettings['amount_per_hour'];
 
             // Get ID parameter if it exists
             $id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -104,7 +109,11 @@ class ScholarsController
                         $renderedHours = $scholar->getScholarRenderedHours(
                             $scholarId['account_id'],
                         );
-                        [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
+                        [$allowance, $newRenderedHours] = $service->calculate(
+                            $renderedHours,
+                            $maximumHours,
+                            $amountPerHour,
+                        );
                         $scholar->unProcessScholarsAllowance($scholarId['account_id'], $allowance);
                     }
                 }
@@ -329,7 +338,11 @@ class ScholarsController
             } elseif ($isProcessed && $type === 'process_overview_allowance') {
                 foreach ($scholars as $scholar) {
                     $renderedHours = $model->getScholarRenderedHours($scholar['account_id']);
-                    [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
+                    [$allowance, $newRenderedHours] = $service->calculate(
+                        $renderedHours,
+                        $maximumHours,
+                        $amountPerHour,
+                    );
 
                     $model->processScholarsOverviewAllowance($scholar['account_id'], $allowance);
                 }
