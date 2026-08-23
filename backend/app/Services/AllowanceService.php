@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\AllowanceSettingsModel;
-
 class AllowanceService
 {
     public function calculate($renderedHours, $maximumHours, $amountPerHour): array

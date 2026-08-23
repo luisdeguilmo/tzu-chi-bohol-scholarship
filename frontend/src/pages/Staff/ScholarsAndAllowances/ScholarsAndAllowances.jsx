@@ -35,7 +35,6 @@ export default function ScholarsAndAllowances() {
     const [isResetConfirmationModalOpen, setIsResetConfirmationModalOpen] =
         useState(false);
     const [scholarId, setScholarId] = useState(null);
-    const [selectedItems, setSelectedItems] = useState([]);
     const [selectedScholar, setSelectedScholar] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [school, setSchool] = useState("all");
@@ -100,6 +99,12 @@ export default function ScholarsAndAllowances() {
             fetchMaximumHoursAndAmountPerHour();
         }
     }, [isAllowanceSettingsModalOpen]);
+
+    useEffect(() => {
+        if (isConfirmationModalOpen) {
+            fetchMaximumHoursAndAmountPerHour();
+        }
+    }, [isConfirmationModalOpen]);
 
     const handleAllowanceOverview = async () => {
         try {
@@ -204,9 +209,7 @@ export default function ScholarsAndAllowances() {
     // Filter data based on search term
     const filteredScholars = scholars.filter(
         (applicant) =>
-            applicant?.account_id
-                ?.toString()
-                .includes(searchTerm.toString()) ||
+            applicant?.account_id?.toString().includes(searchTerm.toString()) ||
             applicant?.last_name
                 ?.toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
@@ -230,13 +233,12 @@ export default function ScholarsAndAllowances() {
     const handleChangeTab = (tab) => {
         setActiveTab(tab);
         setCurrentPage(1);
-        setSelectedItems([]);
     };
 
     const handleRefresh = () => {
         fetchStatus();
         fetchScholars(activeTab, status, schoolYear, sortBy);
-        setSelectedItems([]);
+        fetchMaximumHoursAndAmountPerHour();
     };
 
     return (
