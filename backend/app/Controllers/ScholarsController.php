@@ -21,6 +21,7 @@ use App\Services\AllowanceService;
 use Config\Database;
 use DateTime;
 use App\Middleware\Auth;
+use App\Models\AllowanceSettingsModel;
 
 class ScholarsController
 {
@@ -272,6 +273,11 @@ class ScholarsController
             $service = new AllowanceService();
             $allowanceCycleModel = new AllowanceCycleModel();
             $hoursModel = new RenderedHoursHistoryModel();
+            $allowanceSettingsModel = new AllowanceSettingsModel();
+            $allowanceSettings = $allowanceSettingsModel->getMaximumHoursAndAmountPerHour();
+
+            $maximumHours = $allowanceSettings['maximum_hours'];
+            $amountPerHour = $allowanceSettings['amount_per_hour'];
 
             // Check if there's a cycle ready to process
             if (!$allowanceCycleModel->hasCycleReadyToProcess()) {
@@ -297,7 +303,11 @@ class ScholarsController
 
                 foreach ($scholars as $scholar) {
                     $renderedHours = $model->getScholarRenderedHours($scholar['account_id']);
-                    [$allowance, $newRenderedHours] = $service->calculate($renderedHours);
+                    [$allowance, $newRenderedHours] = $service->calculate(
+                        $renderedHours,
+                        $maximumHours,
+                        $amountPerHour,
+                    );
 
                     $hours = $renderedHours >= 20 ? 20 : $renderedHours;
 

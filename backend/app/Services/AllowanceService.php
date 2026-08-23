@@ -6,14 +6,8 @@ use App\Models\AllowanceSettingsModel;
 
 class AllowanceService
 {
-    public function calculate($renderedHours): array
+    public function calculate($renderedHours, $maximumHours, $amountPerHour): array
     {
-        $model = new AllowanceSettingsModel();
-        $allowanceSettings = $model->getMaximumHoursAndAmountPerHour();
-
-        $maximumHours = $allowanceSettings['maximum_hours'];
-        $amountPerHour = $allowanceSettings['amount_per_hour'];
-
         $allowance = 0.0;
         $newRenderedHours = 0.0;
 
