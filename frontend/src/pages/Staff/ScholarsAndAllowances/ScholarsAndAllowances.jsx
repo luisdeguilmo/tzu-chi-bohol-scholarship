@@ -369,13 +369,7 @@ export default function ScholarsAndAllowances() {
                             currentItems.map((scholar, index) => (
                                 <tr
                                     key={index}
-                                    className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50 ${
-                                        selectedItems.includes(
-                                            scholar.account_id,
-                                        )
-                                            ? "bg-blue-50"
-                                            : ""
-                                    }`}
+                                    className={`border-b border-gray-100 transition-colors text-center hover:bg-gray-50`}
                                 >
                                     <td className="py-2.5 text-xs whitespace-nowrap text-center text-gray-600 font-bold">
                                         {scholar.account_id}
