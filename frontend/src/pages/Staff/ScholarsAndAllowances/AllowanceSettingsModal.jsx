@@ -4,7 +4,13 @@ import { formatCurrency } from "../../../utils/formatCurrency";
 import { numbersOnly } from "../../../utils/inputValidations";
 import { useAllowanceSettings } from "../../../hooks/useAllowanceSettings";
 
-function AllowanceSettingsModal({ isOpen, onClose, label, isLoading = false }) {
+function AllowanceSettingsModal({
+    isOpen,
+    onClose,
+    label,
+    onRefresh,
+    isLoading = false,
+}) {
     const [maximumHours, setMaximumHours] = useState("");
     const [amountPerHour, setAmountPerHour] = useState("");
     const { loading, allowanceSettings, setMaximumHoursAndAmountPerHour } =
@@ -29,11 +35,12 @@ function AllowanceSettingsModal({ isOpen, onClose, label, isLoading = false }) {
     const handleSubmit = async () => {
         const success = await setMaximumHoursAndAmountPerHour(
             maximumHours,
-            amountPerHour
+            amountPerHour,
         );
 
         if (success) {
             onClose(false);
+            onRefresh();
         }
     };
 

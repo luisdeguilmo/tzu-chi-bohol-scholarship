@@ -16,7 +16,6 @@ import { useAllowanceCycle } from "../../../hooks/useAllowanceCycle";
 import { date } from "../../../utils/getDateAndTime";
 import { useScholarAllowances } from "../../../hooks/useScholarAllowances";
 import { generateExcel } from "../../../utils/generateExcel";
-import { useScholarInformation } from "../../../hooks/useScholarInformation";
 import { useResetAllowances } from "../../../hooks/useResetAllowances";
 import ChangeStatusModal from "./ChangeStatusModal";
 import AllowanceSettingsModal from "./AllowanceSettingsModal";
@@ -104,7 +103,6 @@ export default function ScholarsAndAllowances() {
     useEffect(() => {
         fetchMaximumHoursAndAmountPerHour();
         fetchScholarAllowances();
-        fetchScholars();
     }, [isConfirmationModalOpen]);
 
     const handleAllowanceOverview = async () => {
@@ -507,6 +505,7 @@ export default function ScholarsAndAllowances() {
                         label={"Allowance Settings"}
                         isOpen={isAllowanceSettingsModalOpen}
                         onClose={setIsAllowanceSettingsModalOpen}
+                        onRefresh={handleRefresh}
                     />
                 )}
 
