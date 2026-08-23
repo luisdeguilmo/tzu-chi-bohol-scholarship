@@ -53,6 +53,10 @@ class ScholarsController
                 $this->handleGet();
                 break;
 
+            case 'PATCH':
+                $this->handlePatch();
+                break;
+
             case 'PUT':
                 $this->handlePut();
                 break;
@@ -177,6 +181,7 @@ class ScholarsController
                 $transportDetails = $info->getTransportDetails($s['account_id']);
                 $scholarStatus = $info->getScholarStatus($s['account_id']);
                 $renderedHours = $info->getRenderedHours($s['account_id']);
+                $specialSponsor = $info->getSpecialSponsor($s['account_id']);
                 $awardOrReason = $info->getAwardOrReason($s['account_id']);
 
                 $s[] = [
@@ -185,6 +190,7 @@ class ScholarsController
                     'transport_details' => $transportDetails,
                     'scholar_status' => $scholarStatus,
                     'rendered_hours' => $renderedHours,
+                    'special_sponsor' => $specialSponsor,
                     'award_or_reason' => $awardOrReason,
                 ];
 
@@ -210,6 +216,46 @@ class ScholarsController
             ]);
         } catch (\Exception $e) {
             http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function handlePatch()
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (!$data) {
+                throw new \Exception('No data provided');
+            }
+
+            $scholarsModel = new ScholarsModel();
+
+            $account_id = $data['account_id'];
+            $sponsor = $data['special_sponsor'];
+
+            if (!$scholarsModel->setSpecialSponsor($account_id, $sponsor)) {
+                throw new \Exception('Failed to set special sponsor');
+            }
+
+            $this->pdo->commit();
+
+            http_response_code(201);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Special sponsor added successfully',
+            ]);
+        } catch (\Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            http_response_code(400);
             echo json_encode([
                 'success' => false,
                 'message' => $e->getMessage(),

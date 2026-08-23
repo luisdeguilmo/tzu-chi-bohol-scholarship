@@ -67,6 +67,7 @@ class ScholarAccountInformationController
             $transportDetails = $model->getTransportDetails($scholarId);
             $scholarStatus = $model->getScholarStatus($scholarId);
             $renderedHours = $model->getRenderedHours($scholarId);
+            $specialSponsor = $model->getSpecialSponsor($scholarId);
             $awardOrReason = $model->getAwardOrReason($scholarId);
 
             $result = [
@@ -75,6 +76,7 @@ class ScholarAccountInformationController
                 'transport_details' => $transportDetails,
                 'scholar_status' => $scholarStatus,
                 'rendered_hours' => $renderedHours,
+                'special_sponsor' => $specialSponsor,
                 'award_or_reason' => $awardOrReason,
             ];
 

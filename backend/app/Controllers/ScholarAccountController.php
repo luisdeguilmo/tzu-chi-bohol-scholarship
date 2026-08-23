@@ -210,6 +210,7 @@ class ScholarAccountController
                     $transportDetails = $info->getTransportDetails($scholar['account_id']);
                     $scholarStatus = $info->getScholarStatus($scholar['account_id']);
                     $renderedHours = $info->getRenderedHours($scholar['account_id']);
+                    $specialSponsor = $info->getSpecialSponsor($scholar['account_id']);
                     $award_or_reason = $info->getAwardOrReason($scholar['account_id']);
 
                     $scholar[] = [
@@ -218,6 +219,7 @@ class ScholarAccountController
                         'transport_details' => $transportDetails,
                         'scholar_status' => $scholarStatus,
                         'rendered_hours' => $renderedHours,
+                        'special_sponsor' => $specialSponsor,
                         'award_or_reason' => $award_or_reason,
                     ];
 

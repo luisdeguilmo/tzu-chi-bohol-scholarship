@@ -7,7 +7,7 @@ import { useScholars } from "../../../hooks/useScholars";
 import { scholarTableHeaders } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import { Eye, FileText, Loader2 } from "lucide-react";
+import { Eye, FileText, Handshake, Loader2 } from "lucide-react";
 import ScholarProfileModal from "../../../components/UserProfileModal";
 import { date } from "../../../utils/getDateAndTime";
 import { generateExcel } from "../../../utils/generateExcel";
@@ -19,13 +19,17 @@ import { DataListView } from "../../../components/DataListView";
 import { FilterDropdown } from "../../../components/FilterDropdown";
 import { useSubmissions } from "../../../hooks/useSubmissions";
 import { useSchoolYearContext } from "../../../context/SchoolYearContext";
+import SpecialSponsorModal from "./SpecialSponsorModal";
 
 export default function Scholars() {
     const [searchTerm, setSearchTerm] = useState("");
     const [scholarId, setScholarId] = useState(null);
+    const [scholarSponsor, setScholarSponsor] = useState("");
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedScholar, setSelectedScholar] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [specialSponsorModalOpen, setSpecialSponsorModalOpen] =
+        useState(false);
     const [isCoeGradeModalOpen, setIsCoeGradeModalOpen] = useState(false);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("active");
@@ -399,6 +403,27 @@ export default function Scholars() {
                                         >
                                             <FileText className="w-4 h-4" />
                                         </button>
+                                        {activeTab === "active" && (
+                                            <button
+                                                onClick={() => {
+                                                    setSpecialSponsorModalOpen(
+                                                        true,
+                                                    );
+                                                    setScholarId(
+                                                        scholar.account_id,
+                                                    );
+                                                    setScholarSponsor(
+                                                        scholar?.special_sponsor,
+                                                    );
+                                                }}
+                                                // disabled={}
+                                                // ${account?.is_added_from_admin && account?.is_migration_complete === 0 ? "block" : "invisible"}
+                                                className={` p-2 text-blue-600 hover:text-blue-900 hover:bg-orange-50 rounded-lg transition-colors duration-200`}
+                                                title="Set Special Sponsor"
+                                            >
+                                                <Handshake className="w-4 h-4 text-orange-600 hover:text-orange-800 transition-colors" />
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
@@ -441,6 +466,15 @@ export default function Scholars() {
                     scholarId={scholarId}
                     isOpen={isCoeGradeModalOpen}
                     onClose={setIsCoeGradeModalOpen}
+                />
+            )}
+
+            {specialSponsorModalOpen && (
+                <SpecialSponsorModal
+                    isOpen={specialSponsorModalOpen}
+                    onClose={setSpecialSponsorModalOpen}
+                    id={scholarId}
+                    scholarSponsor={scholarSponsor}
                 />
             )}
         </DataListView>

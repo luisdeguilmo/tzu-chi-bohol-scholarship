@@ -186,7 +186,7 @@ class ScholarsModel
         $filter,
     ) {
         $query =
-            'SELECT s.first_name, s.last_name, s.account_id, s.rendered_hours, s.transport_allowance, s.load_allowance,
+            'SELECT s.first_name, s.last_name, s.account_id, s.rendered_hours, s.transport_allowance, s.special_sponsor, s.load_allowance,
                 u.type, 
                 u.status, 
                 ai.type, 
@@ -669,6 +669,18 @@ class ScholarsModel
             ' SET has_submitted_living_info = 1 WHERE account_id = :scholar_id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':scholar_id', $scholarId);
+        return $stmt->execute();
+    }
+
+    public function setSpecialSponsor($scholarId, $sponsor)
+    {
+        $query =
+            'UPDATE ' .
+            $this->table_name .
+            ' SET special_sponsor = :sponsor WHERE account_id = :scholar_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':scholar_id', $scholarId);
+        $stmt->bindParam(':sponsor', $sponsor);
         return $stmt->execute();
     }
 

@@ -62,6 +62,15 @@ class ScholarAccountInformationModel
         return $stmt->fetchColumn();
     }
 
+    public function getSpecialSponsor($scholarId)
+    {
+        $query = 'SELECT special_sponsor FROM scholars WHERE account_id = :scholar_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':scholar_id', $scholarId);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function getAwardOrReason($scholarId)
     {
         $query = 'SELECT award_or_reason FROM scholars WHERE account_id = :scholar_id';

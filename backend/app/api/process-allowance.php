@@ -1,6 +1,6 @@
 <?php
 
-$allowedMethods = ['GET', 'PUT', 'OPTIONS'];
+$allowedMethods = ['GET', 'PUT', 'PATCH', 'OPTIONS'];
 $allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With'];
 
 require_once __DIR__ . '/../../config/bootstrap.php';

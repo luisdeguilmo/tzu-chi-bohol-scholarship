@@ -281,6 +281,14 @@ const UserAccount = ({
                                         mobileClass={info}
                                     />
                                     <InfoField
+                                        label="Special Sponsor"
+                                        value={
+                                            scholarInfo?.special_sponsor ||
+                                            "N/A"
+                                        }
+                                        mobileClass={info}
+                                    />
+                                    <InfoField
                                         label="Status"
                                         value={
                                             scholarInfo?.scholar_status ===
@@ -327,6 +335,12 @@ const UserAccount = ({
                                                 ?.school_year || ""
                                         }
                                     />
+                                    <ValueField
+                                        value={
+                                            scholarInfo?.special_sponsor || "--"
+                                        }
+                                    />
+
                                     <ValueField
                                         value={
                                             scholarInfo?.scholar_status ===
