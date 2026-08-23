@@ -101,7 +101,7 @@ export default function ScholarsAndAllowances() {
     }, [isAllowanceSettingsModalOpen]);
 
     useEffect(() => {
-        fetchMaximumHoursAndAmountPerHour();
+        fetchScholarAllowances();
     }, [isConfirmationModalOpen]);
 
     const handleAllowanceOverview = async () => {
