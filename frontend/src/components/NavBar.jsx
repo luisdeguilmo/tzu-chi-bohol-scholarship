@@ -138,7 +138,7 @@ function NavBar({ isScrolled }) {
                         {/* Logo section */}
                         <Link to="/" className="flex items-center gap-1">
                             <img
-                                className="w-[500px] sm:w-[400px] h-7 md:w-full md:w-full sm:h-12 md:h-16 transition-transform duration-300"
+                                className="w-[500px] sm:w-[400px] h-7 md:w-full sm:h-12 md:h-16 transition-transform duration-300"
                                 src={Logo}
                                 alt="Tzu chi Logo"
                             />
