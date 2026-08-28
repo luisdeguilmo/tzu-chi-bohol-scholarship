@@ -202,7 +202,7 @@ class AdminDashboardDataModel
                             MONTH(approved_at) AS month_num,
                             COUNT(*) AS total_approved
                         FROM application_info
-                        WHERE is_application_approved = '1' AND school_year = :school_year
+                        WHERE is_application_approved = '1' AND is_added_from_admin = '0' AND school_year = :school_year
                         GROUP BY MONTH(approved_at)
                     ) app ON m.month_num = app.month_num
                     ORDER BY m.month_num;
@@ -229,11 +229,11 @@ class AdminDashboardDataModel
                         
                         -- APPROVED COUNTS
                         CASE s.stage_name
-                            WHEN 'Application' THEN (SELECT COUNT(*) FROM application_info WHERE is_application_approved = '1' AND school_year = :school_year)
-                            WHEN 'Exam' THEN (SELECT COUNT(*) FROM application_info WHERE is_examination_passed = '1' AND school_year = :school_year)
-                            WHEN 'Interview' THEN (SELECT COUNT(*) FROM application_info WHERE is_initial_interview_passed = '1' AND school_year = :school_year)
-                            WHEN 'Home Visit' THEN (SELECT COUNT(*) FROM application_info WHERE is_home_visitation_qualified = '1' AND school_year = :school_year)
-                            WHEN 'Final Interview' THEN (SELECT COUNT(*) FROM application_info WHERE is_final_interview_passed = '1' AND school_year = :school_year)
+                            WHEN 'Application' THEN (SELECT COUNT(*) FROM application_info WHERE is_application_approved = '1' AND is_added_from_admin = '0' AND school_year = :school_year)
+                            WHEN 'Exam' THEN (SELECT COUNT(*) FROM application_info WHERE is_examination_passed = '1' AND is_added_from_admin = '0' AND school_year = :school_year)
+                            WHEN 'Interview' THEN (SELECT COUNT(*) FROM application_info WHERE is_initial_interview_passed = '1' AND is_added_from_admin = '0' AND school_year = :school_year)
+                            WHEN 'Home Visit' THEN (SELECT COUNT(*) FROM application_info WHERE is_home_visitation_qualified = '1' AND is_added_from_admin = '0' AND school_year = :school_year)
+                            WHEN 'Final Interview' THEN (SELECT COUNT(*) FROM application_info WHERE is_final_interview_passed = '1' AND is_added_from_admin = '0' AND school_year = :school_year)
                         END AS approved,
 
                         -- REJECTED COUNTS
