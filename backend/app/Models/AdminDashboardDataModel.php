@@ -194,7 +194,7 @@ class AdminDashboardDataModel
                             MONTH(created_at) AS month_num,
                             COUNT(*) AS total_submitted
                         FROM application_info
-                        WHERE school_year = :school_year
+                        WHERE school_year = :school_year AND is_added_from_admin = '0'
                         GROUP BY MONTH(created_at)
                     ) sub ON m.month_num = sub.month_num
                     LEFT JOIN (
