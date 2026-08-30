@@ -100,7 +100,7 @@ function HeroSection() {
 
     return (
         <section
-            className="hero group relative flex items-center justify-center h-[620px] md:h-[610px] text-white overflow-hidden"
+            className="hero group relative flex items-center justify-center h-[615px] md:h-[610px] text-white overflow-hidden"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={handleTouchStart}
