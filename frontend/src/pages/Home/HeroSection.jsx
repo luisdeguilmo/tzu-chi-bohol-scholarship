@@ -127,7 +127,7 @@ function HeroSection() {
                 aria-label="Previous slide"
                 className="hero-arrow left hidden md:block absolute left-4 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
             >
-                <ChevronLeft className="w-10 h-10" />
+                <ChevronLeft className="w-10 h-10 hidden md:block" />
             </button>
             <button
                 type="button"
@@ -135,7 +135,7 @@ function HeroSection() {
                 aria-label="Next slide"
                 className="hero-arrow right hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
             >
-                <ChevronRight className="w-10 h-10" />
+                <ChevronRight className="w-10 h-10 hidden md:block" />
             </button>
 
             {/* Dot pagination */}
