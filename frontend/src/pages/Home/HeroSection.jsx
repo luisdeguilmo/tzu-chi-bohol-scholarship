@@ -100,7 +100,7 @@ function HeroSection() {
 
     return (
         <section
-            className="hero group relative flex items-center justify-center h-[615px] md:h-[610px] text-white overflow-hidden"
+            className="hero group relative flex items-center justify-center h-[610px] md:h-[620px] text-white overflow-hidden"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={handleTouchStart}
@@ -125,7 +125,7 @@ function HeroSection() {
                 type="button"
                 onClick={handlePrevSlide}
                 aria-label="Previous slide"
-                className="hero-arrow left absolute left-4 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
+                className="hero-arrow left hidden md:block absolute left-4 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
             >
                 <ChevronLeft className="w-10 h-10" />
             </button>
@@ -133,7 +133,7 @@ function HeroSection() {
                 type="button"
                 onClick={handleNextSlide}
                 aria-label="Next slide"
-                className="hero-arrow right absolute right-4 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
+                className="hero-arrow right hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
             >
                 <ChevronRight className="w-10 h-10" />
             </button>
