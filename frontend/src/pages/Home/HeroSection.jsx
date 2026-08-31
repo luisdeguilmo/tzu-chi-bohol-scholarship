@@ -150,7 +150,7 @@ function HeroSection() {
                         className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
                             index === currentIndex
                                 ? "w-4 md:w-6 bg-green-500"
-                                : "w-1.5 md:h-2 bg-white/40 hover:bg-white/70"
+                                : "w-1.5 md:w-2 bg-white/40 hover:bg-white/70"
                         }`}
                     />
                 ))}
