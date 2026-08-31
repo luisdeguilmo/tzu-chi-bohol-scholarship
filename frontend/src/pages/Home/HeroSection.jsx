@@ -139,7 +139,7 @@ function HeroSection() {
             </button>
 
             {/* Dot pagination */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex gap-2.5">
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex gap-1.5 md:gap-2.5">
                 {IMAGES.map((_, index) => (
                     <button
                         key={index}
@@ -147,10 +147,10 @@ function HeroSection() {
                         onClick={() => goToSlide(index)}
                         aria-label={`Go to slide ${index + 1}`}
                         aria-current={index === currentIndex}
-                        className={`h-2 rounded-full transition-all duration-300 ${
+                        className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
                             index === currentIndex
-                                ? "w-6 bg-green-500"
-                                : "w-2 bg-white/40 hover:bg-white/70"
+                                ? "w-4 md:w-6 bg-green-500"
+                                : "w-1.5 md:h-2 bg-white/40 hover:bg-white/70"
                         }`}
                     />
                 ))}
