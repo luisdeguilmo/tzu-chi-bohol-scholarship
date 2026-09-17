@@ -43,8 +43,19 @@ use App\Services\B2StorageService;
 
 class ApplicationController
 {
+    /** MySQL/MariaDB error code for a unique-constraint violation. */
+    private const ERR_DUPLICATE_ENTRY = 1062;
+
     private $pdo;
     private $storageService;
+
+    /**
+     * Paths of files that have already been written to B2 during the
+     * current request. If the request fails after some uploads succeeded,
+     * these are deleted so we don't leave orphaned files behind when the
+     * DB transaction is rolled back. Cleared at the start of each request.
+     */
+    private $uploadedPaths = [];
 
     public function __construct()
     {
@@ -55,6 +66,19 @@ class ApplicationController
 
     public function createApplication()
     {
+        // Keep executing (commit/rollback + cleanup) even if the client's
+        // connection drops mid-request, instead of PHP tearing the process
+        // down mid-transaction and leaving orphaned B2 files / an
+        // undetermined DB state. The client won't see the response either
+        // way once it has disconnected, but the server ends up consistent.
+        ignore_user_abort(true);
+
+        $this->uploadedPaths = [];
+
+        // Held outside the try so the catch block can tell a duplicate on
+        // *this* key apart from any other unique-constraint violation.
+        $idempotencyKey = null;
+
         $this->pdo->beginTransaction();
 
         try {
@@ -67,6 +91,25 @@ class ApplicationController
 
             if (!$data) {
                 throw new \Exception('No data provided');
+            }
+
+            $idempotencyKey = $this->extractIdempotencyKey($data);
+
+            // Fast path: the client is retrying a submission that already
+            // went through. Return the original application instead of
+            // creating a second one.
+            if ($idempotencyKey !== null) {
+                $existing = $this->findApplicationIdByKey($idempotencyKey);
+
+                if ($existing) {
+                    // Nothing has been written yet; just close the transaction.
+                    if ($this->pdo->inTransaction()) {
+                        $this->pdo->rollBack();
+                    }
+
+                    $this->respondAlreadySubmitted($existing);
+                    return;
+                }
             }
 
             $is_existing_scholar = $data['application_info']['is_existing_scholar'];
@@ -92,6 +135,14 @@ class ApplicationController
 
             if (!$application_id) {
                 throw new \Exception('Failed to create application');
+            }
+
+            // Stamp the key onto the freshly created row, inside the same
+            // transaction. If a concurrent request with the same key got
+            // there first, this UPDATE fails with a duplicate-entry error
+            // and is handled in the catch block below.
+            if ($idempotencyKey !== null) {
+                $this->persistIdempotencyKey($application_id, $idempotencyKey);
             }
 
             // Process other data (personal, education, family, etc.)
@@ -148,21 +199,213 @@ class ApplicationController
 
             $this->pdo->commit();
 
+            // Everything committed successfully — nothing to clean up.
+            $this->uploadedPaths = [];
+
             http_response_code(201);
             echo json_encode([
                 'success' => true,
                 'message' => 'Application created successfully...',
                 'application_id' => $application_id,
+                'duplicate' => false,
             ]);
-        } catch (\Exception $e) {
-            $this->pdo->rollBack();
+        } catch (\Throwable $e) {
+            // \Throwable (not just \Exception) so that fatal-ish errors
+            // thrown by lower-level HTTP/network clients (e.g. a \Error
+            // from the B2 SDK when connectivity drops) are also caught,
+            // instead of killing the script before rollback/cleanup runs.
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            // The DB is rolled back automatically, but B2 uploads are a
+            // separate system and are NOT part of that transaction. Any
+            // file already written to B2 in this request is now orphaned
+            // (no DB row references it) unless we explicitly remove it.
+            $this->cleanupUploadedFiles();
+
+            // A duplicate-entry error is NOT by itself proof that this was
+            // a retry — error 1062 also fires for an application_id
+            // collision or any other unique index touched during the
+            // transaction, and reporting those as "already submitted"
+            // would silently discard a real application. So re-query by
+            // key after the rollback: only if a row with this exact key is
+            // committed do we know another request won the race.
+            if ($idempotencyKey !== null && $this->isDuplicateKeyError($e)) {
+                $existing = $this->findApplicationIdByKey($idempotencyKey);
+
+                if ($existing) {
+                    error_log(
+                        'createApplication: concurrent duplicate for idempotency key; ' .
+                            'returning existing application ' . $existing,
+                    );
+
+                    $this->respondAlreadySubmitted($existing);
+                    return;
+                }
+            }
+
+            // Log full detail server-side; never echo internal exception
+            // messages (SQL errors, B2/network error strings, file paths)
+            // back to the client.
+            error_log('createApplication failed: ' . $e->getMessage());
 
             http_response_code(400);
             echo json_encode([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'We were unable to submit your application. Please check your '
+                    . 'connection and try again.',
             ]);
         }
+    }
+
+    /**
+     * Pulls the client-generated idempotency key off the payload and
+     * validates its shape. Accepts it at the top level or nested under
+     * application_info, depending on how the client sends it.
+     *
+     * Anything that isn't a well-formed UUID is treated as absent rather
+     * than as an error: a malformed key from an old client build should
+     * still be able to submit, just without duplicate protection.
+     */
+    private function extractIdempotencyKey(array $data): ?string
+    {
+        $key = $data['idempotency_key'] ?? ($data['application_info']['idempotency_key'] ?? null);
+
+        if (!is_string($key)) {
+            return null;
+        }
+
+        $key = trim($key);
+
+        if (
+            !preg_match(
+                '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i',
+                $key,
+            )
+        ) {
+            if ($key !== '') {
+                error_log('Ignoring malformed idempotency key from client.');
+            }
+            return null;
+        }
+
+        return strtolower($key);
+    }
+
+    /**
+     * Returns the application_id previously stored against this key, or
+     * null if this key has never been committed.
+     */
+    private function findApplicationIdByKey(string $idempotencyKey)
+    {
+        try {
+            $stmt = $this->pdo->prepare(
+                'SELECT application_id FROM application_info
+                 WHERE idempotency_key = :key
+                 LIMIT 1',
+            );
+            $stmt->execute([':key' => $idempotencyKey]);
+
+            $existing = $stmt->fetchColumn();
+
+            return $existing === false ? null : $existing;
+        } catch (\Throwable $e) {
+            // A lookup failure must not break submission — worst case we
+            // lose duplicate protection for this request.
+            error_log('Idempotency lookup failed: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Writes the key onto the application row inside the open transaction.
+     * Deliberately NOT wrapped in try/catch: a duplicate-entry error here
+     * is the race-detection signal and must propagate to the caller.
+     */
+    private function persistIdempotencyKey($application_id, string $idempotencyKey): void
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE application_info
+             SET idempotency_key = :key
+             WHERE application_id = :id',
+        );
+
+        $stmt->execute([':key' => $idempotencyKey, ':id' => $application_id]);
+    }
+
+    /**
+     * 201, not 200 — the client checks the status code to decide between a
+     * success toast and a retry prompt, and a retry that lands here is a
+     * success from the user's point of view. `duplicate` lets the client
+     * distinguish the two if it ever wants to.
+     */
+    private function respondAlreadySubmitted($application_id): void
+    {
+        http_response_code(201);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Application already submitted.',
+            'application_id' => $application_id,
+            'duplicate' => true,
+        ]);
+    }
+
+    private function isDuplicateKeyError(\Throwable $e): bool
+    {
+        if ($e instanceof \PDOException) {
+            // MySQL/MariaDB duplicate-entry error code.
+            return ($e->errorInfo[1] ?? null) === self::ERR_DUPLICATE_ENTRY;
+        }
+
+        return false;
+    }
+
+    /**
+     * Best-effort deletion of any files uploaded to B2 during a request
+     * that ultimately failed, so a network drop or later error doesn't
+     * leave storage and the database out of sync. Deletion failures are
+     * logged but never allowed to mask the original error or crash the
+     * error-handling path itself.
+     */
+    private function cleanupUploadedFiles()
+    {
+        foreach ($this->uploadedPaths as $path) {
+            try {
+                // No method_exists() guard: B2StorageService::delete() now
+                // exists for real (see B2StorageService.php). Guarding it
+                // was exactly what let cleanup silently no-op for as long
+                // as the method was missing — better to let a genuine
+                // absence throw here and get logged below.
+                $this->storageService->delete($path);
+            } catch (\Throwable $cleanupError) {
+                error_log(
+                    "Failed to clean up orphaned B2 file '{$path}': " .
+                        $cleanupError->getMessage(),
+                );
+            }
+        }
+
+        $this->uploadedPaths = [];
+    }
+
+    /**
+     * Wraps storageService->upload() so every successful upload is tracked
+     * for cleanup, and a failed/incomplete upload is treated as an error
+     * instead of silently proceeding (the original code never checked the
+     * return value of upload()).
+     */
+    private function uploadAndTrack($tmpPath, $folder, $filename)
+    {
+        $result = $this->storageService->upload($tmpPath, $folder, $filename);
+
+        if (!$result) {
+            throw new \Exception("Upload to storage failed for '{$filename}'");
+        }
+
+        $this->uploadedPaths[] = $folder . '/' . $filename;
+
+        return $result;
     }
 
     private function generateUniqueApplicationId($length = 7)
@@ -264,11 +507,12 @@ class ApplicationController
                     'profile_picture_url' => $profile_url,
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            error_log('getProfilePicture failed: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Unable to retrieve profile picture.',
             ]);
         }
     }
@@ -285,11 +529,12 @@ class ApplicationController
                     'profile_picture_url' => $profile_url,
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            error_log('getUserProfilePicture failed: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Unable to retrieve profile picture.',
             ]);
         }
     }
@@ -302,10 +547,11 @@ class ApplicationController
     {
         try {
             $downloaded = $this->storageService->download($path);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            error_log("B2 download failed for '{$path}': " . $e->getMessage());
             return [
                 'success' => false,
-                'message' => 'B2 download failed: ' . $e->getMessage(),
+                'message' => 'File could not be retrieved from storage',
             ];
         }
 
@@ -389,12 +635,12 @@ class ApplicationController
                 'base64' => $result['base64Image'],
                 'mime_type' => $result['mimeType'],
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             error_log('Profile picture error: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => 'Internal server error: ' . $e->getMessage(),
+                'message' => 'Internal server error while retrieving profile picture.',
             ]);
         }
     }
@@ -447,12 +693,12 @@ class ApplicationController
                         'mime_type' => $result['mimeType'],
                         'path' => $path,
                     ];
-                } catch (\Exception $fileException) {
+                } catch (\Throwable $fileException) {
                     error_log("Error processing file {$index}: " . $fileException->getMessage());
                     $items[] = [
                         'index' => $index,
                         'success' => false,
-                        'message' => 'Error processing file: ' . $fileException->getMessage(),
+                        'message' => 'Error processing this file.',
                         'path' => $path,
                     ];
                 }
@@ -463,12 +709,12 @@ class ApplicationController
                 'total_files' => count($paths),
                 $responseKey => $items,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             error_log("{$responseKey} error: " . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => 'Internal server error: ' . $e->getMessage(),
+                'message' => 'Internal server error while retrieving files.',
             ]);
         }
     }
@@ -508,7 +754,9 @@ class ApplicationController
             'profile_' . uniqid() . ($fileExtension ? '.' . $fileExtension : '');
         $folder = 'applications/' . $application_id . '/profile';
 
-        $result = $this->storageService->upload($file['tmp_name'], $folder, $uniqueFilename);
+        // Tracked so this file is removed from B2 if anything later in the
+        // request fails and the DB transaction is rolled back.
+        $this->uploadAndTrack($file['tmp_name'], $folder, $uniqueFilename);
 
         $profilePictureModel = new ProfilePictureModel();
         if (
@@ -563,11 +811,8 @@ class ApplicationController
                 $uniqueFilename =
                     $customFilename ?: uniqid() . ($fileExtension ? '.' . $fileExtension : '');
 
-                $result = $this->storageService->upload(
-                    $files['tmp_name'][$i],
-                    $folder,
-                    $uniqueFilename,
-                );
+                // Tracked for cleanup on failure (see uploadAndTrack()).
+                $this->uploadAndTrack($files['tmp_name'][$i], $folder, $uniqueFilename);
 
                 if (
                     !$requirementModel->create(
@@ -619,7 +864,9 @@ class ApplicationController
             }
 
             try {
-                $result = $this->storageService->upload($tmpFile, $folder, $filename);
+                // Tracked for cleanup on failure (see uploadAndTrack()).
+                $this->uploadAndTrack($tmpFile, $folder, $filename);
+
                 $mimeType = function_exists('mime_content_type')
                     ? (mime_content_type($tmpFile) ?:
                     'application/octet-stream')
@@ -672,7 +919,9 @@ class ApplicationController
         $folder = 'applications/' . $application_id . '/profile';
 
         try {
-            $result = $this->storageService->upload($tmpFile, $folder, $filename);
+            // Tracked for cleanup on failure (see uploadAndTrack()).
+            $this->uploadAndTrack($tmpFile, $folder, $filename);
+
             $mimeType = function_exists('mime_content_type')
                 ? (mime_content_type($tmpFile) ?:
                 'image/jpeg')
@@ -697,4 +946,3 @@ class ApplicationController
         }
     }
 }
-?>

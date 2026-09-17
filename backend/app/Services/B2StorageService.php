@@ -1,22 +1,16 @@
 <?php
 namespace App\Services;
 
-// $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-
-// if (file_exists(__DIR__ . '/../.env')) {
-//     $dotenv->load();
-// }
-
 if (!class_exists('\Dotenv\Dotenv')) {
     $autoload = __DIR__ . '/../../vendor/autoload.php';
     if (file_exists($autoload)) {
         require_once $autoload;
     }
 }
- 
+
 if (class_exists('\Dotenv\Dotenv')) {
     $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
- 
+
     if (file_exists(__DIR__ . '/../.env')) {
         $dotenv->load();
     }
@@ -394,6 +388,126 @@ class B2StorageService
         }
 
         return null;
+    }
+
+    /**
+     * B2 identifies a file by (fileName, fileId), not by path alone, so
+     * deleting requires looking up the current version's fileId first via
+     * b2_list_file_versions. Returns null if no file exists at this path.
+     */
+    private function getFileId($path)
+    {
+        $path = trim($path, '/');
+        $url = $this->apiUrl . '/b2api/v2/b2_list_file_versions';
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode([
+                'bucketId' => $this->bucketId,
+                'startFileName' => $path,
+                'maxFileCount' => 1,
+            ]),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'Authorization: ' . $this->authorizationToken,
+                'Content-Type: application/json',
+            ],
+        ]);
+
+        $response = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlErrNo = curl_errno($ch);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($response === false || $curlErrNo !== 0) {
+            throw new \Exception('B2 list_file_versions connection failed: ' . $curlError);
+        }
+
+        if ($status >= 300) {
+            throw new \Exception("B2 list_file_versions failed (HTTP $status): " . $response);
+        }
+
+        $data = json_decode($response, true);
+        $files = $data['files'] ?? [];
+
+        // startFileName is a lower bound for the listing, not an exact
+        // filter — B2 can return the next file alphabetically after $path
+        // if $path itself doesn't exist. Confirm an exact name match
+        // before trusting the result, or we'd delete the wrong file.
+        if (!empty($files) && ($files[0]['fileName'] ?? null) === $path) {
+            return $files[0]['fileId'] ?? null;
+        }
+
+        return null;
+    }
+
+    /**
+     * Deletes every stored version of the file at $path. This is what
+     * ApplicationController::cleanupUploadedFiles() calls to roll back an
+     * upload when the surrounding DB transaction fails, so a partial
+     * submission doesn't leave an orphaned file sitting in the bucket
+     * forever with nothing in the database pointing at it.
+     *
+     * Returns true if the file was deleted (or never existed — that's
+     * still the desired end state). Throws on an actual B2/network error
+     * so the caller's catch block can log it; cleanupUploadedFiles()
+     * already wraps each call individually, so one failed delete won't
+     * stop the rest from being attempted.
+     */
+    public function delete($path)
+    {
+        $path = trim($path, '/');
+
+        $fileId = $this->getFileId($path);
+
+        if ($fileId === null) {
+            return true;
+        }
+
+        $url = $this->apiUrl . '/b2api/v2/b2_delete_file_version';
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode([
+                'fileName' => $path,
+                'fileId' => $fileId,
+            ]),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'Authorization: ' . $this->authorizationToken,
+                'Content-Type: application/json',
+            ],
+        ]);
+
+        $response = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlErrNo = curl_errno($ch);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        error_log(
+            sprintf(
+                '[B2StorageService::delete] Path: %s | FileId: %s | Status: %s | CurlErrNo: %s | CurlError: %s',
+                $path,
+                $fileId,
+                $status,
+                $curlErrNo,
+                $curlError,
+            ),
+        );
+
+        if ($response === false || $curlErrNo !== 0) {
+            throw new \Exception('B2 delete_file_version connection failed: ' . $curlError);
+        }
+
+        if ($status >= 300) {
+            throw new \Exception("B2 delete_file_version failed (HTTP $status): " . $response);
+        }
+
+        return true;
     }
 
     public function download($path)

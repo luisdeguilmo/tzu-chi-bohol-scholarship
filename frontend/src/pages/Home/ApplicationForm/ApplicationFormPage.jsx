@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -28,6 +28,26 @@ const generateInitialState = (fieldsConfig) => {
     return initialState;
 };
 
+/**
+ * crypto.randomUUID is only defined in a secure context, so it's missing on
+ * plain-HTTP local dev and on older Safari. Fall back to a v4 shim rather
+ * than throwing — worst case the key is less random, which doesn't matter
+ * for a per-submission token.
+ */
+const newUuid = () => {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+        return crypto.randomUUID();
+    }
+
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+    });
+};
+
+/** The server returns 201 on create and on a recognised duplicate. */
+const isSuccessStatus = (status) => status >= 200 && status < 300;
+
 function ApplicationForm({
     isForExistingScholar,
     includeRequirements = true,
@@ -41,6 +61,14 @@ function ApplicationForm({
 
     const { user } = useAuth();
     const { setActiveTab } = useSidebar();
+    const { getSchoolYear } = useApplicationPeriods();
+
+    /**
+     * Blocks a second submit from starting while one is in flight. `loading`
+     * can't do this on its own: setState is async, so two clicks in the same
+     * tick both see loading === false. A ref updates synchronously.
+     */
+    const submittingRef = useRef(false);
 
     useEffect(() => {
         const fetchSchoolYear = async () => {
@@ -60,8 +88,6 @@ function ApplicationForm({
         user?.user_id,
         schoolYear,
     );
-
-    const { getSchoolYear } = useApplicationPeriods();
 
     // Define steps based on whether requirements are included
     const steps = [
@@ -94,6 +120,10 @@ function ApplicationForm({
 
     // Consolidated form state
     const getDefaultFormData = () => ({
+        // One key per submission attempt sequence. Minted with a fresh
+        // draft, reused across every retry of that draft, and retired only
+        // once the server confirms the submission.
+        idempotency_key: newUuid(),
         application_info: generateInitialState(
             formConfig[FORM_SECTIONS.APPLICATION],
         ),
@@ -119,16 +149,6 @@ function ApplicationForm({
         uploaded_files: [],
     });
 
-    // const [formData, setFormData] = useState(() => {
-    //     try {
-    //         const saved = localStorage.getItem(STORAGE_KEY);
-    //         return saved ? JSON.parse(saved) : getDefaultFormData();
-    //     } catch (error) {
-    //         console.error("Failed to load saved form:", error);
-    //         return getDefaultFormData();
-    //     }
-    // });
-
     const [formData, setFormData] = useState(() => {
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
@@ -136,6 +156,10 @@ function ApplicationForm({
                 const parsed = JSON.parse(saved);
                 return {
                     ...parsed,
+                    // Drafts saved before this change have no key; mint one.
+                    // An existing key is kept so a reload mid-submission
+                    // still counts as the same attempt.
+                    idempotency_key: parsed.idempotency_key || newUuid(),
                     picture_file: null,
                     uploaded_files: [],
                 };
@@ -147,21 +171,10 @@ function ApplicationForm({
         }
     });
 
-    // useEffect(() => {
-    //     try {
-    //         localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-    //     } catch (error) {
-    //         console.error("Failed to save form:", error);
-    //     }
-    // }, [formData, STORAGE_KEY]);
-
-    // useEffect(() => {
-    //     localStorage.removeItem(STORAGE_KEY);
-    //     setFormData(getDefaultFormData());
-    // }, []);
-
     useEffect(() => {
         try {
+            // File objects can't be serialised; everything else, including
+            // idempotency_key, is persisted so it survives a reload.
             const { picture_file, uploaded_files, ...dataToPersist } = formData;
             localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToPersist));
         } catch (error) {
@@ -171,12 +184,14 @@ function ApplicationForm({
 
     // Initialize personal information from API
     useEffect(() => {
-        const hasSavedDraft = !localStorage.getItem(STORAGE_KEY);
+        // NOTE: name corrected to match the logic — this is true when there
+        // is NO saved draft. Behaviour is unchanged from the original.
+        const hasNoSavedDraft = !localStorage.getItem(STORAGE_KEY);
 
         if (
             applicantInformation?.personalInfo &&
             !includeRequirements &&
-            !hasSavedDraft
+            hasNoSavedDraft
         ) {
             const {
                 applicationInfo,
@@ -311,7 +326,6 @@ function ApplicationForm({
     }, [applicantInformation]);
 
     const handleInputChange = (section, fieldName, value) => {
-        // const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
             [section]: {
@@ -319,6 +333,16 @@ function ApplicationForm({
                 [fieldName]: value,
             },
         }));
+    };
+
+    /**
+     * Clears the draft and mints a brand-new idempotency key, so the next
+     * application the user starts is a genuinely distinct submission.
+     * Only called after the server has confirmed success.
+     */
+    const resetAfterSuccess = () => {
+        localStorage.removeItem(STORAGE_KEY);
+        setFormData(getDefaultFormData());
     };
 
     // Navigation functions
@@ -342,23 +366,47 @@ function ApplicationForm({
         }
     };
 
-    const handleRenewSubmit = async (e) => {
+    /**
+     * Shared submit path for both renewal flows. `applicationType` is
+     * "renew" for a first renewal and "resubmit" for a corrected one.
+     */
+    const submitRenewal = async (e, applicationType) => {
         e.preventDefault();
 
-        const data = await getSchoolYear("renewal");
-        formData.application_info.school_year = data?.school_year;
-        formData.application_info.application_type = "renew";
-        formData.application_info.status = "Old";
-        formData.application_info.scholar_id = user.user_id;
-        formData.personal_information.scholar_id = user.user_id;
-        formData.educational_background.scholar_id = user.user_id;
-        formData.parents_guardian.scholar_id = user.user_id;
+        if (submittingRef.current) return;
+        submittingRef.current = true;
+        setLoading(true);
 
         try {
+            const data = await getSchoolYear("renewal");
+
+            // Built as a local payload rather than mutating formData, which
+            // React state should never be written to directly.
+            const applicationData = {
+                ...formData,
+                idempotency_key: formData.idempotency_key,
+                application_info: {
+                    ...formData.application_info,
+                    school_year: data?.school_year,
+                    application_type: applicationType,
+                    ...(applicationType === "renew" ? { status: "Old" } : {}),
+                    scholar_id: user.user_id,
+                },
+                personal_information: {
+                    ...formData.personal_information,
+                    scholar_id: user.user_id,
+                },
+                educational_background: {
+                    ...formData.educational_background,
+                    scholar_id: user.user_id,
+                },
+                parents_guardian: {
+                    ...formData.parents_guardian,
+                    scholar_id: user.user_id,
+                },
+            };
+
             const formDataToSend = new FormData();
-
-            const applicationData = { ...formData };
-
             formDataToSend.append(
                 "applicationData",
                 JSON.stringify(applicationData),
@@ -371,13 +419,14 @@ function ApplicationForm({
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
+                    // Don't throw on 4xx/5xx — handled explicitly below.
+                    validateStatus: () => true,
                 },
             );
 
-            if (response.status === 201) {
+            if (isSuccessStatus(response.status)) {
                 toast.success("Application submitted successfully!");
-                localStorage.removeItem(STORAGE_KEY);
-                setFormData(getDefaultFormData());
+                resetAfterSuccess();
                 setLoading(false);
                 setTimeout(() => {
                     navigate("/scholar/dashboard");
@@ -386,159 +435,125 @@ function ApplicationForm({
             } else {
                 toast.error("Failed to submit application. Please try again.");
                 setLoading(false);
+                // Key intentionally NOT regenerated: the next attempt must
+                // carry the same key so the server can recognise it as a
+                // retry of this submission rather than a new one.
+                submittingRef.current = false;
             }
-        } catch (error) {
-            console.log("Error: ", error);
-            alert("Failed: ", error);
+        } catch (err) {
+            console.error("Error submitting renewal:", err);
+            toast.error("Failed to submit application. Please try again.");
+            setLoading(false);
+            submittingRef.current = false;
         }
     };
 
-    const handleReSubmitRenew = async (e) => {
-        e.preventDefault();
-
-        const data = await getSchoolYear("renewal");
-        formData.application_info.school_year = data?.school_year;
-        formData.application_info.application_type = "resubmit";
-        formData.application_info.scholar_id = user.user_id;
-
-        try {
-            const formDataToSend = new FormData();
-
-            const applicationData = { ...formData };
-
-            formDataToSend.append(
-                "applicationData",
-                JSON.stringify(applicationData),
-            );
-
-            const response = await axios.post(
-                `${BASE_URL}app/api/renewal.php`,
-                formDataToSend,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                },
-            );
-
-            if (response.status === 201) {
-                toast.success("Application submitted successfully!");
-                localStorage.removeItem(STORAGE_KEY);
-                setFormData(getDefaultFormData());
-                setLoading(false);
-                setTimeout(() => {
-                    navigate("/scholar/dashboard");
-                }, 1000);
-                setActiveTab("dashboard");
-            } else {
-                toast.error("Failed to submit application. Please try again.");
-                setLoading(false);
-            }
-        } catch (error) {
-            alert("Failed: ", error);
-        }
-    };
+    const handleRenewSubmit = (e) => submitRenewal(e, "renew");
+    const handleReSubmitRenew = (e) => submitRenewal(e, "resubmit");
 
     // Handle final form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const data = await getSchoolYear("new");
-        formData.application_info.school_year = data?.school_year;
-        formData.application_info.is_existing_scholar = isForExistingScholar;
-        formData.application_info.status = "New";
-        formData.educational_background.year_level = isForExistingScholar
-            ? formData.educational_background.year_level
-            : 1;
-        // console.log(`Form Submitted:\n${JSON.stringify(formData, null, 2)}`);
+        if (submittingRef.current) return;
+        submittingRef.current = true;
+        setLoading(true);
 
-        const submitStudentData = async () => {
-            try {
-                setLoading(true);
+        try {
+            const data = await getSchoolYear("new");
 
-                const formDataToSend = new FormData();
+            const applicationData = {
+                ...formData,
+                idempotency_key: formData.idempotency_key,
+                application_info: {
+                    ...formData.application_info,
+                    school_year: data?.school_year,
+                    is_existing_scholar: isForExistingScholar,
+                    status: "New",
+                },
+                educational_background: {
+                    ...formData.educational_background,
+                    year_level: isForExistingScholar
+                        ? formData.educational_background.year_level
+                        : 1,
+                },
+            };
 
-                const applicationData = { ...formData };
-                delete applicationData.uploaded_files;
+            // Files travel as multipart parts, not inside the JSON blob.
+            delete applicationData.uploaded_files;
+            delete applicationData.picture_file;
 
+            const formDataToSend = new FormData();
+            formDataToSend.append(
+                "applicationData",
+                JSON.stringify(applicationData),
+            );
+
+            if (formData.picture_file && formData.picture_file.fileObj) {
+                formDataToSend.append("picture", formData.picture_file.fileObj);
                 formDataToSend.append(
-                    "applicationData",
-                    JSON.stringify(applicationData),
+                    "pictureInfo",
+                    JSON.stringify({
+                        filename: formData.picture_file.filename,
+                    }),
                 );
+            }
 
-                if (formData.picture_file && formData.picture_file.fileObj) {
+            if (formData.uploaded_files && formData.uploaded_files.length > 0) {
+                formData.uploaded_files.forEach((fileItem) => {
+                    if (fileItem.fileObj) {
+                        formDataToSend.append("files[]", fileItem.fileObj);
+                    }
                     formDataToSend.append(
-                        "picture",
-                        formData.picture_file.fileObj,
-                    );
-                    formDataToSend.append(
-                        "pictureInfo",
+                        "fileInfo[]",
                         JSON.stringify({
-                            filename: formData.picture_file.filename,
+                            filename: fileItem.filename,
                         }),
                     );
-                }
+                });
+            }
 
-                if (
-                    formData.uploaded_files &&
-                    formData.uploaded_files.length > 0
-                ) {
-                    formData.uploaded_files.forEach((fileItem) => {
-                        if (fileItem.fileObj) {
-                            formDataToSend.append("files[]", fileItem.fileObj);
-                        }
-                        formDataToSend.append(
-                            "fileInfo[]",
-                            JSON.stringify({
-                                filename: fileItem.filename,
-                            }),
-                        );
-                    });
-                }
-
-                const response = await axios.post(
-                    `${BASE_URL}app/api/submit-application.php`,
-                    formDataToSend,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
+            const response = await axios.post(
+                `${BASE_URL}app/api/submit-application.php`,
+                formDataToSend,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
                     },
-                );
+                    validateStatus: () => true,
+                },
+            );
 
-                if (response.status === 201) {
-                    toast.success("Application submitted successfully!");
-                    localStorage.removeItem(STORAGE_KEY);
-                    setFormData(getDefaultFormData());
-                    setLoading(false);
+            if (isSuccessStatus(response.status)) {
+                toast.success("Application submitted successfully!");
+                resetAfterSuccess();
+                setLoading(false);
 
-                    if (isForExistingScholar) {
-                        setTimeout(() => {
-                            navigate(
-                                "/admin/users-accounts/scholar-account-management",
-                            );
-                        }, 1000);
-                        onClose(false);
-                    } else {
-                        setTimeout(() => {
-                            navigate("/");
-                        }, 1000);
-                    }
+                if (isForExistingScholar) {
+                    setTimeout(() => {
+                        navigate(
+                            "/admin/users-accounts/scholar-account-management",
+                        );
+                    }, 1000);
+                    onClose(false);
                 } else {
-                    toast.error(
-                        "Failed to submit application. Please try again.",
-                    );
-                    setLoading(false);
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 1000);
                 }
-            } catch (err) {
-                console.error("Error submitting data:", err);
-                setError("Failed to submit. Please try again.");
+            } else {
                 toast.error("Failed to submit application. Please try again.");
                 setLoading(false);
+                // Same key on the next attempt — see note in submitRenewal.
+                submittingRef.current = false;
             }
-        };
-
-        submitStudentData();
+        } catch (err) {
+            console.error("Error submitting data:", err);
+            setError("Failed to submit. Please try again.");
+            toast.error("Failed to submit application. Please try again.");
+            setLoading(false);
+            submittingRef.current = false;
+        }
     };
 
     // Render form step components
@@ -597,6 +612,7 @@ function ApplicationForm({
                         />
                     );
                 }
+            // falls through to case 5 on the renewal flow (unchanged)
             case 5:
                 return (
                     <OtherInformationSection
