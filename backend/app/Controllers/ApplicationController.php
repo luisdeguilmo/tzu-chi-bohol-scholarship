@@ -131,6 +131,10 @@ class ApplicationController
                 );
             }
 
+            if ($idempotencyKey !== null) {
+                $this->persistIdempotencyKey($application_id, $idempotencyKey);
+            }
+
             error_log('Application ID: ' . $application_id);
 
             if (!$application_id) {
@@ -141,9 +145,6 @@ class ApplicationController
             // transaction. If a concurrent request with the same key got
             // there first, this UPDATE fails with a duplicate-entry error
             // and is handled in the catch block below.
-            if ($idempotencyKey !== null) {
-                $this->persistIdempotencyKey($application_id, $idempotencyKey);
-            }
 
             // Process other data (personal, education, family, etc.)
             $this->processApplicationData($data, $application_id);
@@ -237,7 +238,8 @@ class ApplicationController
                 if ($existing) {
                     error_log(
                         'createApplication: concurrent duplicate for idempotency key; ' .
-                            'returning existing application ' . $existing,
+                            'returning existing application ' .
+                            $existing,
                     );
 
                     $this->respondAlreadySubmitted($existing);
@@ -253,8 +255,9 @@ class ApplicationController
             http_response_code(400);
             echo json_encode([
                 'success' => false,
-                'message' => 'We were unable to submit your application. Please check your '
-                    . 'connection and try again.',
+                'message' =>
+                    'We were unable to submit your application. Please check your ' .
+                    'connection and try again.',
             ]);
         }
     }
@@ -279,10 +282,7 @@ class ApplicationController
         $key = trim($key);
 
         if (
-            !preg_match(
-                '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i',
-                $key,
-            )
+            !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $key)
         ) {
             if ($key !== '') {
                 error_log('Ignoring malformed idempotency key from client.');
@@ -380,8 +380,7 @@ class ApplicationController
                 $this->storageService->delete($path);
             } catch (\Throwable $cleanupError) {
                 error_log(
-                    "Failed to clean up orphaned B2 file '{$path}': " .
-                        $cleanupError->getMessage(),
+                    "Failed to clean up orphaned B2 file '{$path}': " . $cleanupError->getMessage(),
                 );
             }
         }
