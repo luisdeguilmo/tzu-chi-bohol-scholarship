@@ -46,6 +46,8 @@ class Database
             $options
         );
 
+        $this->conn->exec("SET time_zone = '+08:00'");
+
     } catch (\PDOException $e) {
         error_log($e->getMessage());
         return null;
