@@ -71,7 +71,7 @@ class ApplicationController
         // down mid-transaction and leaving orphaned B2 files / an
         // undetermined DB state. The client won't see the response either
         // way once it has disconnected, but the server ends up consistent.
-        ignore_user_abort(true);
+        // ignore_user_abort(true);
 
         $this->uploadedPaths = [];
 
