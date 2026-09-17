@@ -29,7 +29,7 @@ class ApplicationModel
         $this->previousSchoolYear = $this->previousYear . '-' . $this->currentYear;
     }
 
-    public function create($data, $other)
+    public function create($data, $other, $idempotency_key)
     {
         // Generate a unique random application_id`
         $application_id = $this->generateUniqueApplicationId();
@@ -38,7 +38,7 @@ class ApplicationModel
             'INSERT INTO ' .
             $this->table_name .
             " 
-                  SET application_id = :application_id, school_year = :school_year, type = :status, status = 'pending', expectation = :expectation, is_application_approved = '0', is_application_rejected = '0', created_at = NOW()";
+                  SET application_id = :application_id, idempotency_key = :idempotency_key, school_year = :school_year, type = :status, status = 'pending', expectation = :expectation, is_application_approved = '0', is_application_rejected = '0', created_at = NOW()";
 
         $stmt = $this->pdo->prepare($query);
 
@@ -48,6 +48,7 @@ class ApplicationModel
         $expectation = strip_tags($other['expectation']);
 
         $stmt->bindParam(':application_id', $application_id);
+        $stmt->bindParam(':idempotency_key', $idempotency_key);
         $stmt->bindParam(':school_year', $school_year);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':expectation', $expectation);
