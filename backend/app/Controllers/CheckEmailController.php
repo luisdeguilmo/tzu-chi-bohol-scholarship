@@ -141,7 +141,7 @@ class CheckEmailController
             $id = isset($_GET['id']) ? trim($_GET['id']) : null;
 
             if (!$email) {
-                http_response_code(400);
+                // http_response_code(400);
 
                 echo json_encode([
                     'success' => false,
