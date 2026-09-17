@@ -366,6 +366,8 @@ function ApplicationForm({
         }
     };
 
+    console.log(formData.idempotency_key);
+
     /**
      * Shared submit path for both renewal flows. `applicationType` is
      * "renew" for a first renewal and "resubmit" for a corrected one.
