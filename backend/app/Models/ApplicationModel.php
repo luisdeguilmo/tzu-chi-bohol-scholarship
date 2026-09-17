@@ -23,6 +23,7 @@ class ApplicationModel
     {
         $db = new Database();
         $this->pdo = $db->getConnection();
+        $this->pdo->exec("SET time_zone = '+08:00'");
         $this->previousYear = date('Y') - 1;
         $this->currentYear = date('Y');
         $this->previousSchoolYear = $this->previousYear . '-' . $this->currentYear;
