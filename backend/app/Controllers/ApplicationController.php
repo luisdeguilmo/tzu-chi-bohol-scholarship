@@ -110,8 +110,8 @@ class ApplicationController
             } else {
                 $application_id = $application->create(
                     $data['application_info'],
-                    $data['other_information']
-                    // $idempotencyKey
+                    $data['other_information'],
+                    $idempotencyKey
                 );
             }
 
