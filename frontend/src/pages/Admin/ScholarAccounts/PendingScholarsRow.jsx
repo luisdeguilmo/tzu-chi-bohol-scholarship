@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Eye } from "lucide-react";
 
 const PendingScholarsRow = ({
     loading,
@@ -6,6 +6,7 @@ const PendingScholarsRow = ({
     selectedScholars,
     toggleScholarSelection,
     onCreateAccount,
+    onViewPdf,
 }) => {
     return (
         <>
@@ -94,6 +95,21 @@ const PendingScholarsRow = ({
                             {scholar.is_added_from_admin ? "Existing Scholar" : "New Scholar"}
                         </td>
                         <td>
+                            <div className="flex items-center justify-center">
+                                 <button
+                                onClick={() =>
+                                    onViewPdf({
+                                        applicationId:
+                                            scholar.application_id,
+                                        scholarId:
+                                            null,
+                                    })
+                                }
+                                className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                                title="View PDF"
+                            >
+                                <Eye className="w-4 h-4" />
+                            </button>
                             <button
                                 onClick={() => {
                                     onCreateAccount([scholar.application_id]);
@@ -103,6 +119,7 @@ const PendingScholarsRow = ({
                             >
                                 <Check className="w-4 h-4 text-green-600 hover:text-green-700" />
                             </button>
+                            </div>
                         </td>
                     </tr>
                 ))}
