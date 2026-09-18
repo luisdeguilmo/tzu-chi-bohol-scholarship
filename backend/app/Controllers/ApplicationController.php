@@ -49,14 +49,6 @@ class ApplicationController
     private $pdo;
     private $storageService;
 
-    /**
-     * Paths of files that have already been written to B2 during the
-     * current request. If the request fails after some uploads succeeded,
-     * these are deleted so we don't leave orphaned files behind when the
-     * DB transaction is rolled back. Cleared at the start of each request.
-     */
-    private $uploadedPaths = [];
-
     public function __construct()
     {
         $db = new Database();
@@ -71,9 +63,7 @@ class ApplicationController
         // down mid-transaction and leaving orphaned B2 files / an
         // undetermined DB state. The client won't see the response either
         // way once it has disconnected, but the server ends up consistent.
-        // ignore_user_abort(true);
-
-        $this->uploadedPaths = [];
+        ignore_user_abort(true);
 
         // Held outside the try so the catch block can tell a duplicate on
         // *this* key apart from any other unique-constraint violation.
@@ -128,7 +118,7 @@ class ApplicationController
                 $application_id = $application->create(
                     $data['application_info'],
                     $data['other_information'],
-                    $idempotencyKey
+                    // $idempotencyKey
                 );
             }
 
@@ -201,9 +191,6 @@ class ApplicationController
 
             $this->pdo->commit();
 
-            // Everything committed successfully — nothing to clean up.
-            $this->uploadedPaths = [];
-
             http_response_code(201);
             echo json_encode([
                 'success' => true,
@@ -219,12 +206,6 @@ class ApplicationController
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
-
-            // The DB is rolled back automatically, but B2 uploads are a
-            // separate system and are NOT part of that transaction. Any
-            // file already written to B2 in this request is now orphaned
-            // (no DB row references it) unless we explicitly remove it.
-            $this->cleanupUploadedFiles();
 
             // A duplicate-entry error is NOT by itself proof that this was
             // a retry — error 1062 also fires for an application_id
@@ -360,52 +341,6 @@ class ApplicationController
         }
 
         return false;
-    }
-
-    /**
-     * Best-effort deletion of any files uploaded to B2 during a request
-     * that ultimately failed, so a network drop or later error doesn't
-     * leave storage and the database out of sync. Deletion failures are
-     * logged but never allowed to mask the original error or crash the
-     * error-handling path itself.
-     */
-    private function cleanupUploadedFiles()
-    {
-        foreach ($this->uploadedPaths as $path) {
-            try {
-                // No method_exists() guard: B2StorageService::delete() now
-                // exists for real (see B2StorageService.php). Guarding it
-                // was exactly what let cleanup silently no-op for as long
-                // as the method was missing — better to let a genuine
-                // absence throw here and get logged below.
-                $this->storageService->delete($path);
-            } catch (\Throwable $cleanupError) {
-                error_log(
-                    "Failed to clean up orphaned B2 file '{$path}': " . $cleanupError->getMessage(),
-                );
-            }
-        }
-
-        $this->uploadedPaths = [];
-    }
-
-    /**
-     * Wraps storageService->upload() so every successful upload is tracked
-     * for cleanup, and a failed/incomplete upload is treated as an error
-     * instead of silently proceeding (the original code never checked the
-     * return value of upload()).
-     */
-    private function uploadAndTrack($tmpPath, $folder, $filename)
-    {
-        $result = $this->storageService->upload($tmpPath, $folder, $filename);
-
-        if (!$result) {
-            throw new \Exception("Upload to storage failed for '{$filename}'");
-        }
-
-        $this->uploadedPaths[] = $folder . '/' . $filename;
-
-        return $result;
     }
 
     private function generateUniqueApplicationId($length = 7)
@@ -754,9 +689,7 @@ class ApplicationController
             'profile_' . uniqid() . ($fileExtension ? '.' . $fileExtension : '');
         $folder = 'applications/' . $application_id . '/profile';
 
-        // Tracked so this file is removed from B2 if anything later in the
-        // request fails and the DB transaction is rolled back.
-        $this->uploadAndTrack($file['tmp_name'], $folder, $uniqueFilename);
+        $result = $this->storageService->upload($file['tmp_name'], $folder, $uniqueFilename);
 
         $profilePictureModel = new ProfilePictureModel();
         if (
@@ -811,8 +744,11 @@ class ApplicationController
                 $uniqueFilename =
                     $customFilename ?: uniqid() . ($fileExtension ? '.' . $fileExtension : '');
 
-                // Tracked for cleanup on failure (see uploadAndTrack()).
-                $this->uploadAndTrack($files['tmp_name'][$i], $folder, $uniqueFilename);
+                $result = $this->storageService->upload(
+                    $files['tmp_name'][$i],
+                    $folder,
+                    $uniqueFilename,
+                );
 
                 if (
                     !$requirementModel->create(
@@ -864,9 +800,7 @@ class ApplicationController
             }
 
             try {
-                // Tracked for cleanup on failure (see uploadAndTrack()).
-                $this->uploadAndTrack($tmpFile, $folder, $filename);
-
+                $result = $this->storageService->upload($tmpFile, $folder, $filename);
                 $mimeType = function_exists('mime_content_type')
                     ? (mime_content_type($tmpFile) ?:
                     'application/octet-stream')
@@ -919,9 +853,7 @@ class ApplicationController
         $folder = 'applications/' . $application_id . '/profile';
 
         try {
-            // Tracked for cleanup on failure (see uploadAndTrack()).
-            $this->uploadAndTrack($tmpFile, $folder, $filename);
-
+            $result = $this->storageService->upload($tmpFile, $folder, $filename);
             $mimeType = function_exists('mime_content_type')
                 ? (mime_content_type($tmpFile) ?:
                 'image/jpeg')
