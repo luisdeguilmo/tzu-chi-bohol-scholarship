@@ -41,21 +41,6 @@ use App\Models\ProfilePictureModel;
 use App\Models\RequirementsModel;
 use App\Services\B2StorageService;
 
-/**
- * Thrown for validation/business-rule failures raised directly by this
- * controller (missing fields, a failed model save, malformed upload data,
- * etc.). The message is written by us, contains no internal system
- * detail, and is safe to return to the client as-is.
- *
- * Anything else that reaches the catch block in createApplication() —
- * a \PDOException, a network/B2 error, or any other \Exception not
- * raised through this class — is NOT assumed safe to show directly and
- * falls back to a generic message instead.
- */
-class SubmissionException extends \Exception
-{
-}
-
 class ApplicationController
 {
     /** MySQL/MariaDB error code for a unique-constraint violation. */
@@ -63,6 +48,14 @@ class ApplicationController
 
     private $pdo;
     private $storageService;
+
+    /**
+     * Paths of files that have already been written to B2 during the
+     * current request. If the request fails after some uploads succeeded,
+     * these are deleted so we don't leave orphaned files behind when the
+     * DB transaction is rolled back. Cleared at the start of each request.
+     */
+    private $uploadedPaths = [];
 
     public function __construct()
     {
@@ -73,6 +66,15 @@ class ApplicationController
 
     public function createApplication()
     {
+        // Keep executing (commit/rollback + cleanup) even if the client's
+        // connection drops mid-request, instead of PHP tearing the process
+        // down mid-transaction and leaving orphaned B2 files / an
+        // undetermined DB state. The client won't see the response either
+        // way once it has disconnected, but the server ends up consistent.
+        ignore_user_abort(true);
+
+        $this->uploadedPaths = [];
+
         // Held outside the try so the catch block can tell a duplicate on
         // *this* key apart from any other unique-constraint violation.
         $idempotencyKey = null;
@@ -88,7 +90,7 @@ class ApplicationController
             }
 
             if (!$data) {
-                throw new SubmissionException('No data provided');
+                throw new \Exception('No data provided');
             }
 
             $idempotencyKey = $this->extractIdempotencyKey($data);
@@ -130,20 +132,19 @@ class ApplicationController
                 );
             }
 
-            // if ($idempotencyKey !== null) {
-            //     $this->persistIdempotencyKey($application_id, $idempotencyKey);
-            // }
-
             error_log('Application ID: ' . $application_id);
 
             if (!$application_id) {
-                throw new SubmissionException('Failed to create application');
+                throw new \Exception('Failed to create application');
             }
 
             // Stamp the key onto the freshly created row, inside the same
             // transaction. If a concurrent request with the same key got
             // there first, this UPDATE fails with a duplicate-entry error
             // and is handled in the catch block below.
+            // if ($idempotencyKey !== null) {
+            //     $this->persistIdempotencyKey($application_id, $idempotencyKey);
+            // }
 
             // Process other data (personal, education, family, etc.)
             $this->processApplicationData($data, $application_id);
@@ -194,10 +195,13 @@ class ApplicationController
                     'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
                 ])
             ) {
-                throw new SubmissionException('Failed to create audit log');
+                throw new \Exception('Failed to create audit log');
             }
 
             $this->pdo->commit();
+
+            // Everything committed successfully — nothing to clean up.
+            $this->uploadedPaths = [];
 
             http_response_code(201);
             echo json_encode([
@@ -206,10 +210,20 @@ class ApplicationController
                 'application_id' => $application_id,
                 'duplicate' => false,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            // \Throwable (not just \Exception) so that fatal-ish errors
+            // thrown by lower-level HTTP/network clients (e.g. a \Error
+            // from the B2 SDK when connectivity drops) are also caught,
+            // instead of killing the script before rollback/cleanup runs.
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
+
+            // The DB is rolled back automatically, but B2 uploads are a
+            // separate system and are NOT part of that transaction. Any
+            // file already written to B2 in this request is now orphaned
+            // (no DB row references it) unless we explicitly remove it.
+            $this->cleanupUploadedFiles();
 
             // A duplicate-entry error is NOT by itself proof that this was
             // a retry — error 1062 also fires for an application_id
@@ -224,8 +238,7 @@ class ApplicationController
                 if ($existing) {
                     error_log(
                         'createApplication: concurrent duplicate for idempotency key; ' .
-                            'returning existing application ' .
-                            $existing,
+                            'returning existing application ' . $existing,
                     );
 
                     $this->respondAlreadySubmitted($existing);
@@ -233,22 +246,16 @@ class ApplicationController
                 }
             }
 
-            // Full detail always goes to the log, regardless of type.
+            // Log full detail server-side; never echo internal exception
+            // messages (SQL errors, B2/network error strings, file paths)
+            // back to the client.
             error_log('createApplication failed: ' . $e->getMessage());
 
             http_response_code(400);
             echo json_encode([
                 'success' => false,
-                // SubmissionException messages are written by this
-                // controller and are safe to show as-is (e.g. "No data
-                // provided", "Failed to save family information") — they
-                // tell the user something actionable. Anything else
-                // (PDOException, a network/B2 error, etc.) may contain
-                // internal detail, so it falls back to a generic message.
-                'message' => $e instanceof SubmissionException
-                    ? $e->getMessage()
-                    : 'We were unable to submit your application. Please check your ' .
-                        'connection and try again.',
+                'message' => 'We were unable to submit your application. Please check your '
+                    . 'connection and try again.',
             ]);
         }
     }
@@ -273,7 +280,10 @@ class ApplicationController
         $key = trim($key);
 
         if (
-            !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $key)
+            !preg_match(
+                '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i',
+                $key,
+            )
         ) {
             if ($key !== '') {
                 error_log('Ignoring malformed idempotency key from client.');
@@ -301,7 +311,7 @@ class ApplicationController
             $existing = $stmt->fetchColumn();
 
             return $existing === false ? null : $existing;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // A lookup failure must not break submission — worst case we
             // lose duplicate protection for this request.
             error_log('Idempotency lookup failed: ' . $e->getMessage());
@@ -342,7 +352,7 @@ class ApplicationController
         ]);
     }
 
-    private function isDuplicateKeyError(\Exception $e): bool
+    private function isDuplicateKeyError(\Throwable $e): bool
     {
         if ($e instanceof \PDOException) {
             // MySQL/MariaDB duplicate-entry error code.
@@ -350,6 +360,53 @@ class ApplicationController
         }
 
         return false;
+    }
+
+    /**
+     * Best-effort deletion of any files uploaded to B2 during a request
+     * that ultimately failed, so a network drop or later error doesn't
+     * leave storage and the database out of sync. Deletion failures are
+     * logged but never allowed to mask the original error or crash the
+     * error-handling path itself.
+     */
+    private function cleanupUploadedFiles()
+    {
+        foreach ($this->uploadedPaths as $path) {
+            try {
+                // No method_exists() guard: B2StorageService::delete() now
+                // exists for real (see B2StorageService.php). Guarding it
+                // was exactly what let cleanup silently no-op for as long
+                // as the method was missing — better to let a genuine
+                // absence throw here and get logged below.
+                $this->storageService->delete($path);
+            } catch (\Throwable $cleanupError) {
+                error_log(
+                    "Failed to clean up orphaned B2 file '{$path}': " .
+                        $cleanupError->getMessage(),
+                );
+            }
+        }
+
+        $this->uploadedPaths = [];
+    }
+
+    /**
+     * Wraps storageService->upload() so every successful upload is tracked
+     * for cleanup, and a failed/incomplete upload is treated as an error
+     * instead of silently proceeding (the original code never checked the
+     * return value of upload()).
+     */
+    private function uploadAndTrack($tmpPath, $folder, $filename)
+    {
+        $result = $this->storageService->upload($tmpPath, $folder, $filename);
+
+        if (!$result) {
+            throw new \Exception("Upload to storage failed for '{$filename}'");
+        }
+
+        $this->uploadedPaths[] = $folder . '/' . $filename;
+
+        return $result;
     }
 
     private function generateUniqueApplicationId($length = 7)
@@ -376,26 +433,26 @@ class ApplicationController
         // Process personal information
         $personal = new PersonalModel($this->pdo);
         if (!$personal->create($data['personal_information'], $application_id)) {
-            throw new SubmissionException('Failed to save personal information');
+            throw new \Exception('Failed to save personal information');
         }
 
         // Process education information
         $education = new EducationModel($this->pdo);
         if (!$education->create($data['educational_background'], $application_id)) {
-            throw new SubmissionException('Failed to save education information');
+            throw new \Exception('Failed to save education information');
         }
 
         // Process family information
         $family = new FamilyModel($this->pdo);
         if (!$family->create($data['parents_guardian'], $application_id)) {
-            throw new SubmissionException('Failed to save family information');
+            throw new \Exception('Failed to save family information');
         }
 
         // Process contact person
         $contactPerson = new ContactPersonModel($this->pdo);
         if (isset($data['contact_person']) && !empty($data['contact_person'])) {
             if (!$contactPerson->create($data['contact_person'], $application_id)) {
-                throw new SubmissionException('Failed to save contact person');
+                throw new \Exception('Failed to save contact person');
             }
         }
 
@@ -404,7 +461,7 @@ class ApplicationController
             $familyMember = new FamilyMemberModel($this->pdo);
             foreach ($data['family_members'] as $member) {
                 if (!$familyMember->create($member, $application_id)) {
-                    throw new SubmissionException('Failed to save family member');
+                    throw new \Exception('Failed to save family member');
                 }
             }
         }
@@ -414,7 +471,7 @@ class ApplicationController
             $scholar = new ScholarModel($this->pdo);
             foreach ($data['tzu_chi_siblings'] as $scholarData) {
                 if (!$scholar->create($scholarData, $application_id)) {
-                    throw new SubmissionException('Failed to save scholar');
+                    throw new \Exception('Failed to save scholar');
                 }
             }
         }
@@ -424,7 +481,7 @@ class ApplicationController
             $assistance = new AssistanceModel($this->pdo);
             foreach ($data['other_assistance'] as $assistanceData) {
                 if (!$assistance->create($assistanceData, $application_id)) {
-                    throw new SubmissionException('Failed to save assistance');
+                    throw new \Exception('Failed to save assistance');
                 }
             }
         }
@@ -433,7 +490,7 @@ class ApplicationController
             $character = new CharacterReferenceModel($this->pdo);
             foreach ($data['character_reference'] as $characterData) {
                 if (!$character->create($characterData, $application_id)) {
-                    throw new SubmissionException('Failed to save character');
+                    throw new \Exception('Failed to save character');
                 }
             }
         }
@@ -451,7 +508,7 @@ class ApplicationController
                     'profile_picture_url' => $profile_url,
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             error_log('getProfilePicture failed: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
@@ -473,7 +530,7 @@ class ApplicationController
                     'profile_picture_url' => $profile_url,
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             error_log('getUserProfilePicture failed: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
@@ -491,7 +548,7 @@ class ApplicationController
     {
         try {
             $downloaded = $this->storageService->download($path);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             error_log("B2 download failed for '{$path}': " . $e->getMessage());
             return [
                 'success' => false,
@@ -579,7 +636,7 @@ class ApplicationController
                 'base64' => $result['base64Image'],
                 'mime_type' => $result['mimeType'],
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             error_log('Profile picture error: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
@@ -637,7 +694,7 @@ class ApplicationController
                         'mime_type' => $result['mimeType'],
                         'path' => $path,
                     ];
-                } catch (\Exception $fileException) {
+                } catch (\Throwable $fileException) {
                     error_log("Error processing file {$index}: " . $fileException->getMessage());
                     $items[] = [
                         'index' => $index,
@@ -653,7 +710,7 @@ class ApplicationController
                 'total_files' => count($paths),
                 $responseKey => $items,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             error_log("{$responseKey} error: " . $e->getMessage());
             http_response_code(500);
             echo json_encode([
@@ -677,11 +734,11 @@ class ApplicationController
     {
         $error = $file['error'] ?? UPLOAD_ERR_OK;
         if ($error !== UPLOAD_ERR_OK) {
-            throw new SubmissionException('Upload error for profile picture (code ' . $error . ')');
+            throw new \Exception('Upload error for profile picture (code ' . $error . ')');
         }
 
         if (!is_uploaded_file($file['tmp_name'])) {
-            throw new SubmissionException(
+            throw new \Exception(
                 'Invalid upload (possible attack or misconfigured form): ' . $file['name'],
             );
         }
@@ -698,7 +755,9 @@ class ApplicationController
             'profile_' . uniqid() . ($fileExtension ? '.' . $fileExtension : '');
         $folder = 'applications/' . $application_id . '/profile';
 
-        $result = $this->storageService->upload($file['tmp_name'], $folder, $uniqueFilename);
+        // Tracked so this file is removed from B2 if anything later in the
+        // request fails and the DB transaction is rolled back.
+        $this->uploadAndTrack($file['tmp_name'], $folder, $uniqueFilename);
 
         $profilePictureModel = new ProfilePictureModel();
         if (
@@ -712,7 +771,7 @@ class ApplicationController
                 $application_id,
             )
         ) {
-            throw new SubmissionException('Failed to save profile picture info');
+            throw new \Exception('Failed to save profile picture info');
         }
     }
 
@@ -726,13 +785,13 @@ class ApplicationController
             for ($i = 0; $i < $count; $i++) {
                 $error = $files['error'][$i] ?? UPLOAD_ERR_OK;
                 if ($error !== UPLOAD_ERR_OK) {
-                    throw new SubmissionException(
+                    throw new \Exception(
                         'Upload error for file: ' . $files['name'][$i] . ' (code ' . $error . ')',
                     );
                 }
 
                 if (!is_uploaded_file($files['tmp_name'][$i])) {
-                    throw new SubmissionException(
+                    throw new \Exception(
                         'Invalid upload (possible attack or misconfigured form): ' .
                             $files['name'][$i],
                     );
@@ -753,11 +812,8 @@ class ApplicationController
                 $uniqueFilename =
                     $customFilename ?: uniqid() . ($fileExtension ? '.' . $fileExtension : '');
 
-                $result = $this->storageService->upload(
-                    $files['tmp_name'][$i],
-                    $folder,
-                    $uniqueFilename,
-                );
+                // Tracked for cleanup on failure (see uploadAndTrack()).
+                $this->uploadAndTrack($files['tmp_name'][$i], $folder, $uniqueFilename);
 
                 if (
                     !$requirementModel->create(
@@ -772,7 +828,7 @@ class ApplicationController
                         $application_id,
                     )
                 ) {
-                    throw new SubmissionException(
+                    throw new \Exception(
                         'Failed to save requirement file info: ' . $files['name'][$i],
                     );
                 }
@@ -787,7 +843,7 @@ class ApplicationController
 
         foreach ($uploaded_files as $file) {
             if (!isset($file['base64_data'])) {
-                throw new SubmissionException('Invalid file data - missing base64_data');
+                throw new \Exception('Invalid file data - missing base64_data');
             }
 
             $filename = $file['filename'] ?? uniqid() . '.pdf';
@@ -795,21 +851,23 @@ class ApplicationController
             $fileContent = base64_decode($file['base64_data'], true);
 
             if ($fileContent === false) {
-                throw new SubmissionException('Invalid base64 data for file: ' . $filename);
+                throw new \Exception('Invalid base64 data for file: ' . $filename);
             }
 
             $tmpFile = tempnam(sys_get_temp_dir(), 'b64_');
             if ($tmpFile === false) {
-                throw new SubmissionException('Could not create temp file for: ' . $filename);
+                throw new \Exception('Could not create temp file for: ' . $filename);
             }
 
             if (file_put_contents($tmpFile, $fileContent) === false) {
                 @unlink($tmpFile);
-                throw new SubmissionException('Failed to write temp file for: ' . $filename);
+                throw new \Exception('Failed to write temp file for: ' . $filename);
             }
 
             try {
-                $result = $this->storageService->upload($tmpFile, $folder, $filename);
+                // Tracked for cleanup on failure (see uploadAndTrack()).
+                $this->uploadAndTrack($tmpFile, $folder, $filename);
+
                 $mimeType = function_exists('mime_content_type')
                     ? (mime_content_type($tmpFile) ?:
                     'application/octet-stream')
@@ -828,7 +886,7 @@ class ApplicationController
                         $application_id,
                     )
                 ) {
-                    throw new SubmissionException('Failed to save requirement file info: ' . $filename);
+                    throw new \Exception('Failed to save requirement file info: ' . $filename);
                 }
             } finally {
                 @unlink($tmpFile);
@@ -839,30 +897,32 @@ class ApplicationController
     private function handleProfilePictureFromJson($picture_file, $application_id)
     {
         if (!isset($picture_file['base64_data'])) {
-            throw new SubmissionException('Invalid file data - missing base64_data');
+            throw new \Exception('Invalid file data - missing base64_data');
         }
 
         $filename = $picture_file['filename'] ?? 'profile_' . uniqid() . '.jpg';
         $fileContent = base64_decode($picture_file['base64_data'], true);
 
         if ($fileContent === false) {
-            throw new SubmissionException('Invalid base64 data for file: ' . $filename);
+            throw new \Exception('Invalid base64 data for file: ' . $filename);
         }
 
         $tmpFile = tempnam(sys_get_temp_dir(), 'b64_');
         if ($tmpFile === false) {
-            throw new SubmissionException('Could not create temp file for: ' . $filename);
+            throw new \Exception('Could not create temp file for: ' . $filename);
         }
 
         if (file_put_contents($tmpFile, $fileContent) === false) {
             @unlink($tmpFile);
-            throw new SubmissionException('Failed to write temp file for: ' . $filename);
+            throw new \Exception('Failed to write temp file for: ' . $filename);
         }
 
         $folder = 'applications/' . $application_id . '/profile';
 
         try {
-            $result = $this->storageService->upload($tmpFile, $folder, $filename);
+            // Tracked for cleanup on failure (see uploadAndTrack()).
+            $this->uploadAndTrack($tmpFile, $folder, $filename);
+
             $mimeType = function_exists('mime_content_type')
                 ? (mime_content_type($tmpFile) ?:
                 'image/jpeg')
@@ -880,7 +940,7 @@ class ApplicationController
                     $application_id,
                 )
             ) {
-                throw new SubmissionException('Failed to save profile picture info: ' . $filename);
+                throw new \Exception('Failed to save profile picture info: ' . $filename);
             }
         } finally {
             @unlink($tmpFile);
