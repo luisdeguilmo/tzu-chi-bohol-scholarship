@@ -41,6 +41,21 @@ use App\Models\ProfilePictureModel;
 use App\Models\RequirementsModel;
 use App\Services\B2StorageService;
 
+/**
+ * Thrown for validation/business-rule failures raised directly by this
+ * controller (missing fields, a failed model save, malformed upload data,
+ * etc.). The message is written by us, contains no internal system
+ * detail, and is safe to return to the client as-is.
+ *
+ * Anything else that reaches the catch block in createApplication() —
+ * a \PDOException, a network/B2 error, or any other \Exception not
+ * raised through this class — is NOT assumed safe to show directly and
+ * falls back to a generic message instead.
+ */
+class SubmissionException extends \Exception
+{
+}
+
 class ApplicationController
 {
     /** MySQL/MariaDB error code for a unique-constraint violation. */
@@ -73,7 +88,7 @@ class ApplicationController
             }
 
             if (!$data) {
-                throw new \Exception('No data provided');
+                throw new SubmissionException('No data provided');
             }
 
             $idempotencyKey = $this->extractIdempotencyKey($data);
@@ -122,7 +137,7 @@ class ApplicationController
             error_log('Application ID: ' . $application_id);
 
             if (!$application_id) {
-                throw new \Exception('Failed to create application');
+                throw new SubmissionException('Failed to create application');
             }
 
             // Stamp the key onto the freshly created row, inside the same
@@ -179,7 +194,7 @@ class ApplicationController
                     'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
                 ])
             ) {
-                throw new \Exception('Failed to create audit log');
+                throw new SubmissionException('Failed to create audit log');
             }
 
             $this->pdo->commit();
@@ -218,17 +233,22 @@ class ApplicationController
                 }
             }
 
-            // Log full detail server-side; never echo internal exception
-            // messages (SQL errors, B2/network error strings, file paths)
-            // back to the client.
+            // Full detail always goes to the log, regardless of type.
             error_log('createApplication failed: ' . $e->getMessage());
 
             http_response_code(400);
             echo json_encode([
                 'success' => false,
-                'message' =>
-                    'We were unable to submit your application. Please check your ' .
-                    'connection and try again.',
+                // SubmissionException messages are written by this
+                // controller and are safe to show as-is (e.g. "No data
+                // provided", "Failed to save family information") — they
+                // tell the user something actionable. Anything else
+                // (PDOException, a network/B2 error, etc.) may contain
+                // internal detail, so it falls back to a generic message.
+                'message' => $e instanceof SubmissionException
+                    ? $e->getMessage()
+                    : 'We were unable to submit your application. Please check your ' .
+                        'connection and try again.',
             ]);
         }
     }
@@ -356,26 +376,26 @@ class ApplicationController
         // Process personal information
         $personal = new PersonalModel($this->pdo);
         if (!$personal->create($data['personal_information'], $application_id)) {
-            throw new \Exception('Failed to save personal information');
+            throw new SubmissionException('Failed to save personal information');
         }
 
         // Process education information
         $education = new EducationModel($this->pdo);
         if (!$education->create($data['educational_background'], $application_id)) {
-            throw new \Exception('Failed to save education information');
+            throw new SubmissionException('Failed to save education information');
         }
 
         // Process family information
         $family = new FamilyModel($this->pdo);
         if (!$family->create($data['parents_guardian'], $application_id)) {
-            throw new \Exception('Failed to save family information');
+            throw new SubmissionException('Failed to save family information');
         }
 
         // Process contact person
         $contactPerson = new ContactPersonModel($this->pdo);
         if (isset($data['contact_person']) && !empty($data['contact_person'])) {
             if (!$contactPerson->create($data['contact_person'], $application_id)) {
-                throw new \Exception('Failed to save contact person');
+                throw new SubmissionException('Failed to save contact person');
             }
         }
 
@@ -384,7 +404,7 @@ class ApplicationController
             $familyMember = new FamilyMemberModel($this->pdo);
             foreach ($data['family_members'] as $member) {
                 if (!$familyMember->create($member, $application_id)) {
-                    throw new \Exception('Failed to save family member');
+                    throw new SubmissionException('Failed to save family member');
                 }
             }
         }
@@ -394,7 +414,7 @@ class ApplicationController
             $scholar = new ScholarModel($this->pdo);
             foreach ($data['tzu_chi_siblings'] as $scholarData) {
                 if (!$scholar->create($scholarData, $application_id)) {
-                    throw new \Exception('Failed to save scholar');
+                    throw new SubmissionException('Failed to save scholar');
                 }
             }
         }
@@ -404,7 +424,7 @@ class ApplicationController
             $assistance = new AssistanceModel($this->pdo);
             foreach ($data['other_assistance'] as $assistanceData) {
                 if (!$assistance->create($assistanceData, $application_id)) {
-                    throw new \Exception('Failed to save assistance');
+                    throw new SubmissionException('Failed to save assistance');
                 }
             }
         }
@@ -413,7 +433,7 @@ class ApplicationController
             $character = new CharacterReferenceModel($this->pdo);
             foreach ($data['character_reference'] as $characterData) {
                 if (!$character->create($characterData, $application_id)) {
-                    throw new \Exception('Failed to save character');
+                    throw new SubmissionException('Failed to save character');
                 }
             }
         }
@@ -657,11 +677,11 @@ class ApplicationController
     {
         $error = $file['error'] ?? UPLOAD_ERR_OK;
         if ($error !== UPLOAD_ERR_OK) {
-            throw new \Exception('Upload error for profile picture (code ' . $error . ')');
+            throw new SubmissionException('Upload error for profile picture (code ' . $error . ')');
         }
 
         if (!is_uploaded_file($file['tmp_name'])) {
-            throw new \Exception(
+            throw new SubmissionException(
                 'Invalid upload (possible attack or misconfigured form): ' . $file['name'],
             );
         }
@@ -692,7 +712,7 @@ class ApplicationController
                 $application_id,
             )
         ) {
-            throw new \Exception('Failed to save profile picture info');
+            throw new SubmissionException('Failed to save profile picture info');
         }
     }
 
@@ -706,13 +726,13 @@ class ApplicationController
             for ($i = 0; $i < $count; $i++) {
                 $error = $files['error'][$i] ?? UPLOAD_ERR_OK;
                 if ($error !== UPLOAD_ERR_OK) {
-                    throw new \Exception(
+                    throw new SubmissionException(
                         'Upload error for file: ' . $files['name'][$i] . ' (code ' . $error . ')',
                     );
                 }
 
                 if (!is_uploaded_file($files['tmp_name'][$i])) {
-                    throw new \Exception(
+                    throw new SubmissionException(
                         'Invalid upload (possible attack or misconfigured form): ' .
                             $files['name'][$i],
                     );
@@ -752,7 +772,7 @@ class ApplicationController
                         $application_id,
                     )
                 ) {
-                    throw new \Exception(
+                    throw new SubmissionException(
                         'Failed to save requirement file info: ' . $files['name'][$i],
                     );
                 }
@@ -767,7 +787,7 @@ class ApplicationController
 
         foreach ($uploaded_files as $file) {
             if (!isset($file['base64_data'])) {
-                throw new \Exception('Invalid file data - missing base64_data');
+                throw new SubmissionException('Invalid file data - missing base64_data');
             }
 
             $filename = $file['filename'] ?? uniqid() . '.pdf';
@@ -775,17 +795,17 @@ class ApplicationController
             $fileContent = base64_decode($file['base64_data'], true);
 
             if ($fileContent === false) {
-                throw new \Exception('Invalid base64 data for file: ' . $filename);
+                throw new SubmissionException('Invalid base64 data for file: ' . $filename);
             }
 
             $tmpFile = tempnam(sys_get_temp_dir(), 'b64_');
             if ($tmpFile === false) {
-                throw new \Exception('Could not create temp file for: ' . $filename);
+                throw new SubmissionException('Could not create temp file for: ' . $filename);
             }
 
             if (file_put_contents($tmpFile, $fileContent) === false) {
                 @unlink($tmpFile);
-                throw new \Exception('Failed to write temp file for: ' . $filename);
+                throw new SubmissionException('Failed to write temp file for: ' . $filename);
             }
 
             try {
@@ -808,7 +828,7 @@ class ApplicationController
                         $application_id,
                     )
                 ) {
-                    throw new \Exception('Failed to save requirement file info: ' . $filename);
+                    throw new SubmissionException('Failed to save requirement file info: ' . $filename);
                 }
             } finally {
                 @unlink($tmpFile);
@@ -819,24 +839,24 @@ class ApplicationController
     private function handleProfilePictureFromJson($picture_file, $application_id)
     {
         if (!isset($picture_file['base64_data'])) {
-            throw new \Exception('Invalid file data - missing base64_data');
+            throw new SubmissionException('Invalid file data - missing base64_data');
         }
 
         $filename = $picture_file['filename'] ?? 'profile_' . uniqid() . '.jpg';
         $fileContent = base64_decode($picture_file['base64_data'], true);
 
         if ($fileContent === false) {
-            throw new \Exception('Invalid base64 data for file: ' . $filename);
+            throw new SubmissionException('Invalid base64 data for file: ' . $filename);
         }
 
         $tmpFile = tempnam(sys_get_temp_dir(), 'b64_');
         if ($tmpFile === false) {
-            throw new \Exception('Could not create temp file for: ' . $filename);
+            throw new SubmissionException('Could not create temp file for: ' . $filename);
         }
 
         if (file_put_contents($tmpFile, $fileContent) === false) {
             @unlink($tmpFile);
-            throw new \Exception('Failed to write temp file for: ' . $filename);
+            throw new SubmissionException('Failed to write temp file for: ' . $filename);
         }
 
         $folder = 'applications/' . $application_id . '/profile';
@@ -860,7 +880,7 @@ class ApplicationController
                     $application_id,
                 )
             ) {
-                throw new \Exception('Failed to save profile picture info: ' . $filename);
+                throw new SubmissionException('Failed to save profile picture info: ' . $filename);
             }
         } finally {
             @unlink($tmpFile);
