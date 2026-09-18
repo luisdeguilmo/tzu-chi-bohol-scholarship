@@ -20,6 +20,8 @@ import ConfirmationModal from "../../../components/ConfirmationModal";
 import { toast } from "react-toastify";
 import AddScholarModal from "./AddScholarModal";
 import InitialRenderedHours from "./InitialRenderedHoursModal";
+import { useApplicantData } from "../../../hooks/useApplicantData";
+import { usePdfActions } from "../../../hooks/usePdfActions";
 
 const ScholarAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -38,6 +40,12 @@ const ScholarAccounts = () => {
     const [action, setAction] = useState("");
     const [deactivationType, setDeactivationType] = useState("");
     const [deactivationReason, setDeactivationReason] = useState("");
+
+    const { fetchApplicantData } = useApplicantData();
+    const { viewPdf } = usePdfActions(
+        "new",
+        fetchApplicantData,
+    );
 
     const { loading, scholars, createScholarAccount, fetchScholars } =
         useScholarAccounts(activeTab, sortBy, status);
@@ -250,6 +258,7 @@ const ScholarAccounts = () => {
                                 selectedScholars={selectedScholars}
                                 toggleScholarSelection={toggleScholarSelection}
                                 onCreateAccount={createScholarAccount}
+                                onViewPdf={viewPdf}
                             />
                         ) : (
                             <ScholarAccountsRow
