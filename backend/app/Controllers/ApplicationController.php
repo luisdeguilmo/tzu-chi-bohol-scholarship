@@ -130,9 +130,9 @@ class ApplicationController
                 );
             }
 
-            if ($idempotencyKey !== null) {
-                $this->persistIdempotencyKey($application_id, $idempotencyKey);
-            }
+            // if ($idempotencyKey !== null) {
+            //     $this->persistIdempotencyKey($application_id, $idempotencyKey);
+            // }
 
             error_log('Application ID: ' . $application_id);
 
