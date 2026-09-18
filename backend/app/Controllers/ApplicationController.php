@@ -123,6 +123,7 @@ class ApplicationController
                 $application_id = $application->createExistingScholar(
                     $data,
                     $data['other_information'],
+                    $idempotencyKey
                 );
             } else {
                 $application_id = $application->create(
