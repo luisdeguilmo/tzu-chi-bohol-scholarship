@@ -58,13 +58,6 @@ class ApplicationController
 
     public function createApplication()
     {
-        // Keep executing (commit/rollback + cleanup) even if the client's
-        // connection drops mid-request, instead of PHP tearing the process
-        // down mid-transaction and leaving orphaned B2 files / an
-        // undetermined DB state. The client won't see the response either
-        // way once it has disconnected, but the server ends up consistent.
-        ignore_user_abort(true);
-
         // Held outside the try so the catch block can tell a duplicate on
         // *this* key apart from any other unique-constraint violation.
         $idempotencyKey = null;
@@ -117,7 +110,7 @@ class ApplicationController
             } else {
                 $application_id = $application->create(
                     $data['application_info'],
-                    $data['other_information'],
+                    $data['other_information']
                     // $idempotencyKey
                 );
             }
@@ -198,11 +191,7 @@ class ApplicationController
                 'application_id' => $application_id,
                 'duplicate' => false,
             ]);
-        } catch (\Throwable $e) {
-            // \Throwable (not just \Exception) so that fatal-ish errors
-            // thrown by lower-level HTTP/network clients (e.g. a \Error
-            // from the B2 SDK when connectivity drops) are also caught,
-            // instead of killing the script before rollback/cleanup runs.
+        } catch (\Exception $e) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
@@ -292,7 +281,7 @@ class ApplicationController
             $existing = $stmt->fetchColumn();
 
             return $existing === false ? null : $existing;
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             // A lookup failure must not break submission — worst case we
             // lose duplicate protection for this request.
             error_log('Idempotency lookup failed: ' . $e->getMessage());
@@ -333,7 +322,7 @@ class ApplicationController
         ]);
     }
 
-    private function isDuplicateKeyError(\Throwable $e): bool
+    private function isDuplicateKeyError(\Exception $e): bool
     {
         if ($e instanceof \PDOException) {
             // MySQL/MariaDB duplicate-entry error code.
@@ -442,7 +431,7 @@ class ApplicationController
                     'profile_picture_url' => $profile_url,
                 ]);
             }
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             error_log('getProfilePicture failed: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
@@ -464,7 +453,7 @@ class ApplicationController
                     'profile_picture_url' => $profile_url,
                 ]);
             }
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             error_log('getUserProfilePicture failed: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
@@ -482,7 +471,7 @@ class ApplicationController
     {
         try {
             $downloaded = $this->storageService->download($path);
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             error_log("B2 download failed for '{$path}': " . $e->getMessage());
             return [
                 'success' => false,
@@ -570,7 +559,7 @@ class ApplicationController
                 'base64' => $result['base64Image'],
                 'mime_type' => $result['mimeType'],
             ]);
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             error_log('Profile picture error: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
@@ -628,7 +617,7 @@ class ApplicationController
                         'mime_type' => $result['mimeType'],
                         'path' => $path,
                     ];
-                } catch (\Throwable $fileException) {
+                } catch (\Exception $fileException) {
                     error_log("Error processing file {$index}: " . $fileException->getMessage());
                     $items[] = [
                         'index' => $index,
@@ -644,7 +633,7 @@ class ApplicationController
                 'total_files' => count($paths),
                 $responseKey => $items,
             ]);
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             error_log("{$responseKey} error: " . $e->getMessage());
             http_response_code(500);
             echo json_encode([
