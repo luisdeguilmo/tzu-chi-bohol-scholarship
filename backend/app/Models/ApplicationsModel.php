@@ -52,7 +52,7 @@ class ApplicationsModel
 
         // Fetch family information - parents/guardian
         $data['familyInfo']['parents'] = $this->fetchSingle(
-            'SELECT father_name, mother_name, mother_age, guardian_name, guardian_age, father_education, mother_education, guardian_education, father_occupation, mother_occupation, guardian_occupation, father_income, mother_income, guardian_income, father_contact, mother_contact, guardian_contact FROM parents_guardian WHERE application_id = ?',
+            'SELECT father_name, father_age, mother_name, mother_age, guardian_name, guardian_age, father_education, mother_education, guardian_education, father_occupation, mother_occupation, guardian_occupation, father_income, mother_income, guardian_income, father_contact, mother_contact, guardian_contact FROM parents_guardian WHERE application_id = ?',
             [$studentId],
         );
 
