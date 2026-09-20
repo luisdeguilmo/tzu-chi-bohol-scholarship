@@ -135,7 +135,7 @@ class ScholarsModel
         //     $query .= " AND ai.school_year = '$school_year'";
         // }
 
-        $query .= ' GROUP BY s.account_id ORDER BY ai.school_year DESC';
+        $query .= ' ORDER BY ai.school_year DESC';
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':school_year', $school_year);
