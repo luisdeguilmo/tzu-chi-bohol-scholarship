@@ -303,9 +303,9 @@ export const generatePDF = async (
                                         text:
                                             personalInfo?.last_name +
                                                 ", " +
-                                                personalInfo?.middle_name +
-                                                ", " +
                                                 personalInfo?.first_name +
+                                                ", " +
+                                                personalInfo?.middle_name + 
                                                 ", " +
                                                 personalInfo?.suffix || "",
                                         fontSize: 10,
