@@ -40,11 +40,17 @@ const SchoolYears = () => {
             case "oldest":
                 return new Date(a.created_at) - new Date(b.created_at);
             case "name":
-                return a.first_name.localeCompare(b.first_name);
+                return a.school_year.localeCompare(b.school_year);
             default:
                 return 0;
         }
     });
+
+    // The non-active one of the two newest school years gets the check icon
+    const candidateId = [...schoolYears]
+        .sort((a, b) => b.school_year.localeCompare(a.school_year))
+        .slice(0, 2)
+        .find((sy) => sy.status !== "active")?.id;
 
     const {
         currentItems,
@@ -57,22 +63,25 @@ const SchoolYears = () => {
         goToNextPage,
     } = usePagination(sortedSchoolYears, itemsPerPage);
 
-    const handleSchoolYearStatusChange = async (id, status, action) => {
-        if (action === "activate" && status === "active") {
-            toast.error("Account is already active.");
+    const handleSchoolYearStatusChange = async (id, status) => {
+        if (status === "active") {
+            toast.error("School year is already active.");
             return;
         }
 
         try {
-            const success = await updateSchoolYearStatus(id, action);
+            const success = await updateSchoolYearStatus(id, "activate");
+
             if (success) {
-                toast.success(`School year activated successfully.`);
+                toast.success("School year activated successfully.");
                 setIsConfirmationModalOpen(false);
+                setSelectedSchoolYear(null);
+                setSchoolYear("");
                 fetchSchoolYears();
             }
         } catch (error) {
-            console.error("Error updating account status:", error);
-            toast.error(`Failed to ${action} account. Please try again.`);
+            console.error("Error updating school year status:", error);
+            toast.error("Failed to activate school year. Please try again.");
         }
     };
 
@@ -134,7 +143,7 @@ const SchoolYears = () => {
                         )}
 
                         {!loading &&
-                            currentItems.map((schoolYear) => (
+                            currentItems.map((schoolYear, index) => (
                                 <tr
                                     key={schoolYear.id}
                                     className="text-center border-b border-gray-100 hover:bg-gray-50 transition-colors"
@@ -189,14 +198,12 @@ const SchoolYears = () => {
                                                         schoolYear.school_year,
                                                     );
                                                 }}
-                                                disabled={
-                                                    schoolYear.status ===
-                                                        "archived" ||
-                                                    schoolYear.status ===
-                                                        "active"
-                                                }
                                                 title="Set as Active"
-                                                className={`${schoolYear.status === "upcoming" ? "visible" : "invisible"} p-2 rounded-lg hover:bg-green-50 transition`}
+                                                disabled={
+                                                    schoolYear.id !==
+                                                    candidateId
+                                                }
+                                                className={`${schoolYear.id === candidateId ? "visible" : "invisible"} p-2 rounded-lg hover:bg-green-50 transition`}
                                             >
                                                 <CircleCheckBig className="w-4 h-4 text-green-600 hover:text-green-800" />
                                             </button>

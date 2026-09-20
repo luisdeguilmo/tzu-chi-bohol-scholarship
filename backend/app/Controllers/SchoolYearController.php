@@ -87,33 +87,49 @@ class SchoolYearController
             }
 
             $id = $data['id'];
-
             $model = new SchoolYearModel();
 
-            // Check if selected school year exists
-            $selectedSchoolYear = $model->getSchoolYearById($id);
+            $selected = $model->getSchoolYearById($id);
 
-            if (!$selectedSchoolYear) {
+            if (!$selected) {
                 throw new \Exception('School year not found');
             }
 
-            // Get current active school year
-            $currentSchoolYear = $model->getCurrentSchoolYear();
+            // Only the non-active one of the two newest school years can be activated
+            // Only the non-active one of the two newest school years can be activated
+            $latestTwo = $model->getLatestTwoSchoolYears();
+            $allowedIds = array_column(
+                array_filter($latestTwo, fn($sy) => $sy['status'] !== 'active'),
+                'id',
+            );
 
-            // Archive current active school year first
-            if ($currentSchoolYear && $currentSchoolYear['id'] != $id) {
-                $archived = $model->updateStatus($currentSchoolYear['id'], 'archived');
+            if (!in_array($id, $allowedIds)) {
+                throw new \Exception('This school year cannot be activated');
+            }
 
-                if (!$archived) {
-                    throw new \Exception('Failed to archive current school year');
+            // The newest school year (getLatestTwoSchoolYears is ordered newest first)
+            $newest = $latestTwo[0];
+
+            // 1. Handle the currently active school year
+            $previousActive = $model->getPreviousActiveSchoolYear($id);
+
+            if ($previousActive) {
+                // The newest school year goes back to upcoming, older ones are archived
+                $newStatus = $previousActive['id'] == $newest['id'] ? 'upcoming' : 'archived';
+
+                if (!$model->updateStatus($previousActive['id'], $newStatus)) {
+                    throw new \Exception('Failed to update previous school year');
                 }
             }
 
-            // Activate selected school year
-            $updated = $model->updateStatus($id, $data['action']);
+            // 2. Activate the selected school year
+            if (!$model->updateStatus($id, 'active')) {
+                throw new \Exception('Failed to activate selected school year');
+            }
 
-            if (!$updated) {
-                throw new \Exception('Failed to update selected school year');
+            // 3. The newest school year is always upcoming (unless it is the one just activated)
+            if ($newest['id'] != $id && !$model->updateStatus($newest['id'], 'upcoming')) {
+                throw new \Exception('Failed to set the newest school year as upcoming');
             }
 
             $this->pdo->commit();

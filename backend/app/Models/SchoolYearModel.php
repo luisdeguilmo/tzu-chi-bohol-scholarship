@@ -19,7 +19,10 @@ class SchoolYearModel
 
     public function getSchoolYearById($id)
     {
-        $query = 'SELECT id FROM ' . $this->table_name . ' WHERE id = :id';
+        $query =
+            'SELECT id, school_year, status, created_at FROM ' .
+            $this->table_name .
+            ' WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':id', $id);
@@ -45,7 +48,7 @@ class SchoolYearModel
 
     public function getAllSchoolYears()
     {
-        $query = 'SELECT id, school_year, status FROM ' . $this->table_name;
+        $query = 'SELECT id, school_year, status, created_at FROM ' . $this->table_name;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -54,7 +57,10 @@ class SchoolYearModel
 
     public function getAllSchoolYearsDesc()
     {
-        $query = 'SELECT id, school_year, status FROM ' . $this->table_name . ' ORDER BY created_at DESC';
+        $query =
+            'SELECT id, school_year, status FROM ' .
+            $this->table_name .
+            ' ORDER BY created_at DESC';
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
@@ -127,7 +133,7 @@ class SchoolYearModel
 
     public function getCurrentSchoolYear()
     {
-        $query = "SELECT school_year
+        $query = "SELECT id, school_year
               FROM {$this->table_name}
               WHERE status = 'active'
               LIMIT 1";
@@ -138,6 +144,62 @@ class SchoolYearModel
         $schoolYear = $stmt->fetchColumn();
 
         return $schoolYear !== false ? $schoolYear : null;
+    }
+
+    public function getPreviousActiveSchoolYear($excludeId = null)
+    {
+        $query = "SELECT id, school_year
+              FROM {$this->table_name}
+              WHERE status = 'active'";
+
+        if ($excludeId !== null) {
+            $query .= ' AND id != :exclude_id';
+        }
+
+        $query .= ' ORDER BY created_at DESC LIMIT 1';
+
+        $stmt = $this->pdo->prepare($query);
+
+        if ($excludeId !== null) {
+            $stmt->bindValue(':exclude_id', $excludeId, \PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+    }
+
+    // The two newest school years, ordered by name (2027-2028 > 2026-2027)
+    public function getLatestTwoSchoolYears()
+    {
+        $query =
+            'SELECT id, school_year, status FROM ' .
+            $this->table_name .
+            '
+              ORDER BY school_year DESC
+              LIMIT 2';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getNextSchoolYear($schoolYear, $excludeId)
+    {
+        $query = "SELECT id, school_year
+              FROM {$this->table_name}
+              WHERE school_year > :school_year
+                AND id != :exclude_id
+                AND status NOT IN ('active', 'archived')
+              ORDER BY school_year ASC
+              LIMIT 1";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':school_year', $schoolYear);
+        $stmt->bindValue(':exclude_id', $excludeId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
     }
 }
 ?>
