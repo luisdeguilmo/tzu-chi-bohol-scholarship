@@ -65,31 +65,44 @@ class FamilyModel
 
         $stmt = $this->pdo->prepare($query);
 
+        $fatherIncome = str_replace(',', '', trim($data['father_income'] ?? ''));
+        $motherIncome = str_replace(',', '', trim($data['mother_income'] ?? ''));
+        $guardianIncome = str_replace(',', '', trim($data['guardian_income'] ?? ''));
+
         // Sanitize inputs
         $this->application_id = $application_id;
         $this->father_name = strip_tags($data['father_name']);
-        $this->father_age = strip_tags($data['father_age']);
+        $this->father_age = (int) $data['father_age'];
         $this->father_edu_attainment = strip_tags($data['father_education']);
         $this->father_occupation = strip_tags($data['father_occupation']);
-        $this->father_monthly_income = strip_tags($data['father_income']);
+        $this->father_monthly_income =
+            $fatherIncome !== '' ? number_format((float) $fatherIncome, 2, '.', '') : null;
         $this->father_contact_number = strip_tags($data['father_contact']);
         $this->mother_name = strip_tags($data['mother_name']);
-        $this->mother_age = strip_tags($data['mother_age']);
+        $this->mother_age = (int) $data['mother_age'];
         $this->mother_edu_attainment = strip_tags($data['mother_education']);
         $this->mother_occupation = strip_tags($data['mother_occupation']);
-        $this->mother_monthly_income = strip_tags($data['mother_income']);
+        $this->mother_monthly_income =
+            $motherIncome !== '' ? number_format((float) $motherIncome, 2, '.', '') : null;
+
         $this->mother_contact_number = strip_tags($data['mother_contact']);
         $this->guardian_name = strip_tags($data['guardian_name'] ?? '');
         // $this->guardian_age = strip_tags($data['guardian_age'] ?? '');
-        $this->guardian_age = isset($data['guardian_age']) && $data['guardian_age'] !== ''
-    ? (int) $data['guardian_age']
-    : null;
+        $this->guardian_age =
+            isset($data['guardian_age']) && $data['guardian_age'] !== ''
+                ? (int) $data['guardian_age']
+                : null;
         $this->guardian_edu_attainment = strip_tags($data['guardian_education'] ?? '');
         $this->guardian_occupation = strip_tags($data['guardian_occupation'] ?? '');
         // $this->guardian_monthly_income = strip_tags($data['guardian_income'] ?? '');
-        $this->guardian_monthly_income = isset($data['guardian_income']) && $data['guardian_income'] !== ''
-    ? (int) $data['guardian_income']
-    : null;
+        // $this->guardian_monthly_income =
+        //     isset($data['guardian_income']) && $data['guardian_income'] !== ''
+        //         ? (int) $data['guardian_income']
+        //         : null;
+
+        $this->guardian_monthly_income =
+            $guardianIncome !== '' ? number_format((float) $guardianIncome, 2, '.', '') : null;
+
         $this->guardian_contact_number = strip_tags($data['guardian_contact'] ?? '');
 
         // Bind values
@@ -98,19 +111,19 @@ class FamilyModel
         $stmt->bindParam(':father_age', $this->father_age);
         $stmt->bindParam(':father_education', $this->father_edu_attainment);
         $stmt->bindParam(':father_occupation', $this->father_occupation);
-        $stmt->bindParam(':father_income', $this->father_monthly_income);
+        $stmt->bindValue(':father_income', $this->father_monthly_income, \PDO::PARAM_STR);
         $stmt->bindParam(':father_contact', $this->father_contact_number);
         $stmt->bindParam(':mother_name', $this->mother_name);
         $stmt->bindParam(':mother_age', $this->mother_age);
         $stmt->bindParam(':mother_education', $this->mother_edu_attainment);
         $stmt->bindParam(':mother_occupation', $this->mother_occupation);
-        $stmt->bindParam(':mother_income', $this->mother_monthly_income);
+        $stmt->bindValue(':mother_income', $this->mother_monthly_income, \PDO::PARAM_STR);
         $stmt->bindParam(':mother_contact', $this->mother_contact_number);
         $stmt->bindParam(':guardian_name', $this->guardian_name);
         $stmt->bindParam(':guardian_age', $this->guardian_age);
         $stmt->bindParam(':guardian_education', $this->guardian_edu_attainment);
         $stmt->bindParam(':guardian_occupation', $this->guardian_occupation);
-        $stmt->bindParam(':guardian_income', $this->guardian_monthly_income);
+        $stmt->bindValue(':guardian_income', $this->guardian_monthly_income, \PDO::PARAM_STR);
         $stmt->bindParam(':guardian_contact', $this->guardian_contact_number);
 
         return $stmt->execute();
@@ -145,25 +158,35 @@ class FamilyModel
 
         $stmt = $this->pdo->prepare($query);
 
+        $fatherIncome = str_replace(',', '', trim($data['father_income'] ?? ''));
+        $motherIncome = str_replace(',', '', trim($data['mother_income'] ?? ''));
+        $guardianIncome = str_replace(',', '', trim($data['guardian_income'] ?? ''));
+
         // Sanitize inputs
         $this->application_id = $application_id;
         $this->father_name = strip_tags($data['father_name']);
-        $this->father_age = strip_tags($data['father_age']);
+        $this->father_age = (int) $data['father_age'];
         $this->father_edu_attainment = strip_tags($data['father_education']);
         $this->father_occupation = strip_tags($data['father_occupation']);
-        $this->father_monthly_income = strip_tags($data['father_income']);
+        $this->father_monthly_income =
+            $fatherIncome !== '' ? number_format((float) $fatherIncome, 2, '.', '') : null;
         $this->father_contact_number = strip_tags($data['father_contact']);
         $this->mother_name = strip_tags($data['mother_name']);
-        $this->mother_age = strip_tags($data['mother_age']);
+        $this->mother_age = (int) $data['mother_age'];
         $this->mother_edu_attainment = strip_tags($data['mother_education']);
         $this->mother_occupation = strip_tags($data['mother_occupation']);
-        $this->mother_monthly_income = strip_tags($data['mother_income']);
+        $this->mother_monthly_income =
+            $motherIncome !== '' ? number_format((float) $motherIncome, 2, '.', '') : null;
         $this->mother_contact_number = strip_tags($data['mother_contact']);
         $this->guardian_name = strip_tags($data['guardian_name'] ?? '');
-        $this->guardian_age = strip_tags($data['guardian_age'] ?? '');
+        $this->guardian_age =
+            isset($data['guardian_age']) && $data['guardian_age'] !== ''
+                ? (int) $data['guardian_age']
+                : null;
         $this->guardian_edu_attainment = strip_tags($data['guardian_education'] ?? '');
         $this->guardian_occupation = strip_tags($data['guardian_occupation'] ?? '');
-        $this->guardian_monthly_income = strip_tags($data['guardian_income'] ?? '');
+        $this->guardian_monthly_income =
+            $guardianIncome !== '' ? number_format((float) $guardianIncome, 2, '.', '') : null;
         $this->guardian_contact_number = strip_tags($data['guardian_contact'] ?? '');
 
         // Bind values
@@ -173,19 +196,19 @@ class FamilyModel
         $stmt->bindParam(':father_age', $this->father_age);
         $stmt->bindParam(':father_education', $this->father_edu_attainment);
         $stmt->bindParam(':father_occupation', $this->father_occupation);
-        $stmt->bindParam(':father_income', $this->father_monthly_income);
+        $stmt->bindValue(':father_income', $this->father_monthly_income, \PDO::PARAM_STR);
         $stmt->bindParam(':father_contact', $this->father_contact_number);
         $stmt->bindParam(':mother_name', $this->mother_name);
         $stmt->bindParam(':mother_age', $this->mother_age);
         $stmt->bindParam(':mother_education', $this->mother_edu_attainment);
         $stmt->bindParam(':mother_occupation', $this->mother_occupation);
-        $stmt->bindParam(':mother_income', $this->mother_monthly_income);
+        $stmt->bindValue(':mother_income', $this->mother_monthly_income, \PDO::PARAM_STR);
         $stmt->bindParam(':mother_contact', $this->mother_contact_number);
         $stmt->bindParam(':guardian_name', $this->guardian_name);
         $stmt->bindParam(':guardian_age', $this->guardian_age);
         $stmt->bindParam(':guardian_education', $this->guardian_edu_attainment);
         $stmt->bindParam(':guardian_occupation', $this->guardian_occupation);
-        $stmt->bindParam(':guardian_income', $this->guardian_monthly_income);
+        $stmt->bindValue(':guardian_income', $this->guardian_monthly_income, \PDO::PARAM_STR);
         $stmt->bindParam(':guardian_contact', $this->guardian_contact_number);
 
         return $stmt->execute();
@@ -220,24 +243,34 @@ class FamilyModel
 
         $stmt = $this->pdo->prepare($query);
 
+        $fatherIncome = str_replace(',', '', trim($data['father_income'] ?? ''));
+        $motherIncome = str_replace(',', '', trim($data['mother_income'] ?? ''));
+        $guardianIncome = str_replace(',', '', trim($data['guardian_income'] ?? ''));
+
         // Sanitize inputs
         $this->father_name = strip_tags($data['father_name']);
-        $this->father_age = strip_tags($data['father_age']);
+        $this->father_age = (int) $data['father_age'];
         $this->father_edu_attainment = strip_tags($data['father_education']);
         $this->father_occupation = strip_tags($data['father_occupation']);
-        $this->father_monthly_income = strip_tags($data['father_income']);
+        $this->father_monthly_income =
+            $fatherIncome !== '' ? number_format((float) $fatherIncome, 2, '.', '') : null;
         $this->father_contact_number = strip_tags($data['father_contact']);
         $this->mother_name = strip_tags($data['mother_name']);
-        $this->mother_age = strip_tags($data['mother_age']);
+        $this->mother_age = (int) $data['mother_age'];
         $this->mother_edu_attainment = strip_tags($data['mother_education']);
         $this->mother_occupation = strip_tags($data['mother_occupation']);
-        $this->mother_monthly_income = strip_tags($data['mother_income']);
+        $this->mother_monthly_income =
+            $motherIncome !== '' ? number_format((float) $motherIncome, 2, '.', '') : null;
         $this->mother_contact_number = strip_tags($data['mother_contact']);
         $this->guardian_name = strip_tags($data['guardian_name'] ?? '');
-        $this->guardian_age = strip_tags($data['guardian_age'] ?? '');
+        $this->guardian_age =
+            isset($data['guardian_age']) && $data['guardian_age'] !== ''
+                ? (int) $data['guardian_age']
+                : null;
         $this->guardian_edu_attainment = strip_tags($data['guardian_education'] ?? '');
         $this->guardian_occupation = strip_tags($data['guardian_occupation'] ?? '');
-        $this->guardian_monthly_income = strip_tags($data['guardian_income'] ?? '');
+        $this->guardian_monthly_income =
+            $guardianIncome !== '' ? number_format((float) $guardianIncome, 2, '.', '') : null;
         $this->guardian_contact_number = strip_tags($data['guardian_contact'] ?? '');
 
         // Bind values
@@ -246,19 +279,19 @@ class FamilyModel
         $stmt->bindParam(':father_age', $this->father_age);
         $stmt->bindParam(':father_education', $this->father_edu_attainment);
         $stmt->bindParam(':father_occupation', $this->father_occupation);
-        $stmt->bindParam(':father_income', $this->father_monthly_income);
+        $stmt->bindValue(':father_income', $this->father_monthly_income, \PDO::PARAM_STR);
         $stmt->bindParam(':father_contact', $this->father_contact_number);
         $stmt->bindParam(':mother_name', $this->mother_name);
         $stmt->bindParam(':mother_age', $this->mother_age);
         $stmt->bindParam(':mother_education', $this->mother_edu_attainment);
         $stmt->bindParam(':mother_occupation', $this->mother_occupation);
-        $stmt->bindParam(':mother_income', $this->mother_monthly_income);
+        $stmt->bindValue(':mother_income', $this->mother_monthly_income, \PDO::PARAM_STR);
         $stmt->bindParam(':mother_contact', $this->mother_contact_number);
         $stmt->bindParam(':guardian_name', $this->guardian_name);
         $stmt->bindParam(':guardian_age', $this->guardian_age);
         $stmt->bindParam(':guardian_education', $this->guardian_edu_attainment);
         $stmt->bindParam(':guardian_occupation', $this->guardian_occupation);
-        $stmt->bindParam(':guardian_income', $this->guardian_monthly_income);
+        $stmt->bindValue(':guardian_income', $this->guardian_monthly_income, \PDO::PARAM_STR);
         $stmt->bindParam(':guardian_contact', $this->guardian_contact_number);
 
         return $stmt->execute();

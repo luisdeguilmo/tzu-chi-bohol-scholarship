@@ -197,7 +197,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter GWA",
-            validate: "numbersOnly",
+            validate: "gradesOnly",
         },
         {
             name: "previous_course",
@@ -308,7 +308,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter monthly income",
-            validate: "numbersOnly",
+            validate: "amountOnly",
         },
         {
             name: "father_contact",
@@ -357,7 +357,7 @@ const formConfig = {
             type: "text",
             required: true,
             placeholder: "Enter monthly income",
-            validate: "numbersOnly",
+            validate: "amountOnly",
         },
         {
             name: "mother_contact",
@@ -406,7 +406,7 @@ const formConfig = {
             type: "text",
             required: false,
             placeholder: "Enter monthly income",
-            validate: "numbersOnly",
+            validate: "amountOnly",
         },
         {
             name: "guardian_contact",

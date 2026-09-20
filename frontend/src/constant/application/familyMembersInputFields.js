@@ -46,7 +46,7 @@ const familyMembersInputFields = [
         name: "monthly_income",
         type: "text",
         placeholder: "Enter amount",
-        validate: "numbersOnly",
+        validate: "amountOnly",
     },
     {
         label: "Living with Family",

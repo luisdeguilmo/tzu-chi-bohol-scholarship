@@ -9,12 +9,20 @@ export function urlOnly(value) {
 
 // Allow only numbers
 export function numbersOnly(value) {
-    return value.replace(/[^0-9\s.,]/g, "");
+    return value.replace(/[^0-9]/g, "");
+}
+
+export function gradesOnly(value) {
+    return value.replace(/[^0-9.]/g, "");
+}
+
+export function amountOnly(value) {
+    return value.replace(/[^0-9.,]/g, "");
 }
 
 // Allow letters, numbers, spaces, hyphens
 export function lettersNumbers(value) {
-    return value.replace(/[^a-zA-Z0-9\s'-,]/g, "");
+    return value.replace(/[^a-zA-Z0-9\s',-]/g, "");
 }
 
 export function isValidContactNumber(value) {

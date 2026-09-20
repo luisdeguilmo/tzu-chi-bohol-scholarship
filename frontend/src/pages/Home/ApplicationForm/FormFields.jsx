@@ -8,6 +8,8 @@ import {
     lettersOnly,
     lettersNumbers,
     numbersOnly,
+    amountOnly,
+    gradesOnly,
     urlOnly,
 } from "../../../utils/inputValidations";
 import { useApplicationForm } from "../../../context/ApplicationFormContext";
@@ -200,6 +202,8 @@ const FormFields = ({
         lettersOnly,
         numbersOnly,
         lettersNumbers,
+        amountOnly,
+        gradesOnly,
         urlOnly,
     };
 

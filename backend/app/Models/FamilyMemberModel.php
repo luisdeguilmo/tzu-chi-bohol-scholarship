@@ -45,6 +45,8 @@ class FamilyMemberModel
 
         $stmt = $this->pdo->prepare($query);
 
+        $monthlyIncome = str_replace(',', '', trim($data['monthly_income'] ?? ''));
+
         // Sanitize inputs
         $this->application_id = $application_id;
         $this->name = strip_tags($member['name']);
@@ -54,7 +56,7 @@ class FamilyMemberModel
         $this->civil_status = strip_tags($member['civil_status']);
         $this->living_with_family = strip_tags($member['living_with_family']);
         $this->education_or_occupation = strip_tags($member['education_occupation']);
-        $this->monthly_income = strip_tags($member['monthly_income'] ?? '0');
+        $this->monthly_income = $monthlyIncome !== '' ? number_format((float) $monthlyIncome, 2, '.', '') : null;
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -65,7 +67,7 @@ class FamilyMemberModel
         $stmt->bindParam(':civil_status', $this->civil_status);
         $stmt->bindParam(':living_with_family', $this->living_with_family);
         $stmt->bindParam(':education_occupation', $this->education_or_occupation);
-        $stmt->bindParam(':monthly_income', $this->monthly_income);
+        $stmt->bindValue(':monthly_income', $this->monthly_income, \PDO::PARAM_STR);
 
         return $stmt->execute();
     }
@@ -89,6 +91,8 @@ class FamilyMemberModel
 
         $stmt = $this->pdo->prepare($query);
 
+        $monthlyIncome = str_replace(',', '', trim($data['monthly_income'] ?? ''));
+
         // Sanitize inputs
         $this->application_id = $application_id;
         $this->name = strip_tags($member['name']);
@@ -98,7 +102,7 @@ class FamilyMemberModel
         $this->civil_status = strip_tags($member['civil_status']);
         $this->living_with_family = strip_tags($member['living_with_family']);
         $this->education_or_occupation = strip_tags($member['education_occupation']);
-        $this->monthly_income = strip_tags($member['monthly_income'] ?? '0');
+        $this->monthly_income = $monthlyIncome !== '' ? number_format((float) $monthlyIncome, 2, '.', '') : null;
 
         // Bind values
         $stmt->bindParam(':application_id', $this->application_id);
@@ -110,7 +114,7 @@ class FamilyMemberModel
         $stmt->bindParam(':civil_status', $this->civil_status);
         $stmt->bindParam(':living_with_family', $this->living_with_family);
         $stmt->bindParam(':education_occupation', $this->education_or_occupation);
-        $stmt->bindParam(':monthly_income', $this->monthly_income);
+        $stmt->bindValue(':monthly_income', $this->monthly_income, \PDO::PARAM_STR);
 
         return $stmt->execute();
     }
@@ -134,6 +138,8 @@ class FamilyMemberModel
 
         $stmt = $this->pdo->prepare($query);
 
+        $monthlyIncome = str_replace(',', '', trim($data['monthly_income'] ?? ''));
+
         // Sanitize inputs
         $this->name = strip_tags($member['name']);
         $this->relationship = strip_tags($member['relationship']);
@@ -142,7 +148,7 @@ class FamilyMemberModel
         $this->civil_status = strip_tags($member['civil_status']);
         $this->living_with_family = strip_tags($member['living_with_family']);
         $this->education_or_occupation = strip_tags($member['education_occupation']);
-        $this->monthly_income = strip_tags($member['monthly_income'] ?? '0');
+        $this->monthly_income = $monthlyIncome !== '' ? number_format((float) $monthlyIncome, 2, '.', '') : null;
 
         // Bind values
         $stmt->bindParam(':id', $id);
@@ -153,7 +159,7 @@ class FamilyMemberModel
         $stmt->bindParam(':civil_status', $this->civil_status);
         $stmt->bindParam(':living_with_family', $this->living_with_family);
         $stmt->bindParam(':education_occupation', $this->education_or_occupation);
-        $stmt->bindParam(':monthly_income', $this->monthly_income);
+        $stmt->bindValue(':monthly_income', $this->monthly_income, \PDO::PARAM_STR);
 
         return $stmt->execute();
     }

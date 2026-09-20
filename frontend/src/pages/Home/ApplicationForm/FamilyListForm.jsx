@@ -9,6 +9,7 @@ import {
     lettersNumbers,
     lettersOnly,
     numbersOnly,
+    amountOnly,
 } from "../../../utils/inputValidations";
 
 const FamilyListForm = ({
@@ -112,6 +113,7 @@ const FamilyListForm = ({
         lettersOnly,
         numbersOnly,
         lettersNumbers,
+        amountOnly,
     };
 
     // Add new family member
