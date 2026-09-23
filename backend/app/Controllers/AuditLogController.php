@@ -117,7 +117,7 @@ class AuditLogController
             http_response_code(201);
             echo json_encode([
                 'success' => true,
-                'message' => 'Instruction created successfully',
+                'message' => 'Added to audit log successfully',
             ]);
         } catch (\Exception $e) {
             // Roll back transaction on error
