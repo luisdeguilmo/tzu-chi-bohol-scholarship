@@ -56,7 +56,7 @@ export const useAuditLogs = () => {
             const result = await response.json(); // Parse as JSON instead of text
 
             if (result.success) {
-                toast.success(result.message + ".");
+                // toast.success(result.message + ".");
                 setLoading(false);
                 return true;
             } else {
