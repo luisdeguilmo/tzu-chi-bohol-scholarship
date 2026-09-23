@@ -1,16 +1,8 @@
-import {
-    GraduationCap,
-    House,
-    Info,
-    Settings,
-    Bus,
-    PenLine,
-    X,
-} from "lucide-react";
+import { GraduationCap, House, Info, Settings, Bus } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useScholarAccountInformation } from "../hooks/useScholarAccountInformation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ConfirmationModal from "./ConfirmationModal";
 import axios from "axios";
 import BASE_URL from "../config";

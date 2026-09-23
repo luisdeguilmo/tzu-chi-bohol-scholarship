@@ -1,13 +1,4 @@
-import { useState } from "react";
-import InputModal from "../../../components/InputModal";
-import { toast } from "react-toastify";
-import { useStaffAccounts } from "../../../hooks/useStaffAccounts";
-import { numbersOnly } from "../../../utils/inputValidations";
-import {
-    AddExistingScholarSection,
-    ApplicationSection,
-    RenewalApplicationSection,
-} from "../../Home/ApplicationSection";
+import { AddExistingScholarSection } from "../../Home/ApplicationSection";
 import { X } from "lucide-react";
 
 const AddScholarModal = ({ label, isOpen, onClose }) => {

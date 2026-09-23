@@ -241,29 +241,31 @@ const TableToolbar = ({
                                 ))}
                             </select>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
-                                Show:
-                            </span>
-                            <select
-                                value={itemsPerPage}
-                                onChange={(e) => {
-                                    onChangeItemsPerPage(
-                                        Number(e.target.value),
-                                    );
-                                    onChangeCurrentPage(1);
-                                    if (onChangeNumberOfItemsPerPage) {
-                                        onChangeNumberOfItemsPerPage(0);
-                                    }
-                                }}
-                                className="px-3 w-full py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
-                            >
-                                <option value={5}>5</option>
-                                <option value={10}>10</option>
-                                <option value={20}>20</option>
-                                <option value={50}>50</option>
-                            </select>
-                        </div>
+                        {placeholder !== "scholars" && (
+                            <div className="flex items-center gap-2">
+                                <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                                    Show:
+                                </span>
+                                <select
+                                    value={itemsPerPage}
+                                    onChange={(e) => {
+                                        onChangeItemsPerPage(
+                                            Number(e.target.value),
+                                        );
+                                        onChangeCurrentPage(1);
+                                        if (onChangeNumberOfItemsPerPage) {
+                                            onChangeNumberOfItemsPerPage(0);
+                                        }
+                                    }}
+                                    className="px-3 w-full py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                                >
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={20}>20</option>
+                                    <option value={50}>50</option>
+                                </select>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

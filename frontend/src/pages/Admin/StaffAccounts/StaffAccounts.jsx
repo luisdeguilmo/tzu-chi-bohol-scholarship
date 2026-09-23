@@ -8,13 +8,10 @@ import { staffAccountHeaders } from "../../../constant/tableHeaders";
 import { useStaffAccounts } from "../../../hooks/useStaffAccounts";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import FormModal from "./FormModal";
-import { Eye, Plus, RotateCcw, UserCheck, UserX } from "lucide-react";
+import { Eye, Plus } from "lucide-react";
 import UserProfileModal from "../../../components/UserProfileModal";
-import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useUserAccount } from "../../../hooks/useUserAccount";
 import { toast } from "react-toastify";
-import axios from "axios";
-import BASE_URL from "../../../config";
 
 const StaffAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");

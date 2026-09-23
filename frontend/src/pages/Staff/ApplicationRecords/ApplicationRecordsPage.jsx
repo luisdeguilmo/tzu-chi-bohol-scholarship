@@ -13,8 +13,6 @@ import Table from "../../../components/Table";
 import TableRow from "../../../components/TableRow";
 import PageContent from "../../../components/PageContent";
 import ApplicantDetailsModal from "./ApplicantDetailsModal";
-import { Loader2 } from "lucide-react";
-import PageLoader from "../../../components/PageLoader";
 import { useSchoolYearContext } from "../../../context/SchoolYearContext";
 import FileUploadFormModal from "../../../components/FileUploadFormModal";
 import { useApplicationFiles } from "../../../hooks/useApplicationFiles";

@@ -1,4 +1,4 @@
-import { Pencil, X } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useSchedule } from "../../../hooks/useSchedule";
@@ -6,7 +6,6 @@ import { manageApplication } from "../../../services/emailService";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import InputModal from "../../../components/InputModal";
 import { formatTime } from "../../../utils/formatTime";
-import { formatDate } from "../../../utils/formatDate";
 
 export default function SetScheduleForm({
     applications,

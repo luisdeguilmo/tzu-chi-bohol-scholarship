@@ -1,7 +1,5 @@
-import { X } from "lucide-react";
 import React, { useState } from "react";
 import InputModal from "../../../components/InputModal";
-import { useAuth } from "../../../context/AuthContext";
 
 const AddCollegeUniversityForm = React.memo(
     ({

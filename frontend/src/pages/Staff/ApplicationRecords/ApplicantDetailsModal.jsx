@@ -1,16 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import InputModal from "../../../components/InputModal";
-import {
-    Ban,
-    Calendar,
-    Download,
-    Files,
-    FileText,
-    Hash,
-    Loader,
-    Upload,
-    User,
-} from "lucide-react";
+import { Ban, Download, Files, FileText, Loader, Upload } from "lucide-react";
 import { formatDate } from "../../../utils/formatDate";
 import BASE_URL from "../../../config";
 import pdfIcon from "../../../assets/pdf.png";

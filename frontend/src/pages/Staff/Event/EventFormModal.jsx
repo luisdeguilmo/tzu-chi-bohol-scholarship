@@ -1,5 +1,5 @@
-import { X, XCircle } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import { X } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import BASE_URL from "../../../config";
 import InputModal from "../../../components/InputModal";

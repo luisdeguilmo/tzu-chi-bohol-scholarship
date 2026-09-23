@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EmptyState from "../../../components/EmptyState";
 import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { schoolYearsHeaders } from "../../../constant/tableHeaders";
-import { CircleCheckBig, Eye, Plus } from "lucide-react";
+import { Check } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useSchoolYearContext } from "../../../context/SchoolYearContext";
@@ -205,7 +205,7 @@ const SchoolYears = () => {
                                                 }
                                                 className={`${schoolYear.id === candidateId ? "visible" : "invisible"} p-2 rounded-lg hover:bg-green-50 transition`}
                                             >
-                                                <CircleCheckBig className="w-4 h-4 text-green-600 hover:text-green-800" />
+                                                <Check className="w-4 h-4 text-green-600 hover:text-green-800" />
                                             </button>
                                         </div>
                                     </td>

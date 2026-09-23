@@ -1,5 +1,5 @@
-import { Search, SearchIcon } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { SearchIcon } from "lucide-react";
+import React, { useState } from "react";
 
 const SearchInputMobile = React.memo(
     ({ searchTerm, onSearchChange, placeholder }) => {

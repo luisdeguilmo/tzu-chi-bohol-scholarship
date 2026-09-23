@@ -1,4 +1,4 @@
-import { Calendar, Clock, Locate, MapPin } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import { formatDate } from "../utils/formatDate";
 import { formatTime } from "../utils/formatTime";
 

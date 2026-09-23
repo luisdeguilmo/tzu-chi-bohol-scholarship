@@ -575,7 +575,7 @@ export const generateExcel = () => {
     const exportGraduatedScholars = async (data, fileName, schoolYear) => {
         const ExcelJS = (await import("exceljs")).default;
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet("Allowances");
+        const worksheet = workbook.addWorksheet("Graduated Scholars");
 
         // Define table headers
         const headers = [

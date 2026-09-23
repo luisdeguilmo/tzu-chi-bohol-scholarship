@@ -1,13 +1,4 @@
-import {
-    Calendar,
-    Check,
-    Clock,
-    EllipsisVertical,
-    MapPin,
-    SendHorizonal,
-    Users,
-    X,
-} from "lucide-react";
+import { Check, EllipsisVertical, SendHorizonal } from "lucide-react";
 import { formatDate } from "../utils/formatDate";
 import { formatTime } from "../utils/formatTime";
 import { date } from "../utils/getDateAndTime";

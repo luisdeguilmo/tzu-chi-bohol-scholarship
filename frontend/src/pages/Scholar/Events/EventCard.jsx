@@ -1,11 +1,4 @@
-import {
-    Calendar,
-    Clock,
-    MapPin,
-    Users,
-    Archive,
-    MessageSquare,
-} from "lucide-react";
+import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { formatDate } from "../../../utils/formatDate";
 import { formatTime } from "../../../utils/formatTime";
 import { useArchive } from "../../../hooks/useArchive";

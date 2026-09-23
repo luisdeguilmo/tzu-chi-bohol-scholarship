@@ -55,10 +55,16 @@ class ScholarsModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getNewActiveScholars($status, $school_year, $school, $year_level, $course)
-    {
+    public function getNewActiveScholars(
+        $status,
+        $school_year,
+        $municipality,
+        $school,
+        $year_level,
+        $course,
+    ) {
         $query =
-            'SELECT s.*, u.type, u.status, ai.type, ai.school_year, ai.type, pi.email, pi.middle_name, eb.incoming_grade, eb.present_school, eb.present_course1, eb.year_level FROM ' .
+            'SELECT s.*, u.type, u.status, ai.type, ai.school_year, ai.type, pi.email, pi.middle_name, pi.city, eb.incoming_grade, eb.present_school, eb.present_course1, eb.year_level FROM ' .
             $this->table_name .
             " s 
             JOIN personal_information pi ON s.account_id = pi.application_id 
@@ -66,6 +72,10 @@ class ScholarsModel
             JOIN users u ON s.account_id = u.account_id 
             JOIN application_info ai ON s.account_id = ai.application_id 
             WHERE u.type = 'scholar' AND ai.type = 'New' AND u.status = 'active' AND ai.status = 'scholar' AND ai.school_year = :school_year";
+
+        if ($municipality !== 'all') {
+            $query .= " AND pi.city = '$municipality'";
+        }
 
         if ($school !== 'all') {
             $query .= " AND eb.present_school = '$school'";
@@ -91,10 +101,16 @@ class ScholarsModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getOldActiveScholars($status, $school_year, $school, $year_level, $course)
-    {
+    public function getOldActiveScholars(
+        $status,
+        $school_year,
+        $municipality,
+        $school,
+        $year_level,
+        $course,
+    ) {
         $query =
-            'SELECT s.*, u.type, u.status, ai.type, ai.school_year, pi.email, pi.middle_name, eb.incoming_grade, eb.present_school, eb.present_course1, eb.year_level FROM ' .
+            'SELECT s.*, u.type, u.status, ai.type, ai.school_year, pi.email, pi.middle_name, pi.city, eb.incoming_grade, eb.present_school, eb.present_course1, eb.year_level FROM ' .
             $this->table_name .
             " s JOIN personal_information pi ON s.account_id = pi.scholar_id
             JOIN educational_background eb ON s.account_id = eb.scholar_id
@@ -118,6 +134,10 @@ class ScholarsModel
         // } elseif ($status === 'old') {
         //     $query .= " AND ai.type = 'Old'";
         // }
+
+        if ($municipality !== 'all') {
+            $query .= " AND pi.city = '$municipality'";
+        }
 
         if ($school !== 'all') {
             $query .= " AND eb.present_school = '$school'";
@@ -179,6 +199,7 @@ class ScholarsModel
     public function getActiveScholars(
         $status,
         $school_year,
+        $municipality,
         $school,
         $year_level,
         $course,
@@ -194,6 +215,7 @@ class ScholarsModel
                 ai.type, 
                 pi.email, 
                 pi.middle_name, 
+                pi.city, 
                 eb.incoming_grade, 
                 eb.present_school, 
                 eb.present_course1,
@@ -222,6 +244,10 @@ class ScholarsModel
                 ) latest_inner ON COALESCE(ai_inner.scholar_id, ai_inner.application_id) = latest_inner.scholar_account_id 
                                 AND ai_inner.created_at = latest_inner.max_created
             ) ai ON (s.account_id = ai.application_id OR s.account_id = ai.scholar_id) WHERE u.type = 'scholar' AND u.status = 'active' AND ai.school_year = :school_year ";
+
+        if ($municipality !== 'all') {
+            $query .= " AND pi.city = '$municipality'";
+        }
 
         if ($school !== 'all') {
             $query .= " AND eb.present_school = '$school'";
@@ -271,7 +297,7 @@ class ScholarsModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getGraduatedScholars($status, $school_year, $school, $course)
+    public function getGraduatedScholars($status, $school_year, $municipality, $school, $course)
     {
         $query =
             'SELECT 
@@ -282,6 +308,7 @@ class ScholarsModel
             ai.school_year, 
             pi.email, 
             pi.middle_name,
+            pi.city,
             eb.incoming_grade, 
             eb.present_school, 
             eb.present_course1,
@@ -331,6 +358,11 @@ class ScholarsModel
             $params[':app_type'] = 'Old';
         }
 
+        if ($municipality !== 'all') {
+            $query .= ' AND pi.city = :municipality';
+            $params[':municipality'] = $municipality;
+        }
+
         if ($school !== 'all') {
             $query .= ' AND eb.present_school = :school';
             $params[':school'] = $school;
@@ -358,7 +390,7 @@ class ScholarsModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getTerminatedScholars($status, $school_year, $school, $course)
+    public function getTerminatedScholars($status, $school_year, $municipality, $school, $course)
     {
         $query =
             'SELECT 
@@ -369,6 +401,7 @@ class ScholarsModel
             ai.school_year, 
             pi.email, 
             pi.middle_name, 
+            pi.city, 
             eb.incoming_grade, 
             eb.present_school, 
             eb.present_course1,
@@ -418,6 +451,11 @@ class ScholarsModel
             $params[':app_type'] = 'Old';
         }
 
+        if ($municipality !== 'all') {
+            $query .= ' AND pi.city = :municipality';
+            $params[':municipality'] = $municipality;
+        }
+
         if ($school !== 'all') {
             $query .= ' AND eb.present_school = :school';
             $params[':school'] = $school;
@@ -445,10 +483,10 @@ class ScholarsModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getNotRenewedScholars($status, $school_year, $school, $course)
+    public function getNotRenewedScholars($status, $school_year, $municipality, $school, $course)
     {
         $query =
-            'SELECT s.account_id, s.last_name, s.first_name, u.type, u.status, ai.type, ai.school_year, pi.email, pi.middle_name, eb.incoming_grade, eb.present_school, eb.present_course1 FROM ' .
+            'SELECT s.account_id, s.last_name, s.first_name, u.type, u.status, ai.type, ai.school_year, pi.email, pi.middle_name, pi.city, eb.incoming_grade, eb.present_school, eb.present_course1 FROM ' .
             $this->table_name .
             " s JOIN personal_information pi ON s.account_id = pi.application_id 
                 JOIN educational_background eb ON s.account_id = eb.application_id 
@@ -471,6 +509,10 @@ class ScholarsModel
             $query .= " AND ai.type = 'New'";
         } elseif ($status === 'old') {
             $query .= " AND ai.type = 'Old'";
+        }
+
+        if ($municipality !== 'all') {
+            $query .= " AND pi.city = '$municipality'";
         }
 
         if ($school !== 'all') {

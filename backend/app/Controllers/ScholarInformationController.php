@@ -48,6 +48,7 @@ class ScholarInformationController
         try {
             $tab = $_GET['tab'] ?? null;
             $status = $_GET['status'] ?? null;
+            $municipality = $_GET['municipality'] ?? null;
             $schoolFilter = $_GET['school'] ?? null;
             $course = $_GET['course'] ?? null;
             $current_school_year = $_GET['current_school_year'] ?? null;
@@ -73,19 +74,19 @@ class ScholarInformationController
                     $newScholars = $model->getNewActiveScholars(
                         $status,
                         $school_year,
+                        $municipality,
                         $schoolName,
                         $year_level,
                         $course,
-                        $current_school_year,
                     );
 
                     $oldScholars = $model->getOldActiveScholars(
                         $status,
                         $school_year,
+                        $municipality,
                         $schoolName,
                         $year_level,
                         $course,
-                        $current_school_year,
                     );
 
                     // Combine and map scholars
@@ -117,6 +118,7 @@ class ScholarInformationController
                     $scholars = $model->getGraduatedScholars(
                         $status,
                         $school_year,
+                        $municipality,
                         $schoolName,
                         $course,
                     );

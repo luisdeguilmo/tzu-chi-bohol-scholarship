@@ -1,9 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import DeleteBatchButton from "./DeleteBatchButton";
 import SetScheduleForm from "./SetScheduleForm";
-import { Send, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 
 export default function BatchActions({

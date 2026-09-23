@@ -88,6 +88,7 @@ class ScholarsController
             $tab = $_GET['tab'] ?? null;
             $status = $_GET['status'] ?? null;
             $school_year = $_GET['school_year'] ?? null;
+            $municipality = $_GET['municipality'] ?? null;
             $school = $_GET['school'] ?? null;
             $course = $_GET['course'] ?? null;
             $year_level = $_GET['year_level'] ?? null;
@@ -161,6 +162,7 @@ class ScholarsController
                 $scholars = $scholar->getActiveScholars(
                     $status,
                     $activeSchoolYear,
+                    $municipality,
                     $school,
                     $year_level,
                     $course,
@@ -168,11 +170,12 @@ class ScholarsController
                     $filter,
                 );
             } elseif ($tab === 'graduated') {
-                $scholars = $scholar->getGraduatedScholars($status, $school_year, $school, $course);
+                $scholars = $scholar->getGraduatedScholars($status, $school_year, $municipality, $school, $course);
             } elseif ($tab === 'terminated') {
                 $scholars = $scholar->getTerminatedScholars(
                     $status,
                     $school_year,
+                    $municipality,
                     $school,
                     $course,
                 );
@@ -180,6 +183,7 @@ class ScholarsController
                 $scholars = $scholar->getNotRenewedScholars(
                     $status,
                     $school_year,
+                    $municipality,
                     $school,
                     $course,
                 );

@@ -14,15 +14,7 @@ import {
 import { applicationButtons } from "../../../constant/tableToolbarButtons";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import {
-    CheckCircle,
-    DownloadIcon,
-    Eye,
-    Pencil,
-    PencilLine,
-    Plus,
-    XCircle,
-} from "lucide-react";
+import { CheckCircle, DownloadIcon, Eye, Pencil, XCircle } from "lucide-react";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 import { useWindowSize } from "../../../hooks/useWindowSize";

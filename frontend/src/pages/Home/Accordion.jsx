@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import BASE_URL from "../../config";

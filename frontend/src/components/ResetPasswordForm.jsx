@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "../services/axiosConfig";
 import { toast } from "react-toastify";
-import { useAuth } from "../context/AuthContext";
 import { ArrowLeft, EyeOff, EyeIcon } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import BASE_URL from "../config";

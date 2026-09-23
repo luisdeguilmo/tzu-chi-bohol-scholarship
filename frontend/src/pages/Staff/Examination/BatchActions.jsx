@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import DeleteBatchButton from "./DeleteBatchButton";
 import SetScheduleForm from "./SetScheduleForm";
-import DeleteModal from "../../../components/DeleteModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { Trash2 } from "lucide-react";
 import { toast } from "react-toastify";

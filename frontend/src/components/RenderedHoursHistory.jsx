@@ -1,8 +1,6 @@
 import { useRenderedHoursHistory } from "../hooks/useRenderedHoursHistory";
-import { ArrowDownLeft, ArrowUpRight, X } from "lucide-react";
+import { X } from "lucide-react";
 import { formatDate } from "../utils/formatDate";
-import { formatMonth } from "../utils/formatMonth";
-import { date } from "../utils/getDateAndTime";
 
 function RenderedHoursHistory({ isOpen, onClose, label }) {
     const { isLoading: loading, renderedHoursHistory } =

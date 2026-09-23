@@ -1,6 +1,5 @@
 import { Upload } from "lucide-react";
 import { formatDateTime } from "../../../utils/formatDateTime";
-import { useState } from "react";
 import { TableButtonAction } from "../../../components/TableButtonAction";
 
 export const ResultList = ({

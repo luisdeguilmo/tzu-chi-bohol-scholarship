@@ -7,6 +7,7 @@ export const useScholars = (
     tab,
     status,
     schoolYear,
+    municipality,
     school,
     course,
     yearLevel,
@@ -25,7 +26,7 @@ export const useScholars = (
             setError(null);
 
             const response = await fetch(
-                `${BASE_URL}app/api/scholars.php?tab=${tab}&status=${status}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}&filter=${filter}`,
+                `${BASE_URL}app/api/scholars.php?tab=${tab}&status=${status}&municipality=${municipality}&school=${school}&course=${course}&year_level=${yearLevel}&school_year=${schoolYear}&sort=${sortBy}&filter=${filter}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

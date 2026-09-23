@@ -1,4 +1,4 @@
-import { Camera, Info, Settings } from "lucide-react";
+import { Camera, Settings } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useEffect, useState } from "react";

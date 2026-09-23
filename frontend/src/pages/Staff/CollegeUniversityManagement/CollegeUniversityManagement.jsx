@@ -12,7 +12,7 @@ import EditFormModal from "./EditFormModal";
 import { useCoursesAccepted } from "../../../hooks/useCoursesAccepted";
 import { DataListView } from "../../../components/DataListView";
 import { useWindowSize } from "../../../hooks/useWindowSize";
-import { Eye, EyeClosed, EyeOff, PenBox, Plus } from "lucide-react";
+import { Eye, EyeOff, PenBox, Plus } from "lucide-react";
 
 export default function CollegeUniversityManagement() {
     const [searchTerm, setSearchTerm] = useState("");

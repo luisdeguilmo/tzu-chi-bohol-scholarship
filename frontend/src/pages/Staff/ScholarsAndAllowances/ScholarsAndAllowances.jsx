@@ -3,10 +3,7 @@ import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import { useScholars } from "../../../hooks/useScholars";
-import {
-    scholarsAndAllowancesTableHeaders,
-    scholarTableHeaders,
-} from "../../../constant/tableHeaders";
+import { scholarsAndAllowancesTableHeaders } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import { Eye, PenLine, SettingsIcon } from "lucide-react";
@@ -36,6 +33,7 @@ export default function ScholarsAndAllowances() {
     const [scholarId, setScholarId] = useState(null);
     const [selectedScholar, setSelectedScholar] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [municipality, setMunicipality] = useState("all");
     const [school, setSchool] = useState("all");
     const [course, setCourse] = useState("all");
     const [yearLevel, setYearLevel] = useState("all");
@@ -58,6 +56,7 @@ export default function ScholarsAndAllowances() {
         "active",
         status,
         schoolYear,
+        municipality,
         school,
         course,
         yearLevel,

@@ -1,8 +1,7 @@
-import { Check, PenLine, Trash, Trash2, X } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import InputModal from "../../../components/InputModal";
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
 import BASE_URL from "../../../config";
 

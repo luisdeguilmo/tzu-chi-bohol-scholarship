@@ -1,4 +1,3 @@
-import { X } from "lucide-react";
 import { useBatches } from "../../../hooks/useBatches";
 import InputModal from "../../../components/InputModal";
 import { useState } from "react";

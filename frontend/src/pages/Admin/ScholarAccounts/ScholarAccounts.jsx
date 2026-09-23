@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import EmptyState from "../../../components/EmptyState";
 import Pagination from "../../../components/Pagination";
 import { usePagination } from "../../../hooks/usePagination";
@@ -12,10 +12,8 @@ import ScholarAccountsRow from "./ScholarAccountsRow";
 import { scholarAccountButtons } from "../../../constant/tableToolbarButtons";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import { useUserAccount } from "../../../hooks/useUserAccount";
 import { Check, Plus } from "lucide-react";
 import ScholarProfileModal from "../../../components/UserProfileModal";
-import ChangePasswordModal from "../../../components/ChangePasswordModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { toast } from "react-toastify";
 import AddScholarModal from "./AddScholarModal";

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import UserAccount from "./UserAccountPage";
 import { X } from "lucide-react";
 import StaffAccount from "./StaffAccountPage";

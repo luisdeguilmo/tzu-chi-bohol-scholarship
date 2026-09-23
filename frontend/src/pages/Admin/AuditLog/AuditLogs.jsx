@@ -6,14 +6,9 @@ import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
 import {
     auditLogsHeaders,
-    schoolYearsHeaders,
 } from "../../../constant/tableHeaders";
-import { CircleCheckBig, Eye, Plus, Settings } from "lucide-react";
-import { toast } from "react-toastify";
-import ConfirmationModal from "../../../components/ConfirmationModal";
+import { Eye, Settings } from "lucide-react";
 import { useAuditLogs } from "../../../hooks/useAuditLogs";
-import { date } from "../../../utils/getDateAndTime";
-import { formatTimestamp } from "../../../utils/formatTimestamp";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import DetailsModal from "./DetailsModal";
 import AuditLogRetention from "../../../components/AuditLogRetention";

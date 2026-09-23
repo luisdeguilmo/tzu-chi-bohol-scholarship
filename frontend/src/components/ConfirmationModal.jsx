@@ -1,9 +1,7 @@
 import { useState } from "react";
 import InputModal from "./InputModal";
 import { formatCurrency } from "../utils/formatCurrency";
-import { all } from "axios";
-import React from "react";
-import { Check, Download, FileWarning, TriangleAlert, X } from "lucide-react";
+import { Check, Download, X } from "lucide-react";
 
 function ConfirmationModal({
     isOpen,

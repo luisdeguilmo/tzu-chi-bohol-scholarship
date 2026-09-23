@@ -1,6 +1,4 @@
 import { Eye, EyeOff, PenBox } from "lucide-react";
-import ConfirmationModal from "../../../components/ConfirmationModal";
-import { useState } from "react";
 
 const ScholarshipCriteriaTableRow = ({
     numberOfItemsPerPage,

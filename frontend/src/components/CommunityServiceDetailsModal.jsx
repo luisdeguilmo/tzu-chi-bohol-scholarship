@@ -1,24 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { formatDate } from "../utils/formatDate";
+import React, { useEffect, useState } from "react";
 import { formatTime } from "../utils/formatTime";
-import {
-    Calendar,
-    CheckCircle,
-    CheckSquare,
-    CircleAlert,
-    Clock,
-    MapPin,
-    ReceiptPoundSterling,
-    SquareActivity,
-    SquareCheck,
-    X,
-} from "lucide-react";
+import { X } from "lucide-react";
 import { convertTo24HourFormat } from "../utils/convertTo24HourFormat";
 import { numbersOnly } from "../utils/inputValidations";
 import { useRecordHours } from "../hooks/useRecordHours";
 import BASE_URL from "../config";
 import pdfIcon from "../assets/pdf.png";
-import imgIcon from "../assets/photo.png";
 
 const CommunityServiceDetailsModal = React.memo(
     ({

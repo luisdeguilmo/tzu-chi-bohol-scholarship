@@ -1,13 +1,10 @@
-import { X } from "lucide-react";
 import React, { useState } from "react";
 import { useApplicationPeriods } from "../../../hooks/useApplicationPeriods";
 import { usePeriod } from "../../../context/PeriodContext";
 import InputModal from "../../../components/InputModal";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../../components/ConfirmationModal";
-import { date } from "../../../utils/getDateAndTime";
 import {
-    numbersOnly,
     validateSchoolYear,
 } from "../../../utils/inputValidations";
 

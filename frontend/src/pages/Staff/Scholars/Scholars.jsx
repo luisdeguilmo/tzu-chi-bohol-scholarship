@@ -7,7 +7,7 @@ import { useScholars } from "../../../hooks/useScholars";
 import { scholarTableHeaders } from "../../../constant/tableHeaders";
 import TableToolbar from "../../../components/TableToolbar";
 import Table from "../../../components/Table";
-import { Eye, FileText, Handshake, Loader2 } from "lucide-react";
+import { Eye, FileText, Handshake } from "lucide-react";
 import ScholarProfileModal from "../../../components/UserProfileModal";
 import { date } from "../../../utils/getDateAndTime";
 import { generateExcel } from "../../../utils/generateExcel";
@@ -16,8 +16,6 @@ import { useCollegesUniversities } from "../../../hooks/useCollegesUniversities"
 import { useScholarshipCriteria } from "../../../hooks/useScholarshipCriteria";
 import CoaGradesModal from "./CoaGradesModal";
 import { DataListView } from "../../../components/DataListView";
-import { FilterDropdown } from "../../../components/FilterDropdown";
-import { useSubmissions } from "../../../hooks/useSubmissions";
 import { useSchoolYearContext } from "../../../context/SchoolYearContext";
 import SpecialSponsorModal from "./SpecialSponsorModal";
 
@@ -33,6 +31,7 @@ export default function Scholars() {
     const [isCoeGradeModalOpen, setIsCoeGradeModalOpen] = useState(false);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState("active");
+    const [municipality, setMunicipality] = useState("all");
     const [school, setSchool] = useState("all");
     const [course, setCourse] = useState("all");
     const [yearLevel, setYearLevel] = useState("all");
@@ -45,6 +44,7 @@ export default function Scholars() {
         activeTab,
         status,
         schoolYear,
+        municipality,
         school,
         course,
         yearLevel,
@@ -59,6 +59,7 @@ export default function Scholars() {
             activeTab,
             status,
             schoolYear,
+            municipality,
             school,
             course,
             yearLevel,
@@ -72,7 +73,30 @@ export default function Scholars() {
     useEffect(() => {
         fetchScholars();
         fetchScholarsInformation();
-    }, [activeTab, status, schoolYear, school, course, yearLevel, sortBy]);
+    }, [
+        activeTab,
+        status,
+        schoolYear,
+        municipality,
+        school,
+        course,
+        yearLevel,
+        sortBy,
+    ]);
+
+    const municipalities = [
+        { municipality: "Balilihan" },
+        { municipality: "Baclayon" },
+        { municipality: "Calape" },
+        { municipality: "Cortes" },
+        { municipality: "Garcia Hernandez" },
+        { municipality: "Jagna" },
+        { municipality: "Loon" },
+        { municipality: "Maribojoc" },
+        { municipality: "Panglao" },
+        { municipality: "Tubigon" },
+        { municipality: "Tagbilaran" },
+    ];
 
     const handleExport = async () => {
         setIsLoading(true);
@@ -124,6 +148,7 @@ export default function Scholars() {
         indexOfLastItem,
         goToPreviousPage,
         goToNextPage,
+        setNumberOfItemsPerPage,
     } = usePagination(filteredScholars, itemsPerPage);
 
     const handleChangeTab = (tab) => {
@@ -180,12 +205,29 @@ export default function Scholars() {
             >
                 <div className="flex justify-between items-center gap-2">
                     <span className="w-[60px] md:w-[max-content] text-xs text-gray-700">
+                        Municipality:
+                    </span>
+                    <select
+                        value={municipality}
+                        onChange={(e) => setMunicipality(e.target.value)}
+                        className="w-[110px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                    >
+                        <option value="all">All</option>
+                        {municipalities.map((item, index) => (
+                            <option key={index} value={item.municipality}>
+                                {item.municipality}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="flex justify-between items-center gap-2">
+                    <span className="w-[60px] md:w-[max-content] text-xs text-gray-700">
                         School:
                     </span>
                     <select
                         value={school}
                         onChange={(e) => setSchool(e.target.value)}
-                        className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-[110px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all">All</option>
                         {collegesAndUniversities.map((item, index) => (
@@ -208,7 +250,7 @@ export default function Scholars() {
                     <select
                         value={course}
                         onChange={(e) => setCourse(e.target.value)}
-                        className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        className="w-[110px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                         <option value="all">All</option>
                         {courses.map((item, index) => (
@@ -230,7 +272,7 @@ export default function Scholars() {
                         <select
                             value={yearLevel}
                             onChange={(e) => setYearLevel(e.target.value)}
-                            className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-[110px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value={1}>1st Year</option>
@@ -250,7 +292,7 @@ export default function Scholars() {
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="w-[150px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-[110px] px-3 py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
                         >
                             <option value="all">All</option>
                             <option value="new">New</option>
@@ -439,6 +481,27 @@ export default function Scholars() {
             {/* Pagination */}
             {filteredScholars.length > 0 && (
                 <div className="flex justify-between items-center mt-6">
+                    <div className="flex items-center gap-2">
+                        <span className="w-[60px] md:w-[max-content] text-xs text-gray-600">
+                            Show:
+                        </span>
+                        <select
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                                setItemsPerPage(Number(e.target.value));
+                                setCurrentPage(1);
+                                if (setNumberOfItemsPerPage) {
+                                    setNumberOfItemsPerPage(0);
+                                }
+                            }}
+                            className="px-3 w-[80px] py-1 text-xs border rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-green-500"
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

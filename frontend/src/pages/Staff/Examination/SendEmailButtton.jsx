@@ -1,4 +1,4 @@
-import { Check, Mail, Send } from "lucide-react";
+import { Send } from "lucide-react";
 
 const SendEmailButton = ({
     isFullWidth = false,

@@ -5,7 +5,6 @@ import { useAuth } from "../../../context/AuthContext";
 import { useCommunityServicesSubmit } from "../../../hooks/useCommunityServicesSubmit";
 import { toast } from "react-toastify";
 import pdfIcon from "../../../assets/pdf.png";
-import { UploadCloud } from "lucide-react";
 import { formatTime } from "../../../utils/formatTime";
 
 const EditFormModal = ({ isOpen, setIsOpen, activity, onSuccess }) => {

@@ -6,7 +6,6 @@ import {
     MapPin,
     SendHorizonal,
     Users,
-    X,
 } from "lucide-react";
 import { formatDate } from "../utils/formatDate";
 import { formatTime } from "../utils/formatTime";

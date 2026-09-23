@@ -22,7 +22,9 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
     return (
         <div className="p-6 bg-white shadow-sm border rounded-lg">
             <div className="flex justify-between">
-                <h2 className="font-bold text-gray-700">Recent Activities This Month</h2>
+                <h2 className="font-bold text-gray-700">
+                    Recent Activities This Month
+                </h2>
                 <BookOpen className="w-5 h-5 text-gray-500" />
             </div>
             <ul className="pt-6 space-y-3">
@@ -47,11 +49,11 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                                         <Clock className="w-4 h-4 text-gray-500" />
                                         <p className="text-xs mt-[1px] text-gray-600">
                                             {formatTime(
-                                                activity.activity_start_time
+                                                activity.activity_start_time,
                                             )}{" "}
                                             -{" "}
                                             {formatTime(
-                                                activity.activity_end_time
+                                                activity.activity_end_time,
                                             )}
                                         </p>
                                     </div>
@@ -63,7 +65,10 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                                     </div>
                                 </div>
                             </div>
-                            <p className="text-xs text-gray-700">{activity.rendered_hours} {activity.rendered_hours > 1 ? "hours" : "hour"}</p>
+                            <p className="text-xs text-gray-700">
+                                {activity.rendered_hours}{" "}
+                                {activity.rendered_hours > 1 ? "hours" : "hour"}
+                            </p>
                         </li>
                     ))
                 ) : (
@@ -73,8 +78,8 @@ const RecentActivities = ({ activities, initialDisplayCount = 3 }) => {
                             You haven’t participated in any activities recently.
                         </h4>
                         <p className="text-xs md:text-sm text-gray-500 mb-4">
-                            Recent activities like duty report submissions
-                            and event participation will appear here.
+                            Recent activities like duty report submissions and
+                            event participation will appear here.
                         </p>
                         {/* <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                             Browse All Events

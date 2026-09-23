@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import img from "../../assets/img.jpg";
 import { Search } from "lucide-react";
 
 export default function TrackApplication() {

@@ -26,9 +26,8 @@ import FileUploadFormModal from "../../../components/FileUploadFormModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { useSettings } from "../../../hooks/useSettings";
-import { DownloadIcon, Eye, Pencil, Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { useWindowSize } from "../../../hooks/useWindowSize";
-import { TableButtonAction } from "../../../components/TableButtonAction";
 
 const CreateBatchModal = React.lazy(() => import("./CreateBatchModal"));
 const PassingScoreModal = React.lazy(() => import("./PassingScoreModal"));
@@ -211,7 +210,7 @@ export default function Examination() {
                 .includes(searchTerm.toString()) ||
             applicant?.last_name.toLowerCase().includes(term) ||
             applicant?.middle_name.toLowerCase().includes(term) ||
-            applicant?.first_name.toLowerCase().includes(term) 
+            applicant?.first_name.toLowerCase().includes(term)
         );
     });
 

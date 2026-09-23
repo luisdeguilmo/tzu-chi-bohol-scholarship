@@ -1,10 +1,5 @@
-import { Eye, PenLine, RotateCcw, UserCheck, UserX } from "lucide-react";
+import { Eye, PenLine } from "lucide-react";
 import { formatDateTime } from "../../../utils/formatDateTime";
-import { toast } from "react-toastify";
-import ConfirmationModal from "../../../components/ConfirmationModal";
-import { useState } from "react";
-import ChangePasswordModal from "../../../components/ChangePasswordModal";
-import ScholarProfileModal from "../../../components/UserProfileModal";
 
 const ScholarAccountsRow = ({
     loading,
@@ -147,7 +142,10 @@ const ScholarAccountsRow = ({
                                         onSelectScholarId(account.account_id);
                                         setModal("set_rendered_hours_modal");
                                     }}
-                                    disabled={!account?.is_added_from_admin || account?.is_migration_complete === 1}
+                                    disabled={
+                                        !account?.is_added_from_admin ||
+                                        account?.is_migration_complete === 1
+                                    }
                                     className={`${account?.is_added_from_admin && account?.is_migration_complete === 0 ? "block" : "invisible"} p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors duration-200`}
                                     title="View Profile"
                                 >
