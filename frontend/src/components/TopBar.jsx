@@ -98,7 +98,7 @@ function TopBar() {
                                 Tzu Chi Bohol
                             </h2>
                             <p className="mt-[-4px] text-[8px] md:text-[10px] whitespace-nowrap">
-                                Information Management System
+                                Scholar Management System
                             </p>
                         </div>
                     </div>
