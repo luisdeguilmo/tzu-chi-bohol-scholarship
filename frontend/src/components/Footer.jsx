@@ -27,7 +27,7 @@ function Footer() {
                             {/* <span className="material-symbols-outlined">
                                 call
                             </span> */}
-                            09209491541
+                            0920 949 1541
                         </li>
                         <li className="flex items-center gap-2">
                             {/* <span className="material-symbols-outlined">
