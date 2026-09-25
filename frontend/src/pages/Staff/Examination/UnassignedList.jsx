@@ -3,6 +3,7 @@ import { formatDateTime } from "../../../utils/formatDateTime";
 import { useApplicantData } from "../../../hooks/useApplicantData";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import { TableButtonAction } from "../../../components/TableButtonAction";
+import { useCriteriaDataContext } from "../../../context/CriteriaDataContext";
 
 export const UnassignedList = ({
     item,
@@ -12,7 +13,15 @@ export const UnassignedList = ({
     toggleApplicantSelection,
 }) => {
     const { fetchApplicantData } = useApplicantData();
-    const { viewPdf } = usePdfActions("new", fetchApplicantData);
+    const { strands, courses, instructions, qualifications, requirements } =
+        useCriteriaDataContext();
+    const { viewPdf } = usePdfActions("new", fetchApplicantData, {
+        strands,
+        courses,
+        qualifications,
+        requirements,
+        instructions,
+    });
 
     return (
         <div className="relative p-4 border rounded-md bg-gray-50">

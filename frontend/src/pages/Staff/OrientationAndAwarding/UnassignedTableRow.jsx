@@ -1,4 +1,5 @@
 import TableRow from "../../../components/TableRow";
+import { useCriteriaDataContext } from "../../../context/CriteriaDataContext";
 import { useApplicantData } from "../../../hooks/useApplicantData";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import { formatDateTime } from "../../../utils/formatDateTime";
@@ -10,7 +11,15 @@ const UnassignedTableRow = ({
     toggleApplicantSelection,
 }) => {
     const { fetchApplicantData } = useApplicantData();
-    const { viewPdf, downloadPdf } = usePdfActions("new", fetchApplicantData);
+    const { strands, courses, instructions, qualifications, requirements } =
+        useCriteriaDataContext();
+    const { viewPdf, downloadPdf } = usePdfActions("new", fetchApplicantData, {
+        strands,
+        courses,
+        qualifications,
+        requirements,
+        instructions,
+    });
 
     return (
         <>

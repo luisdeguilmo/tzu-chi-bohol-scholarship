@@ -6,6 +6,7 @@ import { PeriodProvider } from "./PeriodContext";
 import { SidebarProvider } from "./SidebarContext";
 import { SchoolYearProvider } from "./SchoolYearContext";
 import { YearProvider } from "./YearContext";
+import { CriteriaDataProvider } from "./CriteriaDataContext";
 
 export const AppProvider = ({ children }) => {
     return (
@@ -13,13 +14,15 @@ export const AppProvider = ({ children }) => {
             <ApplicationFormProvider>
                 <SidebarProvider>
                     <BatchProvider>
-                        <CriteriaProvider>
-                            <PeriodProvider>
-                                <SchoolYearProvider>
-                                    <YearProvider>{children}</YearProvider>
-                                </SchoolYearProvider>
-                            </PeriodProvider>
-                        </CriteriaProvider>
+                        <CriteriaDataProvider>
+                            <CriteriaProvider>
+                                <PeriodProvider>
+                                    <SchoolYearProvider>
+                                        <YearProvider>{children}</YearProvider>
+                                    </SchoolYearProvider>
+                                </PeriodProvider>
+                            </CriteriaProvider>
+                        </CriteriaDataProvider>
                     </BatchProvider>
                 </SidebarProvider>
             </ApplicationFormProvider>

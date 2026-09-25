@@ -19,6 +19,7 @@ import ConfirmationModal from "../../../components/ConfirmationModal";
 import EmailMessageFormModal from "../../../components/EmailMessageFormModal";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { TableButtonAction } from "../../../components/TableButtonAction";
+import { useCriteriaDataContext } from "../../../context/CriteriaDataContext";
 
 export default function Applications() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -32,12 +33,21 @@ export default function Applications() {
     const [feedback, setFeedback] = useState("");
     const [tableHeaders, setTableHeaders] = useState([]);
 
+    const { strands, courses, instructions, qualifications, requirements } =
+        useCriteriaDataContext();
     const { loading, error, applications, fetchApplications } =
         useApplications(activeTab);
     const { fetchApplicantData } = useApplicantData();
     const { viewPdf, downloadPdf } = usePdfActions(
         activeTab,
         fetchApplicantData,
+        {
+            strands,
+            courses,
+            qualifications,
+            requirements,
+            instructions,
+        },
     );
     const size = useWindowSize();
     const isMobile = size.width < 768;

@@ -4,7 +4,6 @@ import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import { useApplicantData } from "../../../hooks/useApplicantData";
-import { usePdfActions } from "../../../hooks/usePdfActions";
 import {
     homeVisitationResultTableHeaders,
     homeVisitationTableHeaders,
@@ -37,7 +36,6 @@ export default function HomeVisitation() {
     const { loading, error, applications, fetchApplications } =
         useHomeVisitation(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
 
     useEffect(() => {
         fetchApplications();

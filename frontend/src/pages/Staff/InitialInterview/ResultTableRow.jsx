@@ -1,7 +1,6 @@
 import { Upload } from "lucide-react";
 import TableRow from "../../../components/TableRow";
 import { useApplicantData } from "../../../hooks/useApplicantData";
-import { usePdfActions } from "../../../hooks/usePdfActions";
 import { formatDateTime } from "../../../utils/formatDateTime";
 
 const ResultTableRow = ({
@@ -11,7 +10,6 @@ const ResultTableRow = ({
     onOpenModal,
 }) => {
     const { fetchApplicantData } = useApplicantData();
-    const { viewPdf } = usePdfActions(fetchApplicantData);
 
     return (
         <>

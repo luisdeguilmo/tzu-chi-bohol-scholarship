@@ -3,6 +3,7 @@ import TableRow from "../../../components/TableRow";
 import { useApplicantData } from "../../../hooks/useApplicantData";
 import { usePdfActions } from "../../../hooks/usePdfActions";
 import { formatDateTime } from "../../../utils/formatDateTime";
+import { useCriteriaDataContext } from "../../../context/CriteriaDataContext";
 
 const ApplicantsTableRow = ({
     loading,
@@ -13,7 +14,15 @@ const ApplicantsTableRow = ({
     onSuccess,
 }) => {
     const { fetchApplicantData } = useApplicantData();
-    const { viewPdf, downloadPdf } = usePdfActions("new", fetchApplicantData);
+    const { strands, courses, instructions, qualifications, requirements } =
+        useCriteriaDataContext();
+    const { viewPdf, downloadPdf } = usePdfActions("new", fetchApplicantData, {
+        strands,
+        courses,
+        qualifications,
+        requirements,
+        instructions,
+    });
 
     return (
         <>

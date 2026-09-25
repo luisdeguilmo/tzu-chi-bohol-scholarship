@@ -17,6 +17,7 @@ import EmptyState from "../../../components/EmptyState";
 import PageContent from "../../../components/PageContent";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { TableButtonAction } from "../../../components/TableButtonAction";
+import { useCriteriaDataContext } from "../../../context/CriteriaDataContext";
 
 const ReviewedApplications = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -28,9 +29,18 @@ const ReviewedApplications = () => {
     const { loading, applications, fetchApplications } =
         useApprovedApplications(activeTab);
     const { fetchApplicantData } = useApplicantData();
+    const { strands, courses, instructions, qualifications, requirements } =
+        useCriteriaDataContext();
     const { viewPdf, downloadPdf } = usePdfActions(
         activeTab,
         fetchApplicantData,
+        {
+            strands,
+            courses,
+            qualifications,
+            requirements,
+            instructions,
+        },
     );
     const size = useWindowSize();
     const isMobile = size.width < 768;

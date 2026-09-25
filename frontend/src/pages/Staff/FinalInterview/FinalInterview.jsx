@@ -4,7 +4,6 @@ import { usePagination } from "../../../hooks/usePagination";
 import Pagination from "../../../components/Pagination";
 import EmptyState from "../../../components/EmptyState";
 import { useApplicantData } from "../../../hooks/useApplicantData";
-import { usePdfActions } from "../../../hooks/usePdfActions";
 import {
     finalInterviewApplicationsTableHeaders,
     finalInterviewResultTableHeaders,
@@ -36,7 +35,6 @@ export default function FinalInterview() {
     const { loading, error, applications, fetchApplications } =
         useFinalInterview(activeTab);
     const { fetchApplicantData } = useApplicantData();
-    const { viewPdf, downloadPdf } = usePdfActions(fetchApplicantData);
 
     useEffect(() => {
         fetchApplications();

@@ -16,6 +16,7 @@ import ApplicantDetailsModal from "./ApplicantDetailsModal";
 import { useSchoolYearContext } from "../../../context/SchoolYearContext";
 import FileUploadFormModal from "../../../components/FileUploadFormModal";
 import { useApplicationFiles } from "../../../hooks/useApplicationFiles";
+import { useCriteriaDataContext } from "../../../context/CriteriaDataContext";
 
 export default function ApplicationRecordsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,6 +30,8 @@ export default function ApplicationRecordsPage() {
         useState(false);
 
     const { schoolYears, activeSchoolYear } = useSchoolYearContext();
+    const { strands, courses, instructions, qualifications, requirements } =
+        useCriteriaDataContext();
 
     const [schoolYear, setSchoolYear] = useState(
         activeSchoolYear || "all_years",
@@ -45,6 +48,13 @@ export default function ApplicationRecordsPage() {
     const { viewPdf, downloadPdf } = usePdfActions(
         activeTab,
         fetchApplicantData,
+        {
+            strands,
+            courses,
+            qualifications,
+            requirements,
+            instructions,
+        },
     );
 
     const {
@@ -64,7 +74,9 @@ export default function ApplicationRecordsPage() {
         const term = searchTerm.trim().toLowerCase();
 
         return (
-            applicant?.application_id?.toString().includes(searchTerm.toString()) ||
+            applicant?.application_id
+                ?.toString()
+                .includes(searchTerm.toString()) ||
             applicant.last_name.toLowerCase().includes(term) ||
             applicant.middle_name.toLowerCase().includes(term) ||
             applicant.first_name.toLowerCase().includes(term) ||

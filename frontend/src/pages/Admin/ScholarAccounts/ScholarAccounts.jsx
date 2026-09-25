@@ -20,6 +20,7 @@ import AddScholarModal from "./AddScholarModal";
 import InitialRenderedHours from "./InitialRenderedHoursModal";
 import { useApplicantData } from "../../../hooks/useApplicantData";
 import { usePdfActions } from "../../../hooks/usePdfActions";
+import { useCriteriaDataContext } from "../../../context/CriteriaDataContext";
 
 const ScholarAccounts = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -39,11 +40,16 @@ const ScholarAccounts = () => {
     const [deactivationType, setDeactivationType] = useState("");
     const [deactivationReason, setDeactivationReason] = useState("");
 
+    const { strands, courses, instructions, qualifications, requirements } =
+        useCriteriaDataContext();
     const { fetchApplicantData } = useApplicantData();
-    const { viewPdf } = usePdfActions(
-        "new",
-        fetchApplicantData,
-    );
+    const { viewPdf } = usePdfActions("new", fetchApplicantData, {
+        strands,
+        courses,
+        qualifications,
+        requirements,
+        instructions,
+    });
 
     const { loading, scholars, createScholarAccount, fetchScholars } =
         useScholarAccounts(activeTab, sortBy, status);

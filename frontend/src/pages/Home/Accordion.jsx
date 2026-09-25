@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import BASE_URL from "../../config";
+import { useCriteriaDataContext } from "../../context/CriteriaDataContext";
 
 const Loader = () => (
     <div className="mb-4 flex flex-col items-center gap-4">
@@ -25,30 +26,40 @@ const Loader = () => (
 function Accordion() {
     const [error, setError] = useState(null);
 
-    const [strands, setStrands] = useState([]);
-    const [courses, setCourses] = useState([]);
-    const [instructions, setInstructions] = useState([]);
-    const [qualifications, setQualifications] = useState([]);
-    const [requirements, setRequirements] = useState([]);
-    const [procedure, setProcedure] = useState([]);
+    const {
+        loadingState,
+        strands,
+        courses,
+        instructions,
+        qualifications,
+        requirements,
+        procedure,
+    } = useCriteriaDataContext();
+
+    // const [strands, setStrands] = useState([]);
+    // const [courses, setCourses] = useState([]);
+    // const [instructions, setInstructions] = useState([]);
+    // const [qualifications, setQualifications] = useState([]);
+    // const [requirements, setRequirements] = useState([]);
+    // const [procedure, setProcedure] = useState([]);
 
     const [openAccordionIndex, setOpenAccordionIndex] = useState(null);
 
-    const [loadingState, setLoadingState] = useState({
-        strands: true,
-        courses: true,
-        instructions: true,
-        qualifications: true,
-        requirements: true,
-        procedure: true,
-    });
+    // const [loadingState, setLoadingState] = useState({
+    //     strands: true,
+    //     courses: true,
+    //     instructions: true,
+    //     qualifications: true,
+    //     requirements: true,
+    //     procedure: true,
+    // });
 
-    const setLoading = (key, value) => {
-        setLoadingState((prev) => ({
-            ...prev,
-            [key]: value,
-        }));
-    };
+    // const setLoading = (key, value) => {
+    //     setLoadingState((prev) => ({
+    //         ...prev,
+    //         [key]: value,
+    //     }));
+    // };
 
     const decodeHTMLEntities = (text) => {
         if (!text) return "";
@@ -57,69 +68,69 @@ function Accordion() {
         return textarea.value;
     };
 
-    useEffect(() => {
-        const fetchAll = async () => {
-            try {
-                /* STRANDS */
-                setLoading("strands", true);
-                const strandsRes = await axios.get(
-                    `${BASE_URL}/app/api/strands.php`,
-                );
-                setStrands(
-                    strandsRes.data.data?.map((s) => ({
-                        ...s,
-                        strand: decodeHTMLEntities(s.strand),
-                    })) || [],
-                );
-                setLoading("strands", false);
+    // useEffect(() => {
+    //     const fetchAll = async () => {
+    //         try {
+    //             /* STRANDS */
+    //             setLoading("strands", true);
+    //             const strandsRes = await axios.get(
+    //                 `${BASE_URL}/app/api/strands.php`,
+    //             );
+    //             setStrands(
+    //                 strandsRes.data.data?.map((s) => ({
+    //                     ...s,
+    //                     strand: decodeHTMLEntities(s.strand),
+    //                 })) || [],
+    //             );
+    //             setLoading("strands", false);
 
-                /* COURSES */
-                setLoading("courses", true);
-                const coursesRes = await axios.get(
-                    `${BASE_URL}/app/api/course-visibility.php`,
-                );
-                setCourses(coursesRes.data.data || []);
-                setLoading("courses", false);
+    //             /* COURSES */
+    //             setLoading("courses", true);
+    //             const coursesRes = await axios.get(
+    //                 `${BASE_URL}/app/api/course-visibility.php`,
+    //             );
+    //             setCourses(coursesRes.data.data || []);
+    //             setLoading("courses", false);
 
-                /* INSTRUCTIONS */
-                setLoading("instructions", true);
-                const instRes = await axios.get(
-                    `${BASE_URL}/app/api/instructions.php`,
-                );
-                setInstructions(instRes.data.data || []);
-                setLoading("instructions", false);
+    //             /* INSTRUCTIONS */
+    //             setLoading("instructions", true);
+    //             const instRes = await axios.get(
+    //                 `${BASE_URL}/app/api/instructions.php`,
+    //             );
+    //             setInstructions(instRes.data.data || []);
+    //             setLoading("instructions", false);
 
-                /* QUALIFICATIONS */
-                setLoading("qualifications", true);
-                const qualRes = await axios.get(
-                    `${BASE_URL}/app/api/qualifications.php`,
-                );
-                setQualifications(qualRes.data.data || []);
-                setLoading("qualifications", false);
+    //             /* QUALIFICATIONS */
+    //             setLoading("qualifications", true);
+    //             const qualRes = await axios.get(
+    //                 `${BASE_URL}/app/api/qualifications.php`,
+    //             );
+    //             setQualifications(qualRes.data.data || []);
+    //             setLoading("qualifications", false);
 
-                /* REQUIREMENTS */
-                setLoading("requirements", true);
-                const reqRes = await axios.get(
-                    `${BASE_URL}/app/api/requirements.php`,
-                );
-                setRequirements(reqRes.data.data || []);
-                setLoading("requirements", false);
+    //             /* REQUIREMENTS */
+    //             setLoading("requirements", true);
+    //             const reqRes = await axios.get(
+    //                 `${BASE_URL}/app/api/requirements.php`,
+    //             );
+    //             setRequirements(reqRes.data.data || []);
+    //             setLoading("requirements", false);
 
-                /* PROCEDURE */
-                setLoading("procedure", true);
-                const procRes = await axios.get(
-                    `${BASE_URL}/app/api/procedures.php`,
-                );
-                setProcedure(procRes.data.data || []);
-                setLoading("procedure", false);
-            } catch (err) {
-                console.error(err);
-                setError("Failed to load data.");
-            }
-        };
+    //             /* PROCEDURE */
+    //             setLoading("procedure", true);
+    //             const procRes = await axios.get(
+    //                 `${BASE_URL}/app/api/procedures.php`,
+    //             );
+    //             setProcedure(procRes.data.data || []);
+    //             setLoading("procedure", false);
+    //         } catch (err) {
+    //             console.error(err);
+    //             setError("Failed to load data.");
+    //         }
+    //     };
 
-        fetchAll();
-    }, []);
+    //     fetchAll();
+    // }, []);
 
     /* ---------------- TOGGLE ---------------- */
 

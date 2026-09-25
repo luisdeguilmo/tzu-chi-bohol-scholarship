@@ -1,29 +1,37 @@
 import { useState } from "react";
 import { generatePDF } from "../utils/generatePdf";
 
-export const usePdfActions = (type, fetchApplicantData) => {
+export const usePdfActions = (type, fetchApplicantData, criteriaData) => {
     const [applicationId, setApplicationId] = useState(null);
 
     const viewPdf = async ({ applicationId, scholarId }) => {
-    // Must happen synchronously, before any await, or the browser blocks it
-    const pdfWindow = window.open("", "_blank");
+        // Must happen synchronously, before any await, or the browser blocks it
+        const pdfWindow = window.open("", "_blank");
 
-    try {
-        const data = await fetchApplicantData(applicationId);
+        try {
+            const data = await fetchApplicantData(applicationId);
 
-        if (data) {
-            await generatePDF(type, "view", applicationId, scholarId, data, pdfWindow);
-        } else {
-            console.error("No applicant data received");
-            alert("Unable to generate PDF: No applicant data found");
+            if (data) {
+                await generatePDF(
+                    type,
+                    "view",
+                    applicationId,
+                    scholarId,
+                    data,
+                    pdfWindow,
+                    criteriaData,
+                );
+            } else {
+                console.error("No applicant data received");
+                alert("Unable to generate PDF: No applicant data found");
+                if (pdfWindow) pdfWindow.close();
+            }
+        } catch (error) {
+            console.error("Error in handleViewPdf:", error);
+            alert("Error generating PDF. Please try again.");
             if (pdfWindow) pdfWindow.close();
         }
-    } catch (error) {
-        console.error("Error in handleViewPdf:", error);
-        alert("Error generating PDF. Please try again.");
-        if (pdfWindow) pdfWindow.close();
-    }
-};
+    };
 
     const downloadPdf = async ({ applicationId, scholarId }) => {
         try {
@@ -39,7 +47,9 @@ export const usePdfActions = (type, fetchApplicantData) => {
                     "download",
                     applicationId,
                     scholarId,
-                    data
+                    data,
+                    null,
+                    criteriaData,
                 );
             } else {
                 console.error("No applicant data received");
