@@ -1,24 +1,19 @@
 <?php
+// Improved Service Layer
 namespace App\Services;
-
-// $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-
-// if (file_exists(__DIR__ . '/../.env')) {
-//     $dotenv->load();
-// }
 
 class FileUploadService
 {
-    private $storageService;
+    private $baseUploadDir;
 
-    public function __construct(B2StorageService $storageService = null)
+    public function __construct()
     {
-        $this->storageService = $storageService ?? new B2StorageService();
+        $this->baseUploadDir = __DIR__ . '/../../public/upload/';
     }
 
     public function handleFormDataFiles($folderName, $files, $activityId)
     {
-        $folder = $this->buildFolderPath($folderName, $activityId);
+        $uploadDir = $this->createUploadDirectory($folderName, $activityId);
         $uploadedFiles = [];
 
         if (isset($files['name']) && is_array($files['name'])) {
@@ -29,20 +24,14 @@ class FileUploadService
                     'tmp_name' => $files['tmp_name'][$i],
                     'type' => $files['type'][$i],
                     'size' => $files['size'][$i],
-                    'error' => $files['error'][$i] ?? UPLOAD_ERR_OK,
                 ];
 
-                if ($fileData['error'] !== UPLOAD_ERR_OK) {
-                    throw new \Exception(
-                        'Upload error for file: ' .
-                            $fileData['name'] .
-                            ' (code ' .
-                            $fileData['error'] .
-                            ')',
-                    );
-                }
-
-                $uploadedFiles[] = $this->processFile($folder, $fileData);
+                $uploadedFiles[] = $this->processFile(
+                    $folderName,
+                    $fileData,
+                    $uploadDir,
+                    $activityId,
+                );
             }
         }
 
@@ -51,7 +40,7 @@ class FileUploadService
 
     public function handleBase64Files($folderName, $base64Files, $activityId)
     {
-        $folder = $this->buildFolderPath($folderName, $activityId);
+        $uploadDir = $this->createUploadDirectory($folderName, $activityId);
         $uploadedFiles = [];
 
         foreach ($base64Files as $file) {
@@ -59,78 +48,74 @@ class FileUploadService
                 throw new \Exception('Invalid file data - missing base64_data');
             }
 
-            $uploadedFiles[] = $this->processBase64File($folder, $file);
+            $uploadedFiles[] = $this->processBase64File(
+                $folderName,
+                $file,
+                $uploadDir,
+                $activityId,
+            );
         }
 
         return $uploadedFiles;
     }
 
-    private function buildFolderPath($folderName, $activityId)
+    private function createUploadDirectory($folderName, $activityId)
     {
-        return trim($folderName, '/') . '/' . trim($activityId, '/');
-    }
+        $uploadDir = $this->baseUploadDir . $folderName . '/' . $activityId . '/';
 
-    private function processFile($folder, $fileData)
-    {
-        if (!is_uploaded_file($fileData['tmp_name'])) {
-            throw new \Exception(
-                'Invalid upload (possible attack or misconfigured form): ' . $fileData['name'],
-            );
+        if (!is_dir($this->baseUploadDir)) {
+            mkdir($this->baseUploadDir, 0777, true);
         }
 
-        $fileExtension = pathinfo($fileData['name'], PATHINFO_EXTENSION);
-        $uniqueFilename = uniqid() . ($fileExtension ? '.' . $fileExtension : '');
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
 
-        $result = $this->storageService->upload($fileData['tmp_name'], $folder, $uniqueFilename);
+        return $uploadDir;
+    }
+
+    private function processFile($folderName, $fileData, $uploadDir, $activityId)
+    {
+        $fileExtension = pathinfo($fileData['name'], PATHINFO_EXTENSION);
+        $uniqueFilename = uniqid() . '.' . $fileExtension;
+        $targetFile = $uploadDir . $uniqueFilename;
+
+        if (!move_uploaded_file($fileData['tmp_name'], $targetFile)) {
+            throw new \Exception('Failed to upload file: ' . $fileData['name']);
+        }
 
         return [
             'original_name' => $fileData['name'],
             'filename' => $uniqueFilename,
-            'path' => $result['path'],
-            'url' => $this->storageService->getPublicUrl($result['path']),
+            'path' => '/upload/' . $folderName . '/' . $activityId . '/' . $uniqueFilename,
             'type' => $fileData['type'],
             'size' => $fileData['size'],
         ];
     }
 
-    private function processBase64File($folder, $file)
+    private function processBase64File($folderName, $file, $uploadDir, $activityId)
     {
         $filename = $file['filename'] ?? uniqid() . '.jpg';
-        $fileContent = base64_decode($file['base64_data'], true);
+        $targetFile = $uploadDir . $filename;
 
-        if ($fileContent === false) {
-            throw new \Exception('Invalid base64 data for file: ' . $filename);
+        $fileContent = base64_decode($file['base64_data']);
+
+        if (!file_put_contents($targetFile, $fileContent)) {
+            throw new \Exception('Failed to save file: ' . $filename);
         }
 
-        $tmpFile = tempnam(sys_get_temp_dir(), 'b64_');
-        if ($tmpFile === false) {
-            throw new \Exception('Could not create temp file for: ' . $filename);
-        }
+        $mimeType = function_exists('mime_content_type')
+            ? mime_content_type($targetFile)
+            : 'application/octet-stream';
 
-        $written = file_put_contents($tmpFile, $fileContent);
-        if ($written === false) {
-            @unlink($tmpFile);
-            throw new \Exception('Failed to write temp file for: ' . $filename);
-        }
-
-        try {
-            $result = $this->storageService->upload($tmpFile, $folder, $filename);
-
-            $mimeType = function_exists('mime_content_type')
-                ? (mime_content_type($tmpFile) ?:
-                'application/octet-stream')
-                : 'application/octet-stream';
-
-            return [
-                'original_name' => $filename,
-                'filename' => $filename,
-                'path' => $result['path'],
-                'url' => $this->storageService->getPublicUrl($result['path']),
-                'type' => $mimeType,
-                'size' => strlen($fileContent),
-            ];
-        } finally {
-            @unlink($tmpFile);
-        }
+        return [
+            'original_name' => $filename,
+            'filename' => $filename,
+            'path' => '/upload/' . $folderName . '/' . $activityId . '/' . $filename,
+            'type' => $mimeType,
+            'size' => filesize($targetFile),
+        ];
     }
 }
+
+?>

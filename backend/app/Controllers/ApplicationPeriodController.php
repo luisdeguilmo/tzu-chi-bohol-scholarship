@@ -431,11 +431,11 @@ class ApplicationPeriodController
         $scholars = $scholarModel->getAllScholars();
         $emailFailures = [];
 
-        foreach ($scholars as $scholar) {
-            if (!$emailService->sendRenewalApplicationEmail($scholar, $application)) {
-                $emailFailures[] = $scholar['email'] ?? ($scholar['id'] ?? 'unknown');
-            }
-        }
+        // foreach ($scholars as $scholar) {
+        //     if (!$emailService->sendRenewalApplicationEmail($scholar, $application)) {
+        //         $emailFailures[] = $scholar['email'] ?? ($scholar['id'] ?? 'unknown');
+        //     }
+        // }
 
         if (!empty($emailFailures)) {
             error_log(

@@ -121,9 +121,9 @@ class ActivityController
             $scholarId = Auth::id();
             $scholar = $this->scholarModel->getScholarById($scholarId);
 
-            if (!$emailService->sendCommunityServiceSubmitted($scholar)) {
-                throw new \Exception('Failed to send email');
-            }
+            // if (!$emailService->sendCommunityServiceSubmitted($scholar)) {
+            //     throw new \Exception('Failed to send email');
+            // }
 
             // Create activity with files
             $activityId = $this->activityService->createActivityWithFiles(

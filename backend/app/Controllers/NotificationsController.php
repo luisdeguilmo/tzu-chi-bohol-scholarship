@@ -133,11 +133,11 @@ class NotificationsController
 
             $scholars = $scholarModel->getAllScholars();
 
-            foreach ($scholars as $scholar) {
-                if (!$emailService->sendNewEventEmail($scholar, $data)) {
-                    throw new \Exception('Failed to send email');
-                }
-            }
+            // foreach ($scholars as $scholar) {
+            //     if (!$emailService->sendNewEventEmail($scholar, $data)) {
+            //         throw new \Exception('Failed to send email');
+            //     }
+            // }
 
             if (!$notification->createEventNotification($data)) {
                 throw new \Exception('Failed to create notification');

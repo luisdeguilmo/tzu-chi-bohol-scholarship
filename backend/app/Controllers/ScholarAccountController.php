@@ -139,16 +139,16 @@ class ScholarAccountController
 
             foreach ($scholars as $scholar) {
                 try {
-                    if ($emailService->sendAccountCredentialsEmail($scholar)) {
+                    // if ($emailService->sendAccountCredentialsEmail($scholar)) {
                         $scholarAccount->createAccount($scholar['application_id'], $today);
                         $scholarAccount->updateApplicationStatus(
                             $scholar['application_id'],
                             'scholar',
                         );
                         $successCount++;
-                    } else {
-                        $errors[] = "Failed to create account for application ID: $applicationId";
-                    }
+                    // } else {
+                    //     $errors[] = "Failed to create account for application ID: $applicationId";
+                    // }
                 } catch (\Exception $e) {
                     $errors[] =
                         "Error processing application ID $applicationId: " . $e->getMessage();

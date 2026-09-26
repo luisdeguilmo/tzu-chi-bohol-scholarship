@@ -103,35 +103,35 @@ class ScheduleController
                 throw new \Exception('Failed to save schedule information');
             }
 
-            foreach ($data['applicants'] as $applicant) {
-                if ($data['purpose'] === 'entrance_examination') {
-                    if (
-                        !$emailService->sendExaminationScheduleEmail(
-                            $applicant,
-                            $data['batch'],
-                            $data['date'],
-                            $data['time'],
-                            $data['venue'],
-                            $data['message'],
-                        )
-                    ) {
-                        throw new \Exception('Failed to send examination schedule email');
-                    }
-                } else {
-                    if (
-                        !$emailService->sendOrientationScheduleEmail(
-                            $applicant,
-                            $data['batch'],
-                            $data['date'],
-                            $data['time'],
-                            $data['venue'],
-                            $data['message'],
-                        )
-                    ) {
-                        throw new \Exception('Failed to send orientation schedule email');
-                    }
-                }
-            }
+            // foreach ($data['applicants'] as $applicant) {
+            //     if ($data['purpose'] === 'entrance_examination') {
+            //         if (
+            //             !$emailService->sendExaminationScheduleEmail(
+            //                 $applicant,
+            //                 $data['batch'],
+            //                 $data['date'],
+            //                 $data['time'],
+            //                 $data['venue'],
+            //                 $data['message'],
+            //             )
+            //         ) {
+            //             throw new \Exception('Failed to send examination schedule email');
+            //         }
+            //     } else {
+            //         if (
+            //             !$emailService->sendOrientationScheduleEmail(
+            //                 $applicant,
+            //                 $data['batch'],
+            //                 $data['date'],
+            //                 $data['time'],
+            //                 $data['venue'],
+            //                 $data['message'],
+            //             )
+            //         ) {
+            //             throw new \Exception('Failed to send orientation schedule email');
+            //         }
+            //     }
+            // }
 
             $this->pdo->commit();
 

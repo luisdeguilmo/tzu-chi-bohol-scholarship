@@ -131,9 +131,9 @@ class ApplicationManagementController
             if ($action === 'approve') {
                 $message = $messageModel->getPassedMessage('application');
 
-                if (!$emailService->sendApplicationApprovalEmail($data, $message)) {
-                    throw new \Exception('Application approved but failed to send approval email');
-                }
+                // if (!$emailService->sendApplicationApprovalEmail($data, $message)) {
+                //     throw new \Exception('Application approved but failed to send approval email');
+                // }
 
                 if (!$applicant->approveApplication($data)) {
                     throw new \Exception('Failed to approve application');
@@ -201,9 +201,9 @@ class ApplicationManagementController
             } elseif ($action === 'reject') {
                 $message = $messageModel->getFailedMessage('application');
 
-                if (!$emailService->sendApplicationRejectionEmail($data, $message)) {
-                    throw new \Exception('Application rejected but failed to send rejection email');
-                }
+                // if (!$emailService->sendApplicationRejectionEmail($data, $message)) {
+                //     throw new \Exception('Application rejected but failed to send rejection email');
+                // }
 
                 if (!$applicant->rejectApplication($data)) {
                     throw new \Exception('Failed to reject application');
@@ -344,11 +344,11 @@ class ApplicationManagementController
             } elseif ($action === 'examination_passed') {
                 $message = $messageModel->getPassedMessage('entrance_examination');
 
-                foreach ($data['applicants'] as $applicant) {
-                    if (!$emailService->sendExaminationPassedEmail($applicant, $message)) {
-                        throw new \Exception('Failed to send email');
-                    }
-                }
+                // foreach ($data['applicants'] as $applicant) {
+                //     if (!$emailService->sendExaminationPassedEmail($applicant, $message)) {
+                //         throw new \Exception('Failed to send email');
+                //     }
+                // }
 
                 $staffId = Auth::id();
                 $staff = $this->staffModel->getStaffInfoById($staffId);
@@ -375,11 +375,11 @@ class ApplicationManagementController
             } elseif ($action === 'examination_failed') {
                 $message = $messageModel->getFailedMessage('entrance_examination');
 
-                foreach ($data['applicants'] as $applicant) {
-                    if (!$emailService->sendExaminationFailedEmail($applicant, $message)) {
-                        throw new \Exception('Failed to send email');
-                    }
-                }
+                // foreach ($data['applicants'] as $applicant) {
+                //     if (!$emailService->sendExaminationFailedEmail($applicant, $message)) {
+                //         throw new \Exception('Failed to send email');
+                //     }
+                // }
 
                 $staffId = Auth::id();
                 $staff = $this->staffModel->getStaffInfoById($staffId);
@@ -406,9 +406,9 @@ class ApplicationManagementController
             } elseif ($action === 'interview_passed') {
                 $message = $messageModel->getPassedMessage('initial_interview');
 
-                if (!$emailService->sendInitialInterviewPassedEmail($data, $message)) {
-                    throw new \Exception('Failed to send email');
-                }
+                // if (!$emailService->sendInitialInterviewPassedEmail($data, $message)) {
+                //     throw new \Exception('Failed to send email');
+                // }
 
                 if (!$applicant->updateStatusToInitialInterviewPassed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
@@ -439,9 +439,9 @@ class ApplicationManagementController
             } elseif ($action === 'interview_failed') {
                 $message = $messageModel->getFailedMessage('initial_interview');
 
-                if (!$emailService->sendInitialInterviewFailedEmail($data, $message)) {
-                    throw new \Exception('Failed to send email');
-                }
+                // if (!$emailService->sendInitialInterviewFailedEmail($data, $message)) {
+                //     throw new \Exception('Failed to send email');
+                // }
 
                 if (!$applicant->updateStatusToInitialInterviewFailed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
@@ -472,9 +472,9 @@ class ApplicationManagementController
             } elseif ($action === 'home_visitation_passed') {
                 $message = $messageModel->getPassedMessage('home_visitation');
 
-                if (!$emailService->sendHomeVisitationPassedEmail($data, $message)) {
-                    throw new \Exception('Failed to send email');
-                }
+                // if (!$emailService->sendHomeVisitationPassedEmail($data, $message)) {
+                //     throw new \Exception('Failed to send email');
+                // }
 
                 if (!$applicant->updateStatusToHomeVisitationPassed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
@@ -505,9 +505,9 @@ class ApplicationManagementController
             } elseif ($action === 'home_visitation_failed') {
                 $message = $messageModel->getFailedMessage('home_visitation');
 
-                if (!$emailService->sendHomeVisitationFailedEmail($data, $message)) {
-                    throw new \Exception('Failed to send email');
-                }
+                // if (!$emailService->sendHomeVisitationFailedEmail($data, $message)) {
+                //     throw new \Exception('Failed to send email');
+                // }
 
                 if (!$applicant->updateStatusToHomeVisitationFailed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
@@ -538,9 +538,9 @@ class ApplicationManagementController
             } elseif ($action === 'final_interview_passed') {
                 $message = $messageModel->getPassedMessage('final_interview');
 
-                if (!$emailService->sendFinalInterviewPassedEmail($data, $message)) {
-                    throw new \Exception('Failed to send email');
-                }
+                // if (!$emailService->sendFinalInterviewPassedEmail($data, $message)) {
+                //     throw new \Exception('Failed to send email');
+                // }
 
                 if (!$applicant->updateStatusToFinalInterviewPassed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
@@ -571,9 +571,9 @@ class ApplicationManagementController
             } elseif ($action === 'final_interview_failed') {
                 $message = $messageModel->getFailedMessage('final_interview');
 
-                if (!$emailService->sendFinalInterviewFailedEmail($data, $message)) {
-                    throw new \Exception('Failed to send email');
-                }
+                // if (!$emailService->sendFinalInterviewFailedEmail($data, $message)) {
+                //     throw new \Exception('Failed to send email');
+                // }
 
                 if (!$applicant->updateStatusToFinalInterviewFailed($data['application_id'])) {
                     throw new \Exception('Failed to update status');
